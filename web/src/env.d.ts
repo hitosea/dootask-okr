@@ -15,4 +15,8 @@ declare interface Window {
     width: any
     height: any
     isEEUiApp: any
+    eventCenterForAppNameVite: any
+    __MICRO_APP_NAME__: string
+    __MICRO_APP_ENVIRONMENT__: string
+    __MICRO_APP_BASE_APPLICATION__: string
 }

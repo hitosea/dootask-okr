@@ -1,6 +1,4 @@
 import { createI18n } from "vue-i18n"
-import zh from "./modules/zh"
-import en from "./modules/en"
 import auto_zh from "./auto/zh.json"
 import auto_en from "./auto/en.json"
 
@@ -10,8 +8,8 @@ const i18n = createI18n({
     fallbackLocale: "zh",
     globalInjection: true,
     messages: {
-        zh: { ...zh, ...auto_zh },
-        en: { ...en, ...auto_en },
+        zh: { ...auto_zh },
+        en: { ...auto_en },
     },
     warnHtmlMessage: false,
 })

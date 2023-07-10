@@ -9,20 +9,15 @@ import { onMounted, watch } from 'vue'
 import { useLoadingBar } from 'naive-ui'
 import { loadingBarApiRef } from "../routes";
 import { UserStore } from "../store/user";
-import { WsStore } from "../store/ws";
 import { GlobalStore } from '@/store';
 
-
 const userStore = UserStore()
-const wsStore = WsStore()
 const loadingBar = useLoadingBar()
 const globalStore = GlobalStore()
 
 watch(
     () => userStore.info,
-    () => {
-        wsStore.connection()
-    },
+    () => { },
     { immediate: true }
 )
 
@@ -33,8 +28,6 @@ onMounted(() => {
     window.addEventListener('scroll', windowScrollListener);
 })
 
-
-
 const windowScrollListener = () => {
     globalStore.$patch((state) => {
         state.windowScrollY = window.scrollY
@@ -43,7 +36,7 @@ const windowScrollListener = () => {
 
 const otherEvents = () => {
     // 非客户端监听窗口激活
-    const hiddenProperty = 'hidden' in document ? 'hidden' : 'webkitHidden' in document ? 'webkitHidden' : 'mozHidden' in document ? 'mozHidden' : null;
+    const hiddenProperty = 'hidden' in document ? 'hidden' : 'webkitHidden' in document ? 'webkitHidden' : 'mozHidden' in document ? 'mozHidden' : '';
     const visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
     document.addEventListener(visibilityChangeEvent, () => {
         globalStore.$patch((state) => {

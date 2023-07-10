@@ -5,7 +5,6 @@ import { ConfigProviderProps, createDiscreteApi, darkTheme, useOsTheme } from "n
 import { GlobalState } from "./interface"
 import piniaPersistConfig from "./config/pinia-persist"
 import { I18nGlobal } from "@/lang"
-import { getPluginMenu } from "@/api/modules/plugin"
 import utils from "@/utils/utils"
 
 const screenOrientation = utils.screenOrientation()
@@ -48,12 +47,6 @@ export const GlobalStore = defineStore({
             if (["light", "dark"].indexOf(this.themeName) === -1) {
                 this.themeName = useOsTheme().value;
             }
-            // 
-            getPluginMenu().then(res => {
-                this.pluginConfig = res.data
-            }).catch(err=>{
-                console.error(err);
-            });
         },
         appSetup() {
             return {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DooTask</title>
+    <script>
+        window.result_code = "{{.CODE}}"
+        window.result_msg = "{{.MSG}}"
+        window.result_data = "{{.DATA}}"
+        if (!/^\d+$/.test(window.result_code)) {
+            window.result_code = 0
+        } else {
+            window.result_code = parseInt(window.result_code)
+        }
+    </script>
+  <script type="module" crossorigin src="/assets/index-bf7f1c97.js"></script>
+  <link rel="stylesheet" href="/assets/index-97c7b84d.css">
+</head>
+<body>
+<div id="app"></div>
+
+</body>
+</html>

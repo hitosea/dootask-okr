@@ -7,12 +7,13 @@ import * as path from 'path';
 
 export default defineConfig(({command, mode}) => {
     const env = loadEnv(mode, process.cwd(), '')
-    const devPort: any = env['DEV_PORT'] || 4444
+    const devPort: any = env['DEV_PORT'] || 5567
     const devProxyTarget: string = env['DEV_PROXY_TARGET'] || 'http://127.0.0.1:5566'
     const viteApiUrl: string = env['VITE_API_URL'] || '/'
+    const appname: any = '/microapp/' + path.basename(path.dirname(path.resolve(__dirname, ''))) + '/'
 
     return {
-        base: '/',
+        base: `${process.env.NODE_ENV === 'production' ? '' : ''}${appname}`,
         server: {
             port: devPort,
             proxy: {
@@ -41,13 +42,7 @@ export default defineConfig(({command, mode}) => {
             ],
         },
         plugins: [
-            vue({
-                template: {
-                    compilerOptions: {
-                        isCustomElement: (tag) => tag.includes('micro-app')
-                    }
-                }
-            }),
+            vue(),
             AutoImport({
                 imports: [
                     'vue',
@@ -63,7 +58,34 @@ export default defineConfig(({command, mode}) => {
             }),
             Components({
                 resolvers: [NaiveUiResolver()]
-            })
+            }),
+            // 微应用处理
+            (function () {
+                let basePath = ''
+                return {
+                    name: "vite:micro-app",
+                    apply: 'build',
+                    configResolved(config:any) {
+                        basePath = `${config.base}${config.build.assetsDir}/`
+                    },
+                    renderChunk(code:any, chunk:any) {
+                        if (chunk.fileName.endsWith('.js')) {
+                            code = code.replace(/(from|import\()(\s*['"])(\.\.?\/)/g, (all, $1, $2, $3) => {
+                                if( basePath.indexOf('http') == -1){
+                                    let str = all.replace($3, basePath)
+                                    if( str.indexOf('import(') !== -1){
+                                        str = str.replace('import(','import(window.location.origin+')
+                                    }
+                                    return str
+                                }else{
+                                    return all.replace($3, new URL($3, basePath))
+                                }
+                            })
+                        }
+                        return code
+                    },
+                }
+            })() as any,
         ],
         build: {
             chunkSizeWarningLimit: 3000

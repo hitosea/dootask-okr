@@ -5,8 +5,7 @@
             <n-message-provider>
                 <n-notification-provider>
                     <n-dialog-provider>
-                        <login v-if="resultCode === CODE.StatusUnauthorized" />
-                        <Result v-else-if="resultCode > 0" />
+                        <Result v-if="resultCode > 0" />
                         <layout v-else />
                         <n-global-style />
                     </n-dialog-provider>
@@ -19,7 +18,6 @@
 <script lang="ts" setup>
 import { GlobalStore } from "../store"
 import { zhCN, dateZhCN, enUS, dateEnUS } from "naive-ui"
-import login from "@/views/login.vue"
 import Layout from "./layout.vue"
 import result from "../utils/result"
 import { computed } from "vue"
