@@ -1,0 +1,9 @@
+ErrCaptchaCode: Galat captcha
+ErrCmdTimeout: Waktu habis untuk perintah
+ErrEnvProhibition: Lingkungan saat ini melarang operasi ini
+ErrInvalidParameter: Argumen salah
+ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan untuk menerima
+ErrMailNotConfig: Kirim email tak dikonfigurasi
+ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
+ErrRequestTimeout: Waktu permintaan
+ErrTypeNotLogin: Tidak login

@@ -1,0 +1,9 @@
+ErrCaptchaCode: Authentifizierungsfehler bestätigt
+ErrCmdTimeout: Der befehl wird mit verspätung ausgeführt
+ErrEnvProhibition: Dies ist unter den aktuellen umständen verboten
+ErrInvalidParameter: Fehlerhafte parameter
+ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postfach die funktion empfangsfunktion geöffnet hat
+ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
+ErrMailToInvalid: Bitte geben sie die richtige adresse ein
+ErrRequestTimeout: Wir Bitten um mehr zeit.
+ErrTypeNotLogin: Nicht eingegeben.

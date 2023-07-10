@@ -1,0 +1,9 @@
+ErrCaptchaCode: Code de vérification incorrect
+ErrCmdTimeout: Délai d’exécution de la commande expire
+ErrEnvProhibition: L’environnement actuel interdit cette opération
+ErrInvalidParameter: Paramètres incorrects
+ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre boîte aux lettres est active pour recevoir
+ErrMailNotConfig: Email d’envoi non configuré
+ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
+ErrRequestTimeout: La demande a expiré
+ErrTypeNotLogin: Pas de login

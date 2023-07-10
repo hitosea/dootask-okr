@@ -1,0 +1,9 @@
+ErrCaptchaCode: Verification code error
+ErrCmdTimeout: Command execution timeout
+ErrEnvProhibition: This operation is prohibited in the current environment
+ErrInvalidParameter: Parameter error
+ErrMailContentReject: The email content is rejected. Please check whether the receiving function is enabled
+ErrMailNotConfig: The sending mailbox is not configured
+ErrMailToInvalid: Please enter the correct recipient address
+ErrRequestTimeout: Request timeout
+ErrTypeNotLogin: Not logged in

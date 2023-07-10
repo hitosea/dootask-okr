@@ -1,0 +1,9 @@
+ErrCaptchaCode: captchaエラーです
+ErrCmdTimeout: 命令実行タイムオーバーです
+ErrEnvProhibition: 現在の環境ではこの動作は禁止されています
+ErrInvalidParameter: パラメータエラーです
+ErrMailContentReject: メールの内容が拒否された場合、受信機能がオンになっているか確認します。
+ErrMailNotConfig: 送信メールアドレス未設定です。
+ErrMailToInvalid: 正しい宛先を入力願います。
+ErrRequestTimeout: 超過をお願いします
+ErrTypeNotLogin: 未登録です

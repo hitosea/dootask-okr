@@ -1,0 +1,9 @@
+ErrCaptchaCode: 인증 코드 오류
+ErrCmdTimeout: 명령 실행 시간이 초과되었습니다
+ErrEnvProhibition: 현재 환경에서는 사용하지 않습니다
+ErrInvalidParameter: 인자 오류
+ErrMailContentReject: 전자메일 내용이 거부되었습니다. 메일함의 수신이 켜져 있는지 확인하십시오
+ErrMailNotConfig: 보내는 편지함이 설정되지 않았습니다
+ErrMailToInvalid: 정확한 수취인 주소를 입력해 주세요
+ErrRequestTimeout: 요청 시간 초과
+ErrTypeNotLogin: 로그인하지 않음

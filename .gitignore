@@ -1,0 +1,8 @@
+.cache
+.idea
+*_test.go
+test.*
+main
+/tmp/
+/public/uploads/
+.env

@@ -1,0 +1,9 @@
+ErrCaptchaCode: 驗證碼錯誤
+ErrCmdTimeout: 命令執行超時
+ErrEnvProhibition: 當前環境禁止此操作
+ErrInvalidParameter: 參數錯誤
+ErrMailContentReject: 郵件內容被拒絕，請檢查郵箱是否開啓接收功能
+ErrMailNotConfig: 發送郵箱未配置
+ErrMailToInvalid: 請輸入正確的收件人地址
+ErrRequestTimeout: 請求超時
+ErrTypeNotLogin: 未登錄
