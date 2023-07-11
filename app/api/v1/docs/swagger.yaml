@@ -1,20 +1,56 @@
 basePath: /api/v1
 definitions:
-  interfaces.OkrAddReq:
+  interfaces.OkrKeyResultCreateReq:
     properties:
-      content:
-        description: 内容
-        type: string
-      parent_id:
-        description: 父级ID
+      confidence:
+        description: 信心指数
         type: integer
-      title:
-        description: 标题
+      end_at:
+        description: 结束时间
+        type: string
+      key_result:
+        description: 关键结果
+        type: string
+      participant:
+        description: 参与人,多个用逗号隔开
+        type: string
+      start_at:
+        description: 开始时间
         type: string
     required:
-    - content
-    - parent_id
-    - title
+    - confidence
+    - end_at
+    - key_result
+    - participant
+    - start_at
+    type: object
+  interfaces.OkrKeyResultUpdateReq:
+    properties:
+      confidence:
+        description: 信心指数
+        type: integer
+      end_at:
+        description: 结束时间
+        type: string
+      id:
+        description: id
+        type: integer
+      key_result:
+        description: 关键结果
+        type: string
+      participant:
+        description: 参与人,多个用逗号隔开
+        type: string
+      start_at:
+        description: 开始时间
+        type: string
+    required:
+    - confidence
+    - end_at
+    - id
+    - key_result
+    - participant
+    - start_at
     type: object
   interfaces.Response:
     properties:
@@ -39,24 +75,110 @@ info:
   title: DooTask
   version: "1.0"
 paths:
-  /okr/add:
+  /okr/create:
     post:
       consumes:
       - application/json
       description: 创建OKR
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: 对齐目标,多个用逗号隔开
+        in: formData
+        name: align_objective
+        type: string
+      - description: 归属 1-部门 2-个人
+        in: formData
+        name: ascription
         required: true
-        schema:
-          $ref: '#/definitions/interfaces.OkrAddReq'
+        type: integer
+      - description: 结束时间
+        in: formData
+        name: end_at
+        required: true
+        type: string
+      - description: 目标
+        in: formData
+        name: objective
+        required: true
+        type: string
+      - description: 优先级
+        in: formData
+        name: priority
+        required: true
+        type: string
+      - description: 开始时间
+        in: formData
+        name: start_at
+        required: true
+        type: string
+      - description: 类型 1-承诺型 2-挑战型
+        in: formData
+        name: type
+        required: true
+        type: integer
+      - description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
+        in: formData
+        name: visible_range
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: 创建OKR
+      tags:
+      - Okr
+  /okr/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新OKR
+      parameters:
+      - description: 对齐目标,多个用逗号隔开
+        in: formData
+        name: align_objective
+        type: string
+      - description: 结束时间
+        in: formData
+        name: end_at
+        required: true
+        type: string
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      - description: 目标
+        in: formData
+        name: objective
+        required: true
+        type: string
+      - description: 优先级
+        in: formData
+        name: priority
+        required: true
+        type: string
+      - description: 开始时间
+        in: formData
+        name: start_at
+        required: true
+        type: string
+      - description: 类型 1-承诺型 2-挑战型
+        in: formData
+        name: type
+        required: true
+        type: integer
+      - description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
+        in: formData
+        name: visible_range
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新OKR
       tags:
       - Okr
 swagger: "2.0"
