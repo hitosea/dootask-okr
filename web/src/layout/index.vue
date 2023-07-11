@@ -7,7 +7,6 @@
                     <n-dialog-provider>
                         <Result v-if="resultCode > 0" />
                         <layout v-else />
-                        <n-global-style />
                     </n-dialog-provider>
                 </n-notification-provider>
             </n-message-provider>
@@ -23,7 +22,6 @@ import result from "../utils/result"
 import { computed } from "vue"
 import { NLocale } from "naive-ui/es/locales/common/enUS"
 import { NDateLocale } from "naive-ui/es/locales"
-import { CODE } from "../api/constant"
 import themeOverrides from "../utils/naive.config"
 const lightThemeOverrides = themeOverrides.lightThemeOverrides
 const darkThemeOverrides = themeOverrides.darkThemeOverrides

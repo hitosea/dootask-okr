@@ -8,21 +8,20 @@ export const handleMicroData = (router: Router) =>{
         // 主动获取基座下发的数据
         console.log('child-vite getData:', window.eventCenterForAppNameVite.getData())
         // 监听基座下发的数据变化
-        window.eventCenterForAppNameVite.addDataListener((data: Record<string, unknown>) => {
-            console.log('child-vite addDataListener:', data)
-
-            if (data.path && typeof data.path === 'string') {
-                data.path = data.path.replace(/^#/, '')
-                // 当基座下发path时进行跳转
-                if (data.path && data.path !== router.currentRoute.value.path) {
-                    router.push(data.path as string)
-                }
-            }
-        })
+        // window.eventCenterForAppNameVite.addDataListener((data: Record<string, unknown>) => {
+        //     console.log('child-vite addDataListener:', data)
+        //     if (data.path && typeof data.path === 'string') {
+        //         data.path = data.path.replace(/^#/, '')
+        //         // 当基座下发path时进行跳转
+        //         if (data.path && data.path !== router.currentRoute.value.path) {
+        //             router.push(data.path as string)
+        //         }
+        //     }
+        // })
         // 向基座发送数据
-        setTimeout(() => {
-            window.eventCenterForAppNameVite.dispatch({ myname: 'child-vite' })
-        }, 3000)
+        // setTimeout(() => {
+        //     window.eventCenterForAppNameVite.dispatch({ myname: 'child-vite' })
+        // }, 3000)
     }
 }
 
