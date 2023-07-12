@@ -54,8 +54,9 @@ func Init(c *gin.Context) {
 	}
 
 	// 静态资源
-	if strings.HasPrefix(urlPath, "/assets") {
-		c.FileFromFS("dist"+urlPath, http.FS(web.Assets))
+	if strings.HasPrefix(urlPath, "/assets") || strings.HasPrefix(urlPath, "/manage/microapp/okr/assets") {
+		assets := strings.Replace(urlPath, "/manage/microapp/okr/assets", "/assets", -1)
+		c.FileFromFS("dist"+assets, http.FS(web.Assets))
 		return
 	}
 	if strings.HasSuffix(urlPath, "/favicon.ico") {
