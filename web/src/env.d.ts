@@ -14,7 +14,8 @@ declare interface Window {
     $t: any
     width: any
     height: any
-    isEEUiApp: any
+    isEEUiApp: any,
+    Vues:any,
     eventCenterForAppNameVite: any
     __MICRO_APP_NAME__: string
     __MICRO_APP_ENVIRONMENT__: string

@@ -14,7 +14,6 @@ export interface GlobalState {
     language: string
     themeName: string
     timer: object
-    pluginConfig: any
     windowOrientation: any
     windowLandscape: any
     windowPortrait: any

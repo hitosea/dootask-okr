@@ -18,7 +18,6 @@ export const GlobalStore = defineStore({
         language: "zh",
         themeName: "",
         timer: {},
-        pluginConfig: {},
         // 浏览器窗口方向
         windowOrientation: computed(() => {return screenOrientation}),
         windowLandscape: computed(() => {return windowLandscape}), // 横屏
@@ -30,6 +29,12 @@ export const GlobalStore = defineStore({
         windowTouch: "ontouchend" in document,
     }),
     actions: {
+        async init() {
+            this.isLoading = 0;
+            if (["light", "dark"].indexOf(this.themeName) === -1) {
+                this.themeName = useOsTheme().value;
+            }
+        },
         setLoading() {
             this.isLoading++
         },
@@ -42,11 +47,8 @@ export const GlobalStore = defineStore({
         setLanguage(language: any) {
             localStorage.setItem("lang", (I18nGlobal.locale.value = this.language = language));
         },
-        async init() {
-            this.isLoading = 0;
-            if (["light", "dark"].indexOf(this.themeName) === -1) {
-                this.themeName = useOsTheme().value;
-            }
+        setVues(vues: any) {
+            window.Vues = vues;
         },
         appSetup() {
             return {

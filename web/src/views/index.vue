@@ -1,29 +1,35 @@
 <template >
-    <div id="kkkkk">
-        <DialogWrapper :dialogId="1111"  is-messenger/>
+    <div>
+        我是子应用
+    </div>
+    <div style="width: 300px;height: 500px; position: relative;">
+        <DialogWrappers />
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { UserStore } from "@/store/user"
 
 export default defineComponent({
     setup () {
+        nextTick(()=>{
 
-        setTimeout(function () {
-            // new Vue({
-            //     el: '#kkkkk',
-            //     components: {
-            //         // 'dialogwrapper' : window.DialogWrapper,
-            //     }
-            // })
+            console.log(UserStore().info)
 
-            new window.Vue({
-                el: document.querySelector('DialogWrapper'),
-                render: h => h(window.DialogWrapper),
+            new window.Vues.Vue({
+                el: document.querySelector('DialogWrappers'), 
+                store: window.Vues.store,
+                render: (h:any) => {
+                    return h( window.Vues?.components?.DialogWrapper ,{
+                        props:{
+                            dialogId: 1
+                        }
+                    },[ h("div",{slot:"head"}) ])
+                },
             });
-        },100)
 
+        })
         return {
             showModal: ref(false)
         }

@@ -55,29 +55,5 @@ const handleLanguageUpdate = () => {
 </script>
 
 <style lang="less" scoped>
-.main {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 
-    .welcome {
-        margin-bottom: 12px;
-    }
-
-    .buttons {
-        display: flex;
-        align-items: center;
-        margin-top: 12px;
-
-        > button + button {
-            margin-left: 12px;
-        }
-    }
-}
 </style>

@@ -21,22 +21,21 @@ export const UserStore = defineStore({
     actions: {
         refresh() {
             return new Promise((resolve, reject) => {
-                getUserInfo()
-                    .then(({ data }) => {
-                        if (utils.isEmpty(data.name)) {
-                            data.name = data.email
-                        }
-                        this.info = data
-                        resolve(data)
-                    })
-                    .catch(err => {
-                        reject(err)
-                    })
+                getUserInfo().then(({ data }) => {
+                    if (utils.isEmpty(data.name)) {
+                        data.name = data.email
+                    }
+                    this.info = data
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
             })
         },
         setUserInfo(info: any = null) {
             this.info = info || {
-                id: null,
+                id: 0,
                 email: "",
                 name: "",
                 token: "",
