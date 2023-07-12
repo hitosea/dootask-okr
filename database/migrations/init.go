@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// 添加目标表 AddTableOkrObject
-var AddTableOkrObject = &gormigrate.Migration{
+// 添加目标表 AddTableOkr
+var AddTableOkr = &gormigrate.Migration{
 	ID: "2023071001-add-table-okr",
 	Migrate: func(tx *gorm.DB) error {
 		return tx.AutoMigrate(&model.Okr{})
@@ -23,9 +23,9 @@ var AddTableOkrFollow = &gormigrate.Migration{
 	},
 }
 
-// 添加关键结果表 AddTableOkrKeyResult
-var AddTableOkrKeyResult = &gormigrate.Migration{
-	ID: "2023071003-add-table-okr-key-result",
+// 添加关键结果表 AddTableOkrAlign
+var AddTableOkrAlign = &gormigrate.Migration{
+	ID: "2023071003-add-table-okr-key-align",
 	Migrate: func(tx *gorm.DB) error {
 		return tx.AutoMigrate(&model.OkrAlign{})
 	},

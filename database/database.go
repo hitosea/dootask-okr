@@ -9,10 +9,11 @@ import (
 
 func Init() error {
 	m := gormigrate.New(core.DB, gormigrate.DefaultOptions, []*gormigrate.Migration{
-		migrations.AddTableOkrObject,
+		migrations.AddTableOkr,
 		migrations.AddTableOkrFollow,
-		migrations.AddTableOkrKeyResult,
+		migrations.AddTableOkrAlign,
 		migrations.AddTableOkrReplay,
+		migrations.AddTableOkrLog,
 	})
 	if err := m.Migrate(); err != nil {
 		return err
