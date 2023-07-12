@@ -10,7 +10,7 @@ export default defineConfig(({command, mode}) => {
     const devPort: any = env['DEV_PORT'] || 5567
     const devProxyTarget: string = env['DEV_PROXY_TARGET'] || 'http://127.0.0.1:5566'
     const viteApiUrl: string = env['VITE_API_URL'] || '/'
-    const appname: any = '/microapp/microapp/'
+    const appname: any = '/manage/microapp/okr/'
 
     return {
         base: `${process.env.NODE_ENV === 'production' ? '' : ''}${appname}`,
