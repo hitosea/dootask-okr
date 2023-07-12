@@ -3,6 +3,7 @@ package router
 import (
 	v1 "dootask-okr/app/api/v1"
 	"dootask-okr/app/api/v1/helper"
+	"dootask-okr/app/service"
 	"dootask-okr/config"
 	"dootask-okr/web"
 	"net/http"
@@ -23,7 +24,7 @@ func Init(c *gin.Context) {
 		// 读取身份
 		api := &v1.BaseApi{
 			Route:   urlToApiRoute(urlPath[8:]),
-			Token:   helper.Token(c), // todo 判断Token是否有效
+			Token:   helper.Token(c), // 判断Token是否有效
 			Context: c,
 		}
 		// 动态路由（不需要登录）
@@ -31,12 +32,12 @@ func Init(c *gin.Context) {
 			return
 		}
 		// 登录验证
-		// userInfo, err := user.UserService.VerifyLogin(api.Token)
-		// if err != nil {
-		// 	helper.ErrorAuth(c, err.Error())
-		// 	return
-		// }
-		// api.Userinfo = userInfo
+		info, err := service.DootaskService.GetUserInfo(api.Token)
+		if err != nil {
+			helper.ErrorAuth(c, err.Error())
+			return
+		}
+		api.Userinfo = info
 		// 动态路由（需要登录）
 		if callApiMethod(api, true) {
 			return

@@ -5,9 +5,10 @@ import (
 )
 
 type BaseApi struct {
-	Route   string       `mapstructure:"route"`
-	Token   string       `mapstructure:"token"`
-	Context *gin.Context `mapstructure:"context"`
+	Route    string       `mapstructure:"route"`
+	Token    string       `mapstructure:"token"`
+	Userinfo interface{}  `mapstructure:"userinfo"`
+	Context  *gin.Context `mapstructure:"context"`
 }
 
 type NotAuthBaseApi struct {

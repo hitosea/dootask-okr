@@ -14,6 +14,35 @@
     "host": "http://localhost",
     "basePath": "/api/v1",
     "paths": {
+        "/doo/user/info": {
+            "get": {
+                "description": "获取用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/create": {
             "post": {
                 "description": "创建OKR",
@@ -27,9 +56,17 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "对齐目标,多个用逗号隔开",
+                        "description": "目标",
+                        "name": "Title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "对齐目标",
                         "name": "align_objective",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "integer",
@@ -42,13 +79,6 @@
                         "type": "string",
                         "description": "结束时间",
                         "name": "end_at",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "目标",
-                        "name": "objective",
                         "in": "formData",
                         "required": true
                     },
@@ -91,6 +121,114 @@
                 }
             }
         },
+        "/okr/follow/list": {
+            "get": {
+                "description": "关注的OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "关注的OKR列表",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标",
+                        "name": "objective",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/my/list": {
+            "get": {
+                "description": "我的OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "我的OKR列表",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标",
+                        "name": "objective",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/participant/list": {
+            "get": {
+                "description": "参与的OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "参与的OKR列表",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标",
+                        "name": "objective",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/update": {
             "post": {
                 "description": "更新OKR",
@@ -104,9 +242,10 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "对齐目标,多个用逗号隔开",
+                        "description": "对齐目标",
                         "name": "align_objective",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -175,9 +314,9 @@
             "required": [
                 "confidence",
                 "end_at",
-                "key_result",
                 "participant",
-                "start_at"
+                "start_at",
+                "title"
             ],
             "properties": {
                 "confidence": {
@@ -188,16 +327,16 @@
                     "description": "结束时间",
                     "type": "string"
                 },
-                "key_result": {
-                    "description": "关键结果",
-                    "type": "string"
-                },
                 "participant": {
                     "description": "参与人,多个用逗号隔开",
                     "type": "string"
                 },
                 "start_at": {
                     "description": "开始时间",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "关键结果",
                     "type": "string"
                 }
             }

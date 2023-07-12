@@ -9,9 +9,9 @@ import (
 
 // 添加目标表 AddTableOkrObject
 var AddTableOkrObject = &gormigrate.Migration{
-	ID: "2023071001-add-table-okr-objective",
+	ID: "2023071001-add-table-okr",
 	Migrate: func(tx *gorm.DB) error {
-		return tx.AutoMigrate(&model.OkrObjective{})
+		return tx.AutoMigrate(&model.Okr{})
 	},
 }
 
@@ -27,7 +27,7 @@ var AddTableOkrFollow = &gormigrate.Migration{
 var AddTableOkrKeyResult = &gormigrate.Migration{
 	ID: "2023071003-add-table-okr-key-result",
 	Migrate: func(tx *gorm.DB) error {
-		return tx.AutoMigrate(&model.OkrKeyResult{})
+		return tx.AutoMigrate(&model.OkrAlign{})
 	},
 }
 
@@ -36,5 +36,13 @@ var AddTableOkrReplay = &gormigrate.Migration{
 	ID: "2023071004-add-table-okr-replay",
 	Migrate: func(tx *gorm.DB) error {
 		return tx.AutoMigrate(&model.OkrReplay{})
+	},
+}
+
+// 添加日志表 AddTableOkrLog
+var AddTableOkrLog = &gormigrate.Migration{
+	ID: "2023071005-add-table-okr-log",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&model.OkrLog{})
 	},
 }

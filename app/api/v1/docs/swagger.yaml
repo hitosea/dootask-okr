@@ -8,21 +8,21 @@ definitions:
       end_at:
         description: 结束时间
         type: string
-      key_result:
-        description: 关键结果
-        type: string
       participant:
         description: 参与人,多个用逗号隔开
         type: string
       start_at:
         description: 开始时间
         type: string
+      title:
+        description: 关键结果
+        type: string
     required:
     - confidence
     - end_at
-    - key_result
     - participant
     - start_at
+    - title
     type: object
   interfaces.OkrKeyResultUpdateReq:
     properties:
@@ -75,15 +75,40 @@ info:
   title: DooTask
   version: "1.0"
 paths:
+  /doo/user/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      parameters:
+      - description: token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取用户信息
+      tags:
+      - Dootask
   /okr/create:
     post:
       consumes:
       - application/json
       description: 创建OKR
       parameters:
-      - description: 对齐目标,多个用逗号隔开
+      - description: 目标
+        in: formData
+        name: Title
+        required: true
+        type: string
+      - description: 对齐目标
         in: formData
         name: align_objective
+        required: true
         type: string
       - description: 归属 1-部门 2-个人
         in: formData
@@ -93,11 +118,6 @@ paths:
       - description: 结束时间
         in: formData
         name: end_at
-        required: true
-        type: string
-      - description: 目标
-        in: formData
-        name: objective
         required: true
         type: string
       - description: 优先级
@@ -128,15 +148,88 @@ paths:
       summary: 创建OKR
       tags:
       - Okr
+  /okr/follow/list:
+    get:
+      consumes:
+      - application/json
+      description: 关注的OKR列表
+      parameters:
+      - description: 用户id
+        in: query
+        name: userid
+        required: true
+        type: number
+      - description: 目标
+        in: query
+        name: objective
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 关注的OKR列表
+      tags:
+      - Okr
+  /okr/my/list:
+    get:
+      consumes:
+      - application/json
+      description: 我的OKR列表
+      parameters:
+      - description: 用户id
+        in: query
+        name: userid
+        required: true
+        type: number
+      - description: 目标
+        in: query
+        name: objective
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 我的OKR列表
+      tags:
+      - Okr
+  /okr/participant/list:
+    get:
+      consumes:
+      - application/json
+      description: 参与的OKR列表
+      parameters:
+      - description: 用户id
+        in: query
+        name: userid
+        required: true
+        type: number
+      - description: 目标
+        in: query
+        name: objective
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 参与的OKR列表
+      tags:
+      - Okr
   /okr/update:
     post:
       consumes:
       - application/json
       description: 更新OKR
       parameters:
-      - description: 对齐目标,多个用逗号隔开
+      - description: 对齐目标
         in: formData
         name: align_objective
+        required: true
         type: string
       - description: 结束时间
         in: formData
