@@ -1,12 +1,15 @@
+import Index from '../views/index.vue'
+import Main from '../views/main.vue'
+
 export const routes = [
     {
         name: "index",
         path: "/",
-        component: () => import('../views/index.vue')
+        component: Index
     },
     {
         name: "main",
         path: "/main",
-        component:  () => import('../views/main.vue'),
+        component: Main
     }
 ];
