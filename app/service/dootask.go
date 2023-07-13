@@ -3,13 +3,10 @@ package service
 import (
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/utils/common"
+	"dootask-okr/config"
 	"encoding/json"
 	"fmt"
 	"time"
-)
-
-const (
-	dooUrl = "http://192.168.100.219:2222/api/"
 )
 
 var DootaskService = newDootaskService()
@@ -26,7 +23,7 @@ func newDootaskService() *dootaskService {
 
 // 获取用户的信息
 func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, error) {
-	url := fmt.Sprintf("%s%s", dooUrl, "users/info?token="+token)
+	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/users/info?token="+token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err

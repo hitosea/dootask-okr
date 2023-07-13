@@ -4,15 +4,12 @@ import (
 	v1 "dootask-okr/app/api/v1"
 	"dootask-okr/app/api/v1/helper"
 	"dootask-okr/app/service"
-	"dootask-okr/config"
 	"dootask-okr/web"
 	"net/http"
-	"os"
 	"reflect"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -40,15 +37,6 @@ func Init(c *gin.Context) {
 		api.Userinfo = info
 		// 动态路由（需要登录）
 		if callApiMethod(api, true) {
-			return
-		}
-	}
-
-	// 开发模式 - 代理web
-	if config.CONF.System.Mode == "debug" {
-		err := godotenv.Load("./web/.env")
-		if err == nil {
-			CreatedProxy(c, "http://localhost:"+os.Getenv("DEV_PORT"))
 			return
 		}
 	}

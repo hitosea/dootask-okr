@@ -117,6 +117,10 @@ func Execute() {
 		flags.StringVar(&system.Dsn, "dsn", "", "数据来源名称，如：sqlite://{CacheDir}/database.db")
 	}
 
+	if os.Getenv("DOO_TASK_URL") != "" {
+		flags.StringVar(&config.DooTaskUrl, "dootask_url", os.Getenv("DOO_TASK_URL"), "dootask地址")
+	}
+
 	flags.StringVar(&jwt.SecretKey, "secret_key", "base64:ONdadQs1W4pY3h3dzr1jUSPrqLdsJQ9tCBZnb7HIDtk=", "jwt密钥")
 	flags.StringVar(&redis.RedisUrl, "redis_url", "redis://localhost:56379", "RedisUrl")
 
