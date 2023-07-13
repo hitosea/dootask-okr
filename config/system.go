@@ -21,7 +21,16 @@ type Redis struct {
 }
 
 type ServerConfig struct {
-	Redis  Redis  `mapstructure:"redis"`
-	Jwt    Jwt    `mapstructure:"system"`
-	System System `mapstructure:"system"`
+	Redis    Redis    `mapstructure:"redis"`
+	Jwt      Jwt      `mapstructure:"system"`
+	System   System   `mapstructure:"system"`
+	Database Database `mapstructure:"database"`
+}
+
+type Database struct {
+	UserName string `mapstructure:"user_name"`
+	Password string `mapstructure:"password"`
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	DbName   string `mapstructure:"db_name"`
 }

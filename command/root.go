@@ -91,18 +91,35 @@ var rootCommand = &cobra.Command{
 
 func Execute() {
 	godotenv.Load(".env")
+
 	rootCommand.CompletionOptions.DisableDefaultCmd = true
-	rootCommand.Flags().StringVar(&config.CONF.System.Host, "host", "", "主机名，默认：0.0.0.0")
-	rootCommand.Flags().StringVar(&config.CONF.System.Port, "port", "", "端口号，默认：5566")
-	if os.Getenv("MODE") != "" {
-		rootCommand.Flags().StringVar(&config.CONF.System.Mode, "mode", os.Getenv("MODE"), "运行模式，可选：debug|test|release")
+
+	flags := rootCommand.Flags()
+	system := &config.CONF.System
+	jwt := &config.CONF.Jwt
+	redis := &config.CONF.Redis
+
+	flags.StringVar(&system.Host, "host", "", "主机名，默认：0.0.0.0")
+	flags.StringVar(&system.Port, "port", "", "端口号，默认：5566")
+	flags.StringVar(&system.Mode, "mode", "release", "运行模式，可选：debug|test|release")
+	flags.StringVar(&system.Cache, "cache", "", "数据缓存目录，默认：{RunDir}/.cache")
+
+	mysqlDsn := fmt.Sprintf("mysql://%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		os.Getenv("MYSQL_USERNAME"),
+		os.Getenv("MYSQL_PASSWORD"),
+		os.Getenv("MYSQL_HOST"),
+		os.Getenv("MYSQL_PORT"),
+		os.Getenv("MYSQL_DBNAME"),
+	)
+	if mysqlDsn != "mysql://:@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local" {
+		flags.StringVar(&system.Dsn, "dsn", mysqlDsn, "数据来源名称，如：sqlite://{CacheDir}/database.db")
 	} else {
-		rootCommand.Flags().StringVar(&config.CONF.System.Mode, "mode", "release", "运行模式，可选：debug|test|release")
+		flags.StringVar(&system.Dsn, "dsn", "", "数据来源名称，如：sqlite://{CacheDir}/database.db")
 	}
-	rootCommand.Flags().StringVar(&config.CONF.System.Cache, "cache", "", "数据缓存目录，默认：{RunDir}/.cache")
-	rootCommand.Flags().StringVar(&config.CONF.System.Dsn, "dsn", "", "数据来源名称，如：sqlite://{CacheDir}/database.db")
-	rootCommand.Flags().StringVar(&config.CONF.Jwt.SecretKey, "secret_key", "base64:ONdadQs1W4pY3h3dzr1jUSPrqLdsJQ9tCBZnb7HIDtk=", "jwt密钥")
-	rootCommand.Flags().StringVar(&config.CONF.Redis.RedisUrl, "redis_url", "redis://localhost:56379", "RedisUrl")
+
+	flags.StringVar(&jwt.SecretKey, "secret_key", "base64:ONdadQs1W4pY3h3dzr1jUSPrqLdsJQ9tCBZnb7HIDtk=", "jwt密钥")
+	flags.StringVar(&redis.RedisUrl, "redis_url", "redis://localhost:56379", "RedisUrl")
+
 	if err := rootCommand.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
