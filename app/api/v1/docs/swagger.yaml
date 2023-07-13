@@ -1,5 +1,51 @@
 basePath: /api/v1
 definitions:
+  interfaces.OkrCreateReq:
+    properties:
+      align_objective:
+        description: 对齐目标
+        type: string
+      ascription:
+        description: 归属 1-部门 2-个人
+        type: integer
+      end_at:
+        description: 结束时间
+        type: string
+      key_results:
+        description: 关键结果
+        items:
+          $ref: '#/definitions/interfaces.OkrKeyResultCreateReq'
+        type: array
+      priority:
+        description: 优先级
+        type: string
+      project_id:
+        description: 项目id
+        type: integer
+      start_at:
+        description: 开始时间
+        type: string
+      title:
+        description: 目标
+        type: string
+      type:
+        description: 类型 1-承诺型 2-挑战型
+        type: integer
+      visible_range:
+        description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
+        type: integer
+    required:
+    - align_objective
+    - ascription
+    - end_at
+    - key_results
+    - priority
+    - project_id
+    - start_at
+    - title
+    - type
+    - visible_range
+    type: object
   interfaces.OkrKeyResultCreateReq:
     properties:
       confidence:
@@ -35,22 +81,68 @@ definitions:
       id:
         description: id
         type: integer
-      key_result:
-        description: 关键结果
-        type: string
       participant:
         description: 参与人,多个用逗号隔开
         type: string
       start_at:
         description: 开始时间
         type: string
+      title:
+        description: 关键结果
+        type: string
     required:
     - confidence
     - end_at
     - id
-    - key_result
     - participant
     - start_at
+    - title
+    type: object
+  interfaces.OkrUpdateReq:
+    properties:
+      align_objective:
+        description: 对齐目标
+        type: string
+      end_at:
+        description: 结束时间
+        type: string
+      id:
+        description: id
+        type: integer
+      key_results:
+        description: 关键结果
+        items:
+          $ref: '#/definitions/interfaces.OkrKeyResultUpdateReq'
+        type: array
+      priority:
+        description: 优先级
+        type: string
+      project_id:
+        description: 项目id
+        type: integer
+      start_at:
+        description: 开始时间
+        type: string
+      title:
+        description: 目标
+        type: string
+      type:
+        description: 类型 1-承诺型 2-挑战型
+        type: integer
+      visible_range:
+        description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
+        type: integer
+    required:
+    - align_objective
+    - end_at
+    - id
+    - key_results
+    - priority
+    - project_id
+    - start_at
+    - title
+    - type
+    - visible_range
     type: object
   interfaces.Response:
     properties:
@@ -100,46 +192,12 @@ paths:
       - application/json
       description: 创建OKR
       parameters:
-      - description: 目标
-        in: formData
-        name: Title
+      - description: request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 对齐目标
-        in: formData
-        name: align_objective
-        required: true
-        type: string
-      - description: 归属 1-部门 2-个人
-        in: formData
-        name: ascription
-        required: true
-        type: integer
-      - description: 结束时间
-        in: formData
-        name: end_at
-        required: true
-        type: string
-      - description: 优先级
-        in: formData
-        name: priority
-        required: true
-        type: string
-      - description: 开始时间
-        in: formData
-        name: start_at
-        required: true
-        type: string
-      - description: 类型 1-承诺型 2-挑战型
-        in: formData
-        name: type
-        required: true
-        type: integer
-      - description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
-        in: formData
-        name: visible_range
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/interfaces.OkrCreateReq'
       responses:
         "200":
           description: OK
@@ -154,11 +212,6 @@ paths:
       - application/json
       description: 关注的OKR列表
       parameters:
-      - description: 用户id
-        in: query
-        name: userid
-        required: true
-        type: number
       - description: 目标
         in: query
         name: objective
@@ -178,11 +231,6 @@ paths:
       - application/json
       description: 我的OKR列表
       parameters:
-      - description: 用户id
-        in: query
-        name: userid
-        required: true
-        type: number
       - description: 目标
         in: query
         name: objective
@@ -202,11 +250,6 @@ paths:
       - application/json
       description: 参与的OKR列表
       parameters:
-      - description: 用户id
-        in: query
-        name: userid
-        required: true
-        type: number
       - description: 目标
         in: query
         name: objective
@@ -220,52 +263,37 @@ paths:
       summary: 参与的OKR列表
       tags:
       - Okr
+  /okr/replay/list:
+    get:
+      consumes:
+      - application/json
+      description: OKR复盘列表
+      parameters:
+      - description: 目标id
+        in: query
+        name: objective_id
+        required: true
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: OKR复盘列表
+      tags:
+      - Okr
   /okr/update:
     post:
       consumes:
       - application/json
       description: 更新OKR
       parameters:
-      - description: 对齐目标
-        in: formData
-        name: align_objective
+      - description: request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 结束时间
-        in: formData
-        name: end_at
-        required: true
-        type: string
-      - description: id
-        in: formData
-        name: id
-        required: true
-        type: integer
-      - description: 目标
-        in: formData
-        name: objective
-        required: true
-        type: string
-      - description: 优先级
-        in: formData
-        name: priority
-        required: true
-        type: string
-      - description: 开始时间
-        in: formData
-        name: start_at
-        required: true
-        type: string
-      - description: 类型 1-承诺型 2-挑战型
-        in: formData
-        name: type
-        required: true
-        type: integer
-      - description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
-        in: formData
-        name: visible_range
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/interfaces.OkrUpdateReq'
       responses:
         "200":
           description: OK

@@ -17,8 +17,8 @@ var OkrService = okrService{}
 
 type okrService struct{}
 
-// CreateObjective 创建目标
-func (s *okrService) CreateObjective(userid int, param interfaces.OkrCreateReq) (*model.Okr, error) {
+// 创建目标
+func (s *okrService) CreateObjective(user *interfaces.UserInfoResp, param interfaces.OkrCreateReq) (*model.Okr, error) {
 	tx := core.DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -26,15 +26,27 @@ func (s *okrService) CreateObjective(userid int, param interfaces.OkrCreateReq) 
 		}
 	}()
 
+	startAt, err := common.ParseTime(param.StartAt)
+	if err != nil {
+		return nil, err
+	}
+
+	endAt, err := common.ParseTime(param.EndAt)
+	if err != nil {
+		return nil, err
+	}
+
 	obj := &model.Okr{
-		Userid:       userid,
+		Userid:       user.Userid,
+		DepartmentId: user.Department[0],
 		Title:        param.Title,
 		Type:         param.Type,
 		Priority:     param.Priority,
 		Ascription:   param.Ascription,
 		VisibleRange: param.VisibleRange,
-		StartAt:      param.StartAt,
-		EndAt:        param.EndAt,
+		ProjectId:    param.ProjectId,
+		StartAt:      startAt,
+		EndAt:        endAt,
 	}
 	if err := tx.Create(obj).Error; err != nil {
 		tx.Rollback()
@@ -49,25 +61,19 @@ func (s *okrService) CreateObjective(userid int, param interfaces.OkrCreateReq) 
 	}
 
 	for _, kr := range param.KeyResults {
-		keyResult := &model.Okr{
-			ParentId:    obj.Id,
-			Participant: kr.Participant,
-			Title:       kr.Title,
-			Confidence:  kr.Confidence,
-			StartAt:     kr.StartAt,
-			EndAt:       kr.EndAt,
-		}
-		if err := tx.Create(keyResult).Error; err != nil {
+		keyResult, err := s.createKeyResult(tx, user, obj.Id, kr)
+		if err != nil {
 			tx.Rollback()
 			return nil, err
 		}
+		obj.KeyResults = append(obj.KeyResults, keyResult)
 	}
 
 	return obj, tx.Commit().Error
 }
 
-// UpdateObjective 更新目标
-func (s *okrService) UpdateObjective(userid int, param interfaces.OkrUpdateReq) (*model.Okr, error) {
+// 更新目标
+func (s *okrService) UpdateObjective(param interfaces.OkrUpdateReq) (*model.Okr, error) {
 	tx := core.DB.Begin()
 
 	obj, err := s.GetObjectiveById(param.Id)
@@ -76,12 +82,25 @@ func (s *okrService) UpdateObjective(userid int, param interfaces.OkrUpdateReq) 
 		return nil, errors.New("目标不存在")
 	}
 
+	startAt, err := common.ParseTime(param.StartAt)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	endAt, err := common.ParseTime(param.EndAt)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
 	obj.Title = param.Title
 	obj.Type = param.Type
 	obj.Priority = param.Priority
 	obj.VisibleRange = param.VisibleRange
-	obj.StartAt = param.StartAt
-	obj.EndAt = param.EndAt
+	obj.ProjectId = param.ProjectId
+	obj.StartAt = startAt
+	obj.EndAt = endAt
 
 	if err := tx.Save(obj).Error; err != nil {
 		tx.Rollback()
@@ -95,32 +114,85 @@ func (s *okrService) UpdateObjective(userid int, param interfaces.OkrUpdateReq) 
 		}
 	}
 
-	for _, keyResult := range param.KeyResults {
-		okrKeyResult := model.Okr{
-			ParentId:    obj.Id,
-			Participant: keyResult.Participant,
-			Title:       keyResult.Title,
-			Confidence:  keyResult.Confidence,
-			StartAt:     keyResult.StartAt,
-			EndAt:       keyResult.EndAt,
-		}
-
-		if err := tx.Create(&okrKeyResult).Error; err != nil {
+	for _, kr := range param.KeyResults {
+		keyResult, err := s.updateKeyResult(tx, obj.Id, kr)
+		if err != nil {
 			tx.Rollback()
 			return nil, err
 		}
+		obj.KeyResults = append(obj.KeyResults, keyResult)
 	}
 
 	return obj, tx.Commit().Error
 }
 
-// updateAlignment 更新对齐目标
+// 创建关键结果
+func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp, parentId int, kr *interfaces.OkrKeyResultCreateReq) (*model.Okr, error) {
+	startAt, err := common.ParseTime(kr.StartAt)
+	if err != nil {
+		return nil, err
+	}
+
+	endAt, err := common.ParseTime(kr.EndAt)
+	if err != nil {
+		return nil, err
+	}
+
+	keyResult := &model.Okr{
+		Userid:       user.Userid,
+		DepartmentId: user.Department[0],
+		ParentId:     parentId,
+		Participant:  kr.Participant,
+		Title:        kr.Title,
+		Confidence:   kr.Confidence,
+		StartAt:      startAt,
+		EndAt:        endAt,
+	}
+	if err := tx.Create(keyResult).Error; err != nil {
+		return nil, err
+	}
+
+	return keyResult, nil
+}
+
+// 更新关键结果
+func (s *okrService) updateKeyResult(tx *gorm.DB, parentId int, kr *interfaces.OkrKeyResultUpdateReq) (*model.Okr, error) {
+	startAt, err := common.ParseTime(kr.StartAt)
+	if err != nil {
+		return nil, err
+	}
+
+	endAt, err := common.ParseTime(kr.EndAt)
+	if err != nil {
+		return nil, err
+	}
+
+	keyResult, err := s.GetObjectiveById(kr.Id)
+	if err != nil {
+		return nil, errors.New("目标不存在")
+	}
+
+	keyResult.ProjectId = parentId
+	keyResult.Participant = kr.Participant
+	keyResult.Title = kr.Title
+	keyResult.Confidence = kr.Confidence
+	keyResult.StartAt = startAt
+	keyResult.EndAt = endAt
+
+	if err := tx.Save(keyResult).Error; err != nil {
+		return nil, err
+	}
+
+	return keyResult, nil
+}
+
+// 更新对齐目标
 func (s *okrService) updateAlignment(tx *gorm.DB, objId int, alignObjective string) error {
-	if err := tx.Where("objective_id = ?", objId).Delete(&model.OkrAlign{}).Error; err != nil {
+	if err := tx.Where("okr_id = ?", objId).Delete(&model.OkrAlign{}).Error; err != nil {
 		return err
 	}
 
-	alignmentIDs := common.ExplodeInt("", alignObjective, true)
+	alignmentIDs := common.ExplodeInt(",", alignObjective, true)
 	for _, alignmentID := range alignmentIDs {
 		alignmentObj := &model.OkrAlign{
 			OkrId:      objId,
@@ -134,7 +206,7 @@ func (s *okrService) updateAlignment(tx *gorm.DB, objId int, alignObjective stri
 	return nil
 }
 
-// GetObjectiveById 根据id获取目标
+// 根据id获取目标
 func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	var obj model.Okr
 	if err := core.DB.Where("id = ?", id).First(&obj).Error; err != nil {
@@ -143,7 +215,7 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	return &obj, nil
 }
 
-// GetObjectiveByIdWithKeyResults 根据id获取目标及其关键结果
+// 根据id获取目标及其关键结果
 func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(id)
 	if err != nil {
@@ -151,7 +223,7 @@ func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) 
 	}
 
 	var krs []*model.Okr
-	if err := core.DB.Where("parent_id = ?", obj.Id).Order("created_at desc").Find(&krs).Error; err != nil {
+	if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
 		return nil, err
 	}
 	obj.KeyResults = krs
@@ -159,16 +231,16 @@ func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) 
 	return obj, nil
 }
 
-// GetAllObjectivesWithKeyResults 获取所有目标及其关键结果
+// 获取所有目标及其关键结果
 func (s *okrService) GetAllObjectivesWithKeyResults() ([]*model.Okr, error) {
 	var objs []*model.Okr
-	if err := core.DB.Order("created_at desc").Find(&objs).Error; err != nil {
+	if err := core.DB.Order("create_at desc").Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
 	for _, obj := range objs {
 		var krs []*model.Okr
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("created_at desc").Find(&krs).Error; err != nil {
+		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
 			return nil, err
 		}
 		obj.KeyResults = krs
@@ -177,11 +249,11 @@ func (s *okrService) GetAllObjectivesWithKeyResults() ([]*model.Okr, error) {
 	return objs, nil
 }
 
-// GetMyObjectivesWithKeyResults 获取我的OkR
+// 获取我的OkR
 // 1.可通过目标（O）搜索 2.仅显示我发起的OKR（个人仅能看到个人的）3.按创建时间倒序显示
 func (s *okrService) GetMyObjectivesWithKeyResults(userid int, objective string) ([]*model.Okr, error) {
 	var objs []*model.Okr
-	db := core.DB.Where("userid = ?", userid).Order("created_at desc")
+	db := core.DB.Where("userid = ?", userid).Where("parent_id = 0").Order("create_at desc")
 
 	if objective != "" {
 		db = db.Where("title like ?", "%"+objective+"%")
@@ -193,7 +265,7 @@ func (s *okrService) GetMyObjectivesWithKeyResults(userid int, objective string)
 
 	for _, obj := range objs {
 		var krs []*model.Okr
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("created_at desc").Find(&krs).Error; err != nil {
+		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
 			return nil, err
 		}
 		obj.KeyResults = krs
@@ -202,7 +274,7 @@ func (s *okrService) GetMyObjectivesWithKeyResults(userid int, objective string)
 	return objs, nil
 }
 
-// GetParticipantObjectivesWithKeyResults 获取参与的OKR
+// 获取参与的OKR
 // 1.可通过目标（O）搜索 2.被其他OKR选为协助人的OKR（可能是其他部门/其他人的OKR）3.按创建时间倒序显示
 func (s *okrService) GetParticipantObjectivesWithKeyResults(userid int, objective string) ([]*model.Okr, error) {
 	// 首先获取与特定用户id相关的objective_ids
@@ -234,7 +306,7 @@ func getObjectiveIdsByParticipant(userid int) ([]int, error) {
 	var objectiveIds []int
 	if err := core.DB.Model(&model.Okr{}).
 		Where("participant like ?", "%,"+strconv.Itoa(userid)+",%").
-		Pluck("DISTINCT objective_id", &objectiveIds).Error; err != nil {
+		Pluck("DISTINCT id", &objectiveIds).Error; err != nil {
 		return nil, err
 	}
 
@@ -245,7 +317,7 @@ func getObjectiveIdsByParticipant(userid int) ([]int, error) {
 func getObjectives(objectiveIds []int, objective string) ([]*model.Okr, error) {
 	db := core.DB.Model(&model.Okr{}).
 		Where("id in (?)", objectiveIds).
-		Order("created_at desc")
+		Order("create_at desc")
 
 	if objective != "" {
 		db = db.Where("title like ?", "%"+objective+"%")
@@ -264,7 +336,7 @@ func getKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 	var krs []*model.Okr
 	if err := core.DB.Model(&model.Okr{}).
 		Where("parent_id = ? and participant like ?", objectiveId, "%,"+strconv.Itoa(userid)+",%").
-		Order("created_at desc").
+		Order("create_at desc").
 		Find(&krs).Error; err != nil {
 		return nil, err
 	}
@@ -284,7 +356,7 @@ func (s *okrService) GetDepartmentObjectivesWithKeyResults(userid int, param map
 	// 获取部门下的所有objective
 	var objs []*model.Okr
 	// ascription 1-部门 2-个人
-	db := core.DB.Order("ascription asc, created_at desc")
+	db := core.DB.Order("ascription asc, create_at desc")
 
 	// todo 超级管理员可以通过部门筛选
 	// if user.IsSuperAdmin() {
@@ -342,7 +414,7 @@ func (s *okrService) FollowObjective(userid, objectiveId int, follow bool) error
 
 	// 检查是否已关注
 	var f model.OkrFollow
-	if err := core.DB.Where("userid = ? and objective_id = ?", userid, objectiveId).First(&f).Error; err != nil {
+	if err := core.DB.Where("userid = ? and okr_id = ?", userid, objectiveId).First(&f).Error; err != nil {
 		if !errors.Is(err, core.ErrRecordNotFound) {
 			return err
 		}
@@ -478,11 +550,10 @@ func (s *okrService) GetFollowObjectives(userid int, objective string) ([]*model
 	OkrFollowTable := core.DBTableName(&model.OkrFollow{})
 
 	db := core.DB.Table(OkrFollowTable+" AS f").
-		Preload("KeyResults").
 		Select("o.*").
-		Joins(fmt.Sprintf("LEFT JOIN %s AS o ON f.objective_id = o.id", OkrTable)).
+		Joins(fmt.Sprintf("LEFT JOIN %s AS o ON f.okr_id = o.id", OkrTable)).
 		Where("f.userid = ?", userid).
-		Order("f.created_at desc")
+		Order("f.create_at desc")
 
 	if objective != "" {
 		db = db.Where("o.title like ?", "%"+objective+"%")
@@ -518,7 +589,7 @@ func (s *okrService) CreateReplay(id int, comment string, value string, problem 
 // GetReplays 获取复盘
 func (s *okrService) GetReplays(id int) ([]*model.OkrReplay, error) {
 	var replays []*model.OkrReplay
-	if err := core.DB.Where("objective_id = ?", id).Order("created_at asc").Find(&replays).Error; err != nil {
+	if err := core.DB.Where("okr_id = ?", id).Order("create_at asc").Find(&replays).Error; err != nil {
 		return nil, err
 	}
 	return replays, nil

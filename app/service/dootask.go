@@ -1,6 +1,7 @@
 package service
 
 import (
+	"dootask-okr/app/interfaces"
 	"dootask-okr/app/utils/common"
 	"encoding/json"
 	"fmt"
@@ -24,7 +25,7 @@ func newDootaskService() *dootaskService {
 }
 
 // 获取用户的信息
-func (s dootaskService) GetUserInfo(token string) (interface{}, error) {
+func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, error) {
 	url := fmt.Sprintf("%s%s", dooUrl, "users/info?token="+token)
 	result, err := s.client.Get(url)
 	if err != nil {
@@ -34,7 +35,7 @@ func (s dootaskService) GetUserInfo(token string) (interface{}, error) {
 }
 
 // 解码并检查返回数据
-func (s dootaskService) UnmarshalAndCheckResponse(resp []byte) (map[string]interface{}, error) {
+func (s dootaskService) UnmarshalAndCheckResponse(resp []byte) (*interfaces.UserInfoResp, error) {
 	var ret map[string]interface{}
 	if err := json.Unmarshal(resp, &ret); err != nil {
 		return nil, fmt.Errorf("解析响应失败：%w", err)
@@ -54,5 +55,11 @@ func (s dootaskService) UnmarshalAndCheckResponse(resp []byte) (map[string]inter
 	if !ok {
 		return nil, fmt.Errorf("数据格式错误")
 	}
-	return data, nil
+
+	info := &interfaces.UserInfoResp{}
+	if err := common.MapToStruct(data, &info); err != nil {
+		return nil, err
+	}
+
+	return info, nil
 }

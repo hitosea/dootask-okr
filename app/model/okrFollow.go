@@ -1,12 +1,11 @@
 package model
 
 import (
-	"dootask-okr/app/core"
 	"time"
 )
 
 type OkrFollow struct {
-	core.BaseIdModels
+	Id       int       `gorm:"primary_key" json:"id"`
 	OkrId    int       `gorm:"default:0;comment:'目标id'" json:"okr_id"`
 	Userid   int       `gorm:"default:0;comment:'用户id'" json:"userid"`
 	CreateAt time.Time `gorm:"autoCreateTime;comment:'创建时间'" json:"create_at"`

@@ -1,12 +1,11 @@
 package model
 
 import (
-	"dootask-okr/app/core"
 	"time"
 )
 
 type OkrLog struct {
-	core.BaseIdModels
+	Id        int       `gorm:"primary_key" json:"id"`
 	OkrId     int       `gorm:"default:0;comment:'Okr id'" json:"okr_id"`
 	Userid    int       `gorm:"default:0;comment:'用户id'" json:"userid"`
 	Operation string    `gorm:"type:varchar(255);comment:'操作'" json:"operation"`

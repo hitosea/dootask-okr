@@ -195,3 +195,13 @@ func UnixTimeToStr(timestamp int64) string {
 	t := time.Unix(timestamp, 0)
 	return t.Format(YYYY_MM_DD_HH_MM_SS)
 }
+
+// ParseTime解析
+func ParseTime(timeStr string) (time.Time, error) {
+	location, err := time.LoadLocation("Local")
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return time.ParseInLocation(YYYY_MM_DD_HH_MM_SS, timeStr, location)
+}

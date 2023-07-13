@@ -69,60 +69,13 @@ var doc = `{
                 "summary": "创建OKR",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "目标",
-                        "name": "Title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "对齐目标",
-                        "name": "align_objective",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "归属 1-部门 2-个人",
-                        "name": "ascription",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "结束时间",
-                        "name": "end_at",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "优先级",
-                        "name": "priority",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "开始时间",
-                        "name": "start_at",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "类型 1-承诺型 2-挑战型",
-                        "name": "type",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
-                        "name": "visible_range",
-                        "in": "formData",
-                        "required": true
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrCreateReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -146,13 +99,6 @@ var doc = `{
                 ],
                 "summary": "关注的OKR列表",
                 "parameters": [
-                    {
-                        "type": "number",
-                        "description": "用户id",
-                        "name": "userid",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "目标",
@@ -183,13 +129,6 @@ var doc = `{
                 "summary": "我的OKR列表",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "用户id",
-                        "name": "userid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
                         "type": "string",
                         "description": "目标",
                         "name": "objective",
@@ -219,16 +158,38 @@ var doc = `{
                 "summary": "参与的OKR列表",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "用户id",
-                        "name": "userid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
                         "type": "string",
                         "description": "目标",
                         "name": "objective",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/replay/list": {
+            "get": {
+                "description": "OKR复盘列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR复盘列表",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "目标id",
+                        "name": "objective_id",
                         "in": "query",
                         "required": true
                     }
@@ -255,60 +216,13 @@ var doc = `{
                 "summary": "更新OKR",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "对齐目标",
-                        "name": "align_objective",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "结束时间",
-                        "name": "end_at",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "目标",
-                        "name": "objective",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "优先级",
-                        "name": "priority",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "开始时间",
-                        "name": "start_at",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "类型 1-承诺型 2-挑战型",
-                        "name": "type",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
-                        "name": "visible_range",
-                        "in": "formData",
-                        "required": true
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrUpdateReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -323,6 +237,66 @@ var doc = `{
         }
     },
     "definitions": {
+        "interfaces.OkrCreateReq": {
+            "type": "object",
+            "required": [
+                "align_objective",
+                "ascription",
+                "end_at",
+                "key_results",
+                "priority",
+                "project_id",
+                "start_at",
+                "title",
+                "type",
+                "visible_range"
+            ],
+            "properties": {
+                "align_objective": {
+                    "description": "对齐目标",
+                    "type": "string"
+                },
+                "ascription": {
+                    "description": "归属 1-部门 2-个人",
+                    "type": "integer"
+                },
+                "end_at": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "key_results": {
+                    "description": "关键结果",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interfaces.OkrKeyResultCreateReq"
+                    }
+                },
+                "priority": {
+                    "description": "优先级",
+                    "type": "string"
+                },
+                "project_id": {
+                    "description": "项目id",
+                    "type": "integer"
+                },
+                "start_at": {
+                    "description": "开始时间",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "目标",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 1-承诺型 2-挑战型",
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrKeyResultCreateReq": {
             "type": "object",
             "required": [
@@ -361,9 +335,9 @@ var doc = `{
                 "confidence",
                 "end_at",
                 "id",
-                "key_result",
                 "participant",
-                "start_at"
+                "start_at",
+                "title"
             ],
             "properties": {
                 "confidence": {
@@ -378,10 +352,6 @@ var doc = `{
                     "description": "id",
                     "type": "integer"
                 },
-                "key_result": {
-                    "description": "关键结果",
-                    "type": "string"
-                },
                 "participant": {
                     "description": "参与人,多个用逗号隔开",
                     "type": "string"
@@ -389,6 +359,70 @@ var doc = `{
                 "start_at": {
                     "description": "开始时间",
                     "type": "string"
+                },
+                "title": {
+                    "description": "关键结果",
+                    "type": "string"
+                }
+            }
+        },
+        "interfaces.OkrUpdateReq": {
+            "type": "object",
+            "required": [
+                "align_objective",
+                "end_at",
+                "id",
+                "key_results",
+                "priority",
+                "project_id",
+                "start_at",
+                "title",
+                "type",
+                "visible_range"
+            ],
+            "properties": {
+                "align_objective": {
+                    "description": "对齐目标",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "key_results": {
+                    "description": "关键结果",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interfaces.OkrKeyResultUpdateReq"
+                    }
+                },
+                "priority": {
+                    "description": "优先级",
+                    "type": "string"
+                },
+                "project_id": {
+                    "description": "项目id",
+                    "type": "integer"
+                },
+                "start_at": {
+                    "description": "开始时间",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "目标",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 1-承诺型 2-挑战型",
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
+                    "type": "integer"
                 }
             }
         },
