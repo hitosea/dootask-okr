@@ -88,6 +88,37 @@ var doc = `{
                 }
             }
         },
+        "/okr/department/list": {
+            "get": {
+                "description": "部门OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "部门OKR列表",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrDepartmentListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/follow/list": {
             "get": {
                 "description": "关注的OKR列表",
@@ -187,9 +218,9 @@ var doc = `{
                 "summary": "OKR复盘列表",
                 "parameters": [
                     {
-                        "type": "number",
-                        "description": "目标id",
-                        "name": "objective_id",
+                        "type": "string",
+                        "description": "目标",
+                        "name": "objective",
                         "in": "query",
                         "required": true
                     }
@@ -293,6 +324,39 @@ var doc = `{
                 },
                 "visible_range": {
                     "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrDepartmentListReq": {
+            "type": "object",
+            "properties": {
+                "completed": {
+                    "description": "是否已完成未评分 0-未完成 1-已完成",
+                    "type": "integer"
+                },
+                "department_id": {
+                    "description": "部门id",
+                    "type": "integer"
+                },
+                "end_at": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "objective": {
+                    "description": "目标",
+                    "type": "string"
+                },
+                "start_at": {
+                    "description": "开始时间",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 1-承诺型 2-挑战型",
+                    "type": "integer"
+                },
+                "userid": {
+                    "description": "用户id",
                     "type": "integer"
                 }
             }

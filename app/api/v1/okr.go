@@ -4,7 +4,6 @@ import (
 	"dootask-okr/app/api/v1/helper"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/service"
-	"strconv"
 )
 
 // @Tags Okr
@@ -20,7 +19,7 @@ func (api *BaseApi) OkrCreate() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	result, err := service.OkrService.CreateObjective(api.Userinfo, param)
+	result, err := service.OkrService.Create(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -41,7 +40,7 @@ func (api *BaseApi) OkrUpdate() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	result, err := service.OkrService.UpdateObjective(param)
+	result, err := service.OkrService.Update(param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -58,7 +57,7 @@ func (api *BaseApi) OkrUpdate() {
 // @Router /okr/my/list [get]
 func (api *BaseApi) OkrMyList() {
 	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetMyObjectivesWithKeyResults(api.Userinfo.Userid, objective)
+	result, err := service.OkrService.GetMyList(api.Userinfo, objective)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -75,7 +74,28 @@ func (api *BaseApi) OkrMyList() {
 // @Router /okr/participant/list [get]
 func (api *BaseApi) OkrParticipantList() {
 	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetParticipantObjectivesWithKeyResults(api.Userinfo.Userid, objective)
+	result, err := service.OkrService.GetParticipantList(api.Userinfo, objective)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 部门OKR列表
+// @Description 部门OKR列表
+// @Accept json
+// @Param request body interfaces.OkrDepartmentListReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/department/list [get]
+func (api *BaseApi) OkrDepartmentList() {
+	var param = interfaces.OkrDepartmentListReq{}
+	if err := api.Context.ShouldBindJSON(&param); err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	result, err := service.OkrService.GetDepartmentList(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -92,7 +112,7 @@ func (api *BaseApi) OkrParticipantList() {
 // @Router /okr/follow/list [get]
 func (api *BaseApi) OkrFollowList() {
 	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetFollowObjectives(api.Userinfo.Userid, objective)
+	result, err := service.OkrService.GetFollowList(api.Userinfo, objective)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -104,21 +124,12 @@ func (api *BaseApi) OkrFollowList() {
 // @Summary OKR复盘列表
 // @Description OKR复盘列表
 // @Accept json
-// @Param objective_id query number true "目标id"
+// @Param objective query string true "目标"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/replay/list [get]
 func (api *BaseApi) OkrReplayList() {
-	objectiveIdStr := api.Context.Query("objective_id")
-	if objectiveIdStr == "" {
-		helper.ErrorWith(api.Context, "参数错误", nil)
-		return
-	}
-	objectiveId, err := strconv.Atoi(objectiveIdStr)
-	if err != nil {
-		helper.ErrorWith(api.Context, err.Error(), nil)
-		return
-	}
-	result, err := service.OkrService.GetReplays(objectiveId)
+	objective := api.Context.Query("objective")
+	result, err := service.OkrService.GetReplayList(api.Userinfo, objective)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

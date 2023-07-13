@@ -7,6 +7,7 @@ import (
 type OkrReplay struct {
 	Id       int       `gorm:"primary_key" json:"id"`
 	OkrId    int       `gorm:"default:0;comment:'目标id'" json:"okr_id"`
+	Userid   int       `gorm:"default:0;comment:'用户id'" json:"userid"`
 	Comment  string    `gorm:"type:varchar(255);comment:'评价'" json:"comment"`
 	Value    string    `gorm:"type:varchar(255);comment:'价值与收获'" json:"value"`
 	Problem  string    `gorm:"type:varchar(255);comment:'问题与不足'" json:"problem"`

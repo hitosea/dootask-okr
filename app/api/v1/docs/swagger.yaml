@@ -46,6 +46,30 @@ definitions:
     - type
     - visible_range
     type: object
+  interfaces.OkrDepartmentListReq:
+    properties:
+      completed:
+        description: 是否已完成未评分 0-未完成 1-已完成
+        type: integer
+      department_id:
+        description: 部门id
+        type: integer
+      end_at:
+        description: 结束时间
+        type: string
+      objective:
+        description: 目标
+        type: string
+      start_at:
+        description: 开始时间
+        type: string
+      type:
+        description: 类型 1-承诺型 2-挑战型
+        type: integer
+      userid:
+        description: 用户id
+        type: integer
+    type: object
   interfaces.OkrKeyResultCreateReq:
     properties:
       confidence:
@@ -206,6 +230,26 @@ paths:
       summary: 创建OKR
       tags:
       - Okr
+  /okr/department/list:
+    get:
+      consumes:
+      - application/json
+      description: 部门OKR列表
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.OkrDepartmentListReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 部门OKR列表
+      tags:
+      - Okr
   /okr/follow/list:
     get:
       consumes:
@@ -269,11 +313,11 @@ paths:
       - application/json
       description: OKR复盘列表
       parameters:
-      - description: 目标id
+      - description: 目标
         in: query
-        name: objective_id
+        name: objective
         required: true
-        type: number
+        type: string
       responses:
         "200":
           description: OK
