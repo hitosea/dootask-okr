@@ -278,6 +278,42 @@ var doc = `{
                 }
             }
         },
+        "/okr/confidence/update": {
+            "post": {
+                "description": "更新信心指数",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新信心指数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "信心指数",
+                        "name": "confidence",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/create": {
             "post": {
                 "description": "创建OKR",
@@ -328,6 +364,70 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/interfaces.OkrDepartmentListReq"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/finish": {
+            "post": {
+                "description": "结束/重启目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "结束/重启目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "状态 0-重启 1-结束",
+                        "name": "finished",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/follow": {
+            "get": {
+                "description": "关注或取消关注目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "关注或取消关注目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -427,6 +527,102 @@ var doc = `{
                 }
             }
         },
+        "/okr/participant/update": {
+            "post": {
+                "description": "更新参与人",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新参与人",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "参与人,多个用逗号隔开",
+                        "name": "participant",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/replay/create": {
+            "post": {
+                "description": "添加复盘",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "添加复盘",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrReplayCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/replay/detail": {
+            "get": {
+                "description": "复盘详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "复盘详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "复盘id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/replay/list": {
             "get": {
                 "description": "OKR复盘列表",
@@ -444,6 +640,41 @@ var doc = `{
                         "name": "objective",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/score": {
+            "post": {
+                "description": "OKR评分",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR评分",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "个人评分",
+                        "name": "score",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -475,6 +706,47 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/interfaces.OkrUpdateReq"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/update/progress": {
+            "post": {
+                "description": "更新进度和进度状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新进度和进度状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "进度",
+                        "name": "progress",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束",
+                        "name": "status",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -752,6 +1024,49 @@ var doc = `{
                 },
                 "title": {
                     "description": "关键结果",
+                    "type": "string"
+                }
+            }
+        },
+        "interfaces.OkrReplayComment": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "comment": {
+                    "description": "评价",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrReplayCreateReq": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "comments": {
+                    "description": "复盘评价",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interfaces.OkrReplayComment"
+                    }
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "problem": {
+                    "description": "问题与不足",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "价值与收获",
                     "type": "string"
                 }
             }

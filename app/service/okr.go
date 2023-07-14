@@ -420,7 +420,7 @@ func getKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq) ([]*interfaces.OkrListResp, error) {
 
 	var objs []*model.Okr
-	db := core.DB.Order("ascription asc, create_at desc")
+	db := core.DB.Where("parent_id = 0").Order("ascription asc, create_at desc")
 
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
@@ -459,6 +459,16 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	typeInt := param.Type
 	if typeInt != 0 {
 		db = db.Where("type = ?", typeInt)
+	}
+
+	// 已完成未评分筛选 Completed 0-未完成 1-已完成
+	completed := param.Completed
+	if completed != 0 {
+		if completed == 1 {
+			db = db.Where("progress >= 100 and score = 0")
+		} else {
+			db = db.Where("progress < 100")
+		}
 	}
 
 	if err := db.Find(&objs).Error; err != nil {
@@ -554,81 +564,114 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 }
 
 // 关注或取消关注目标
-func (s *okrService) FollowObjective(userid, objectiveId int, follow bool) error {
-	// 检查目标是否存在
-	if _, err := s.GetObjectiveById(objectiveId); err != nil {
-		return errors.New("目标不存在")
+func (s *okrService) FollowObjective(userid, objectiveId int) (interface{}, error) {
+	// 只要顶级目标才能被关注
+	var obj model.Okr
+	if err := core.DB.Where("id = ? and parent_id = 0", objectiveId).First(&obj).Error; err != nil {
+		return nil, err
 	}
 
 	// 检查是否已关注
 	var f model.OkrFollow
 	if err := core.DB.Where("userid = ? and okr_id = ?", userid, objectiveId).First(&f).Error; err != nil {
 		if !errors.Is(err, core.ErrRecordNotFound) {
-			return err
+			return nil, err
 		}
 	}
 
 	// 如果已关注且需要取消关注，则删除关注记录
-	if !follow && f.Id != 0 {
+	if f.Id != 0 {
 		if err := core.DB.Delete(&f).Error; err != nil {
-			return err
+			return nil, err
 		}
-		return nil
+		return nil, nil
 	}
 
 	// 如果未关注且需要关注，则创建关注记录
-	if follow && f.Id == 0 {
+	if f.Id == 0 {
 		if err := core.DB.Create(&model.OkrFollow{
 			Userid: userid,
 			OkrId:  objectiveId,
 		}).Error; err != nil {
-			return err
+			return nil, err
 		}
-		return nil
+		return map[string]int{
+			"userid": userid,
+			"okrId":  objectiveId,
+		}, nil
 	}
 
-	return nil
+	return nil, nil
 }
 
 // 更新进度和进度状态
-func (s *okrService) UpdateProgressAndStatus(id, progress, status int) error {
+func (s *okrService) UpdateProgressAndStatus(param interfaces.OkrUpdateProgressReq) error {
 	// 检查目标是否存在
-	if _, err := s.GetObjectiveById(id); err != nil {
-		return errors.New("目标不存在")
+	obj, err := s.GetObjectiveById(param.Id)
+	if err != nil {
+		return fmt.Errorf("目标不存在：%w", err)
 	}
 
-	// 更新进度和进度状态
-	if err := core.DB.Model(&model.Okr{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"progress":        progress,
-		"progress_status": getStatus(progress, status),
-	}).Error; err != nil {
-		return err
+	// 如果传值更新进度有值，则更新进度
+	if param.Progress != 0 {
+		obj.Progress = param.Progress
+	}
+
+	// 如果传值更新状态有值，则更新状态
+	if param.Status != 0 {
+		obj.ProgressStatus = param.Status
+	}
+
+	// 更新目标
+	if err := core.DB.Save(obj).Error; err != nil {
+		return fmt.Errorf("更新目标失败：%w", err)
+	}
+
+	// 检查所在目标的 KR 是否全部完成
+	objWithKrs, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
+	if err != nil {
+		return fmt.Errorf("获取所在目标的 KR 失败：%w", err)
+	}
+	krs := objWithKrs.KeyResults
+
+	allCompleted := true
+	var sumProgress int
+	for _, kr := range krs {
+		// 进度全部完成 100%
+		if kr.Progress < 100 {
+			allCompleted = false
+			break
+		}
+		sumProgress += kr.Progress
+	}
+
+	// 未完成，则更新总目标进度值，kr 进度值相加/kr 数量
+	progress := 0
+	if len(krs) > 0 {
+		progress = sumProgress / len(krs)
+	}
+
+	// 更新总目标的状态是否完成
+	if allCompleted {
+		if err := core.DB.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Updates(map[string]interface{}{
+			"Completed": 1,
+			"Progress":  progress,
+		}).Error; err != nil {
+			return fmt.Errorf("更新总目标失败：%w", err)
+		}
+	} else {
+		if err := core.DB.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Update("progress", progress).Error; err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-// 根据进度和状态获取新的状态
-func getStatus(progress, status int) int {
-	switch status {
-	case model.OkrKeyResultStatusNotStart, model.OkrKeyResultStatusHasProblem, model.OkrKeyResultStatusEnd:
-		// 当状态为 0-未开始 3-有难度 4-已结束 时，不更新状态
-		return status
-	default:
-		if progress >= 100 {
-			// 当进度为 100 时，状态为已完成
-			return model.OkrKeyResultStatusFinished
-		} else {
-			// 从进度不足 100 时，状态跟随为进行中
-			return model.OkrKeyResultStatusInProgress
-		}
-	}
-}
-
 // 更新评分
-func (s *okrService) UpdateScore(krId int, score float64, userid int) error {
+func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces.OkrScoreReq) error {
 	// 检查目标是否存在
-	kr, err := s.GetObjectiveById(krId)
+	kr, err := s.GetObjectiveById(param.Id)
 	if err != nil {
 		return errors.New("目标不存在")
 	}
@@ -639,13 +682,17 @@ func (s *okrService) UpdateScore(krId int, score float64, userid int) error {
 	}
 
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
-	superior, err := s.IsObjectiveManagerOrSuperior(kr.ParentId, userid)
+	superior, err := s.IsObjectiveManager(user)
 	if err != nil {
 		return err
 	}
 	if !superior {
+		// 检查用户是否为目标负责人
+		if kr.Userid != user.Userid {
+			return errors.New("暂无权限评分")
+		}
 		// 负责人评分
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", krId).Update("score", score).Error; err != nil {
+		if err := core.DB.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Error; err != nil {
 			return err
 		}
 	} else {
@@ -654,7 +701,7 @@ func (s *okrService) UpdateScore(krId int, score float64, userid int) error {
 			return errors.New("负责人未评分")
 		}
 		// 上级评分
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", krId).Update("superior_score", score).Error; err != nil {
+		if err := core.DB.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Error; err != nil {
 			return err
 		}
 	}
@@ -662,55 +709,96 @@ func (s *okrService) UpdateScore(krId int, score float64, userid int) error {
 	return nil
 }
 
-// 检查用户是否为目标负责人或上级
-func (s *okrService) IsObjectiveManagerOrSuperior(objectiveId, userid int) (bool, error) {
-	// 获取目标负责人
-	objective, err := s.GetObjectiveById(objectiveId)
-	if err != nil {
-		return false, err
-	}
-
-	// 检查用户是否为目标负责人
-	if objective.Userid == userid {
-		return false, nil
-	}
-
-	// // todo 获取用户信息
-	// user, err := s.GetUserById(userid)
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	// // todo 检查用户是否为上级
-	// if user.IsSuperiorOf(objective.Userid) {
-	// 	return true, nil
-	// }
-
+// 检查用户是否为目标上级
+func (s *okrService) IsObjectiveManager(user *interfaces.UserInfoResp) (bool, error) {
+	// todo 检查用户是否为上级
 	return false, nil
 }
 
-// 创建复盘
-func (s *okrService) CreateReplay(id int, comment string, value string, problem string) error {
+// 结束/重启目标
+func (s *okrService) FinishObjective(param interfaces.OkrFinishReq) error {
 	// 检查目标是否存在
-	if _, err := s.GetObjectiveById(id); err != nil {
+	obj, err := s.GetObjectiveById(param.Id)
+	if err != nil {
 		return errors.New("目标不存在")
 	}
 
-	// 创建复盘
-	if err := core.DB.Create(&model.OkrReplay{
-		OkrId:   id,
-		Comment: comment,
-		Value:   value,
-		Problem: problem,
-	}).Error; err != nil {
+	obj.Finished = param.Finished
+	if err := core.DB.Save(obj).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// 获取复盘
-func (s *okrService) GetReplayById(id int) (*model.OkrReplay, error) {
+// 更新参与人
+func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq) error {
+	// 检查目标是否存在
+	obj, err := s.GetObjectiveById(param.Id)
+	if err != nil {
+		return errors.New("目标不存在")
+	}
+
+	obj.Participant = param.Participant
+	if err := core.DB.Save(obj).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 更新信心指数
+func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) error {
+	// 检查目标是否存在
+	obj, err := s.GetObjectiveById(param.Id)
+	if err != nil {
+		return errors.New("目标不存在")
+	}
+
+	obj.Confidence = param.Confidence
+	if err := core.DB.Save(obj).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 创建复盘
+func (s *okrService) CreateReplay(userid int, param interfaces.OkrReplayCreateReq) error {
+	tx := core.DB.Begin()
+
+	_, err := s.GetObjectiveById(param.Id)
+	if err != nil {
+		tx.Rollback()
+		return errors.New("目标不存在")
+	}
+
+	replay := model.OkrReplay{
+		OkrId:   param.Id,
+		Userid:  userid,
+		Value:   param.Value,
+		Problem: param.Problem,
+	}
+	if err := tx.Create(&replay).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// todo 添加到复盘历史表
+	for _, kr := range param.Comments {
+		if err := tx.Model(&model.Okr{}).Where("id = ?", kr.Id).Update("replay_comment", kr.Comment).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
+// 复盘详情
+func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	var replay model.OkrReplay
 	if err := core.DB.Where("id = ?", id).First(&replay).Error; err != nil {
 		return nil, err
@@ -718,7 +806,7 @@ func (s *okrService) GetReplayById(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
-// 返回评分规定的分数列表
+// 评分规定的分数列表
 func (s *okrService) GetScoreList() []string {
 	return []string{
 		"0分 未达成目标，态度问题",

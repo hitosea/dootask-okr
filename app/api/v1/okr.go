@@ -4,6 +4,8 @@ import (
 	"dootask-okr/app/api/v1/helper"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/service"
+	"dootask-okr/app/utils/verify"
+	"strconv"
 )
 
 // @Tags Okr
@@ -134,5 +136,177 @@ func (api *BaseApi) OkrReplayList() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 关注或取消关注目标
+// @Description 关注或取消关注目标
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/follow [get]
+func (api *BaseApi) OkrFollow() {
+	objectiveIdStr := api.Context.Query("id")
+	if objectiveIdStr == "" {
+		helper.ErrorWith(api.Context, "关注目标不能为空", nil)
+		return
+	}
+
+	objectiveId, err := strconv.Atoi(objectiveIdStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.FollowObjective(api.Userinfo.Userid, objectiveId)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 更新进度和进度状态
+// @Description 更新进度和进度状态
+// @Accept json
+// @Param request formData interfaces.OkrUpdateProgressReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/update/progress [post]
+func (api *BaseApi) OkrUpdateProgress() {
+	var param = interfaces.OkrUpdateProgressReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.UpdateProgressAndStatus(param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary OKR评分
+// @Description OKR评分
+// @Accept json
+// @Param request formData interfaces.OkrScoreReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/score [post]
+func (api *BaseApi) OkrScore() {
+	var param = interfaces.OkrScoreReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.UpdateScore(api.Userinfo, param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 结束/重启目标
+// @Description 结束/重启目标
+// @Accept json
+// @Param request formData interfaces.OkrFinishReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/finish [post]
+func (api *BaseApi) OkrFinish() {
+	var param = interfaces.OkrFinishReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.FinishObjective(param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 更新参与人
+// @Description 更新参与人
+// @Accept json
+// @Param request formData interfaces.OkrParticipantUpdateReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/participant/update [post]
+func (api *BaseApi) OkrParticipantUpdate() {
+	var param = interfaces.OkrParticipantUpdateReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.UpdateParticipant(param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 更新信心指数
+// @Description 更新信心指数
+// @Accept json
+// @Param request formData interfaces.OkrConfidenceUpdateReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/confidence/update [post]
+func (api *BaseApi) OkrConfidenceUpdate() {
+	var param = interfaces.OkrConfidenceUpdateReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.UpdateConfidence(param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 添加复盘
+// @Description 添加复盘
+// @Accept json
+// @Param request body interfaces.OkrReplayCreateReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/replay/create [post]
+func (api *BaseApi) OkrReplayCreate() {
+	var param = interfaces.OkrReplayCreateReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.CreateReplay(api.Userinfo.Userid, param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 复盘详情
+// @Description 复盘详情
+// @Accept json
+// @Param id query int true "复盘id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/replay/detail [get]
+func (api *BaseApi) OkrReplayDetail() {
+	idStr := api.Context.Query("id")
+	if idStr == "" {
+		helper.ErrorWith(api.Context, "复盘id不能为空", nil)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.GetReplayDetail(id)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
 	helper.Success(api.Context, result)
 }

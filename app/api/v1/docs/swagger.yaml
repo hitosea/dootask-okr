@@ -197,6 +197,36 @@ definitions:
     - start_at
     - title
     type: object
+  interfaces.OkrReplayComment:
+    properties:
+      comment:
+        description: 评价
+        type: string
+      id:
+        description: id
+        type: integer
+    required:
+    - id
+    type: object
+  interfaces.OkrReplayCreateReq:
+    properties:
+      comments:
+        description: 复盘评价
+        items:
+          $ref: '#/definitions/interfaces.OkrReplayComment'
+        type: array
+      id:
+        description: id
+        type: integer
+      problem:
+        description: 问题与不足
+        type: string
+      value:
+        description: 价值与收获
+        type: string
+    required:
+    - id
+    type: object
   interfaces.OkrUpdateReq:
     properties:
       align_objective:
@@ -415,6 +445,30 @@ paths:
       summary: OKR评分分布
       tags:
       - OkrAnalyze
+  /okr/confidence/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新信心指数
+      parameters:
+      - description: 信心指数
+        in: formData
+        name: confidence
+        required: true
+        type: integer
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新信心指数
+      tags:
+      - Okr
   /okr/create:
     post:
       consumes:
@@ -453,6 +507,48 @@ paths:
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: 部门OKR列表
+      tags:
+      - Okr
+  /okr/finish:
+    post:
+      consumes:
+      - application/json
+      description: 结束/重启目标
+      parameters:
+      - description: 状态 0-重启 1-结束
+        in: formData
+        name: finished
+        type: integer
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 结束/重启目标
+      tags:
+      - Okr
+  /okr/follow:
+    get:
+      consumes:
+      - application/json
+      description: 关注或取消关注目标
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 关注或取消关注目标
       tags:
       - Okr
   /okr/follow/list:
@@ -512,6 +608,69 @@ paths:
       summary: 参与的OKR列表
       tags:
       - Okr
+  /okr/participant/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新参与人
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      - description: 参与人,多个用逗号隔开
+        in: formData
+        name: participant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新参与人
+      tags:
+      - Okr
+  /okr/replay/create:
+    post:
+      consumes:
+      - application/json
+      description: 添加复盘
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.OkrReplayCreateReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 添加复盘
+      tags:
+      - Okr
+  /okr/replay/detail:
+    get:
+      consumes:
+      - application/json
+      description: 复盘详情
+      parameters:
+      - description: 复盘id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 复盘详情
+      tags:
+      - Okr
   /okr/replay/list:
     get:
       consumes:
@@ -529,6 +688,29 @@ paths:
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: OKR复盘列表
+      tags:
+      - Okr
+  /okr/score:
+    post:
+      consumes:
+      - application/json
+      description: OKR评分
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      - description: 个人评分
+        in: formData
+        name: score
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: OKR评分
       tags:
       - Okr
   /okr/update:
@@ -549,6 +731,33 @@ paths:
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: 更新OKR
+      tags:
+      - Okr
+  /okr/update/progress:
+    post:
+      consumes:
+      - application/json
+      description: 更新进度和进度状态
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      - description: 进度
+        in: formData
+        name: progress
+        type: integer
+      - description: 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
+        in: formData
+        name: status
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新进度和进度状态
       tags:
       - Okr
 swagger: "2.0"

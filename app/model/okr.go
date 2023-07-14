@@ -16,9 +16,10 @@ type Okr struct {
 	Ascription     int       `gorm:"default:1;comment:'归属 1-部门 2-个人'" json:"ascription"`
 	VisibleRange   int       `gorm:"default:1;comment:'可见范围  1-全公司 2-仅相关成员 3-仅部门成员'" json:"visible_range"`
 	Completed      int       `gorm:"default:0;comment:'整个O是否完成 0-未完成 1-已完成'" json:"completed"`
+	Finished       int       `gorm:"default:0;comment:'整个O是否结束 0-未完成 1-已结束'" json:"finished"`
 	Participant    string    `gorm:"type:varchar(255);comment:'参与人'" json:"participant"`
 	Progress       int       `gorm:"default:0;comment:'进度指数0-100'" json:"progress"`
-	ProgressStatus int       `gorm:"default:0;comment:'进度状态 0-未开始 1-已完成 2-进行中 3-有难度 4-已结束'" json:"progress_status"`
+	ProgressStatus int       `gorm:"default:0;comment:'进度状态 0-未开始 1-正常 2-有风险 3-已延期 4-已结束'" json:"progress_status"`
 	Confidence     int       `gorm:"default:0;comment:'信心指数0-100'" json:"confidence"`
 	Score          float64   `gorm:"default:0;comment:'个人评分'" json:"score"`
 	SuperiorScore  float64   `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
@@ -32,8 +33,8 @@ type Okr struct {
 var (
 	OkrModel                     = Okr{}
 	OkrKeyResultStatusNotStart   = 0 // 未开始
-	OkrKeyResultStatusFinished   = 1 // 已完成
-	OkrKeyResultStatusInProgress = 2 // 进行中
-	OkrKeyResultStatusHasProblem = 3 // 有难度
+	OkrKeyResultStatusFinished   = 1 // 正常
+	OkrKeyResultStatusInProgress = 2 // 有风险
+	OkrKeyResultStatusHasProblem = 3 // 已延期
 	OkrKeyResultStatusEnd        = 4 // 已结束
 )

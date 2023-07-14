@@ -68,3 +68,48 @@ type OkrDepartmentListReq struct {
 	Type         int    `json:"type"`          // 类型 1-承诺型 2-挑战型
 	Completed    int    `json:"completed"`     // 是否已完成未评分 0-未完成 1-已完成
 }
+
+// OKR更新进度和进度状态请求
+type OkrUpdateProgressReq struct {
+	Id       int `form:"id" binding:"required"` // id
+	Progress int `form:"progress"`              // 进度
+	Status   int `form:"status"`                // 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
+}
+
+// OKR评分请求
+type OkrScoreReq struct {
+	Id    int     `form:"id" binding:"required"` // id
+	Score float64 `form:"score"`                 // 个人评分
+}
+
+// 结束/重启目标
+type OkrFinishReq struct {
+	Id       int `form:"id" binding:"required"` // id
+	Finished int `form:"finished"`              // 状态 0-重启 1-结束
+}
+
+// 更新参与人请求
+type OkrParticipantUpdateReq struct {
+	Id          int    `form:"id" binding:"required"`          // id
+	Participant string `form:"participant" binding:"required"` // 参与人,多个用逗号隔开
+}
+
+// 更新信心指数请求
+type OkrConfidenceUpdateReq struct {
+	Id         int `form:"id" binding:"required"`         // id
+	Confidence int `form:"confidence" binding:"required"` // 信心指数
+}
+
+// 添加复盘请求
+type OkrReplayCreateReq struct {
+	Id       int                 `json:"id" binding:"required"` // id
+	Comments []*OkrReplayComment `json:"comments"`              // 复盘评价
+	Value    string              `json:"value"`                 // 价值与收获
+	Problem  string              `json:"problem"`               // 问题与不足
+}
+
+// 复盘评价
+type OkrReplayComment struct {
+	Id      int    `json:"id" binding:"required"` // id
+	Comment string `json:"comment"`               // 评价
+}
