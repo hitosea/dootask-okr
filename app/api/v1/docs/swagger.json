@@ -200,7 +200,42 @@
                 }
             }
         },
-        "/okr/analyze/personnel": {
+        "/okr/analyze/dept/score/proportion": {
+            "get": {
+                "description": "OKR部门评分占比",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR各部门评分占比",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/interfaces.OkrAnalyzeDeptScoreProportion"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/personnel/score/rate": {
             "get": {
                 "description": "OKR人员评分率",
                 "consumes": [
@@ -222,7 +257,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/interfaces.OkrAnalyzePersonnel"
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzePersonnelScoreRate"
                                         }
                                     }
                                 }
@@ -768,6 +803,31 @@
                 }
             }
         },
+        "interfaces.OkrAnalyzeDeptScoreProportion": {
+            "type": "object",
+            "properties": {
+                "already_reviewed": {
+                    "description": "已评分",
+                    "type": "integer"
+                },
+                "department_id": {
+                    "description": "部门id",
+                    "type": "integer"
+                },
+                "department_name": {
+                    "description": "部门名称",
+                    "type": "string"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                },
+                "unscored": {
+                    "description": "未评分",
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrAnalyzeOverall": {
             "type": "object",
             "properties": {
@@ -781,7 +841,7 @@
                 }
             }
         },
-        "interfaces.OkrAnalyzePersonnel": {
+        "interfaces.OkrAnalyzePersonnelScoreRate": {
             "type": "object",
             "properties": {
                 "complete": {

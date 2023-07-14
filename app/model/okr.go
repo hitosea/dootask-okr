@@ -1,6 +1,11 @@
 package model
 
 import (
+	"dootask-okr/app/core"
+	"dootask-okr/app/utils/common"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -8,7 +13,7 @@ type Okr struct {
 	Id             int       `gorm:"primary_key" json:"id"`
 	ParentId       int       `gorm:"default:0;comment:'父级目标id'" json:"parent_id"`
 	Userid         int       `gorm:"default:0;comment:'用户id'" json:"userid"`
-	DepartmentId   int       `gorm:"default:0;comment:'部门id'" json:"department_id"`
+	DepartmentId   []int     `gorm:"type:varchar(100);default:'';comment:'部门id'" json:"department_id"`
 	ProjectId      int       `gorm:"default:0;comment:'项目id'" json:"project_id"`
 	Title          string    `gorm:"type:varchar(255);comment:'标题内容'" json:"title"`
 	Type           int       `gorm:"default:1;comment:'类型 1-承诺型 2-挑战型'" json:"type"`
@@ -21,6 +26,7 @@ type Okr struct {
 	Progress       int       `gorm:"default:0;comment:'进度指数0-100'" json:"progress"`
 	ProgressStatus int       `gorm:"default:0;comment:'进度状态 0-未开始 1-正常 2-有风险 3-已延期 4-已结束'" json:"progress_status"`
 	Confidence     int       `gorm:"default:0;comment:'信心指数0-100'" json:"confidence"`
+	IsDelete       int       `gorm:"type:tinyint(1);default:0;comment:'是否删除'" json:"is_delete"`
 	Score          float64   `gorm:"default:0;comment:'个人评分'" json:"score"`
 	SuperiorScore  float64   `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
 	StartAt        time.Time `gorm:"comment:'开始时间' " json:"start_at"`
@@ -38,3 +44,24 @@ var (
 	OkrKeyResultStatusHasProblem = 3 // 已延期
 	OkrKeyResultStatusEnd        = 4 // 已结束
 )
+
+// 获取所有部门ids
+func (m Okr) GetAllDeptIds() []int {
+	var departmentId []int
+	var departmentIds []string
+	if err := core.DB.Model(m).Where("is_delete", 0).Pluck("DISTINCT(department_id)", &departmentIds).Error; err != nil {
+		return departmentId
+	}
+	for _, v := range departmentIds {
+		vs := strings.Split(v, ",")
+		for _, vv := range vs {
+			num, err := strconv.Atoi(vv)
+			if err != nil {
+				return departmentId
+			}
+			departmentId = append(departmentId, num)
+		}
+		fmt.Println(strings.Split(v, ","))
+	}
+	return common.ArrayDuplicate(departmentId)
+}

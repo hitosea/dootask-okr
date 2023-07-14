@@ -30,7 +30,16 @@ type OkrAnalyzeScoreDept struct {
 }
 
 // OKR人员评分率
-type OkrAnalyzePersonnel struct {
+type OkrAnalyzePersonnelScoreRate struct {
 	Total     int64 `json:"total"`    // okr 总数
 	Completed int64 `json:"complete"` // okr 完成数
+}
+
+// OKR部门评分占比
+type OkrAnalyzeDeptScoreProportion struct {
+	DepartmentId    int    `json:"department_id"`    //部门id
+	DepartmentName  string `json:"department_name"`  //部门名称
+	Total           int64  `json:"total"`            // okr 总数
+	Unscored        int64  `json:"unscored"`         //未评分
+	AlreadyReviewed int64  `json:"already_reviewed"` //已评分
 }

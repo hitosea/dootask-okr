@@ -37,7 +37,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 	obj := &model.Okr{
 		Userid:       user.Userid,
-		DepartmentId: user.Department[0],
+		DepartmentId: user.Department,
 		Title:        param.Title,
 		Type:         param.Type,
 		Priority:     param.Priority,
@@ -139,7 +139,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp,
 
 	keyResult := &model.Okr{
 		Userid:       user.Userid,
-		DepartmentId: user.Department[0],
+		DepartmentId: user.Department,
 		ParentId:     parentId,
 		Participant:  kr.Participant,
 		Title:        kr.Title,

@@ -15,6 +15,24 @@ definitions:
         description: okr 总数
         type: integer
     type: object
+  interfaces.OkrAnalyzeDeptScoreProportion:
+    properties:
+      already_reviewed:
+        description: 已评分
+        type: integer
+      department_id:
+        description: 部门id
+        type: integer
+      department_name:
+        description: 部门名称
+        type: string
+      total:
+        description: okr 总数
+        type: integer
+      unscored:
+        description: 未评分
+        type: integer
+    type: object
   interfaces.OkrAnalyzeOverall:
     properties:
       complete:
@@ -24,7 +42,7 @@ definitions:
         description: okr 总数
         type: integer
     type: object
-  interfaces.OkrAnalyzePersonnel:
+  interfaces.OkrAnalyzePersonnelScoreRate:
     properties:
       complete:
         description: okr 完成数
@@ -409,7 +427,27 @@ paths:
       summary: OKR各部门评分分布
       tags:
       - OkrAnalyze
-  /okr/analyze/personnel:
+  /okr/analyze/dept/score/proportion:
+    get:
+      consumes:
+      - application/json
+      description: OKR部门评分占比
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/interfaces.OkrAnalyzeDeptScoreProportion'
+                  type: array
+              type: object
+      summary: OKR各部门评分占比
+      tags:
+      - OkrAnalyze
+  /okr/analyze/personnel/score/rate:
     get:
       consumes:
       - application/json
@@ -422,7 +460,7 @@ paths:
             - $ref: '#/definitions/interfaces.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/interfaces.OkrAnalyzePersonnel'
+                  $ref: '#/definitions/interfaces.OkrAnalyzePersonnelScoreRate'
               type: object
       summary: OKR人员评分率
       tags:
