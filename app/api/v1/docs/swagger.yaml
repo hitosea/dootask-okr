@@ -1,5 +1,80 @@
 basePath: /api/v1
 definitions:
+  interfaces.OkrAnalyzeDept:
+    properties:
+      complete:
+        description: okr 完成数
+        type: integer
+      department_id:
+        description: 部门id
+        type: integer
+      department_name:
+        description: 部门名称
+        type: string
+      total:
+        description: okr 总数
+        type: integer
+    type: object
+  interfaces.OkrAnalyzeOverall:
+    properties:
+      complete:
+        description: okr 完成数
+        type: integer
+      total:
+        description: okr 总数
+        type: integer
+    type: object
+  interfaces.OkrAnalyzePersonnel:
+    properties:
+      complete:
+        description: okr 完成数
+        type: integer
+      total:
+        description: okr 总数
+        type: integer
+    type: object
+  interfaces.OkrAnalyzeScore:
+    properties:
+      seven_to_ten:
+        description: 7-10分
+        type: integer
+      three_to_seven:
+        description: 3-7分
+        type: integer
+      total:
+        description: okr 总数
+        type: integer
+      unscored:
+        description: 未评分
+        type: integer
+      zero_to_three:
+        description: 0-3分
+        type: integer
+    type: object
+  interfaces.OkrAnalyzeScoreDept:
+    properties:
+      department_id:
+        description: 部门id
+        type: integer
+      department_name:
+        description: 部门名称
+        type: string
+      seven_to_ten:
+        description: 7-10分
+        type: integer
+      three_to_seven:
+        description: 3-7分
+        type: integer
+      total:
+        description: okr 总数
+        type: integer
+      unscored:
+        description: 未评分
+        type: integer
+      zero_to_three:
+        description: 0-3分
+        type: integer
+    type: object
   interfaces.OkrCreateReq:
     properties:
       align_objective:
@@ -191,6 +266,25 @@ info:
   title: DooTask
   version: "1.0"
 paths:
+  /doo/project/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取项目列表
+      parameters:
+      - description: token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取项目列表
+      tags:
+      - Dootask
   /doo/user/info:
     get:
       consumes:
@@ -210,6 +304,117 @@ paths:
       summary: 获取用户信息
       tags:
       - Dootask
+  /doo/user/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      parameters:
+      - description: token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取用户列表
+      tags:
+      - Dootask
+  /okr/analyze/complete:
+    get:
+      consumes:
+      - application/json
+      description: OKR整体平均完成度
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrAnalyzeOverall'
+              type: object
+      summary: OKR整体平均完成度
+      tags:
+      - OkrAnalyze
+  /okr/analyze/dept/complete:
+    get:
+      consumes:
+      - application/json
+      description: OKR各部门平均完成度
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/interfaces.OkrAnalyzeDept'
+                  type: array
+              type: object
+      summary: OKR各部门平均完成度
+      tags:
+      - OkrAnalyze
+  /okr/analyze/dept/score:
+    get:
+      consumes:
+      - application/json
+      description: OKR各部门评分分布
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrAnalyzeScoreDept'
+              type: object
+      summary: OKR各部门评分分布
+      tags:
+      - OkrAnalyze
+  /okr/analyze/personnel:
+    get:
+      consumes:
+      - application/json
+      description: OKR人员评分率
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrAnalyzePersonnel'
+              type: object
+      summary: OKR人员评分率
+      tags:
+      - OkrAnalyze
+  /okr/analyze/score:
+    get:
+      consumes:
+      - application/json
+      description: OKR评分分布
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrAnalyzeScore'
+              type: object
+      summary: OKR评分分布
+      tags:
+      - OkrAnalyze
   /okr/create:
     post:
       consumes:

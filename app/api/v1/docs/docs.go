@@ -28,6 +28,35 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/doo/project/list": {
+            "get": {
+                "description": "获取项目列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取项目列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/doo/user/info": {
             "get": {
                 "description": "获取用户信息",
@@ -52,6 +81,198 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/doo/user/list": {
+            "get": {
+                "description": "获取用户列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取用户列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/complete": {
+            "get": {
+                "description": "OKR整体平均完成度",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR整体平均完成度",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzeOverall"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/dept/complete": {
+            "get": {
+                "description": "OKR各部门平均完成度",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR各部门平均完成度",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/interfaces.OkrAnalyzeDept"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/dept/score": {
+            "get": {
+                "description": "OKR各部门评分分布",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR各部门评分分布",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzeScoreDept"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/personnel": {
+            "get": {
+                "description": "OKR人员评分率",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR人员评分率",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzePersonnel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/analyze/score": {
+            "get": {
+                "description": "OKR评分分布",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR评分分布",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzeScore"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -268,6 +489,111 @@ var doc = `{
         }
     },
     "definitions": {
+        "interfaces.OkrAnalyzeDept": {
+            "type": "object",
+            "properties": {
+                "complete": {
+                    "description": "okr 完成数",
+                    "type": "integer"
+                },
+                "department_id": {
+                    "description": "部门id",
+                    "type": "integer"
+                },
+                "department_name": {
+                    "description": "部门名称",
+                    "type": "string"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrAnalyzeOverall": {
+            "type": "object",
+            "properties": {
+                "complete": {
+                    "description": "okr 完成数",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrAnalyzePersonnel": {
+            "type": "object",
+            "properties": {
+                "complete": {
+                    "description": "okr 完成数",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrAnalyzeScore": {
+            "type": "object",
+            "properties": {
+                "seven_to_ten": {
+                    "description": "7-10分",
+                    "type": "integer"
+                },
+                "three_to_seven": {
+                    "description": "3-7分",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                },
+                "unscored": {
+                    "description": "未评分",
+                    "type": "integer"
+                },
+                "zero_to_three": {
+                    "description": "0-3分",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.OkrAnalyzeScoreDept": {
+            "type": "object",
+            "properties": {
+                "department_id": {
+                    "description": "部门id",
+                    "type": "integer"
+                },
+                "department_name": {
+                    "description": "部门名称",
+                    "type": "string"
+                },
+                "seven_to_ten": {
+                    "description": "7-10分",
+                    "type": "integer"
+                },
+                "three_to_seven": {
+                    "description": "3-7分",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "okr 总数",
+                    "type": "integer"
+                },
+                "unscored": {
+                    "description": "未评分",
+                    "type": "integer"
+                },
+                "zero_to_three": {
+                    "description": "0-3分",
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrCreateReq": {
             "type": "object",
             "required": [
