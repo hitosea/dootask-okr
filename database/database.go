@@ -13,6 +13,7 @@ func Init() error {
 		migrations.AddTableOkrFollow,
 		migrations.AddTableOkrAlign,
 		migrations.AddTableOkrReplay,
+		migrations.AddTableOkrReplayHistory,
 		migrations.AddTableOkrLog,
 	})
 	if err := m.Migrate(); err != nil {

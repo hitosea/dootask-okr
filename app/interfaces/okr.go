@@ -48,14 +48,14 @@ type OkrKeyResultUpdateReq struct {
 	OkrKeyResultBaseReq
 }
 
-// OKR列表响应
-type OkrListResp struct {
+// OKR列表/详情响应
+type OkrResp struct {
 	*model.Okr
-	IsFollow      bool   `json:"is_follow"`       //是否被关注
-	KrCount       int    `json:"kr_count"`        //kr总数量
-	KrFinishCount int    `json:"kr_finish_count"` //kr完成数量
-	AlignCount    int    `json:"align_count"`     //对齐目标数量
-	Alias         string `json:"alias"`           //目标别名
+	IsFollow      bool     `json:"is_follow"`       //是否被关注
+	KrCount       int      `json:"kr_count"`        //kr总数量
+	KrFinishCount int      `json:"kr_finish_count"` //kr完成数量
+	AlignCount    int      `json:"align_count"`     //对齐目标数量
+	Alias         []string `json:"alias"`           //目标别名
 }
 
 // OKR部门列表请求
@@ -71,45 +71,45 @@ type OkrDepartmentListReq struct {
 
 // OKR更新进度和进度状态请求
 type OkrUpdateProgressReq struct {
-	Id       int `form:"id" binding:"required"` // id
+	Id       int `form:"id" binding:"required"` // okr id
 	Progress int `form:"progress"`              // 进度
 	Status   int `form:"status"`                // 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
 }
 
 // OKR评分请求
 type OkrScoreReq struct {
-	Id    int     `form:"id" binding:"required"` // id
+	Id    int     `form:"id" binding:"required"` // okr id
 	Score float64 `form:"score"`                 // 个人评分
 }
 
 // 结束/重启目标
 type OkrFinishReq struct {
-	Id       int `form:"id" binding:"required"` // id
+	Id       int `form:"id" binding:"required"` // okr id
 	Finished int `form:"finished"`              // 状态 0-重启 1-结束
 }
 
 // 更新参与人请求
 type OkrParticipantUpdateReq struct {
-	Id          int    `form:"id" binding:"required"`          // id
+	Id          int    `form:"id" binding:"required"`          // okr id
 	Participant string `form:"participant" binding:"required"` // 参与人,多个用逗号隔开
 }
 
 // 更新信心指数请求
 type OkrConfidenceUpdateReq struct {
-	Id         int `form:"id" binding:"required"`         // id
+	Id         int `form:"id" binding:"required"`         // okr id
 	Confidence int `form:"confidence" binding:"required"` // 信心指数
 }
 
 // 添加复盘请求
 type OkrReplayCreateReq struct {
-	Id       int                 `json:"id" binding:"required"` // id
-	Comments []*OkrReplayComment `json:"comments"`              // 复盘评价
-	Value    string              `json:"value"`                 // 价值与收获
-	Problem  string              `json:"problem"`               // 问题与不足
+	OkrId    int                 `json:"okr_id" binding:"required"` // okr id
+	Comments []*OkrReplayComment `json:"comments"`                  // 复盘评价
+	Value    string              `json:"value"`                     // 价值与收获
+	Problem  string              `json:"problem"`                   // 问题与不足
 }
 
 // 复盘评价
 type OkrReplayComment struct {
-	Id      int    `json:"id" binding:"required"` // id
-	Comment string `json:"comment"`               // 评价
+	OkrId   int    `json:"okr_id" binding:"required"` // okr id
+	Comment string `json:"comment"`                   // 评价
 }

@@ -220,11 +220,11 @@ definitions:
       comment:
         description: 评价
         type: string
-      id:
-        description: id
+      okr_id:
+        description: okr id
         type: integer
     required:
-    - id
+    - okr_id
     type: object
   interfaces.OkrReplayCreateReq:
     properties:
@@ -233,8 +233,8 @@ definitions:
         items:
           $ref: '#/definitions/interfaces.OkrReplayComment'
         type: array
-      id:
-        description: id
+      okr_id:
+        description: okr id
         type: integer
       problem:
         description: 问题与不足
@@ -243,7 +243,7 @@ definitions:
         description: 价值与收获
         type: string
     required:
-    - id
+    - okr_id
     type: object
   interfaces.OkrUpdateReq:
     properties:
@@ -371,6 +371,38 @@ paths:
       summary: 获取用户列表
       tags:
       - Dootask
+  /okr/align/cancel:
+    get:
+      consumes:
+      - application/json
+      description: 取消对齐目标
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 取消对齐目标
+      tags:
+      - Okr
+  /okr/align/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取对齐目标列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取对齐目标列表
+      tags:
+      - Okr
   /okr/analyze/complete:
     get:
       consumes:
@@ -494,7 +526,7 @@ paths:
         name: confidence
         required: true
         type: integer
-      - description: id
+      - description: okr id
         in: formData
         name: id
         required: true
@@ -531,7 +563,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: 部门OKR列表
+      description: 获取部门OKR列表
       parameters:
       - description: request
         in: body
@@ -544,7 +576,26 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: 部门OKR列表
+      summary: 获取部门OKR列表
+      tags:
+      - Okr
+  /okr/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取OKR详情
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取OKR详情
       tags:
       - Okr
   /okr/finish:
@@ -557,7 +608,7 @@ paths:
         in: formData
         name: finished
         type: integer
-      - description: id
+      - description: okr id
         in: formData
         name: id
         required: true
@@ -593,7 +644,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: 关注的OKR列表
+      description: 获取关注的OKR列表
       parameters:
       - description: 目标
         in: query
@@ -605,14 +656,33 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: 关注的OKR列表
+      summary: 获取关注的OKR列表
+      tags:
+      - Okr
+  /okr/log/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取动态列表by目标id
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取动态列表by目标id
       tags:
       - Okr
   /okr/my/list:
     get:
       consumes:
       - application/json
-      description: 我的OKR列表
+      description: 获取我的OKR列表
       parameters:
       - description: 目标
         in: query
@@ -624,14 +694,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: 我的OKR列表
+      summary: 获取我的OKR列表
       tags:
       - Okr
   /okr/participant/list:
     get:
       consumes:
       - application/json
-      description: 参与的OKR列表
+      description: 获取参与的OKR列表
       parameters:
       - description: 目标
         in: query
@@ -643,7 +713,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: 参与的OKR列表
+      summary: 获取参与的OKR列表
       tags:
       - Okr
   /okr/participant/update:
@@ -652,7 +722,7 @@ paths:
       - application/json
       description: 更新参与人
       parameters:
-      - description: id
+      - description: okr id
         in: formData
         name: id
         required: true
@@ -713,7 +783,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: OKR复盘列表
+      description: 获取OKR复盘列表
       parameters:
       - description: 目标
         in: query
@@ -725,7 +795,26 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: OKR复盘列表
+      summary: 获取OKR复盘列表
+      tags:
+      - Okr
+  /okr/replay/okr/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取复盘列表by目标id
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取复盘列表by目标id
       tags:
       - Okr
   /okr/score:
@@ -734,7 +823,7 @@ paths:
       - application/json
       description: OKR评分
       parameters:
-      - description: id
+      - description: okr id
         in: formData
         name: id
         required: true
@@ -777,7 +866,7 @@ paths:
       - application/json
       description: 更新进度和进度状态
       parameters:
-      - description: id
+      - description: okr id
         in: formData
         name: id
         required: true

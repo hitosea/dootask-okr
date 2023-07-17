@@ -13,7 +13,7 @@ type Okr struct {
 	Id             int       `gorm:"primary_key" json:"id"`
 	ParentId       int       `gorm:"default:0;comment:'父级目标id'" json:"parent_id"`
 	Userid         int       `gorm:"default:0;comment:'用户id'" json:"userid"`
-	DepartmentId   []int     `gorm:"type:varchar(100);default:'';comment:'部门id'" json:"department_id"`
+	DepartmentId   string    `gorm:"type:varchar(100);default:'';comment:'部门id'" json:"department_id"`
 	ProjectId      int       `gorm:"default:0;comment:'项目id'" json:"project_id"`
 	Title          string    `gorm:"type:varchar(255);comment:'标题内容'" json:"title"`
 	Type           int       `gorm:"default:1;comment:'类型 1-承诺型 2-挑战型'" json:"type"`
@@ -27,13 +27,14 @@ type Okr struct {
 	ProgressStatus int       `gorm:"default:0;comment:'进度状态 0-未开始 1-正常 2-有风险 3-已延期 4-已结束'" json:"progress_status"`
 	Confidence     int       `gorm:"default:0;comment:'信心指数0-100'" json:"confidence"`
 	IsDelete       int       `gorm:"type:tinyint(1);default:0;comment:'是否删除'" json:"is_delete"`
-	Score          float64   `gorm:"default:0;comment:'个人评分'" json:"score"`
+	Score          float64   `gorm:"default:0;comment:'个人评分'" json:"score"` // 个人评分和O总评分
 	SuperiorScore  float64   `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
 	StartAt        time.Time `gorm:"comment:'开始时间' " json:"start_at"`
 	EndAt          time.Time `gorm:"comment:'结束时间'" json:"end_at"`
 	CreateAt       time.Time `gorm:"autoCreateTime;comment:'创建时间'" json:"create_at"`
 	UpdateAt       time.Time `gorm:"autoUpdateTime;comment:'更新时间'" json:"update_at"`
 	KeyResults     []*Okr    `gorm:"-" json:"key_results"`
+	KrScore        float64   `gorm:"-" json:"kr_score"` // KR总评分
 }
 
 var (
@@ -43,6 +44,13 @@ var (
 	OkrKeyResultStatusInProgress = 2 // 有风险
 	OkrKeyResultStatusHasProblem = 3 // 已延期
 	OkrKeyResultStatusEnd        = 4 // 已结束
+	ProgressStatusMap            = map[int]string{
+		0: "未开始",
+		1: "正常",
+		2: "有风险",
+		3: "已延期",
+		4: "已结束",
+	}
 )
 
 // 获取所有部门ids

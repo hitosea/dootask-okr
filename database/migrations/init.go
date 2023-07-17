@@ -39,6 +39,14 @@ var AddTableOkrReplay = &gormigrate.Migration{
 	},
 }
 
+// 添加复盘历史表 AddTableOkrReplayHistory
+var AddTableOkrReplayHistory = &gormigrate.Migration{
+	ID: "2023071005-add-table-okr-replay-history",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&model.OkrReplayHistory{})
+	},
+}
+
 // 添加日志表 AddTableOkrLog
 var AddTableOkrLog = &gormigrate.Migration{
 	ID: "2023071005-add-table-okr-log",

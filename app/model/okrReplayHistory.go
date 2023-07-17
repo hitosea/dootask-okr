@@ -5,6 +5,7 @@ import "time"
 type OkrReplayHistory struct {
 	Id         int       `gorm:"primary_key" json:"id"`
 	ReplayId   int       `gorm:"default:0;comment:'复盘id'" json:"replay_id"`
+	OkrId      int       `gorm:"default:0;comment:'okr id'" json:"okr_id"`
 	Title      string    `gorm:"type:varchar(255);comment:'标题'" json:"title"`
 	ParentId   int       `gorm:"default:0;comment:'父级id'" json:"parent_id"`
 	Progress   int       `gorm:"default:0;comment:'完成度'" json:"progress"`

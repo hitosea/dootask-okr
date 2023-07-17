@@ -42,7 +42,7 @@ func (api *BaseApi) OkrUpdate() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	result, err := service.OkrService.Update(param)
+	result, err := service.OkrService.Update(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -51,8 +51,8 @@ func (api *BaseApi) OkrUpdate() {
 }
 
 // @Tags Okr
-// @Summary 我的OKR列表
-// @Description 我的OKR列表
+// @Summary 获取我的OKR列表
+// @Description 获取我的OKR列表
 // @Accept json
 // @Param objective query string true "目标"
 // @Success 200 {object} interfaces.Response
@@ -68,8 +68,8 @@ func (api *BaseApi) OkrMyList() {
 }
 
 // @Tags Okr
-// @Summary 参与的OKR列表
-// @Description 参与的OKR列表
+// @Summary 获取参与的OKR列表
+// @Description 获取参与的OKR列表
 // @Accept json
 // @Param objective query string true "目标"
 // @Success 200 {object} interfaces.Response
@@ -85,8 +85,8 @@ func (api *BaseApi) OkrParticipantList() {
 }
 
 // @Tags Okr
-// @Summary 部门OKR列表
-// @Description 部门OKR列表
+// @Summary 获取部门OKR列表
+// @Description 获取部门OKR列表
 // @Accept json
 // @Param request body interfaces.OkrDepartmentListReq true "request"
 // @Success 200 {object} interfaces.Response
@@ -106,8 +106,8 @@ func (api *BaseApi) OkrDepartmentList() {
 }
 
 // @Tags Okr
-// @Summary 关注的OKR列表
-// @Description 关注的OKR列表
+// @Summary 获取关注的OKR列表
+// @Description 获取关注的OKR列表
 // @Accept json
 // @Param objective query string true "目标"
 // @Success 200 {object} interfaces.Response
@@ -123,8 +123,8 @@ func (api *BaseApi) OkrFollowList() {
 }
 
 // @Tags Okr
-// @Summary OKR复盘列表
-// @Description OKR复盘列表
+// @Summary 获取OKR复盘列表
+// @Description 获取OKR复盘列表
 // @Accept json
 // @Param objective query string true "目标"
 // @Success 200 {object} interfaces.Response
@@ -132,6 +132,62 @@ func (api *BaseApi) OkrFollowList() {
 func (api *BaseApi) OkrReplayList() {
 	objective := api.Context.Query("objective")
 	result, err := service.OkrService.GetReplayList(api.Userinfo, objective)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 获取复盘列表by目标id
+// @Description 获取复盘列表by目标id
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/replay/okr/list [get]
+func (api *BaseApi) OkrReplayOkrList() {
+	idStr := api.Context.Query("id")
+	if idStr == "" {
+		helper.ErrorWith(api.Context, "目标id不能为空", nil)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.GetReplayListByOkrId(id)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 获取OKR详情
+// @Description 获取OKR详情
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/detail [get]
+func (api *BaseApi) OkrDetail() {
+	idStr := api.Context.Query("id")
+	if idStr == "" {
+		helper.ErrorWith(api.Context, "目标id不能为空", nil)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.GetOkrDetail(api.Userinfo, id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -178,7 +234,7 @@ func (api *BaseApi) OkrFollow() {
 func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.UpdateProgressAndStatus(param)
+	err := service.OkrService.UpdateProgressAndStatus(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -273,7 +329,7 @@ func (api *BaseApi) OkrConfidenceUpdate() {
 func (api *BaseApi) OkrReplayCreate() {
 	var param = interfaces.OkrReplayCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.CreateReplay(api.Userinfo.Userid, param)
+	err := service.OkrService.CreateOkrReplay(api.Userinfo.Userid, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -303,6 +359,80 @@ func (api *BaseApi) OkrReplayDetail() {
 	}
 
 	result, err := service.OkrService.GetReplayDetail(id)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 取消对齐目标
+// @Description 取消对齐目标
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/align/cancel [get]
+func (api *BaseApi) OkrAlignCancel() {
+	objectiveIdStr := api.Context.Query("id")
+	if objectiveIdStr == "" {
+		helper.ErrorWith(api.Context, "目标id不能为空", nil)
+		return
+	}
+
+	objectiveId, err := strconv.Atoi(objectiveIdStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	err = service.OkrService.CancelAlignObjective(api.Userinfo.Userid, objectiveId)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, nil)
+}
+
+// @Tags Okr
+// @Summary 获取对齐目标列表
+// @Description 获取对齐目标列表
+// @Accept json
+// @Success 200 {object} interfaces.Response
+// @Router /okr/align/list [get]
+func (api *BaseApi) OkrAlignList() {
+	result, err := service.OkrService.GetAlignList(api.Userinfo)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 获取动态列表by目标id
+// @Description 获取动态列表by目标id
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/log/list [get]
+func (api *BaseApi) OkrLogList() {
+	okrIdStr := api.Context.Query("id")
+	if okrIdStr == "" {
+		helper.ErrorWith(api.Context, "目标id不能为空", nil)
+		return
+	}
+
+	okrId, err := strconv.Atoi(okrIdStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.GetOkrLogList(okrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

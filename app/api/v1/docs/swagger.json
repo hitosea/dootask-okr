@@ -101,6 +101,55 @@
                 }
             }
         },
+        "/okr/align/cancel": {
+            "get": {
+                "description": "取消对齐目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "取消对齐目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/align/list": {
+            "get": {
+                "description": "获取对齐目标列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取对齐目标列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/analyze/complete": {
             "get": {
                 "description": "OKR整体平均完成度",
@@ -319,7 +368,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "formData",
                         "required": true
@@ -368,14 +417,14 @@
         },
         "/okr/department/list": {
             "get": {
-                "description": "部门OKR列表",
+                "description": "获取部门OKR列表",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "部门OKR列表",
+                "summary": "获取部门OKR列表",
                 "parameters": [
                     {
                         "description": "request",
@@ -385,6 +434,35 @@
                         "schema": {
                             "$ref": "#/definitions/interfaces.OkrDepartmentListReq"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/detail": {
+            "get": {
+                "description": "获取OKR详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取OKR详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -416,7 +494,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "formData",
                         "required": true
@@ -463,14 +541,14 @@
         },
         "/okr/follow/list": {
             "get": {
-                "description": "关注的OKR列表",
+                "description": "获取关注的OKR列表",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "关注的OKR列表",
+                "summary": "获取关注的OKR列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -490,16 +568,45 @@
                 }
             }
         },
-        "/okr/my/list": {
+        "/okr/log/list": {
             "get": {
-                "description": "我的OKR列表",
+                "description": "获取动态列表by目标id",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "我的OKR列表",
+                "summary": "获取动态列表by目标id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/my/list": {
+            "get": {
+                "description": "获取我的OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取我的OKR列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -521,14 +628,14 @@
         },
         "/okr/participant/list": {
             "get": {
-                "description": "参与的OKR列表",
+                "description": "获取参与的OKR列表",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "参与的OKR列表",
+                "summary": "获取参与的OKR列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -561,7 +668,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "formData",
                         "required": true
@@ -646,19 +753,48 @@
         },
         "/okr/replay/list": {
             "get": {
-                "description": "OKR复盘列表",
+                "description": "获取OKR复盘列表",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "OKR复盘列表",
+                "summary": "获取OKR复盘列表",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "目标",
                         "name": "objective",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/replay/okr/list": {
+            "get": {
+                "description": "获取复盘列表by目标id",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取复盘列表by目标id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     }
@@ -686,7 +822,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "formData",
                         "required": true
@@ -752,7 +888,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "formData",
                         "required": true
@@ -1077,15 +1213,15 @@
         "interfaces.OkrReplayComment": {
             "type": "object",
             "required": [
-                "id"
+                "okr_id"
             ],
             "properties": {
                 "comment": {
                     "description": "评价",
                     "type": "string"
                 },
-                "id": {
-                    "description": "id",
+                "okr_id": {
+                    "description": "okr id",
                     "type": "integer"
                 }
             }
@@ -1093,7 +1229,7 @@
         "interfaces.OkrReplayCreateReq": {
             "type": "object",
             "required": [
-                "id"
+                "okr_id"
             ],
             "properties": {
                 "comments": {
@@ -1103,8 +1239,8 @@
                         "$ref": "#/definitions/interfaces.OkrReplayComment"
                     }
                 },
-                "id": {
-                    "description": "id",
+                "okr_id": {
+                    "description": "okr id",
                     "type": "integer"
                 },
                 "problem": {
