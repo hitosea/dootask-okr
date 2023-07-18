@@ -127,11 +127,13 @@ var doc = `{
                 "summary": "取消对齐目标",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "目标id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrAlignCancelReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -970,6 +972,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "interfaces.OkrAlignCancelReq": {
+            "type": "object",
+            "required": [
+                "alignOkrId",
+                "okrId"
+            ],
+            "properties": {
+                "alignOkrId": {
+                    "description": "对齐目标okr id",
+                    "type": "integer"
+                },
+                "okrId": {
+                    "description": "okr id",
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrAnalyzeDept": {
             "type": "object",
             "properties": {

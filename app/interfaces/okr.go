@@ -65,7 +65,6 @@ type OkrAlignResp struct {
 	Prefix         string   `json:"prefix"`          // 前缀
 	AlignObjective string   `json:"align_objective"` // 对齐目标
 	Alias          []string `json:"alias"`           // 目标别名
-
 }
 
 // OKR部门列表请求
@@ -121,4 +120,10 @@ type OkrReplayCreateReq struct {
 type OkrReplayComment struct {
 	OkrId   int    `json:"okr_id" binding:"required"` // okr id
 	Comment string `json:"comment"`                   // 评价
+}
+
+// 取消对齐目标请求
+type OkrAlignCancelReq struct {
+	OkrId      int `form:"okr_id" binding:"required"`       // okr id
+	AlignOkrId int `form:"align_okr_id" binding:"required"` // 对齐目标okr id
 }

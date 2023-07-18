@@ -1,5 +1,17 @@
 basePath: /api/v1
 definitions:
+  interfaces.OkrAlignCancelReq:
+    properties:
+      alignOkrId:
+        description: 对齐目标okr id
+        type: integer
+      okrId:
+        description: okr id
+        type: integer
+    required:
+    - alignOkrId
+    - okrId
+    type: object
   interfaces.OkrAnalyzeDept:
     properties:
       complete:
@@ -377,11 +389,12 @@ paths:
       - application/json
       description: 取消对齐目标
       parameters:
-      - description: 目标id
-        in: query
-        name: id
+      - description: request
+        in: body
+        name: request
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/interfaces.OkrAlignCancelReq'
       responses:
         "200":
           description: OK

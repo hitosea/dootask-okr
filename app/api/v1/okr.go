@@ -371,23 +371,13 @@ func (api *BaseApi) OkrReplayDetail() {
 // @Summary 取消对齐目标
 // @Description 取消对齐目标
 // @Accept json
-// @Param id query int true "目标id"
+// @Param request body interfaces.OkrAlignCancelReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/align/cancel [get]
 func (api *BaseApi) OkrAlignCancel() {
-	objectiveIdStr := api.Context.Query("id")
-	if objectiveIdStr == "" {
-		helper.ErrorWith(api.Context, "目标id不能为空", nil)
-		return
-	}
-
-	objectiveId, err := strconv.Atoi(objectiveIdStr)
-	if err != nil {
-		helper.ErrorWith(api.Context, err.Error(), nil)
-		return
-	}
-
-	err = service.OkrService.CancelAlignObjective(api.Userinfo.Userid, objectiveId)
+	var param = interfaces.OkrAlignCancelReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	err := service.OkrService.CancelAlignObjective(param.OkrId, param.AlignOkrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

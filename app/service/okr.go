@@ -1142,9 +1142,9 @@ func (s *okrService) getOwningAlias(userid int, departmentId string) []string {
 }
 
 // 取消对齐目标
-func (s *okrService) CancelAlignObjective(userid, objectiveId int) error {
+func (s *okrService) CancelAlignObjective(okrId, alignOkrId int) error {
 	var align model.OkrAlign
-	if err := core.DB.Where("userid = ? and okr_id = ?", userid, objectiveId).First(&align).Error; err != nil {
+	if err := core.DB.Where("okr_id = ? and align_okr_id = ?", okrId, alignOkrId).First(&align).Error; err != nil {
 		return err
 	}
 
