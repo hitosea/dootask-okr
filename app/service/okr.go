@@ -7,7 +7,6 @@ import (
 	"dootask-okr/app/utils/common"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"sort"
 	"strings"
@@ -1162,10 +1161,9 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 	if err := core.DB.Model(&model.OkrAlign{}).Where("okr_id = ?", okrId).Pluck("align_okr_id", &alignOkrId).Error; err != nil {
 		return nil, err
 	}
-	log.Println("alignOkrId", alignOkrId)
 	// 获取对齐目标
 	var alignOkrs []*model.Okr
-	if err := core.DB.Model(&model.Okr{}).Where("id in (?)", alignOkrId).Find(&alignOkrs).Unscoped().Error; err != nil {
+	if err := core.DB.Unscoped().Model(&model.Okr{}).Where("id in (?)", alignOkrId).Find(&alignOkrs).Error; err != nil {
 		return nil, err
 	}
 
