@@ -196,8 +196,11 @@ definitions:
         description: 结束时间
         type: string
       id:
-        description: id
+        description: okr id
         type: integer
+      is_delete:
+        description: 是否删除 true-删除 false-不删除
+        type: boolean
       participant:
         description: 参与人,多个用逗号隔开
         type: string
@@ -236,11 +239,8 @@ definitions:
       okr_id:
         description: okr id
         type: integer
-      problem:
-        description: 问题与不足
-        type: string
-      value:
-        description: 价值与收获
+      review:
+        description: 回顾
         type: string
     required:
     - okr_id
@@ -254,7 +254,7 @@ definitions:
         description: 结束时间
         type: string
       id:
-        description: id
+        description: okr id
         type: integer
       key_results:
         description: 关键结果
@@ -515,6 +515,29 @@ paths:
       summary: OKR评分分布
       tags:
       - OkrAnalyze
+  /okr/cancel:
+    post:
+      consumes:
+      - application/json
+      description: 取消/重启目标
+      parameters:
+      - description: 状态 0-重启 1-结束
+        in: formData
+        name: canceled
+        type: integer
+      - description: okr id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 取消/重启目标
+      tags:
+      - Okr
   /okr/confidence/update:
     post:
       consumes:
@@ -596,29 +619,6 @@ paths:
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: 获取OKR详情
-      tags:
-      - Okr
-  /okr/finish:
-    post:
-      consumes:
-      - application/json
-      description: 结束/重启目标
-      parameters:
-      - description: 状态 0-重启 1-结束
-        in: formData
-        name: finished
-        type: integer
-      - description: okr id
-        in: formData
-        name: id
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/interfaces.Response'
-      summary: 结束/重启目标
       tags:
       - Okr
   /okr/follow:

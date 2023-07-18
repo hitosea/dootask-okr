@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-// IntersectionProcessing 数组去重
-func ArrayDuplicate(result []int) []int {
+// int 数组去重
+func ArrayUniqueInt(result []int) []int {
 	j := 0
 	seen := make(map[int]bool)
 	for _, v := range result {
@@ -19,7 +19,7 @@ func ArrayDuplicate(result []int) []int {
 	return result[:j]
 }
 
-// IntersectionProcessing 交集处理
+// 交集处理
 func ArrayIntersectionProcessing(nums []int, itemIds []int) []int {
 	m := make(map[int]bool)
 	for _, v := range nums {
@@ -34,8 +34,8 @@ func ArrayIntersectionProcessing(nums []int, itemIds []int) []int {
 	return result
 }
 
-// RemoveDuplicates 数组去重
-func RemoveDuplicates(nums []string) []string {
+// str 数组去重
+func ArrayUniqueStr(nums []string) []string {
 	result := make([]string, 0, len(nums))
 	seen := make(map[string]bool)
 	for _, n := range nums {
@@ -47,7 +47,7 @@ func RemoveDuplicates(nums []string) []string {
 	return result
 }
 
-// StringsContains 数组是否包含
+// 数组是否包含
 func StringsContains(array []string, val string) (index int) {
 	index = -1
 	for i := 0; i < len(array); i++ {
@@ -59,7 +59,7 @@ func StringsContains(array []string, val string) (index int) {
 	return
 }
 
-// InArray 元素是否存在数组中
+// 元素是否存在数组中
 func InArray(item string, items []string) bool {
 	for _, eachItem := range items {
 		if eachItem == item {
@@ -69,7 +69,7 @@ func InArray(item string, items []string) bool {
 	return false
 }
 
-// InArrayInt 数组是否存在，int
+// 数组是否存在，int
 func InArrayInt(needle int, haystack []int) bool {
 	for _, v := range haystack {
 		if v == needle {
@@ -79,13 +79,13 @@ func InArrayInt(needle int, haystack []int) bool {
 	return false
 }
 
-// SliceInsert 向数组插入内容
+// 向数组插入内容
 func SliceInsert(s []string, index int, value string) []string {
 	rear := append([]string{}, s[index:]...)
 	return append(append(s[:index], value), rear...)
 }
 
-// FindIndex 查找数组位置
+// 查找数组位置
 func FindIndex(tab []string, value string) int {
 	for i, v := range tab {
 		if v == value {
@@ -95,7 +95,7 @@ func FindIndex(tab []string, value string) int {
 	return -1
 }
 
-// 数组Diff
+// str 数组Diff
 func ArrayDiffStr(arr []string, id int) []int {
 	var result []int
 	for _, d := range arr {
@@ -107,7 +107,7 @@ func ArrayDiffStr(arr []string, id int) []int {
 	return result
 }
 
-// 数组Diff
+// int 数组Diff
 func ArrayDiffInt(arr []int, id int) []int {
 	var result []int
 	for _, d := range arr {
@@ -118,7 +118,7 @@ func ArrayDiffInt(arr []int, id int) []int {
 	return result
 }
 
-// Implode
+// int 数组转字符串
 func ArrayImplode(arr []int) string {
 	var strSlice []string
 	for _, d := range arr {
@@ -127,16 +127,12 @@ func ArrayImplode(arr []int) string {
 	return strings.Join(strSlice, ",")
 }
 
-// Implode
+// str 数组转字符串
 func ArrayStringImplode(arr []string) string {
-	var strSlice []string
-	for _, d := range arr {
-		strSlice = append(strSlice, d)
-	}
-	return strings.Join(strSlice, ",")
+	return strings.Join(arr, ",")
 }
 
-// MergeArray 合并数组
+// 合并数组
 func MergeArray(arr1 []string, arr2 []string) []string {
 	result := append([]string{}, arr1...)
 	result = append(result, arr2...)

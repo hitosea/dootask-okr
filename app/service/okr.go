@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -57,6 +58,12 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 			tx.Rollback()
 			return nil, err
 		}
+	}
+
+	// 至少有一条关键结果
+	if len(param.KeyResults) == 0 {
+		tx.Rollback()
+		return nil, errors.New("至少有一条关键结果")
 	}
 
 	for _, kr := range param.KeyResults {
@@ -125,13 +132,45 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		}
 	}
 
+	// 至少有一条关键结果
+	if len(param.KeyResults) == 0 {
+		tx.Rollback()
+		return nil, errors.New("至少有一条关键结果")
+	}
+
 	for _, kr := range param.KeyResults {
-		keyResult, err := s.updateKeyResult(tx, obj.Id, kr)
-		if err != nil {
-			tx.Rollback()
-			return nil, err
+		if kr.Id == 0 {
+			// 新增kr
+			var addKr interfaces.OkrKeyResultCreateReq
+			addKr.Title = kr.Title
+			addKr.Participant = kr.Participant
+			addKr.Confidence = kr.Confidence
+			addKr.StartAt = kr.StartAt
+			addKr.EndAt = kr.EndAt
+			keyResult, err := s.createKeyResult(tx, user, obj.Id, &addKr)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+			obj.KeyResults = append(obj.KeyResults, keyResult)
+		} else {
+			// 是否删除 true-删除 false-不删除
+			if kr.IsDelete {
+				// 删除kr
+				if err := tx.Where("id = ?", kr.Id).Delete(&model.Okr{}).Error; err != nil {
+					tx.Rollback()
+					return nil, err
+				}
+				continue
+			}
+			// 更新kr
+			keyResult, err := s.updateKeyResult(tx, obj.Id, kr)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+			obj.KeyResults = append(obj.KeyResults, keyResult)
 		}
-		obj.KeyResults = append(obj.KeyResults, keyResult)
 	}
 
 	return obj, tx.Commit().Error
@@ -315,7 +354,7 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 	obj.KrCount = len(krs)                                     // kr总数量
 	obj.KrFinishCount = s.getFinishCount(krs)                  // kr完成数量
 	obj.AlignCount = s.getAlignCount(obj.Id)                   // 对齐目标数量
-	obj.Alias = s.getOwningAlias(obj.Userid, obj.DepartmentId) // 目标别名
+	obj.Alias = s.getOwningAlias(obj.Userid, obj.DepartmentId) // 目标所属名称
 	return obj
 }
 
@@ -421,6 +460,77 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 	}
 
 	return okrs, nil
+}
+
+// 获取对齐目标列表
+// 1. 显示所在部门（即我可见的）+　我参与的
+func (s *okrService) GetAlignList(user *interfaces.UserInfoResp) ([]*model.Okr, error) {
+	// 获取我参与的OKR ids
+	objectiveIds, err := getObjectiveIdsByParticipant(user.Userid)
+	if err != nil {
+		return nil, err
+	}
+	// 获取目标
+	objs, err := getObjectives(objectiveIds, "")
+	if err != nil {
+		return nil, err
+	}
+
+	// 获取目标的关键结果
+	for _, obj := range objs {
+		krs, err := getKeyResults(obj.Id, user.Userid)
+		if err != nil {
+			return nil, err
+		}
+		obj.KeyResults = krs
+	}
+
+	// 获取我所在部门的OKR ids
+	departmentIds := common.ExplodeInt(",", user.Department, true)
+	var departmentObjectiveIds []int
+	for _, departmentId := range departmentIds {
+		departmentObjectiveIds, err = getObjectiveIdsByDepartment(departmentId)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// 获取目标
+	depObjs, err := getObjectives(departmentObjectiveIds, "")
+	if err != nil {
+		return nil, err
+	}
+
+	// 获取目标的关键结果
+	for _, obj := range depObjs {
+		krs := []*model.Okr{}
+		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
+			return nil, err
+		}
+		obj.KeyResults = krs
+	}
+
+	// 合并目标和关键结果
+	objs = append(objs, depObjs...)
+
+	// 按照创建时间排序
+	sort.Slice(objs, func(i, j int) bool {
+		return objs[i].CreateAt.After(objs[j].CreateAt)
+	})
+
+	return objs, nil
+}
+
+// 获取与特定部门id相关的objective_ids
+func getObjectiveIdsByDepartment(departmentId int) ([]int, error) {
+	var objectiveIds []int
+	if err := core.DB.Model(&model.Okr{}).
+		Where("department_id like ?", "%,"+strconv.Itoa(departmentId)+",%").
+		Pluck("DISTINCT parent_id", &objectiveIds).Error; err != nil {
+		return nil, err
+	}
+
+	return objectiveIds, nil
 }
 
 // 获取与特定用户id相关的objective_ids
@@ -543,7 +653,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 }
 
 // 关注的OKR列表
-// 1.可通过目标（O）搜索 2.按关注时间倒序
+// 1.可通过目标（O）搜索 2.当前账号关注的OKR 3.按关注时间倒序
 func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective string) ([]*interfaces.OkrResp, error) {
 	var objs []*model.Okr
 
@@ -608,7 +718,6 @@ func (s *okrService) GetReplayListByOkrId(okrId int) ([]*model.OkrReplay, error)
 	var replays []*model.OkrReplay
 
 	db := core.DB.Model(&model.OkrReplay{}).
-		// Where("userid = ?", user.Userid).
 		Where("okr_id = ?", okrId).
 		Order("create_at ASC")
 
@@ -619,7 +728,7 @@ func (s *okrService) GetReplayListByOkrId(okrId int) ([]*model.OkrReplay, error)
 	return replays, nil
 }
 
-// GetOkrDetail 获取OKR详情
+// 获取OKR详情
 func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*interfaces.OkrResp, error) {
 	obj, err := s.GetObjectiveByIdWithKeyResults(okrId)
 	if err != nil {
@@ -822,9 +931,9 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 
 	if err := core.DB.Table(departmentTable+" AS d").
 		Select("u.userid").
-		Joins(fmt.Sprintf("LEFT JOIN %s AS u ON d.owner_userid = u.userid1", userTable)).
+		Joins(fmt.Sprintf("LEFT JOIN %s AS u ON d.owner_userid = u.userid", userTable)).
 		Where("d.id in (?)", depIds).
-		Where("u.owner_userid = ?", user.Userid).
+		Where("u.userid = ?", user.Userid).
 		Count(&count).Error; err != nil {
 		return false
 	}
@@ -836,15 +945,15 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	return false
 }
 
-// 结束/重启目标
-func (s *okrService) FinishObjective(param interfaces.OkrFinishReq) error {
+// 取消/重启目标
+func (s *okrService) CancelObjective(param interfaces.OkrCanceledReq) error {
 	// 检查目标是否存在
 	obj, err := s.GetObjectiveById(param.Id)
 	if err != nil {
 		return errors.New("目标不存在")
 	}
 
-	obj.Finished = param.Finished
+	obj.Canceled = param.Canceled
 	if err := core.DB.Save(obj).Error; err != nil {
 		return err
 	}
@@ -929,8 +1038,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrTitle:        obj.Title,
 		OkrProgress:     obj.Progress,
 		OkrPriority:     obj.Priority,
-		Value:           req.Value,
-		Problem:         req.Problem,
+		Review:          req.Review,
 	}
 	if err := tx.Create(&replay).Error; err != nil {
 		tx.Rollback()
@@ -990,7 +1098,7 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
-// getOwningAlias 获取目标所属别名
+// 获取目标所属名称
 func (s *okrService) getOwningAlias(userid int, departmentId string) []string {
 	if departmentId != "" {
 		departmentIds := common.ExplodeInt(",", departmentId, true)
@@ -1004,11 +1112,7 @@ func (s *okrService) getOwningAlias(userid int, departmentId string) []string {
 			return nil
 		}
 
-		var alias []string
-		for _, name := range departmentNames {
-			alias = append(alias, "部门-"+name)
-		}
-		return alias
+		return departmentNames
 	}
 
 	// 获取用户名称
@@ -1016,24 +1120,7 @@ func (s *okrService) getOwningAlias(userid int, departmentId string) []string {
 	if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Pluck("nickname", &nickname).Error; err != nil {
 		return nil
 	}
-	return []string{"个人-" + nickname}
-}
-
-// 评分分数列表
-func (s *okrService) GetScoreList() []string {
-	return []string{
-		"0分 未达成目标，态度问题",
-		"1分 未达成目标",
-		"2分 目标达成效果较差，未及时调整",
-		"3分 目标达成效果不佳",
-		"4分 目标勉强达成，还需努力",
-		"5分 目标基本达成",
-		"6分 目标达成，效果一般",
-		"7分 目标达成，效果良好",
-		"8分 100%达成目标",
-		"9分 110%达成目标",
-		"10分 超出预期",
-	}
+	return []string{nickname}
 }
 
 // 取消对齐目标
@@ -1048,25 +1135,6 @@ func (s *okrService) CancelAlignObjective(userid, objectiveId int) error {
 	}
 
 	return nil
-}
-
-// GetAlignList 获取对齐目标列表
-func (s *okrService) GetAlignList(user *interfaces.UserInfoResp) ([]*model.Okr, error) {
-	var aligns []*model.OkrAlign
-	if err := core.DB.Where("userid = ?", user.Userid).Find(&aligns).Error; err != nil {
-		return nil, err
-	}
-
-	var objs []*model.Okr
-	for _, align := range aligns {
-		obj, err := s.GetObjectiveById(align.OkrId)
-		if err != nil {
-			return nil, err
-		}
-		objs = append(objs, obj)
-	}
-
-	return objs, nil
 }
 
 // 获取对齐目标列表by目标id

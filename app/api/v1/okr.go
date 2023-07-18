@@ -263,16 +263,16 @@ func (api *BaseApi) OkrScore() {
 }
 
 // @Tags Okr
-// @Summary 结束/重启目标
-// @Description 结束/重启目标
+// @Summary 取消/重启目标
+// @Description 取消/重启目标
 // @Accept json
-// @Param request formData interfaces.OkrFinishReq true "request"
+// @Param request formData interfaces.OkrCanceledReq true "request"
 // @Success 200 {object} interfaces.Response
-// @Router /okr/finish [post]
-func (api *BaseApi) OkrFinish() {
-	var param = interfaces.OkrFinishReq{}
+// @Router /okr/cancel [post]
+func (api *BaseApi) OkrCancel() {
+	var param = interfaces.OkrCanceledReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.FinishObjective(param)
+	err := service.OkrService.CancelObjective(param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

@@ -37,14 +37,15 @@ type OkrKeyResultCreateReq struct {
 
 // 更新OKR请求
 type OkrUpdateReq struct {
-	Id int `json:"id" binding:"required"` // id
+	Id int `json:"id" binding:"required"` // okr id
 	OkrBaseReq
 	KeyResults []*OkrKeyResultUpdateReq `json:"key_results" binding:"required"` // 关键结果
 }
 
 // 更新OKR关键结果请求
 type OkrKeyResultUpdateReq struct {
-	Id int `json:"id" binding:"required"` // id
+	Id       int  `json:"id" binding:"required"` // okr id
+	IsDelete bool `json:"is_delete"`             // 是否删除 true-删除 false-不删除
 	OkrKeyResultBaseReq
 }
 
@@ -82,10 +83,10 @@ type OkrScoreReq struct {
 	Score float64 `form:"score"`                 // 个人评分
 }
 
-// 结束/重启目标
-type OkrFinishReq struct {
+// 取消/重启目标
+type OkrCanceledReq struct {
 	Id       int `form:"id" binding:"required"` // okr id
-	Finished int `form:"finished"`              // 状态 0-重启 1-结束
+	Canceled int `form:"canceled"`              // 状态 0-重启 1-结束
 }
 
 // 更新参与人请求
@@ -104,8 +105,7 @@ type OkrConfidenceUpdateReq struct {
 type OkrReplayCreateReq struct {
 	OkrId    int                 `json:"okr_id" binding:"required"` // okr id
 	Comments []*OkrReplayComment `json:"comments"`                  // 复盘评价
-	Value    string              `json:"value"`                     // 价值与收获
-	Problem  string              `json:"problem"`                   // 问题与不足
+	Review   string              `json:"review"`                    // 回顾
 }
 
 // 复盘评价

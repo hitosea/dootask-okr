@@ -362,6 +362,41 @@ var doc = `{
                 }
             }
         },
+        "/okr/cancel": {
+            "post": {
+                "description": "取消/重启目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "取消/重启目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "状态 0-重启 1-结束",
+                        "name": "canceled",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/confidence/update": {
             "post": {
                 "description": "更新信心指数",
@@ -476,41 +511,6 @@ var doc = `{
                         "description": "目标id",
                         "name": "id",
                         "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/okr/finish": {
-            "post": {
-                "description": "结束/重启目标",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Okr"
-                ],
-                "summary": "结束/重启目标",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "状态 0-重启 1-结束",
-                        "name": "finished",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "okr id",
-                        "name": "id",
-                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -1207,8 +1207,12 @@ var doc = `{
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
+                    "description": "okr id",
                     "type": "integer"
+                },
+                "is_delete": {
+                    "description": "是否删除 true-删除 false-不删除",
+                    "type": "boolean"
                 },
                 "participant": {
                     "description": "参与人,多个用逗号隔开",
@@ -1257,12 +1261,8 @@ var doc = `{
                     "description": "okr id",
                     "type": "integer"
                 },
-                "problem": {
-                    "description": "问题与不足",
-                    "type": "string"
-                },
-                "value": {
-                    "description": "价值与收获",
+                "review": {
+                    "description": "回顾",
                     "type": "string"
                 }
             }
@@ -1291,7 +1291,7 @@ var doc = `{
                     "type": "string"
                 },
                 "id": {
-                    "description": "id",
+                    "description": "okr id",
                     "type": "integer"
                 },
                 "key_results": {
