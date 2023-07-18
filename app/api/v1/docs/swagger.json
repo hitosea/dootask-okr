@@ -130,6 +130,35 @@
                 }
             }
         },
+        "/okr/align/detail": {
+            "get": {
+                "description": "获取对齐目标by目标id",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取对齐目标by目标id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "目标id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/align/list": {
             "get": {
                 "description": "获取对齐目标列表",
@@ -140,6 +169,15 @@
                     "Okr"
                 ],
                 "summary": "获取对齐目标列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键词",
+                        "name": "keywords",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

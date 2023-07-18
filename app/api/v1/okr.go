@@ -400,10 +400,12 @@ func (api *BaseApi) OkrAlignCancel() {
 // @Summary 获取对齐目标列表
 // @Description 获取对齐目标列表
 // @Accept json
+// @Param keywords query string true "关键词"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/align/list [get]
 func (api *BaseApi) OkrAlignList() {
-	result, err := service.OkrService.GetAlignList(api.Userinfo)
+	keywords := api.Context.Query("keywords")
+	result, err := service.OkrService.GetAlignList(api.Userinfo, keywords)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -433,6 +435,35 @@ func (api *BaseApi) OkrLogList() {
 	}
 
 	result, err := service.OkrService.GetOkrLogList(okrId)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 获取对齐目标by目标id
+// @Description 获取对齐目标by目标id
+// @Accept json
+// @Param id query int true "目标id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/align/detail [get]
+func (api *BaseApi) OkrAlignDetail() {
+	okrIdStr := api.Context.Query("id")
+	if okrIdStr == "" {
+		helper.ErrorWith(api.Context, "目标id不能为空", nil)
+		return
+	}
+
+	okrId, err := strconv.Atoi(okrIdStr)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	result, err := service.OkrService.GetAlignListByOkrId(api.Userinfo, okrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

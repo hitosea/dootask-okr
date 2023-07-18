@@ -390,11 +390,36 @@ paths:
       summary: 取消对齐目标
       tags:
       - Okr
+  /okr/align/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取对齐目标by目标id
+      parameters:
+      - description: 目标id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取对齐目标by目标id
+      tags:
+      - Okr
   /okr/align/list:
     get:
       consumes:
       - application/json
       description: 获取对齐目标列表
+      parameters:
+      - description: 关键词
+        in: query
+        name: keywords
+        required: true
+        type: string
       responses:
         "200":
           description: OK

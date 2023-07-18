@@ -34,6 +34,21 @@ func ArrayIntersectionProcessing(nums []int, itemIds []int) []int {
 	return result
 }
 
+// 差集处理
+func ArrayDifferenceProcessing(a, b []int) []int {
+	m := make(map[int]bool)
+	for _, item := range b {
+		m[item] = true
+	}
+	var diff []int
+	for _, item := range a {
+		if _, ok := m[item]; !ok {
+			diff = append(diff, item)
+		}
+	}
+	return diff
+}
+
 // str 数组去重
 func ArrayUniqueStr(nums []string) []string {
 	result := make([]string, 0, len(nums))

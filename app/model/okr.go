@@ -28,7 +28,6 @@ type Okr struct {
 	Progress       int            `gorm:"default:0;comment:'进度指数0-100'" json:"progress"`
 	ProgressStatus int            `gorm:"default:0;comment:'进度状态 0-未开始 1-正常 2-有风险 3-已延期'" json:"progress_status"`
 	Confidence     int            `gorm:"default:0;comment:'信心指数0-100'" json:"confidence"`
-	IsDelete       int            `gorm:"type:tinyint(1);default:0;comment:'是否删除'" json:"is_delete"`
 	Score          float64        `gorm:"default:0;comment:'个人评分'" json:"score"` // 个人评分和O总评分
 	SuperiorScore  float64        `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
 	StartAt        time.Time      `gorm:"comment:'开始时间' " json:"start_at"`
@@ -58,7 +57,7 @@ var (
 func (m Okr) GetAllDeptIds() []int {
 	var departmentId []int
 	var departmentIds []string
-	if err := core.DB.Model(m).Where("is_delete", 0).Pluck("DISTINCT(department_id)", &departmentIds).Error; err != nil {
+	if err := core.DB.Model(m).Where("deleted_at IS NULL").Pluck("DISTINCT(department_id)", &departmentIds).Error; err != nil {
 		return departmentId
 	}
 	for _, v := range departmentIds {

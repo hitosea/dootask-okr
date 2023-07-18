@@ -52,11 +52,20 @@ type OkrKeyResultUpdateReq struct {
 // OKR列表/详情响应
 type OkrResp struct {
 	*model.Okr
-	IsFollow      bool     `json:"is_follow"`       //是否被关注
-	KrCount       int      `json:"kr_count"`        //kr总数量
-	KrFinishCount int      `json:"kr_finish_count"` //kr完成数量
-	AlignCount    int      `json:"align_count"`     //对齐目标数量
-	Alias         []string `json:"alias"`           //目标别名
+	IsFollow      bool     `json:"is_follow"`       // 是否被关注
+	KrCount       int      `json:"kr_count"`        // kr总数量
+	KrFinishCount int      `json:"kr_finish_count"` // kr完成数量
+	AlignCount    int      `json:"align_count"`     // 对齐目标数量
+	Alias         []string `json:"alias"`           // 目标别名
+}
+
+// OKR对齐目标响应
+type OkrAlignResp struct {
+	*model.Okr
+	Prefix         string   `json:"prefix"`          // 前缀
+	AlignObjective string   `json:"align_objective"` // 对齐目标
+	Alias          []string `json:"alias"`           // 目标别名
+
 }
 
 // OKR部门列表请求

@@ -7,9 +7,10 @@ import (
 	"dootask-okr/app/utils/common"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"sort"
-	"strconv"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -437,7 +438,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		return nil, err
 	}
 
-	objs, err := getObjectives(objectiveIds, objective)
+	objs, err := getParticipantObjectives(objectiveIds, objective)
 	if err != nil {
 		return nil, err
 	}
@@ -451,7 +452,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 	}
 
 	for _, obj := range okrs {
-		krs, err := getKeyResults(obj.Id, user.Userid)
+		krs, err := getParticipantKeyResults(obj.Id, user.Userid)
 		if err != nil {
 			return nil, err
 		}
@@ -464,30 +465,11 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 
 // 获取对齐目标列表
 // 1. 显示所在部门（即我可见的）+　我参与的
-func (s *okrService) GetAlignList(user *interfaces.UserInfoResp) ([]*model.Okr, error) {
-	// 获取我参与的OKR ids
-	objectiveIds, err := getObjectiveIdsByParticipant(user.Userid)
-	if err != nil {
-		return nil, err
-	}
-	// 获取目标
-	objs, err := getObjectives(objectiveIds, "")
-	if err != nil {
-		return nil, err
-	}
-
-	// 获取目标的关键结果
-	for _, obj := range objs {
-		krs, err := getKeyResults(obj.Id, user.Userid)
-		if err != nil {
-			return nil, err
-		}
-		obj.KeyResults = krs
-	}
-
-	// 获取我所在部门的OKR ids
+func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, keywords string) ([]*model.Okr, error) {
+	// 获取我所在部门的OKR
 	departmentIds := common.ExplodeInt(",", user.Department, true)
 	var departmentObjectiveIds []int
+	var err error
 	for _, departmentId := range departmentIds {
 		departmentObjectiveIds, err = getObjectiveIdsByDepartment(departmentId)
 		if err != nil {
@@ -495,13 +477,12 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp) ([]*model.Okr, 
 		}
 	}
 
-	// 获取目标
-	depObjs, err := getObjectives(departmentObjectiveIds, "")
+	depObjs := []*model.Okr{}
+	err = core.DB.Model(&model.Okr{}).Where("id in (?)", departmentObjectiveIds).Where("parent_id = 0").Order("create_at desc").Find(&depObjs).Error
 	if err != nil {
 		return nil, err
 	}
 
-	// 获取目标的关键结果
 	for _, obj := range depObjs {
 		krs := []*model.Okr{}
 		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
@@ -510,23 +491,60 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp) ([]*model.Okr, 
 		obj.KeyResults = krs
 	}
 
-	// 合并目标和关键结果
-	objs = append(objs, depObjs...)
+	// 我参与的OKR
+	participantObjectiveIds, err := getObjectiveIdsByParticipant(user.Userid)
+	if err != nil {
+		return nil, err
+	}
+
+	// 差集处理
+	objectiveIds := common.ArrayDifferenceProcessing(participantObjectiveIds, departmentObjectiveIds)
+	if len(objectiveIds) > 0 {
+		objs, err := getParticipantObjectives(objectiveIds, "")
+		if err != nil {
+			return nil, err
+		}
+
+		for _, obj := range objs {
+			krs, err := getParticipantKeyResults(obj.Id, user.Userid)
+			if err != nil {
+				return nil, err
+			}
+			obj.KeyResults = krs
+		}
+
+		// 合并目标和关键结果
+		depObjs = append(depObjs, objs...)
+	}
+
+	// 过滤标题中包含关键字的目标和关键结果
+	filteredObjs := []*model.Okr{}
+	for _, obj := range depObjs {
+		if strings.Contains(obj.Title, keywords) {
+			filteredObjs = append(filteredObjs, obj)
+		}
+		for _, kr := range obj.KeyResults {
+			if strings.Contains(kr.Title, keywords) {
+				filteredObjs = append(filteredObjs, obj)
+			}
+		}
+	}
 
 	// 按照创建时间排序
-	sort.Slice(objs, func(i, j int) bool {
-		return objs[i].CreateAt.After(objs[j].CreateAt)
+	sort.Slice(filteredObjs, func(i, j int) bool {
+		return filteredObjs[i].CreateAt.After(filteredObjs[j].CreateAt)
 	})
 
-	return objs, nil
+	return filteredObjs, nil
 }
 
 // 获取与特定部门id相关的objective_ids
 func getObjectiveIdsByDepartment(departmentId int) ([]int, error) {
 	var objectiveIds []int
 	if err := core.DB.Model(&model.Okr{}).
-		Where("department_id like ?", "%,"+strconv.Itoa(departmentId)+",%").
-		Pluck("DISTINCT parent_id", &objectiveIds).Error; err != nil {
+		Where("parent_id = 0").
+		Where("FIND_IN_SET(?, department_id) > 0", departmentId).
+		Pluck("id", &objectiveIds).Error; err != nil {
 		return nil, err
 	}
 
@@ -537,7 +555,7 @@ func getObjectiveIdsByDepartment(departmentId int) ([]int, error) {
 func getObjectiveIdsByParticipant(userid int) ([]int, error) {
 	var objectiveIds []int
 	if err := core.DB.Model(&model.Okr{}).
-		Where("participant like ?", "%,"+strconv.Itoa(userid)+",%").
+		Where("FIND_IN_SET(?, participant) > 0", userid).
 		Pluck("DISTINCT parent_id", &objectiveIds).Error; err != nil {
 		return nil, err
 	}
@@ -545,8 +563,8 @@ func getObjectiveIdsByParticipant(userid int) ([]int, error) {
 	return objectiveIds, nil
 }
 
-// 获取满足目标搜索条件的objs
-func getObjectives(objectiveIds []int, objective string) ([]*model.Okr, error) {
+// 获取参与的目标搜索列表
+func getParticipantObjectives(objectiveIds []int, objective string) ([]*model.Okr, error) {
 	db := core.DB.Model(&model.Okr{}).
 		Where("id in (?)", objectiveIds).
 		Where("parent_id = 0").
@@ -564,11 +582,12 @@ func getObjectives(objectiveIds []int, objective string) ([]*model.Okr, error) {
 	return objs, nil
 }
 
-// 获取特定objective_id和用户id相关的key_results
-func getKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
+// 获取参与的KR列表
+func getParticipantKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 	var krs []*model.Okr
 	if err := core.DB.Model(&model.Okr{}).
-		Where("parent_id = ? and participant like ?", objectiveId, "%,"+strconv.Itoa(userid)+",%").
+		Where("FIND_IN_SET(?, participant) > 0", userid).
+		Where("parent_id = ?", objectiveId).
 		Order("create_at desc").
 		Find(&krs).Error; err != nil {
 		return nil, err
@@ -1138,27 +1157,43 @@ func (s *okrService) CancelAlignObjective(userid, objectiveId int) error {
 }
 
 // 获取对齐目标列表by目标id
-func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId int) ([]*model.Okr, error) {
-	var aligns []*model.OkrAlign
-	if err := core.DB.Where("okr_id = ?", user.Userid, okrId).Find(&aligns).Error; err != nil {
+func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId int) ([]*interfaces.OkrAlignResp, error) {
+	var alignOkrId []int
+	if err := core.DB.Model(&model.OkrAlign{}).Where("okr_id = ?", okrId).Pluck("align_okr_id", &alignOkrId).Error; err != nil {
+		return nil, err
+	}
+	log.Println("alignOkrId", alignOkrId)
+	// 获取对齐目标
+	var alignOkrs []*model.Okr
+	if err := core.DB.Model(&model.Okr{}).Where("id in (?)", alignOkrId).Find(&alignOkrs).Unscoped().Error; err != nil {
 		return nil, err
 	}
 
-	var objs []*model.Okr
-	for _, align := range aligns {
-		obj, err := s.GetObjectiveById(align.OkrId)
-		if err != nil {
-			return nil, err
-		}
-		var krs []*model.Okr
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
-			return nil, err
-		}
-		obj.KeyResults = krs
-		objs = append(objs, obj)
+	var okrAlignResps []*interfaces.OkrAlignResp
+	for _, obj := range alignOkrs {
+		okrAlignResps = append(okrAlignResps, &interfaces.OkrAlignResp{
+			Okr:   obj,
+			Alias: s.getOwningAlias(obj.Userid, obj.DepartmentId),
+			Prefix: func() string {
+				if obj.ParentId == 0 {
+					return "O"
+				}
+				return "KR"
+			}(),
+			AlignObjective: func() string {
+				if obj.ParentId > 0 {
+					o, err := s.GetObjectiveById(obj.ParentId)
+					if err != nil {
+						return ""
+					}
+					return o.Title
+				}
+				return ""
+			}(),
+		})
 	}
 
-	return objs, nil
+	return okrAlignResps, nil
 }
 
 // 新增动态日志
