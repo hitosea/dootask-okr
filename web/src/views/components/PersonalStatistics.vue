@@ -1,0 +1,194 @@
+<template >
+    <div class="personal-statistics">
+        <div class="p-s-box p-s-one">
+            <div class="p-s-one-box">
+                <div class="p-s-one-title">
+                    <h3>{{ $t('待完成数') }}</h3>
+                    <p>38</p>
+                </div>
+                <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)]">
+                    <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
+                </div>
+            </div>
+            <div class="mx-24 h-full w-1 bg-[#F2F3F5]" />
+            <div class="p-s-one-box">
+                <div class="p-s-one-title">
+                    <h3>{{ $t('已完成/已取消数') }}</h3>
+                    <p>11</p>
+                </div>
+                <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)]">
+                    <i class="taskfont text-[#87D068]">&#xe707;</i>
+                </div>
+            </div>
+        </div>
+        <div class="p-s-box p-s-two">
+            <div class="percent-box">
+                <h3>{{ $t('整体完成度') }}</h3>
+                <p>{{ $t('这是你的目标整体完成度。') }}</p>
+            </div>
+            <div class="relative w-[150px] h-[67px]">
+                <div class="h-full w-[150px]" id="DegreeOfCompletion"></div>
+                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">20%</h3>
+            </div>
+        </div>
+        <div class="p-s-box p-s-two">
+            <div class="percent-box">
+                <h3>{{ $t('整体评分') }}</h3>
+                <p>{{ $t('这是你的目标整体获得评分。') }}</p>
+            </div>
+            <div class="relative w-[150px] h-[67px]">
+                <div class="h-full w-[150px]" id="mark"></div>
+                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">50%</h3>
+            </div>
+        </div>
+    </div>
+</template>
+<script lang="ts" setup>
+import * as echarts from 'echarts';
+
+nextTick(() => {
+    var chartDom = document.getElementById('DegreeOfCompletion');
+    var myChart = echarts.init(chartDom);
+    var option;
+    option = {
+        tooltip: {
+            show: false,
+        },
+        grid: {
+            x: 90,
+            y: 0
+        },
+        series: [
+            {
+                name: 'Access From',
+                type: 'pie',
+                radius: ['150%', '200%'],
+                center: ['50%', '100%'],
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                silent: true,
+                startAngle: 180,
+                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
+                data: [
+                    { value: 1048, name: 'Search Engine' },
+                    { value: 735, name: 'Direct' },
+                    {
+                        value: 1048 + 735,
+                        itemStyle: {
+                            color: 'none',
+                            decal: {
+                                symbol: 'none'
+                            }
+                        },
+                        label: {
+                            show: false
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+    option && myChart.setOption(option);
+
+    var chartDomTwo = document.getElementById('mark');
+    var myChartTwo = echarts.init(chartDomTwo);
+    var optionTwo;
+    optionTwo = {
+        tooltip: {
+            show: false,
+        },
+        grid: {
+            x: 90,
+            y: 0
+        },
+        series: [
+            {
+                name: 'Access From',
+                type: 'pie',
+                radius: ['150%', '200%'],
+                center: ['50%', '100%'],
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                silent: true,
+                startAngle: 180,
+                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
+                data: [
+                    { value: 1048, name: 'Search Engine' },
+                    { value: 735, name: 'Direct' },
+                    {
+                        value: 1048 + 735,
+                        itemStyle: {
+                            color: 'none',
+                            decal: {
+                                symbol: 'none'
+                            }
+                        },
+                        label: {
+                            show: false
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+    optionTwo && myChartTwo.setOption(optionTwo);
+
+})
+
+
+</script>
+<style lang="less">
+.personal-statistics {
+    @apply flex gap-6;
+
+    .p-s-box {
+        @apply flex-1 bg-white rounded-lg px-24 py-30 flex;
+    }
+
+    .p-s-one {
+        .p-s-one-box {
+            @apply flex-1 flex justify-between items-center;
+
+            .p-s-one-title {
+                @apply flex flex-col;
+
+                h3 {
+                    @apply text-12 text-text-tips font-normal;
+                }
+
+                p {
+                    @apply text-30;
+                }
+            }
+
+            .p-s-one-icon {
+                @apply w-56 h-56 rounded-full flex items-center justify-center;
+
+                i {
+                    @apply text-30;
+                }
+            }
+        }
+    }
+
+    .p-s-two {
+        @apply justify-between items-center;
+
+        .percent-box {
+            @apply flex flex-col gap-3;
+
+            h3 {
+                @apply text-title-color text-18;
+            }
+
+            p {
+                @apply text-14 text-text-tips;
+            }
+        }
+    }
+}
+</style>

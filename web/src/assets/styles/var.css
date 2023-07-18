@@ -1,4 +1,5 @@
 .n-config-provider {
+    --page-bg:#FAFAFA;
     --primary-color: #84C56A;
     --primary-color-80: rgba(132, 197, 106, 0.8);
     --primary-title-color: #303133;

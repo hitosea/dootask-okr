@@ -1,4 +1,5 @@
 .n-config-provider.dark{
+    --page-bg:#191919;
     --primary-color: #67a050;
     --primary-color-80: rgba(132,197,106,0.8);
     --primary-title-color: #c1c2c3;

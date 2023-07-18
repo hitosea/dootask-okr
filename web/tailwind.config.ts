@@ -8,6 +8,7 @@ module.exports = {
     theme: {
         extend: {
             colors: {
+                "page-bg": "var(--page-bg)",
                 "primary-color": "var(--primary-color)",
                 "primary-color-80": "var(--primary-color-80)",
                 "primary-color-20": "var(--primary-color-20)",
@@ -50,6 +51,7 @@ module.exports = {
                 "dialog-goto": "var(--dialog-goto)",
             },
             fontSize: {
+                10: "10px",
                 12: "12px",
                 13: "13px",
                 14: "14px",
@@ -62,7 +64,9 @@ module.exports = {
                 24: "24px",
                 26: "26px",
                 28: "28px",
+                30: "30px",
                 32: "32px",
+                36: "36px",
                 40: "40px",
                 52: "52px",
                 72: "72px",
@@ -194,6 +198,7 @@ module.exports = {
                 40: "40px",
                 42: "42px",
                 50: "50px",
+                56: "56px",
                 76: "76px",
                 80: "80px",
                 84: "84px",
@@ -201,6 +206,7 @@ module.exports = {
                 219: "219px",
                 220: "220px",
                 255: "255px",
+                320: "320px",
                 388: "388px",
                 400: "400px",
                 460: "460px",
@@ -254,6 +260,7 @@ module.exports = {
                 50: "50px",
                 52: "52px",
                 54: "54px",
+                56: "56px",
                 68: "68px",
                 76: "76px",
                 80: "80px",
