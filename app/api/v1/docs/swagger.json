@@ -934,15 +934,15 @@
         "interfaces.OkrAlignCancelReq": {
             "type": "object",
             "required": [
-                "align_okr_id",
-                "okr_id"
+                "alignOkrId",
+                "okrId"
             ],
             "properties": {
-                "align_okr_id": {
+                "alignOkrId": {
                     "description": "对齐目标okr id",
                     "type": "integer"
                 },
-                "okr_id": {
+                "okrId": {
                     "description": "okr id",
                     "type": "integer"
                 }

@@ -17,6 +17,7 @@ type Okr struct {
 	Userid         int            `gorm:"default:0;comment:'用户id'" json:"userid"`
 	DepartmentId   string         `gorm:"type:varchar(100);default:'';comment:'部门id'" json:"department_id"`
 	ProjectId      int            `gorm:"default:0;comment:'项目id'" json:"project_id"`
+	DialogId       int            `gorm:"default:0;comment:'聊天ID'" json:"dialog_id"`
 	Title          string         `gorm:"type:varchar(255);comment:'标题内容'" json:"title"`
 	Type           int            `gorm:"default:1;comment:'类型 1-承诺型 2-挑战型'" json:"type"`
 	Priority       string         `gorm:"type:varchar(10);comment:'优先级'" json:"priority"`
@@ -36,7 +37,8 @@ type Okr struct {
 	UpdateAt       time.Time      `gorm:"autoUpdateTime;comment:'更新时间'" json:"update_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index;comment:'删除时间'" json:"deleted_at"`
 	KeyResults     []*Okr         `gorm:"-" json:"key_results"`
-	KrScore        float64        `gorm:"-" json:"kr_score"` // KR总评分
+	KrScore        float64        `gorm:"-" json:"kr_score"`     // KR总评分
+	ParentTitle    string         `gorm:"-" json:"parent_title"` // 父级目标标题
 }
 
 var (

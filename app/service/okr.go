@@ -53,6 +53,18 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		return nil, err
 	}
 
+	// 创建对话
+	dialogId, err := DootaskService.DialogOkrAdd(user.Token, obj)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	obj.DialogId = dialogId
+	if err := tx.Save(obj).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
 	if param.AlignObjective != "" {
 		if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
 			tx.Rollback()
@@ -106,38 +118,13 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		return nil, err
 	}
 
-	// 新增动态日志
-	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	obj.Title = param.Title
-	obj.Type = param.Type
-	obj.Priority = param.Priority
-	obj.VisibleRange = param.VisibleRange
-	obj.ProjectId = param.ProjectId
-	obj.StartAt = startAt
-	obj.EndAt = endAt
-
-	if err := tx.Save(obj).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if param.AlignObjective != "" {
-		if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
-			tx.Rollback()
-			return nil, err
-		}
-	}
-
 	// 至少有一条关键结果
 	if len(param.KeyResults) == 0 {
 		tx.Rollback()
 		return nil, errors.New("至少有一条关键结果")
 	}
 
+	var participantIds []int // 所有参与人
 	for _, kr := range param.KeyResults {
 		if kr.Id == 0 {
 			// 新增kr
@@ -164,12 +151,50 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 				continue
 			}
 			// 更新kr
-			keyResult, err := s.updateKeyResult(tx, obj.Id, kr)
+			keyResult, err := s.updateKeyResult(tx, kr, user, obj)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
 			}
 			obj.KeyResults = append(obj.KeyResults, keyResult)
+		}
+		participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
+	}
+
+	// O目标变动时，发送提示消息
+	participantIds = common.ArrayUniqueInt(participantIds)
+	if obj.Title != param.Title {
+		go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
+	}
+
+	// O时间变动时，发送提示消息
+	if obj.StartAt != startAt || obj.EndAt != endAt {
+		go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
+	}
+
+	// 新增动态日志
+	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	obj.Title = param.Title
+	obj.Type = param.Type
+	obj.Priority = param.Priority
+	obj.VisibleRange = param.VisibleRange
+	obj.ProjectId = param.ProjectId
+	obj.StartAt = startAt
+	obj.EndAt = endAt
+
+	if err := tx.Save(obj).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if param.AlignObjective != "" {
+		if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
+			tx.Rollback()
+			return nil, err
 		}
 	}
 
@@ -206,7 +231,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp,
 }
 
 // 更新关键结果
-func (s *okrService) updateKeyResult(tx *gorm.DB, parentId int, kr *interfaces.OkrKeyResultUpdateReq) (*model.Okr, error) {
+func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpdateReq, user *interfaces.UserInfoResp, obj *model.Okr) (*model.Okr, error) {
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
 		return nil, err
@@ -222,7 +247,29 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, parentId int, kr *interfaces.O
 		return nil, errors.New("目标不存在")
 	}
 
-	keyResult.ProjectId = parentId
+	// 父级目标标题
+	keyResult.ParentTitle = obj.Title
+
+	oldParticipant := common.ExplodeInt(",", keyResult.Participant, true)
+	newParticipant := common.ExplodeInt(",", kr.Participant, true)
+	diffParticipant := common.ArrayDifferenceProcessing(newParticipant, oldParticipant)
+
+	// KR变动时，发送提示消息
+	if keyResult.Title != kr.Title {
+		go DootaskService.DialogOkrPush(keyResult, user.Token, 3, newParticipant)
+	}
+
+	// KR时间变动时，发送提示消息
+	if keyResult.StartAt != startAt || keyResult.EndAt != endAt {
+		go DootaskService.DialogOkrPush(keyResult, user.Token, 6, newParticipant)
+	}
+
+	// 为KR添加新参与人时，发送提示消息
+	if len(diffParticipant) > 0 {
+		go DootaskService.DialogOkrPush(keyResult, user.Token, 4, diffParticipant)
+	}
+
+	keyResult.ProjectId = obj.Id
 	keyResult.Participant = kr.Participant
 	keyResult.Title = kr.Title
 	keyResult.Confidence = kr.Confidence

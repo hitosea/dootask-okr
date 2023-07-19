@@ -2,15 +2,15 @@ basePath: /api/v1
 definitions:
   interfaces.OkrAlignCancelReq:
     properties:
-      align_okr_id:
+      alignOkrId:
         description: 对齐目标okr id
         type: integer
-      okr_id:
+      okrId:
         description: okr id
         type: integer
     required:
-    - align_okr_id
-    - okr_id
+    - alignOkrId
+    - okrId
     type: object
   interfaces.OkrAnalyzeDept:
     properties:
