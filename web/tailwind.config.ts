@@ -49,6 +49,7 @@ module.exports = {
                 "icon-avatar-project": "var(--icon-avatar-project)",
                 "icon-avatar-task": "var(--icon-avatar-task)",
                 "dialog-goto": "var(--dialog-goto)",
+                "8F8F8E":"var(--8F8F8E)",
             },
             fontSize: {
                 10: "10px",

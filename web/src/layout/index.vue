@@ -33,10 +33,18 @@ const locale = computed((): NLocale => {
     if (globalStore.language == "en") return enUS
     return zhCN
 })
+
+
 const dateLocale = computed((): NDateLocale => {
     if (globalStore.language == "en") return dateEnUS
     return dateZhCN
 })
+
+watch(themeName,(newVal,oldVal)=>{
+    document.querySelector("body").classList.remove(oldVal)
+    document.querySelector("body").classList.add(newVal)
+},{immediate:true})
+
 </script>
 <style lang="less">
 .child-view {

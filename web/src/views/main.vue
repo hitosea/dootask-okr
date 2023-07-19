@@ -52,6 +52,8 @@ const handleLanguageUpdate = () => {
         globalStore.setLanguage("en")
     }
 }
+
+
 </script>
 
 <style lang="less" scoped>
