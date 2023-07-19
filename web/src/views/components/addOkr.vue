@@ -24,11 +24,11 @@
                             <n-radio-group v-model:value="formValue.priority" name="radiogroup2">
                                 <n-space>
                                     <template v-if="formValue.type == '0'">
-                                        <n-radio value="0">{{ $t('P0') }}</n-radio>
-                                        <n-radio value="1">{{ $t('P1') }}</n-radio>
+                                        <n-radio value="0">P0</n-radio>
+                                        <n-radio value="1">P1</n-radio>
                                     </template>
                                     <template v-else>
-                                        <n-radio value="2">{{ $t('P2') }}</n-radio>
+                                        <n-radio value="2">P2</n-radio>
                                     </template>
                                 </n-space>
                             </n-radio-group>

@@ -15,6 +15,7 @@ export default defineConfig(({command, mode}) => {
     return {
         base: `${process.env.NODE_ENV === 'production' ? '' : ''}${appname}`,
         server: {
+            host: '0.0.0.0',
             port: devPort,
             // proxy: {
             //     [`${viteApiUrl}/ws`]: {

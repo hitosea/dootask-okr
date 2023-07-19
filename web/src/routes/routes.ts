@@ -1,5 +1,5 @@
 import Index from '../views/index.vue'
-import Main from '../views/main.vue'
+import Analysis from '../views/analysis.vue'
 
 export const routes = [
     {
@@ -8,8 +8,8 @@ export const routes = [
         component: Index
     },
     {
-        name: "main",
-        path: "/main",
-        component: Main
+        name: "analysis",
+        path: "/analysis",
+        component: Analysis
     }
 ];
