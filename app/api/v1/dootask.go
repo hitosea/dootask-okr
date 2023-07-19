@@ -9,12 +9,10 @@ import (
 // @Summary 获取用户信息
 // @Description 获取用户信息
 // @Accept json
-// @Param token query string true "token"
 // @Success 200 {object} interfaces.Response
 // @Router /doo/user/info [get]
 func (api *BaseApi) DooUserInfo() {
-	token := api.Context.Query("token")
-	result, err := service.DootaskService.GetUserInfo(token)
+	result, err := service.DootaskService.GetUserInfo(api.Userinfo.Token)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -26,12 +24,10 @@ func (api *BaseApi) DooUserInfo() {
 // @Summary 获取用户列表
 // @Description 获取用户列表
 // @Accept json
-// @Param token query string true "token"
 // @Success 200 {object} interfaces.Response
 // @Router /doo/user/list [get]
 func (api *BaseApi) DooUserList() {
-	token := api.Context.Query("token")
-	result, err := service.DootaskService.GetUserList(token)
+	result, err := service.DootaskService.GetUserList(api.Userinfo.Token)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -43,12 +39,10 @@ func (api *BaseApi) DooUserList() {
 // @Summary 获取项目列表
 // @Description 获取项目列表
 // @Accept json
-// @Param token query string true "token"
 // @Success 200 {object} interfaces.Response
 // @Router /doo/project/list [get]
 func (api *BaseApi) DooProjectList() {
-	token := api.Context.Query("token")
-	result, err := service.DootaskService.GetProjectList(token)
+	result, err := service.DootaskService.GetProjectList(api.Userinfo.Token)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

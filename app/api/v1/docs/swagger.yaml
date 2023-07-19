@@ -2,15 +2,15 @@ basePath: /api/v1
 definitions:
   interfaces.OkrAlignCancelReq:
     properties:
-      alignOkrId:
+      align_okr_id:
         description: 对齐目标okr id
         type: integer
-      okrId:
+      okr_id:
         description: okr id
         type: integer
     required:
-    - alignOkrId
-    - okrId
+    - align_okr_id
+    - okr_id
     type: object
   interfaces.OkrAnalyzeDept:
     properties:
@@ -331,12 +331,6 @@ paths:
       consumes:
       - application/json
       description: 获取项目列表
-      parameters:
-      - description: token
-        in: query
-        name: token
-        required: true
-        type: string
       responses:
         "200":
           description: OK
@@ -350,12 +344,6 @@ paths:
       consumes:
       - application/json
       description: 获取用户信息
-      parameters:
-      - description: token
-        in: query
-        name: token
-        required: true
-        type: string
       responses:
         "200":
           description: OK
@@ -369,12 +357,6 @@ paths:
       consumes:
       - application/json
       description: 获取用户列表
-      parameters:
-      - description: token
-        in: query
-        name: token
-        required: true
-        type: string
       responses:
         "200":
           description: OK
