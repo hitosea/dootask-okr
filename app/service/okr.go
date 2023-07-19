@@ -76,7 +76,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	}
 
 	// 动态日志
-	if err := s.InsertOkrLog(obj.Id, user.Userid, "add", "创建OKR"); err != nil {
+	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "创建OKR"); err != nil {
 		tx.Rollback()
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	}
 
 	// 新增动态日志
-	if err := s.InsertOkrLog(obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
+	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
 		tx.Rollback()
 		return nil, err
 	}
@@ -1196,6 +1196,9 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 
 // 新增动态日志
 func (s *okrService) InsertOkrLog(okrId, userId int, operation, content string) error {
+	return s.InsertOkrLogTx(core.DB, okrId, userId, operation, content)
+}
+func (s *okrService) InsertOkrLogTx(tx *gorm.DB, okrId, userId int, operation, content string) error {
 	log := &model.OkrLog{
 		OkrId:     okrId,
 		Userid:    userId,
@@ -1203,7 +1206,7 @@ func (s *okrService) InsertOkrLog(okrId, userId int, operation, content string) 
 		Content:   content,
 	}
 
-	if err := core.DB.Create(log).Error; err != nil {
+	if err := tx.Create(log).Error; err != nil {
 		return err
 	}
 
