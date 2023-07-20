@@ -20,13 +20,12 @@ type okrService struct{}
 
 // 创建目标
 func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrCreateReq) (*model.Okr, error) {
-	tx := core.DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
+	// 至少有一条关键结果
+	if len(param.KeyResults) == 0 {
+		return nil, errors.New("至少有一条关键结果")
+	}
 
+	// 时间格式化
 	startAt, err := common.ParseTime(param.StartAt)
 	if err != nil {
 		return nil, err
@@ -36,6 +35,8 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	if err != nil {
 		return nil, err
 	}
+
+	// 创建目标
 	obj := &model.Okr{
 		Userid:       user.Userid,
 		DepartmentId: common.ArrayImplode(user.Department),
@@ -48,157 +49,163 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		StartAt:      startAt,
 		EndAt:        endAt,
 	}
-	if err := tx.Create(obj).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
 
-	// 创建对话
-	dialogId, err := DootaskService.DialogOkrAdd(user.Token, obj)
-	if err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-	obj.DialogId = dialogId
-	if err := tx.Save(obj).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if param.AlignObjective != "" {
-		if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
-			tx.Rollback()
-			return nil, err
+	var participantIds []int
+	participantIds = append(participantIds, user.Userid) // 通知发起/所有KR参与人
+	err = core.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(obj).Error; err != nil {
+			return err
 		}
-	}
 
-	// 至少有一条关键结果
-	if len(param.KeyResults) == 0 {
-		tx.Rollback()
-		return nil, errors.New("至少有一条关键结果")
-	}
-
-	for _, kr := range param.KeyResults {
-		keyResult, err := s.createKeyResult(tx, user, obj.Id, kr)
+		// 创建对话
+		dialogId, err := DootaskService.DialogOkrAdd(user.Token, obj)
 		if err != nil {
-			tx.Rollback()
-			return nil, err
+			return err
 		}
-		obj.KeyResults = append(obj.KeyResults, keyResult)
-	}
+		obj.DialogId = dialogId
+		if err := tx.Save(obj).Error; err != nil {
+			return err
+		}
 
-	// 动态日志
-	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "创建OKR"); err != nil {
-		tx.Rollback()
+		// 对齐目标
+		if param.AlignObjective != "" {
+			if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
+				return err
+			}
+		}
+
+		// 关键结果
+		for _, kr := range param.KeyResults {
+			keyResult, err := s.createKeyResult(tx, user, obj.Id, kr)
+			if err != nil {
+				return err
+			}
+			obj.KeyResults = append(obj.KeyResults, keyResult)
+			participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
+		}
+
+		// 动态日志
+		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "创建OKR"); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
 		return nil, err
 	}
 
-	return obj, tx.Commit().Error
+	// 创建O时（通知发起/所有KR参与人）
+	participantIds = common.ArrayUniqueInt(participantIds)
+	go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)
+
+	return obj, nil
 }
 
 // 更新目标
 func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrUpdateReq) (*model.Okr, error) {
-	tx := core.DB.Begin()
-
 	obj, err := s.GetObjectiveById(param.Id)
 	if err != nil {
-		tx.Rollback()
 		return nil, errors.New("目标不存在")
 	}
 
 	startAt, err := common.ParseTime(param.StartAt)
 	if err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 
 	endAt, err := common.ParseTime(param.EndAt)
 	if err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 
 	// 至少有一条关键结果
 	if len(param.KeyResults) == 0 {
-		tx.Rollback()
 		return nil, errors.New("至少有一条关键结果")
 	}
 
 	var participantIds []int // 所有参与人
-	for _, kr := range param.KeyResults {
-		if kr.Id == 0 {
-			// 新增kr
-			var addKr interfaces.OkrKeyResultCreateReq
-			addKr.Title = kr.Title
-			addKr.Participant = kr.Participant
-			addKr.Confidence = kr.Confidence
-			addKr.StartAt = kr.StartAt
-			addKr.EndAt = kr.EndAt
-			keyResult, err := s.createKeyResult(tx, user, obj.Id, &addKr)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			obj.KeyResults = append(obj.KeyResults, keyResult)
-		} else {
-			// 是否删除 true-删除 false-不删除
-			if kr.IsDelete {
-				// 删除kr
-				if err := tx.Where("id = ?", kr.Id).Delete(&model.Okr{}).Error; err != nil {
-					tx.Rollback()
-					return nil, err
+	err = core.DB.Transaction(func(tx *gorm.DB) error {
+		for _, kr := range param.KeyResults {
+			if kr.Id == 0 {
+				// 新增kr
+				var addKr interfaces.OkrKeyResultCreateReq
+				addKr.Title = kr.Title
+				addKr.Participant = kr.Participant
+				addKr.Confidence = kr.Confidence
+				addKr.StartAt = kr.StartAt
+				addKr.EndAt = kr.EndAt
+				keyResult, err := s.createKeyResult(tx, user, obj.Id, &addKr)
+				if err != nil {
+					return err
 				}
-				continue
+				// 新增kr时，发送提示消息
+				keyResult.ParentTitle = obj.Title
+				go DootaskService.DialogOkrPush(keyResult, user.Token, 4, common.ExplodeInt(",", kr.Participant, true))
+				obj.KeyResults = append(obj.KeyResults, keyResult)
+			} else {
+				// 是否删除 true-删除 false-不删除
+				if kr.IsDelete {
+					// 删除kr
+					if err := tx.Where("id = ?", kr.Id).Delete(&model.Okr{}).Error; err != nil {
+						return err
+					}
+					continue
+				}
+				// 更新kr
+				keyResult, err := s.updateKeyResult(tx, kr, user, obj)
+				if err != nil {
+					return err
+				}
+				obj.KeyResults = append(obj.KeyResults, keyResult)
 			}
-			// 更新kr
-			keyResult, err := s.updateKeyResult(tx, kr, user, obj)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			obj.KeyResults = append(obj.KeyResults, keyResult)
+			participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
 		}
-		participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
-	}
 
-	// O目标变动时，发送提示消息
-	participantIds = common.ArrayUniqueInt(participantIds)
-	if obj.Title != param.Title {
-		go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
-	}
+		// O目标变动时，发送提示消息
+		participantIds = common.ArrayUniqueInt(participantIds)
+		if obj.Title != param.Title {
+			go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
+		}
 
-	// O时间变动时，发送提示消息
-	if obj.StartAt != startAt || obj.EndAt != endAt {
-		go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
-	}
+		// O时间变动时，发送提示消息
+		if obj.StartAt != startAt || obj.EndAt != endAt {
+			go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
+		}
 
-	// 新增动态日志
-	if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
-		tx.Rollback()
+		// 新增动态日志
+		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
+			return err
+		}
+
+		obj.Title = param.Title
+		obj.Type = param.Type
+		obj.Priority = param.Priority
+		obj.VisibleRange = param.VisibleRange
+		obj.ProjectId = param.ProjectId
+		obj.StartAt = startAt
+		obj.EndAt = endAt
+
+		if err := tx.Save(obj).Error; err != nil {
+			return err
+		}
+
+		// 更新对齐目标
+		if param.AlignObjective != "" {
+			if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
 		return nil, err
 	}
 
-	obj.Title = param.Title
-	obj.Type = param.Type
-	obj.Priority = param.Priority
-	obj.VisibleRange = param.VisibleRange
-	obj.ProjectId = param.ProjectId
-	obj.StartAt = startAt
-	obj.EndAt = endAt
-
-	if err := tx.Save(obj).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if param.AlignObjective != "" {
-		if err := s.updateAlignment(tx, obj.Id, param.AlignObjective); err != nil {
-			tx.Rollback()
-			return nil, err
-		}
-	}
-
-	return obj, tx.Commit().Error
+	return obj, nil
 }
 
 // 创建关键结果
@@ -424,7 +431,7 @@ func (s *okrService) getObjectiveScore(obj *model.Okr) float64 {
 }
 
 // 所有KR更新评分是否完成，完成则更新O评分，否则不更新
-func (s *okrService) UpdateObjectiveScore(obj *model.Okr) error {
+func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
 	// 检查所有KR评分是否完成
 	for _, kr := range obj.KeyResults {
 		if kr.Score == 0 || kr.SuperiorScore == 0 {
@@ -440,7 +447,7 @@ func (s *okrService) UpdateObjectiveScore(obj *model.Okr) error {
 
 	// 更新O评分
 	obj.Score = score
-	if err := core.DB.Save(obj).Error; err != nil {
+	if err := tx.Save(obj).Error; err != nil {
 		return err
 	}
 
@@ -645,7 +652,6 @@ func getParticipantKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 // 部门的OKR列表
 // 1.高级搜索 2.仅包含部门/及部门其他人员的OKR（通过可见范围控制是否看到部门其他同级人员的）3.按创建时间倒序显示 4.部门的OKR置顶（多个的时候多个都置顶，按创建时间倒序）
 func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq) ([]*interfaces.OkrResp, error) {
-
 	var objs []*model.Okr
 	db := core.DB.Where("parent_id = 0").Order("ascription asc, create_at desc")
 
@@ -862,65 +868,74 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		return fmt.Errorf("目标不存在：%w", err)
 	}
 
-	// 如果传值更新进度有值，则更新进度
-	if param.Progress != 0 {
-		logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", obj.Title, obj.Progress, param.Progress)
-		if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent); err != nil {
-			return err
+	// 开始事务
+	err = core.DB.Transaction(func(tx *gorm.DB) error {
+		// 如果传值更新进度有值，则更新进度
+		if param.Progress != 0 {
+			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", obj.Title, obj.Progress, param.Progress)
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
+				return err
+			}
+			obj.Progress = param.Progress
 		}
-		obj.Progress = param.Progress
-	}
 
-	// 如果传值更新状态有值，则更新状态
-	if param.Status != 0 {
-		logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", obj.Title, model.ProgressStatusMap[obj.ProgressStatus], model.ProgressStatusMap[param.Status])
-		if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent); err != nil {
-			return err
+		// 如果传值更新状态有值，则更新状态
+		if param.Status != 0 {
+			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", obj.Title, model.ProgressStatusMap[obj.ProgressStatus], model.ProgressStatusMap[param.Status])
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
+				return err
+			}
+			obj.ProgressStatus = param.Status
 		}
-		obj.ProgressStatus = param.Status
-	}
 
-	// 更新目标
-	if err := core.DB.Save(obj).Error; err != nil {
-		return fmt.Errorf("更新目标失败：%w", err)
-	}
+		// 更新目标
+		if err := tx.Save(obj).Error; err != nil {
+			return fmt.Errorf("更新目标失败：%w", err)
+		}
 
-	// 检查所在目标的 KR 是否全部完成
-	objWithKrs, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
+		// 检查所在目标的 KR 是否全部完成
+		objWithKrs, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
+		if err != nil {
+			return fmt.Errorf("获取所在目标的 KR 失败：%w", err)
+		}
+		krs := objWithKrs.KeyResults
+
+		allCompleted := true
+		var sumProgress int
+		for _, kr := range krs {
+			// 进度全部完成 100%
+			if kr.Progress < 100 {
+				allCompleted = false
+				break
+			}
+			sumProgress += kr.Progress
+		}
+
+		// 未完成，则更新总目标进度值，kr 进度值相加/kr 数量
+		progress := 0
+		if len(krs) > 0 {
+			progress = sumProgress / len(krs)
+		}
+
+		// 更新总目标的状态是否完成
+		if allCompleted {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Updates(map[string]interface{}{
+				"Completed": 1,
+				"Progress":  progress,
+			}).Error; err != nil {
+				return fmt.Errorf("更新总目标失败：%w", err)
+			}
+		} else {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Update("progress", progress).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		return fmt.Errorf("获取所在目标的 KR 失败：%w", err)
-	}
-	krs := objWithKrs.KeyResults
-
-	allCompleted := true
-	var sumProgress int
-	for _, kr := range krs {
-		// 进度全部完成 100%
-		if kr.Progress < 100 {
-			allCompleted = false
-			break
-		}
-		sumProgress += kr.Progress
-	}
-
-	// 未完成，则更新总目标进度值，kr 进度值相加/kr 数量
-	progress := 0
-	if len(krs) > 0 {
-		progress = sumProgress / len(krs)
-	}
-
-	// 更新总目标的状态是否完成
-	if allCompleted {
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Updates(map[string]interface{}{
-			"Completed": 1,
-			"Progress":  progress,
-		}).Error; err != nil {
-			return fmt.Errorf("更新总目标失败：%w", err)
-		}
-	} else {
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Update("progress", progress).Error; err != nil {
-			return err
-		}
+		return err
 	}
 
 	return nil
@@ -946,13 +961,20 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return errors.New("暂无权限评分")
 		}
 		// 负责人评分
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Error; err != nil {
-			return err
-		}
+		err = core.DB.Transaction(func(tx *gorm.DB) error {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Error; err != nil {
+				return err
+			}
 
-		// 新增动态日志
-		logContent := fmt.Sprintf("责任人打分: %s", kr.Title)
-		if err := s.InsertOkrLog(kr.Id, user.Userid, "update", logContent); err != nil {
+			// 新增动态日志
+			logContent := fmt.Sprintf("责任人打分: %s", kr.Title)
+			if err := s.InsertOkrLogTx(tx, kr.Id, user.Userid, "update", logContent); err != nil {
+				return err
+			}
+
+			return nil
+		})
+		if err != nil {
 			return err
 		}
 	} else {
@@ -961,20 +983,30 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return errors.New("负责人未评分")
 		}
 		// 上级评分
-		if err := core.DB.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Error; err != nil {
-			return err
-		}
+		err = core.DB.Transaction(func(tx *gorm.DB) error {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Error; err != nil {
+				return err
+			}
 
-		// 更新O评分
-		obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			// 更新O评分
+			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			if err != nil {
+				return errors.New("目标不存在")
+			}
+			err = s.UpdateObjectiveScoreTx(tx, obj)
+			if err != nil {
+				return err
+			}
+
+			// 新增动态日志
+			logContent := fmt.Sprintf("上级打分: %s", kr.Title)
+			if err := s.InsertOkrLogTx(tx, kr.Id, user.Userid, "update", logContent); err != nil {
+				return err
+			}
+
+			return nil
+		})
 		if err != nil {
-			return errors.New("目标不存在")
-		}
-		s.UpdateObjectiveScore(obj)
-
-		// 新增动态日志
-		logContent := fmt.Sprintf("上级打分: %s", kr.Title)
-		if err := s.InsertOkrLog(kr.Id, user.Userid, "update", logContent); err != nil {
 			return err
 		}
 	}
@@ -1060,32 +1092,15 @@ func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) e
 
 // 创建 OKR 复盘记录
 func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateReq) error {
-	// 开始事务
-	tx := core.DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			panic(r)
-		} else if err := recover(); err != nil {
-			tx.Rollback()
-			panic(err)
-		} else if err := tx.Error; err != nil {
-			tx.Rollback()
-			panic(err)
-		}
-	}()
-
 	// 获取 OKR 目标及其关键结果
 	obj, err := s.GetObjectiveByIdWithKeyResults(req.OkrId)
 	if err != nil {
-		tx.Rollback()
 		return errors.New("目标不存在")
 	}
 
 	// 检查关键结果是否已评分
 	for _, kr := range obj.KeyResults {
 		if kr.Score == 0 || kr.SuperiorScore == 0 {
-			tx.Rollback()
 			return errors.New("KR评分未完成")
 		} else {
 			// 计算关键结果总评分
@@ -1105,12 +1120,9 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrPriority:     obj.Priority,
 		Review:          req.Review,
 	}
-	if err := tx.Create(&replay).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
 
 	// 创建 KR 复盘历史记录
+	var histories []*model.OkrReplayHistory
 	commentsMap := make(map[int]interfaces.OkrReplayComment)
 	for _, comment := range req.Comments {
 		commentsMap[comment.OkrId] = *comment
@@ -1120,8 +1132,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		if !ok {
 			continue
 		}
-		history := model.OkrReplayHistory{
-			ReplayId:   replay.Id,
+		history := &model.OkrReplayHistory{
 			OkrId:      kr.Id,
 			Title:      kr.Title,
 			ParentId:   kr.ParentId,
@@ -1130,14 +1141,28 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 			Score:      kr.KrScore,
 			Comment:    comment.Comment,
 		}
-		if err := tx.Create(&history).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
+		histories = append(histories, history)
 	}
 
-	// 提交事务
-	tx.Commit()
+	// 开始事务
+	err = core.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&replay).Error; err != nil {
+			return err
+		}
+
+		for _, history := range histories {
+			history.ReplayId = replay.Id
+			if err := tx.Create(history).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

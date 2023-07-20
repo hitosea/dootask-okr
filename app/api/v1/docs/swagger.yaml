@@ -1,17 +1,5 @@
 basePath: /api/v1
 definitions:
-  interfaces.OkrAlignCancelReq:
-    properties:
-      alignOkrId:
-        description: 对齐目标okr id
-        type: integer
-      okrId:
-        description: okr id
-        type: integer
-    required:
-    - alignOkrId
-    - okrId
-    type: object
   interfaces.OkrAnalyzeDept:
     properties:
       complete:
@@ -151,30 +139,6 @@ definitions:
     - type
     - visible_range
     type: object
-  interfaces.OkrDepartmentListReq:
-    properties:
-      completed:
-        description: 是否已完成未评分 0-未完成 1-已完成
-        type: integer
-      department_id:
-        description: 部门id
-        type: integer
-      end_at:
-        description: 结束时间
-        type: string
-      objective:
-        description: 目标
-        type: string
-      start_at:
-        description: 开始时间
-        type: string
-      type:
-        description: 类型 1-承诺型 2-挑战型
-        type: integer
-      userid:
-        description: 用户id
-        type: integer
-    type: object
   interfaces.OkrKeyResultCreateReq:
     properties:
       confidence:
@@ -256,6 +220,7 @@ definitions:
         type: string
     required:
     - okr_id
+    - review
     type: object
   interfaces.OkrUpdateReq:
     properties:
@@ -371,12 +336,16 @@ paths:
       - application/json
       description: 取消对齐目标
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: 对齐目标okr id
+        in: query
+        name: alignOkrId
         required: true
-        schema:
-          $ref: '#/definitions/interfaces.OkrAlignCancelReq'
+        type: integer
+      - description: okr id
+        in: query
+        name: okrId
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
@@ -391,7 +360,7 @@ paths:
       - application/json
       description: 获取对齐目标by目标id
       parameters:
-      - description: 目标id
+      - description: okr id
         in: query
         name: id
         required: true
@@ -608,12 +577,34 @@ paths:
       - application/json
       description: 获取部门OKR列表
       parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/interfaces.OkrDepartmentListReq'
+      - description: 是否已完成未评分 0-未完成 1-已完成
+        in: query
+        name: completed
+        type: integer
+      - description: 部门id
+        in: query
+        name: department_id
+        type: integer
+      - description: 结束时间
+        in: query
+        name: end_at
+        type: string
+      - description: 目标
+        in: query
+        name: objective
+        type: string
+      - description: 开始时间
+        in: query
+        name: start_at
+        type: string
+      - description: 类型 1-承诺型 2-挑战型
+        in: query
+        name: type
+        type: integer
+      - description: 用户id
+        in: query
+        name: userid
+        type: integer
       responses:
         "200":
           description: OK
@@ -628,7 +619,7 @@ paths:
       - application/json
       description: 获取OKR详情
       parameters:
-      - description: 目标id
+      - description: okr id
         in: query
         name: id
         required: true
@@ -647,7 +638,7 @@ paths:
       - application/json
       description: 关注或取消关注目标
       parameters:
-      - description: 目标id
+      - description: okr id
         in: query
         name: id
         required: true
@@ -685,7 +676,7 @@ paths:
       - application/json
       description: 获取动态列表by目标id
       parameters:
-      - description: 目标id
+      - description: okr id
         in: query
         name: id
         required: true
@@ -786,7 +777,7 @@ paths:
       - application/json
       description: 复盘详情
       parameters:
-      - description: 复盘id
+      - description: 复盘 id
         in: query
         name: id
         required: true
@@ -824,7 +815,7 @@ paths:
       - application/json
       description: 获取复盘列表by目标id
       parameters:
-      - description: 目标id
+      - description: okr id
         in: query
         name: id
         required: true

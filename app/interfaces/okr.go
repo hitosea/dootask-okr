@@ -113,7 +113,7 @@ type OkrConfidenceUpdateReq struct {
 type OkrReplayCreateReq struct {
 	OkrId    int                 `json:"okr_id" binding:"required"` // okr id
 	Comments []*OkrReplayComment `json:"comments"`                  // 复盘评价
-	Review   string              `json:"review"`                    // 回顾
+	Review   string              `json:"review" binding:"required"` // 回顾
 }
 
 // 复盘评价
@@ -126,4 +126,14 @@ type OkrReplayComment struct {
 type OkrAlignCancelReq struct {
 	OkrId      int `form:"okr_id" binding:"required"`       // okr id
 	AlignOkrId int `form:"align_okr_id" binding:"required"` // 对齐目标okr id
+}
+
+// OKR id请求
+type OkrIdReq struct {
+	Id int `json:"id" binding:"required"` // okr id
+}
+
+// 复盘 id请求
+type OkrReplayIdReq struct {
+	Id int `json:"id" binding:"required"` // 复盘 id
 }

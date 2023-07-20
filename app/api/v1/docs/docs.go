@@ -100,13 +100,18 @@ var doc = `{
                 "summary": "取消对齐目标",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.OkrAlignCancelReq"
-                        }
+                        "type": "integer",
+                        "description": "对齐目标okr id",
+                        "name": "alignOkrId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "okrId",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -132,7 +137,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "目标id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -489,13 +494,46 @@ var doc = `{
                 "summary": "获取部门OKR列表",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.OkrDepartmentListReq"
-                        }
+                        "type": "integer",
+                        "description": "是否已完成未评分 0-未完成 1-已完成",
+                        "name": "completed",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "部门id",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "end_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "start_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型 1-承诺型 2-挑战型",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -521,7 +559,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "目标id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -550,7 +588,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "目标id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -608,7 +646,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "目标id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -762,7 +800,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "复盘id",
+                        "description": "复盘 id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -820,7 +858,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "目标id",
+                        "description": "okr id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -945,23 +983,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "interfaces.OkrAlignCancelReq": {
-            "type": "object",
-            "required": [
-                "alignOkrId",
-                "okrId"
-            ],
-            "properties": {
-                "alignOkrId": {
-                    "description": "对齐目标okr id",
-                    "type": "integer"
-                },
-                "okrId": {
-                    "description": "okr id",
-                    "type": "integer"
-                }
-            }
-        },
         "interfaces.OkrAnalyzeDept": {
             "type": "object",
             "properties": {
@@ -1152,39 +1173,6 @@ var doc = `{
                 }
             }
         },
-        "interfaces.OkrDepartmentListReq": {
-            "type": "object",
-            "properties": {
-                "completed": {
-                    "description": "是否已完成未评分 0-未完成 1-已完成",
-                    "type": "integer"
-                },
-                "department_id": {
-                    "description": "部门id",
-                    "type": "integer"
-                },
-                "end_at": {
-                    "description": "结束时间",
-                    "type": "string"
-                },
-                "objective": {
-                    "description": "目标",
-                    "type": "string"
-                },
-                "start_at": {
-                    "description": "开始时间",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "类型 1-承诺型 2-挑战型",
-                    "type": "integer"
-                },
-                "userid": {
-                    "description": "用户id",
-                    "type": "integer"
-                }
-            }
-        },
         "interfaces.OkrKeyResultCreateReq": {
             "type": "object",
             "required": [
@@ -1277,7 +1265,8 @@ var doc = `{
         "interfaces.OkrReplayCreateReq": {
             "type": "object",
             "required": [
-                "okr_id"
+                "okr_id",
+                "review"
             ],
             "properties": {
                 "comments": {
