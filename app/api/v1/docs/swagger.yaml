@@ -291,45 +291,6 @@ info:
   title: DooTask
   version: "1.0"
 paths:
-  /doo/project/list:
-    get:
-      consumes:
-      - application/json
-      description: 获取项目列表
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/interfaces.Response'
-      summary: 获取项目列表
-      tags:
-      - Dootask
-  /doo/user/info:
-    get:
-      consumes:
-      - application/json
-      description: 获取用户信息
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/interfaces.Response'
-      summary: 获取用户信息
-      tags:
-      - Dootask
-  /doo/user/list:
-    get:
-      consumes:
-      - application/json
-      description: 获取用户列表
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/interfaces.Response'
-      summary: 获取用户列表
-      tags:
-      - Dootask
   /okr/align/cancel:
     get:
       consumes:
@@ -583,19 +544,27 @@ paths:
         type: integer
       - description: 部门id
         in: query
-        name: department_id
+        name: departmentId
         type: integer
       - description: 结束时间
         in: query
-        name: end_at
+        name: endAt
         type: string
-      - description: 目标
+      - description: 目标（O）
         in: query
         name: objective
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       - description: 开始时间
         in: query
-        name: start_at
+        name: startAt
         type: string
       - description: 类型 1-承诺型 2-挑战型
         in: query
@@ -657,11 +626,18 @@ paths:
       - application/json
       description: 获取关注的OKR列表
       parameters:
-      - description: 目标
+      - description: 目标（O）
         in: query
         name: objective
-        required: true
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -681,6 +657,14 @@ paths:
         name: id
         required: true
         type: integer
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -695,11 +679,18 @@ paths:
       - application/json
       description: 获取我的OKR列表
       parameters:
-      - description: 目标
+      - description: 目标（O）
         in: query
         name: objective
-        required: true
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -714,11 +705,18 @@ paths:
       - application/json
       description: 获取参与的OKR列表
       parameters:
-      - description: 目标
+      - description: 目标（O）
         in: query
         name: objective
-        required: true
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -751,6 +749,19 @@ paths:
       summary: 更新参与人
       tags:
       - Okr
+  /okr/project/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取项目列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取项目列表
+      tags:
+      - Dootask
   /okr/replay/create:
     post:
       consumes:
@@ -796,11 +807,18 @@ paths:
       - application/json
       description: 获取OKR复盘列表
       parameters:
-      - description: 目标
+      - description: 目标（O）
         in: query
         name: objective
-        required: true
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -819,6 +837,14 @@ paths:
         in: query
         name: id
         required: true
+        type: integer
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
         type: integer
       responses:
         "200":
@@ -898,4 +924,30 @@ paths:
       summary: 更新进度和进度状态
       tags:
       - Okr
+  /okr/user/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取用户信息
+      tags:
+      - Dootask
+  /okr/user/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取用户列表
+      tags:
+      - Dootask
 swagger: "2.0"

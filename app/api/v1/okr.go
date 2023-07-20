@@ -47,12 +47,13 @@ func (api *BaseApi) OkrUpdate() {
 // @Summary 获取我的OKR列表
 // @Description 获取我的OKR列表
 // @Accept json
-// @Param objective query string true "目标"
+// @Param request query interfaces.OkrListBaseReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/my/list [get]
 func (api *BaseApi) OkrMyList() {
-	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetMyList(api.Userinfo, objective)
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetMyList(api.Userinfo, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -64,12 +65,13 @@ func (api *BaseApi) OkrMyList() {
 // @Summary 获取参与的OKR列表
 // @Description 获取参与的OKR列表
 // @Accept json
-// @Param objective query string true "目标"
+// @Param request query interfaces.OkrListBaseReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/participant/list [get]
 func (api *BaseApi) OkrParticipantList() {
-	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetParticipantList(api.Userinfo, objective)
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetParticipantList(api.Userinfo, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -87,7 +89,7 @@ func (api *BaseApi) OkrParticipantList() {
 func (api *BaseApi) OkrDepartmentList() {
 	var param = interfaces.OkrDepartmentListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetDepartmentList(api.Userinfo, param)
+	result, err := service.OkrService.GetDepartmentList(api.Userinfo, param, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -99,12 +101,13 @@ func (api *BaseApi) OkrDepartmentList() {
 // @Summary 获取关注的OKR列表
 // @Description 获取关注的OKR列表
 // @Accept json
-// @Param objective query string true "目标"
+// @Param request query interfaces.OkrListBaseReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/follow/list [get]
 func (api *BaseApi) OkrFollowList() {
-	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetFollowList(api.Userinfo, objective)
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetFollowList(api.Userinfo, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -116,12 +119,13 @@ func (api *BaseApi) OkrFollowList() {
 // @Summary 获取OKR复盘列表
 // @Description 获取OKR复盘列表
 // @Accept json
-// @Param objective query string true "目标"
+// @Param request query interfaces.OkrListBaseReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/replay/list [get]
 func (api *BaseApi) OkrReplayList() {
-	objective := api.Context.Query("objective")
-	result, err := service.OkrService.GetReplayList(api.Userinfo, objective)
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetReplayList(api.Userinfo, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -133,13 +137,13 @@ func (api *BaseApi) OkrReplayList() {
 // @Summary 获取复盘列表by目标id
 // @Description 获取复盘列表by目标id
 // @Accept json
-// @Param request query interfaces.OkrIdReq true "request"
+// @Param request query interfaces.OkrIdListReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/replay/okr/list [get]
 func (api *BaseApi) OkrReplayOkrList() {
-	var param = interfaces.OkrIdReq{}
+	var param = interfaces.OkrIdListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetReplayListByOkrId(param.Id)
+	result, err := service.OkrService.GetReplayListByOkrId(param.Id, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -358,13 +362,13 @@ func (api *BaseApi) OkrAlignList() {
 // @Summary 获取动态列表by目标id
 // @Description 获取动态列表by目标id
 // @Accept json
-// @Param request query interfaces.OkrIdReq true "request"
+// @Param request query interfaces.OkrIdListReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/log/list [get]
 func (api *BaseApi) OkrLogList() {
-	var param = interfaces.OkrIdReq{}
+	var param = interfaces.OkrIdListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetOkrLogList(param.Id)
+	result, err := service.OkrService.GetOkrLogList(param.Id, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

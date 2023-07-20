@@ -321,53 +321,31 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 
 // 根据id获取目标及其关键结果
 func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) {
-	obj, err := s.GetObjectiveById(id)
-	if err != nil {
+	var obj model.Okr
+	if err := core.DB.Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
 		return nil, err
 	}
-
-	var krs []*model.Okr
-	if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
-		return nil, err
-	}
-	obj.KeyResults = krs
-
-	return obj, nil
-}
-
-// 获取所有目标及其关键结果
-func (s *okrService) GetAllObjectivesWithKeyResults() ([]*model.Okr, error) {
-	var objs []*model.Okr
-	if err := core.DB.Order("create_at desc").Find(&objs).Error; err != nil {
-		return nil, err
-	}
-
-	for _, obj := range objs {
-		var krs []*model.Okr
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
-			return nil, err
-		}
-		obj.KeyResults = krs
-	}
-
-	return objs, nil
+	return &obj, nil
 }
 
 // 获取我的OkR列表
 // 1.可通过目标（O）搜索 2.仅显示我发起的OKR（个人仅能看到个人的）3.按创建时间倒序显示
-func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string) ([]*interfaces.OkrResp, error) {
+func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
-	db := core.DB.Where("userid = ?", user.Userid).Where("parent_id = 0").Order("create_at desc")
-
+	db := core.DB.Preload("KeyResults").Where("userid = ?", user.Userid).Where("parent_id = 0").Order("created_at desc")
 	if objective != "" {
 		db = db.Where("title like ?", "%"+objective+"%")
 	}
 
-	if err := db.Find(&objs).Error; err != nil {
+	var count int64
+	if err := db.Model(&model.Okr{}).Count(&count).Error; err != nil {
 		return nil, err
 	}
 
 	var okrs []*interfaces.OkrResp
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
+		return nil, err
+	}
 	for _, obj := range objs {
 		okrs = append(okrs, &interfaces.OkrResp{
 			Okr: obj,
@@ -379,17 +357,13 @@ func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string) 
 		return nil, err
 	}
 
-	return okrs, nil
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
 
 // 获取okr列表额外信息
 func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *interfaces.UserInfoResp) ([]*interfaces.OkrResp, error) {
 	for _, obj := range objs {
-		var krs []*model.Okr
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
-			return nil, err
-		}
-
+		krs := obj.KeyResults
 		// krs KR总评分
 		for _, kr := range krs {
 			krScore := s.getKrScore(kr)
@@ -403,7 +377,6 @@ func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *
 
 // 额外信息
 func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, user *interfaces.UserInfoResp) *interfaces.OkrResp {
-	obj.KeyResults = krs                                       // 关键结果
 	obj.IsFollow = s.isFollow(user.Userid, obj.Id)             // 是否被关注
 	obj.KrCount = len(krs)                                     // kr总数量
 	obj.KrFinishCount = s.getFinishCount(krs)                  // kr完成数量
@@ -485,7 +458,7 @@ func (s *okrService) getAlignCount(objId int) int {
 
 // 获取参与的OKR列表
 // 1.可通过目标（O）搜索 2.被其他OKR选为协助人的OKR（可能是其他部门/其他人的OKR）3.按创建时间倒序显示
-func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective string) ([]*interfaces.OkrResp, error) {
+func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective string, page, pageSize int) ([]*interfaces.OkrResp, error) {
 	objectiveIds, err := getObjectiveIdsByParticipant(user.Userid)
 	if err != nil {
 		return nil, err
@@ -531,14 +504,14 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, keywords string
 	}
 
 	depObjs := []*model.Okr{}
-	err = core.DB.Model(&model.Okr{}).Where("id in (?)", departmentObjectiveIds).Where("parent_id = 0").Order("create_at desc").Find(&depObjs).Error
+	err = core.DB.Model(&model.Okr{}).Where("id in (?)", departmentObjectiveIds).Where("parent_id = 0").Order("created_at desc").Find(&depObjs).Error
 	if err != nil {
 		return nil, err
 	}
 
 	for _, obj := range depObjs {
 		krs := []*model.Okr{}
-		if err := core.DB.Where("parent_id = ?", obj.Id).Order("create_at desc").Find(&krs).Error; err != nil {
+		if err := core.DB.Where("parent_id = ?", obj.Id).Order("created_at desc").Find(&krs).Error; err != nil {
 			return nil, err
 		}
 		obj.KeyResults = krs
@@ -585,7 +558,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, keywords string
 
 	// 按照创建时间排序
 	sort.Slice(filteredObjs, func(i, j int) bool {
-		return filteredObjs[i].CreateAt.After(filteredObjs[j].CreateAt)
+		return filteredObjs[i].CreatedAt.After(filteredObjs[j].CreatedAt)
 	})
 
 	return filteredObjs, nil
@@ -621,7 +594,7 @@ func getParticipantObjectives(objectiveIds []int, objective string) ([]*model.Ok
 	db := core.DB.Model(&model.Okr{}).
 		Where("id in (?)", objectiveIds).
 		Where("parent_id = 0").
-		Order("create_at desc")
+		Order("created_at desc")
 
 	if objective != "" {
 		db = db.Where("title like ?", "%"+objective+"%")
@@ -641,7 +614,7 @@ func getParticipantKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 	if err := core.DB.Model(&model.Okr{}).
 		Where("FIND_IN_SET(?, participant) > 0", userid).
 		Where("parent_id = ?", objectiveId).
-		Order("create_at desc").
+		Order("created_at desc").
 		Find(&krs).Error; err != nil {
 		return nil, err
 	}
@@ -651,9 +624,21 @@ func getParticipantKeyResults(objectiveId, userid int) ([]*model.Okr, error) {
 
 // 部门的OKR列表
 // 1.高级搜索 2.仅包含部门/及部门其他人员的OKR（通过可见范围控制是否看到部门其他同级人员的）3.按创建时间倒序显示 4.部门的OKR置顶（多个的时候多个都置顶，按创建时间倒序）
-func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq) ([]*interfaces.OkrResp, error) {
+func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
-	db := core.DB.Where("parent_id = 0").Order("ascription asc, create_at desc")
+	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Order("ascription asc, created_at desc")
+
+	// 用户不是超级管理员时，只能看到自己所在部门的OKR
+	if !common.InArray("admin", user.Identity) {
+		var sql []string
+		for _, departmentId := range user.Department {
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(sql, " OR "))
+
+		// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+		db = db.Where("visible_range = 3")
+	}
 
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
@@ -704,7 +689,12 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		}
 	}
 
-	if err := db.Find(&objs).Error; err != nil {
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
@@ -720,28 +710,34 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		return nil, err
 	}
 
-	return okrs, nil
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
 
 // 关注的OKR列表
 // 1.可通过目标（O）搜索 2.当前账号关注的OKR 3.按关注时间倒序
-func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective string) ([]*interfaces.OkrResp, error) {
+func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
 
-	OkrTable := core.DBTableName(&model.Okr{})
-	OkrFollowTable := core.DBTableName(&model.OkrFollow{})
+	okrTable := core.DBTableName(&model.Okr{})
+	okrFollowTable := core.DBTableName(&model.OkrFollow{})
 
-	db := core.DB.Table(OkrFollowTable+" AS f").
-		Select("o.*").
-		Joins(fmt.Sprintf("LEFT JOIN %s AS o ON f.okr_id = o.id", OkrTable)).
+	db := core.DB.Table(okrTable+" AS o").
+		Joins(fmt.Sprintf("LEFT JOIN %s AS f ON f.okr_id = o.id", okrFollowTable)).
 		Where("f.userid = ?", user.Userid).
-		Order("f.create_at desc")
+		Order("f.created_at desc")
 
 	if objective != "" {
 		db = db.Where("o.title like ?", "%"+objective+"%")
 	}
 
-	if err := db.Find(&objs).Error; err != nil {
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	db.Preload("KeyResults")
+
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
@@ -757,22 +753,27 @@ func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective stri
 		return nil, err
 	}
 
-	return okrs, nil
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
 
 // 获取复盘列表
-func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective string) ([]*model.OkrReplay, error) {
+func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var replays []*model.OkrReplay
 
 	db := core.DB.Model(&model.OkrReplay{}).
 		Where("userid = ?", user.Userid).
-		Order("create_at DESC")
+		Order("created_at DESC")
 
 	if objective != "" {
 		db = db.Where("okr_title LIKE ?", "%"+objective+"%")
 	}
 
-	if err := db.Preload("KrHistory").Find(&replays).Error; err != nil {
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Preload("KrHistory").Offset((page - 1) * pageSize).Limit(pageSize).Find(&replays).Error; err != nil {
 		return nil, err
 	}
 
@@ -781,22 +782,27 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 		replay.OkrAlias = s.getOwningAlias(replay.Userid, replay.OkrDepartmentId)
 	}
 
-	return replays, nil
+	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
 }
 
 // 获取复盘列表by目标id
-func (s *okrService) GetReplayListByOkrId(okrId int) ([]*model.OkrReplay, error) {
+func (s *okrService) GetReplayListByOkrId(okrId, page, pageSize int) (*interfaces.Pagination, error) {
 	var replays []*model.OkrReplay
 
 	db := core.DB.Model(&model.OkrReplay{}).
 		Where("okr_id = ?", okrId).
-		Order("create_at ASC")
+		Order("created_at ASC")
 
-	if err := db.Find(&replays).Error; err != nil {
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
 		return nil, err
 	}
 
-	return replays, nil
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&replays).Error; err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
 }
 
 // 获取OKR详情
@@ -1286,11 +1292,19 @@ func (s *okrService) InsertOkrLogTx(tx *gorm.DB, okrId, userId int, operation, c
 }
 
 // 获取动态列表
-func (s *okrService) GetOkrLogList(okrId int) ([]*model.OkrLog, error) {
+func (s *okrService) GetOkrLogList(okrId, page, pageSize int) (*interfaces.Pagination, error) {
 	var logs []*model.OkrLog
-	if err := core.DB.Where("okr_id = ?", okrId).Order("create_at asc").Find(&logs).Error; err != nil {
+	var count int64
+
+	db := core.DB.Model(&model.OkrLog{}).Where("okr_id = ?", okrId)
+	if err := db.Count(&count).Error; err != nil {
 		return nil, err
 	}
 
-	return logs, nil
+	offset := (page - 1) * pageSize
+	if err := db.Order("created_at asc").Offset(offset).Limit(pageSize).Find(&logs).Error; err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, logs), nil
 }

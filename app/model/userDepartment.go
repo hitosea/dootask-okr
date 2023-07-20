@@ -11,8 +11,8 @@ type UserDepartment struct {
 	DialogId    int       `json:"dialog_id"`
 	ParentId    int       `json:"parent_id"`
 	OwnerUserid int       `json:"owner_userid"`
-	CreateAt    time.Time `json:"create_at"`
-	UpdateAt    time.Time `json:"update_at"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 var UserDepartmentModel = UserDepartment{}

@@ -69,13 +69,14 @@ type OkrAlignResp struct {
 
 // OKR部门列表请求
 type OkrDepartmentListReq struct {
-	DepartmentId int    `json:"department_id"` // 部门id
-	Userid       int    `json:"userid"`        // 用户id
-	Objective    string `json:"objective"`     // 目标
-	StartAt      string `json:"start_at"`      // 开始时间
-	EndAt        string `json:"end_at"`        // 结束时间
-	Type         int    `json:"type"`          // 类型 1-承诺型 2-挑战型
-	Completed    int    `json:"completed"`     // 是否已完成未评分 0-未完成 1-已完成
+	DepartmentId int    `form:"department_id"` // 部门id
+	Userid       int    `form:"userid"`        // 用户id
+	Objective    string `form:"objective"`     // 目标（O）
+	StartAt      string `form:"start_at"`      // 开始时间
+	EndAt        string `form:"end_at"`        // 结束时间
+	Type         int    `form:"type"`          // 类型 1-承诺型 2-挑战型
+	Completed    int    `form:"completed"`     // 是否已完成未评分 0-未完成 1-已完成
+	*Pages
 }
 
 // OKR更新进度和进度状态请求
@@ -130,10 +131,28 @@ type OkrAlignCancelReq struct {
 
 // OKR id请求
 type OkrIdReq struct {
-	Id int `json:"id" binding:"required"` // okr id
+	Id int `form:"id" binding:"required"` // okr id
+}
+
+// OKR id列表请求
+type OkrIdListReq struct {
+	Id int `form:"id" binding:"required"` // okr id
+	*Pages
 }
 
 // 复盘 id请求
 type OkrReplayIdReq struct {
-	Id int `json:"id" binding:"required"` // 复盘 id
+	Id int `form:"id" binding:"required"` // 复盘 id
+}
+
+// 复盘 id列表请求
+type OkrReplayIdListReq struct {
+	Id int `form:"id" binding:"required"` // 复盘 id
+	*Pages
+}
+
+// 列表基础分页请求
+type OkrListBaseReq struct {
+	Objective string `form:"objective"` // 目标（O）
+	*Pages
 }

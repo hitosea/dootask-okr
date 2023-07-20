@@ -22,7 +22,7 @@ type Okr struct {
 	Type           int            `gorm:"default:1;comment:'类型 1-承诺型 2-挑战型'" json:"type"`
 	Priority       string         `gorm:"type:varchar(10);comment:'优先级'" json:"priority"`
 	Ascription     int            `gorm:"default:1;comment:'归属 1-部门 2-个人'" json:"ascription"`
-	VisibleRange   int            `gorm:"default:1;comment:'可见范围  1-全公司 2-仅相关成员 3-仅部门成员'" json:"visible_range"`
+	VisibleRange   int            `gorm:"default:1;comment:'可见范围 1-全公司 2-仅相关成员 3-仅部门成员'" json:"visible_range"`
 	Completed      int            `gorm:"default:0;comment:'整个O是否完成 0-未完成 1-已完成'" json:"completed"`
 	Canceled       int            `gorm:"default:0;comment:'整个O是否取消 0-未完成 1-已取消'" json:"canceled"`
 	Participant    string         `gorm:"type:varchar(255);comment:'参与人'" json:"participant"`
@@ -33,12 +33,12 @@ type Okr struct {
 	SuperiorScore  float64        `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
 	StartAt        time.Time      `gorm:"comment:'开始时间' " json:"start_at"`
 	EndAt          time.Time      `gorm:"comment:'结束时间'" json:"end_at"`
-	CreateAt       time.Time      `gorm:"autoCreateTime;comment:'创建时间'" json:"create_at"`
-	UpdateAt       time.Time      `gorm:"autoUpdateTime;comment:'更新时间'" json:"update_at"`
+	CreatedAt      time.Time      `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
+	UpdatedAt      time.Time      `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index;comment:'删除时间'" json:"deleted_at"`
-	KeyResults     []*Okr         `gorm:"-" json:"key_results"`
-	KrScore        float64        `gorm:"-" json:"kr_score"`     // KR总评分
-	ParentTitle    string         `gorm:"-" json:"parent_title"` // 父级目标标题
+	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
+	KrScore        float64        `gorm:"-" json:"kr_score,omitempty"`     // KR总评分
+	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 }
 
 var (

@@ -28,66 +28,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/doo/project/list": {
-            "get": {
-                "description": "获取项目列表",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Dootask"
-                ],
-                "summary": "获取项目列表",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/doo/user/info": {
-            "get": {
-                "description": "获取用户信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Dootask"
-                ],
-                "summary": "获取用户信息",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/doo/user/list": {
-            "get": {
-                "description": "获取用户列表",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Dootask"
-                ],
-                "summary": "获取用户列表",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/okr/align/cancel": {
             "get": {
                 "description": "取消对齐目标",
@@ -502,25 +442,37 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "部门id",
-                        "name": "department_id",
+                        "name": "departmentId",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "结束时间",
-                        "name": "end_at",
+                        "name": "endAt",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "目标",
+                        "description": "目标（O）",
                         "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "开始时间",
-                        "name": "start_at",
+                        "name": "startAt",
                         "in": "query"
                     },
                     {
@@ -617,10 +569,21 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "目标",
+                        "description": "目标（O）",
                         "name": "objective",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -650,6 +613,18 @@ var doc = `{
                         "name": "id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -675,10 +650,21 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "目标",
+                        "description": "目标（O）",
                         "name": "objective",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -704,10 +690,21 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "目标",
+                        "description": "目标（O）",
                         "name": "objective",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -746,6 +743,26 @@ var doc = `{
                         "required": true
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/project/list": {
+            "get": {
+                "description": "获取项目列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取项目列表",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -829,10 +846,21 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "目标",
+                        "description": "目标（O）",
                         "name": "objective",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -862,6 +890,18 @@ var doc = `{
                         "name": "id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -971,6 +1011,46 @@ var doc = `{
                         "in": "formData"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/user/info": {
+            "get": {
+                "description": "获取用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/user/list": {
+            "get": {
+                "description": "获取用户列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取用户列表",
                 "responses": {
                     "200": {
                         "description": "OK",
