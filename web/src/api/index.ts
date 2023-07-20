@@ -29,7 +29,6 @@ class RequestHttp {
          */
         this.service.interceptors.request.use(
             function (config) {
-                console.log(config)
                 const userInfo = JSON.parse(localStorage.getItem("UserState"))
                 config.headers.Token = userInfo?.info?.token
                 return config

@@ -7,9 +7,9 @@ export const routes = [
         path: "/",
         component: Index
     },
-    // {
-    //     name: "analysis",
-    //     path: "/analysis",
-    //     component: Analysis
-    // }
+    {
+        name: "analysis",
+        path: "/analysis",
+        component: Analysis
+    }
 ];
