@@ -81,9 +81,7 @@ var rootCommand = &cobra.Command{
 		})
 		r.SetHTMLTemplate(t)
 		r.Any("/*path", func(context *gin.Context) {
-			if !router.InitMicroapp(context) {
-				router.Init(context)
-			}
+			router.Init(context)
 		})
 		_ = r.Run(fmt.Sprintf("%s:%s", config.CONF.System.Host, config.CONF.System.Port))
 	},

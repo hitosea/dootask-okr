@@ -5,7 +5,7 @@ import {ResultData} from "./interface/base";
 import {CODE} from "./constant";
 
 const config = {
-    baseURL: import.meta.env.VITE_API_URL as string, // 所有的请求地址前缀部分
+    baseURL: import.meta.env.VITE_API_URL as string || '/microapp/okr/api/v1', // 所有的请求地址前缀部分
     timeout: 60000, // 请求超时时间毫秒
     withCredentials: true, // 异步请求携带cookie
     headers: {
@@ -29,6 +29,7 @@ class RequestHttp {
          */
         this.service.interceptors.request.use(
             function (config) {
+                console.log(config)
                 const userInfo = JSON.parse(localStorage.getItem("UserState"))
                 config.headers.Token = userInfo?.info?.token
                 return config
@@ -53,7 +54,7 @@ class RequestHttp {
                 const dataAxios = response.data
                 //
                 if (!utils.isJson(dataAxios)) {
-                    return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('commons.http.dataFormatError'), data: dataAxios})
+                    return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('数据格式错误'), data: dataAxios})
                 }
                 if (dataAxios.code !== CODE.StatusOK) {
                     return Promise.reject(dataAxios)
@@ -64,7 +65,7 @@ class RequestHttp {
                 // 超出 2xx 范围的状态码都会触发该函数。
                 // 对响应错误做点什么
                 // console.log(error)
-                return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('commons.http.reqFailed'), data: error})
+                return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('请求失败'), data: error})
             }
         )
     }
@@ -90,10 +91,10 @@ class RequestHttp {
 export default new RequestHttp(config);
 
 export function ResultDialog({code, msg, data}, dialogOptions = {}) {
-    let title = $t('commons.dialog.warmTitle')
+    let title = $t('提示')
     let content = msg
     if (code !== CODE.StatusOK) {
-        title = $t('commons.dialog.errTitle')
+        title = $t('错误')
         if (utils.isJson(data) && (data.err || data.error)) {
             title = msg
             content = data.err || data.error
@@ -102,7 +103,7 @@ export function ResultDialog({code, msg, data}, dialogOptions = {}) {
     let options = {
         title,
         content,
-        positiveText: $t('commons.dialog.okText'),
+        positiveText: $t('确定'),
     }
     if (utils.isJson(data) && utils.isJson(data.dialog)) {
         options = Object.assign(options, data.dialog)

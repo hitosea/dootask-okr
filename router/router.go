@@ -15,7 +15,7 @@ import (
 )
 
 func Init(c *gin.Context) {
-	urlPath := c.Request.URL.Path
+	urlPath := strings.Replace(c.Request.URL.Path, "/microapp/okr/api/v1/", "/api/v1/", -1)
 	// 接口
 	if strings.HasPrefix(urlPath, "/api/v1/") {
 		// 读取身份

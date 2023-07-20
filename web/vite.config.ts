@@ -9,7 +9,7 @@ export default defineConfig(({command, mode}) => {
     const env = loadEnv(mode, process.cwd(), '')
     const devPort: any = env['DEV_PORT'] || 5567
     const devProxyTarget: string = env['DEV_PROXY_TARGET'] || 'http://127.0.0.1:5566'
-    const viteApiUrl: string = env['VITE_API_URL'] || '/'
+    const viteApiUrl: string = env['VITE_API_URL'] || '/microapp/okr/api/v1'
     const appname: any = '/manage/microapp/okr/'
 
     return {
@@ -19,7 +19,7 @@ export default defineConfig(({command, mode}) => {
             port: devPort,
             proxy: {
                 [viteApiUrl]: {
-                    target: devProxyTarget,
+                    target: devProxyTarget ,
                     changeOrigin: true,
                 }
             }

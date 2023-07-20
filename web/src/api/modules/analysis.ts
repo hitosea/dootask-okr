@@ -12,7 +12,7 @@ export const getAnalyzeDeptComplete = () => {
 
 // 
 export const getAnalyzeScore = () => {
-    return http.get<Analysis.score>("/okr/analyze/score")
+    return http.get<Analysis.score>("okr/analyze/score")
 }
 
 export const getAnalyzeDeptScore = () => {

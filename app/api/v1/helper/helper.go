@@ -79,7 +79,7 @@ func Response(c *gin.Context, code int, msg string, values ...any) {
 	if strings.Contains(c.GetHeader("Accept"), "application/json") ||
 		strings.Contains(c.GetHeader("Content-Type"), "application/json") ||
 		strings.Contains(c.GetHeader("X-Requested-With"), "XMLHttpRequest") ||
-		strings.HasPrefix(c.Request.URL.Path, "/api/v1/") ||
+		strings.Contains(c.Request.URL.Path, "/api/v1/") ||
 		!strings.Contains(c.Request.Method, http.MethodGet) {
 		// 接口返回
 		c.JSON(http.StatusOK, gin.H{
