@@ -47,7 +47,7 @@
     <!-- <div style="width: 300px;height: 500px; position: relative;">
         <DialogWrappers />
     </div> -->
-    <addOkr :value="addShow" @close="handleClose"></addOkr>
+    <addOkr v-model:show="addShow" @close="handleClose"></addOkr>
 </template>
 
 <script lang="ts" setup>

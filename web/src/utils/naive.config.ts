@@ -5,7 +5,9 @@ const themeOverrides = {
         common: {
             primaryColor: "#84C56A",
             primaryColorHover: "#a2d98d",
-            heightMedium: "34px",
+            heightMedium: "32px",
+            inputColor:"#F4F5F7",
+            borderColor:"#F4F5F7",
         },
         Input: {
             heightSmall: "30px",
@@ -16,7 +18,9 @@ const themeOverrides = {
             primaryColor: "#67a050",
             primaryColorHover: "#568342",
             baseColor: "#ffffff",
-            heightMedium: "34px",
+            heightMedium: "32px",
+            inputColor:"#F4F5F7",
+            borderColor:"#F4F5F7",
         },
         Input: {
             heightSmall: "30px",

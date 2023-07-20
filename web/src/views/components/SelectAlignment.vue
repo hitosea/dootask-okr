@@ -11,14 +11,27 @@
                     </template>
                 </n-input>
 
-                <n-checkbox-group v-model:value="cities" class="mt-[24px]">
-                    <div class="flex flex-col gap-[24px]">
-                        <div class="object-field">
-                            <n-checkbox value="Beijing" />
-                            <i class="taskfont">&#xe745;</i>
-                            <span class="span span-1 scale-[0.8333]">P0</span>
-                            <h3 class="text-14 font-normal ml-4 truncate">
-                                完善团队制度，为了更好的服务客户完善团队制度，为了更好的服务客户完善团队制度，为了更好的服务客户完善团队制度，为了更好的服务客户完善团队制度，为了更好的服务客户</h3>
+                <n-checkbox-group v-model:value="cities" class="mt-[16px]">
+                    <div class="flex flex-col">
+                        <div class="align-okr" v-for="(item, index) in okrList">
+                            <div class="object-field ">
+                                <n-checkbox :value="item.id" />
+                                <i class="taskfont" @click="handleOpen(index, $event.target)">&#xe745;</i>
+                                <span class="span scale-[0.8333]" :class="pStatus(item.kr)">{{ item.kr }}</span>
+                                <h3 class="text-14 text-title-color font-normal line-clamp-1 ml-4 pr-16">
+                                    {{ item.name }}
+                                </h3>
+                            </div>
+                            <div class="flex-1 w-full" v-if="openList.indexOf(index) != -1">
+                                <div v-for="(items, indexs) in item.childrens"
+                                    class="flex items-center hover:bg-[#F4F5F7] pl-[43px] py-[9px] rounded">
+                                    <n-checkbox :value="items.id" />
+                                    <span class="ml-12 mr-4 text-12 text-text-tips">KR{{ indexs + 1 }}</span>
+                                    <p class=" flex-1 text-14 text-title-color line-clamp-1 pr-16">
+                                        {{ items.name }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -26,12 +39,16 @@
             </div>
             <template #footer>
                 <div class="button-box">
-                    <n-button :loading="loadIng" type="default" @click="handleClose">
-                        {{ $t('取消') }}
-                    </n-button>
-                    <n-button :loading="loadIng" type="primary" @click="">
-                        {{ $t('确定') }}
-                    </n-button>
+                    <p>已选：{{ cities.length }} 项</p>
+                    <div class="flex items-center gap-4">
+                        <n-button :loading="loadIng" type="default" @click="handleClose">
+                            {{ $t('取消') }}
+                        </n-button>
+                        <n-button :loading="loadIng" type="primary" @click="">
+                            {{ $t('确定') }}
+                        </n-button>
+                    </div>
+
                 </div>
             </template>
         </n-card>
@@ -43,33 +60,106 @@ import { Close } from "@vicons/ionicons5"
 const props = defineProps({
     value: {
         type: Boolean,
-        default: true,
+        default: false,
     },
 })
 
 const emit = defineEmits(['close'])
 
 const loadIng = ref(false)
-const cities = ref(null)
+const cities = ref([])
+const openList = ref([])
 
 const handleClose = () => {
     emit('close')
 }
+
+const okrList = reactive([
+    {
+        name: '21312321313',
+        kr: "P0",
+        id: 1,
+        childrens: [
+            {
+                name: '21312321313',
+                kr: "P0",
+                id: 2,
+            },
+            {
+                name: '21312321313',
+                kr: "P2",
+                id: 3,
+            }
+        ],
+    },
+    {
+        name: '21312321313',
+        kr: "P1",
+        id: 1,
+        childrens: [
+            {
+                name: '21312321313',
+                kr: "P0",
+                id: 2,
+            },
+            {
+                name: '21312321313',
+                kr: "P2",
+                id: 3,
+            }
+        ],
+    }
+])
+
+const handleOpen = (index, event) => {
+    if (openList.value.indexOf(index) == -1) {
+        openList.value.push(index)
+        event.classList.add('active')      
+    } else {
+        openList.value.splice(openList.value.indexOf(index), 1)
+        event.classList.remove('active')
+    }
+}
+
+const pStatus = (p) => {
+    return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span3'
+}
 </script>
 <style lang="less" scoped>
-.object-field {
-    @apply flex items-center;
+.align-okr {
+    @apply flex flex-col items-start shrink-0;
 
-    i {
-        @apply text-12 text-text-tips ml-12 cursor-pointer;
-    }
+    .object-field {
+        @apply flex flex-initial items-center shrink-0 py-9;
 
-    .span {
-        @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
-    }
+        i {
+            @apply text-12 text-text-tips ml-12 cursor-pointer transition-all;
+        }
 
-    .span-1 {
-        @apply bg-[#FF7070];
+        i.active {
+            @apply rotate-90;
+        }
+
+        .span {
+            @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
+        }
+
+        .span-1 {
+            @apply bg-[#FF7070];
+        }
+
+        .span-2 {
+            @apply bg-[#FC984B];
+        }
+
+        .span-3 {
+            @apply bg-[#72A1F7];
+        }
+
     }
+}
+
+.button-box {
+    @apply flex items-center justify-between;
 }
 </style>

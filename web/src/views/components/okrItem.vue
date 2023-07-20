@@ -47,19 +47,20 @@
         </div>
     </div>
     <AlignTarget :value="alignTargetShow" @close="() => { alignTargetShow = false }"></AlignTarget>
-    <SelectAlignment></SelectAlignment>
+    <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
 </template>
 <script setup lang="ts">
 import AlignTarget from '@/views/components/AlignTarget.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 
 const alignTargetShow = ref(false)
+const selectAlignmentShow = ref(false)
 
 const handleTarget = (e) => {
     if(e==1){
         alignTargetShow.value = true
     }else{
-
+        selectAlignmentShow.value = true
     }
 
 }
