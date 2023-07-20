@@ -2,7 +2,6 @@ import axios, {AxiosInstance, AxiosRequestConfig} from 'axios'
 import utils from "../utils/utils";
 import {GlobalStore} from "../store";
 import {ResultData} from "./interface/base";
-import i18n from "../lang";
 import {CODE} from "./constant";
 
 const config = {
@@ -31,7 +30,7 @@ class RequestHttp {
         this.service.interceptors.request.use(
             function (config) {
                 const userInfo = JSON.parse(localStorage.getItem("UserState"))
-                config.headers.Token = userInfo.info.token    
+                config.headers.Token = userInfo?.info?.token
                 return config
             },
             function (error) {
@@ -54,18 +53,9 @@ class RequestHttp {
                 const dataAxios = response.data
                 //
                 if (!utils.isJson(dataAxios)) {
-                    return Promise.reject({code: CODE.StatusInternalServerError, msg: i18n.global.t('commons.http.dataFormatError'), data: dataAxios})
+                    return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('commons.http.dataFormatError'), data: dataAxios})
                 }
                 if (dataAxios.code !== CODE.StatusOK) {
-                    if (dataAxios.code === CODE.StatusMovedPermanently) {
-                        window.location.href = encodeURIComponent(dataAxios.msg)
-                    } else if (dataAxios.code === CODE.StatusUnauthorized) {
-                        const params = {
-                            result_code: dataAxios.code,
-                            result_msg: encodeURIComponent(dataAxios.msg),
-                        }
-                        window.location.href = utils.urlAddParams(window.location.href, params)
-                    }
                     return Promise.reject(dataAxios)
                 }
                 return dataAxios
@@ -74,7 +64,7 @@ class RequestHttp {
                 // 超出 2xx 范围的状态码都会触发该函数。
                 // 对响应错误做点什么
                 // console.log(error)
-                return Promise.reject({code: CODE.StatusInternalServerError, msg: i18n.global.t('commons.http.reqFailed'), data: error})
+                return Promise.reject({code: CODE.StatusInternalServerError, msg: $t('commons.http.reqFailed'), data: error})
             }
         )
     }
@@ -100,10 +90,10 @@ class RequestHttp {
 export default new RequestHttp(config);
 
 export function ResultDialog({code, msg, data}, dialogOptions = {}) {
-    let title = i18n.global.t('commons.dialog.warmTitle')
+    let title = $t('commons.dialog.warmTitle')
     let content = msg
     if (code !== CODE.StatusOK) {
-        title = i18n.global.t('commons.dialog.errTitle')
+        title = $t('commons.dialog.errTitle')
         if (utils.isJson(data) && (data.err || data.error)) {
             title = msg
             content = data.err || data.error
@@ -112,7 +102,7 @@ export function ResultDialog({code, msg, data}, dialogOptions = {}) {
     let options = {
         title,
         content,
-        positiveText: i18n.global.t('commons.dialog.okText'),
+        positiveText: $t('commons.dialog.okText'),
     }
     if (utils.isJson(data) && utils.isJson(data.dialog)) {
         options = Object.assign(options, data.dialog)

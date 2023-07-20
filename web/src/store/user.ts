@@ -43,6 +43,9 @@ export const UserStore = defineStore({
                 created_at: "",
                 updated_at: "",
             };
+        },
+        setToken(token: any = '') {
+            this.info.token = token;
         }
     },
     persist: piniaPersistConfig('UserState'),

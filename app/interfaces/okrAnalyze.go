@@ -39,7 +39,7 @@ type OkrAnalyzePersonnelScoreRate struct {
 type OkrAnalyzeDeptScoreProportion struct {
 	DepartmentId    int    `json:"department_id"`    //部门id
 	DepartmentName  string `json:"department_name"`  //部门名称
-	Total           int64  `json:"total"`            // okr 总数
+	Total           int64  `json:"total"`            //okr 总数
 	Unscored        int64  `json:"unscored"`         //未评分
 	AlreadyReviewed int64  `json:"already_reviewed"` //已评分
 }
