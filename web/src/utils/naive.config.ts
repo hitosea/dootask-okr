@@ -12,6 +12,14 @@ const themeOverrides = {
         Input: {
             heightSmall: "30px",
         },
+        Tag:{
+            borderRadius: "4px",
+            color:"rgba(167, 171, 181, 0.1)",
+            textColor:"#A7ABB5",
+        },
+        Radio:{
+            buttonBorderColor:'#333'
+        },
     },
     darkThemeOverrides: {
         common: {
@@ -24,6 +32,11 @@ const themeOverrides = {
         },
         Input: {
             heightSmall: "30px",
+        },
+        Tag:{
+            borderRadius: "4px",
+            color:"rgba(167, 171, 181, 0.1)",
+            textColor:"#A7ABB5",
         },
     },
 }

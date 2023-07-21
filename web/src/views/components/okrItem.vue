@@ -1,6 +1,6 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box">
+        <div class="okr-item-box" @click="handleOpenDetail">
             <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="80" :offset-degree="180" :stroke-width="8">
                 <p class="text-primary-color text-14">80<span class="text-12">%</span></p>
@@ -37,41 +37,54 @@
                     </div>
 
                 </div>
-                <div class="align-target" @click="handleTarget(1)">
+                <div class="align-target" @click.stop="handleTarget(1)">
                     对齐目标（5）
                 </div>
-                <div class="align-target" @click="handleTarget(2)">
+                <div class="align-target" @click.stop="handleTarget(2)">
                     向上对齐
                 </div>
             </div>
         </div>
+
     </div>
     <AlignTarget :value="alignTargetShow" @close="() => { alignTargetShow = false }"></AlignTarget>
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
+    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @mark="handleOpenMark"></OkrDetails>
+    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }"></DegreeOfCompletion>
 </template>
 <script setup lang="ts">
 import AlignTarget from '@/views/components/AlignTarget.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
-
+import OkrDetails from './OkrDetails.vue';
+import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
+const okrDetailsShow = ref(false)
+const degreeOfCompletionShow = ref(false)
 
 const handleTarget = (e) => {
-    if(e==1){
+    if (e == 1) {
         alignTargetShow.value = true
-    }else{
+    } else {
         selectAlignmentShow.value = true
     }
 
 }
 
+const handleOpenDetail = () => {
+    okrDetailsShow.value = true
+}
+
+const handleOpenMark = () => {
+    degreeOfCompletionShow.value = true
+}
 </script>
 <style lang="less">
 .okr-item-main {
     @apply flex flex-col gap-6;
 
     .okr-item-box {
-        @apply px-24 py-32 bg-white rounded-lg flex gap-4;
+        @apply px-24 py-32 bg-white rounded-lg flex gap-4 cursor-pointer;
 
         .okr-list {
             @apply flex flex-col flex-1;
