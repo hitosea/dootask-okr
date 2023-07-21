@@ -1,6 +1,8 @@
 package interfaces
 
-import "dootask-okr/app/model"
+import (
+	"dootask-okr/app/model"
+)
 
 // 基础OKR请求
 type OkrBaseReq struct {
@@ -69,45 +71,44 @@ type OkrAlignResp struct {
 
 // OKR部门列表请求
 type OkrDepartmentListReq struct {
-	DepartmentId int    `form:"department_id"` // 部门id
-	Userid       int    `form:"userid"`        // 用户id
-	Objective    string `form:"objective"`     // 目标（O）
-	StartAt      string `form:"start_at"`      // 开始时间
-	EndAt        string `form:"end_at"`        // 结束时间
-	Type         int    `form:"type"`          // 类型 1-承诺型 2-挑战型
-	Completed    int    `form:"completed"`     // 是否已完成未评分 0-未完成 1-已完成
+	DepartmentId int    `form:"department_id" json:"department_id"` // 部门id
+	Userid       int    `form:"userid" json:"userid"`               // 用户id
+	Objective    string `form:"objective" json:"objective"`         // 目标（O）
+	StartAt      string `form:"start_at" json:"start_at"`           // 开始时间
+	EndAt        string `form:"end_at" json:"end_at"`               // 结束时间
+	Type         int    `form:"type" json:"type"`                   // 类型 1-承诺型 2-挑战型
+	Completed    int    `form:"completed" json:"completed"`         // 是否已完成未评分 0-未完成 1-已完成
 	*Pages
 }
 
 // OKR更新进度和进度状态请求
 type OkrUpdateProgressReq struct {
-	Id       int `form:"id" binding:"required"` // okr id
-	Progress int `form:"progress"`              // 进度
-	Status   int `form:"status"`                // 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
+	Id       int `form:"id" binding:"required" json:"id"` // okr id
+	Progress int `form:"progress" json:"progress"`        // 进度
+	Status   int `form:"status" json:"status"`            // 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
 }
 
 // OKR评分请求
 type OkrScoreReq struct {
-	Id    int     `form:"id" binding:"required"` // okr id
-	Score float64 `form:"score"`                 // 个人评分
+	Id    int     `form:"id" binding:"required" json:"id"` // okr id
+	Score float64 `form:"score" json:"score"`              // 个人评分
 }
 
 // 取消/重启目标
 type OkrCanceledReq struct {
-	Id       int `form:"id" binding:"required"` // okr id
-	Canceled int `form:"canceled"`              // 状态 0-重启 1-结束
+	Id int `form:"id" binding:"required" json:"id"` // okr id
 }
 
 // 更新参与人请求
 type OkrParticipantUpdateReq struct {
-	Id          int    `form:"id" binding:"required"`          // okr id
-	Participant string `form:"participant" binding:"required"` // 参与人,多个用逗号隔开
+	Id          int    `form:"id" binding:"required" json:"id"`                   // okr id
+	Participant string `form:"participant" binding:"required" json:"participant"` // 参与人,多个用逗号隔开
 }
 
 // 更新信心指数请求
 type OkrConfidenceUpdateReq struct {
-	Id         int `form:"id" binding:"required"`         // okr id
-	Confidence int `form:"confidence" binding:"required"` // 信心指数
+	Id         int `form:"id" binding:"required" json:"id"`                               // okr id
+	Confidence int `form:"confidence" binding:"required,min=1,max=100" json:"confidence"` // 信心指数
 }
 
 // 添加复盘请求
@@ -125,34 +126,40 @@ type OkrReplayComment struct {
 
 // 取消对齐目标请求
 type OkrAlignCancelReq struct {
-	OkrId      int `form:"okr_id" binding:"required"`       // okr id
-	AlignOkrId int `form:"align_okr_id" binding:"required"` // 对齐目标okr id
+	OkrId      int `form:"okr_id" binding:"required" json:"okr_id"`             // okr id
+	AlignOkrId int `form:"align_okr_id" binding:"required" json:"align_okr_id"` // 对齐目标okr id
 }
 
 // OKR id请求
 type OkrIdReq struct {
-	Id int `form:"id" binding:"required"` // okr id
+	Id int `form:"id" binding:"required" json:"id"` // okr id
 }
 
 // OKR id列表请求
 type OkrIdListReq struct {
-	Id int `form:"id" binding:"required"` // okr id
+	Id int `form:"id" binding:"required" json:"id"` // okr id
 	*Pages
 }
 
 // 复盘 id请求
 type OkrReplayIdReq struct {
-	Id int `form:"id" binding:"required"` // 复盘 id
+	Id int `form:"id" binding:"required" json:"id"` // 复盘 id
 }
 
 // 复盘 id列表请求
 type OkrReplayIdListReq struct {
-	Id int `form:"id" binding:"required"` // 复盘 id
+	Id int `form:"id" binding:"required" json:"id"` // 复盘 id
 	*Pages
 }
 
 // 列表基础分页请求
 type OkrListBaseReq struct {
-	Objective string `form:"objective"` // 目标（O）
+	Objective string `form:"objective" json:"objective"` // 目标（O）
 	*Pages
+}
+
+// 对齐目标更新请求
+type OkrAlignUpdateReq struct {
+	Id             int    `form:"id" binding:"required" json:"id"`                           // okr id
+	AlignObjective string `form:"align_objective" binding:"required" json:"align_objective"` // 对齐目标
 }

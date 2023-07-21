@@ -42,14 +42,14 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "对齐目标okr id",
-                        "name": "alignOkrId",
+                        "name": "align_okr_id",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "okr id",
-                        "name": "okrId",
+                        "name": "okr_id",
                         "in": "query",
                         "required": true
                     }
@@ -106,9 +106,56 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "关键词",
-                        "name": "keywords",
-                        "in": "query",
+                        "description": "目标（O）",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/align/update": {
+            "post": {
+                "description": "更新对齐目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新对齐目标",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "对齐目标",
+                        "name": "align_objective",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -321,7 +368,7 @@ var doc = `{
             }
         },
         "/okr/cancel": {
-            "post": {
+            "get": {
                 "description": "取消/重启目标",
                 "consumes": [
                     "application/json"
@@ -333,15 +380,9 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "状态 0-重启 1-结束",
-                        "name": "canceled",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
                         "description": "okr id",
                         "name": "id",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -442,13 +483,13 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "部门id",
-                        "name": "departmentId",
+                        "name": "department_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "结束时间",
-                        "name": "endAt",
+                        "name": "end_at",
                         "in": "query"
                     },
                     {
@@ -472,7 +513,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "开始时间",
-                        "name": "startAt",
+                        "name": "start_at",
                         "in": "query"
                     },
                     {

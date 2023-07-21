@@ -299,12 +299,12 @@ paths:
       parameters:
       - description: 对齐目标okr id
         in: query
-        name: alignOkrId
+        name: align_okr_id
         required: true
         type: integer
       - description: okr id
         in: query
-        name: okrId
+        name: okr_id
         required: true
         type: integer
       responses:
@@ -340,17 +340,48 @@ paths:
       - application/json
       description: 获取对齐目标列表
       parameters:
-      - description: 关键词
+      - description: 目标（O）
         in: query
-        name: keywords
-        required: true
+        name: objective
         type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: 获取对齐目标列表
+      tags:
+      - Okr
+  /okr/align/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新对齐目标
+      parameters:
+      - description: 对齐目标
+        in: formData
+        name: align_objective
+        required: true
+        type: string
+      - description: okr id
+        in: formData
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新对齐目标
       tags:
       - Okr
   /okr/analyze/complete:
@@ -466,17 +497,13 @@ paths:
       tags:
       - OkrAnalyze
   /okr/cancel:
-    post:
+    get:
       consumes:
       - application/json
       description: 取消/重启目标
       parameters:
-      - description: 状态 0-重启 1-结束
-        in: formData
-        name: canceled
-        type: integer
       - description: okr id
-        in: formData
+        in: query
         name: id
         required: true
         type: integer
@@ -544,11 +571,11 @@ paths:
         type: integer
       - description: 部门id
         in: query
-        name: departmentId
+        name: department_id
         type: integer
       - description: 结束时间
         in: query
-        name: endAt
+        name: end_at
         type: string
       - description: 目标（O）
         in: query
@@ -564,7 +591,7 @@ paths:
         type: integer
       - description: 开始时间
         in: query
-        name: startAt
+        name: start_at
         type: string
       - description: 类型 1-承诺型 2-挑战型
         in: query

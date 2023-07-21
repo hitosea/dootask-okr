@@ -5,6 +5,7 @@ import (
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/service"
 	"dootask-okr/app/utils/verify"
+	"log"
 )
 
 // @Tags Okr
@@ -198,13 +199,13 @@ func (api *BaseApi) OkrFollow() {
 func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.UpdateProgressAndStatus(api.Userinfo, param)
+	result, err := service.OkrService.UpdateProgressAndStatus(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
@@ -217,32 +218,32 @@ func (api *BaseApi) OkrUpdateProgress() {
 func (api *BaseApi) OkrScore() {
 	var param = interfaces.OkrScoreReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.UpdateScore(api.Userinfo, param)
+	result, err := service.OkrService.UpdateScore(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
 // @Summary 取消/重启目标
 // @Description 取消/重启目标
 // @Accept json
-// @Param request formData interfaces.OkrCanceledReq true "request"
+// @Param request query interfaces.OkrIdReq true "request"
 // @Success 200 {object} interfaces.Response
-// @Router /okr/cancel [post]
+// @Router /okr/cancel [get]
 func (api *BaseApi) OkrCancel() {
-	var param = interfaces.OkrCanceledReq{}
+	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.CancelObjective(param)
+	result, err := service.OkrService.CancelObjective(param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
@@ -255,13 +256,13 @@ func (api *BaseApi) OkrCancel() {
 func (api *BaseApi) OkrParticipantUpdate() {
 	var param = interfaces.OkrParticipantUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.UpdateParticipant(param)
+	result, err := service.OkrService.UpdateParticipant(param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
@@ -274,13 +275,13 @@ func (api *BaseApi) OkrParticipantUpdate() {
 func (api *BaseApi) OkrConfidenceUpdate() {
 	var param = interfaces.OkrConfidenceUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.UpdateConfidence(param)
+	result, err := service.OkrService.UpdateConfidence(param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
@@ -293,13 +294,13 @@ func (api *BaseApi) OkrConfidenceUpdate() {
 func (api *BaseApi) OkrReplayCreate() {
 	var param = interfaces.OkrReplayCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.CreateOkrReplay(api.Userinfo.Userid, param)
+	result, err := service.OkrService.CreateOkrReplay(api.Userinfo.Userid, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
 
-	helper.Success(api.Context, nil)
+	helper.Success(api.Context, result)
 }
 
 // @Tags Okr
@@ -330,7 +331,10 @@ func (api *BaseApi) OkrReplayDetail() {
 // @Router /okr/align/cancel [get]
 func (api *BaseApi) OkrAlignCancel() {
 	var param = interfaces.OkrAlignCancelReq{}
+	log.Println(param)
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	log.Println(param)
+
 	err := service.OkrService.CancelAlignObjective(param.OkrId, param.AlignOkrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -344,12 +348,32 @@ func (api *BaseApi) OkrAlignCancel() {
 // @Summary 获取对齐目标列表
 // @Description 获取对齐目标列表
 // @Accept json
-// @Param keywords query string true "关键词"
+// @Param request query interfaces.OkrListBaseReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/align/list [get]
 func (api *BaseApi) OkrAlignList() {
-	keywords := api.Context.Query("keywords")
-	result, err := service.OkrService.GetAlignList(api.Userinfo, keywords)
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetAlignList(api.Userinfo, param.Objective, param.Page, param.PageSize)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 更新对齐目标
+// @Description 更新对齐目标
+// @Accept json
+// @Param request formData interfaces.OkrAlignUpdateReq true "request"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/align/update [post]
+func (api *BaseApi) OkrAlignUpdate() {
+	var param = interfaces.OkrAlignUpdateReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.UpdateAlignObjective(param.Id, param.AlignObjective)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

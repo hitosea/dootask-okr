@@ -16,8 +16,8 @@ type OkrReplay struct {
 	Review          string              `gorm:"type:varchar(255);comment:'回顾'" json:"review"`
 	CreatedAt       time.Time           `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
 	UpdatedAt       time.Time           `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
-	KrHistory       []*OkrReplayHistory `gorm:"foreignkey:ReplayId" json:"kr_history"`
-	OkrAlias        []string            `gorm:"-" json:"okr_alias"`
+	KrHistory       []*OkrReplayHistory `gorm:"foreignkey:ReplayId" json:"kr_history,omitempty"`
+	OkrAlias        []string            `gorm:"-" json:"okr_alias,omitempty"`
 }
 
 var OkrReplayModel = OkrReplay{}
