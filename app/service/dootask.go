@@ -87,6 +87,7 @@ func (s dootaskService) DialogOkrAdd(token string, okr *model.Okr) (int, error) 
 	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/dialog/okr/add")
 	params := make(map[string]interface{})
 	params["name"] = okr.Title
+	params["link_id"] = okr.Id
 	userids := []int{okr.Userid}
 
 	// 当okr有部门时，添加部门负责人
