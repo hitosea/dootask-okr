@@ -312,7 +312,7 @@ func (s *okrService) updateAlignment(objId int, alignObjective string, tx ...*go
 	alignmentIds := common.ExplodeInt(",", alignObjective, true)
 	for _, alignmentId := range alignmentIds {
 		if err := db.Where("id = ?", alignmentId).Where("parent_id = 0").First(&model.Okr{}).Error; err != nil {
-			return errors.New("对齐目标不存在")
+			continue
 		}
 		alignmentObj := &model.OkrAlign{
 			OkrId:      objId,
