@@ -1,5 +1,5 @@
 <template >
-        <n-modal v-model:show="show" transform-origin="center">
+        <n-modal v-model:show="show" transform-origin="center" @after-enter="afterEnter">
             <n-card class="w-[1240px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
                 <div class="flex">
                     <div class="flex-1 flex flex-col pb-[64px]">
@@ -171,8 +171,7 @@
                         </div>
     
                     </div>
-                    <div
-                        class="w-[414px] flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
+                    <div class="w-[414px] flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
                         <div
                             class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] h-[28px]">
                             <ul class="flex items-center gap-8">
@@ -186,9 +185,10 @@
                             <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="closeModal">&#xe6e5;</i>
                         </div>
                         <div class="flex-auto relative">
-                            <div class=" absolute top-[24px] bottom-0 left-0 right-0">
-                                <div v-if="navActive == 0">
-                                    聊天
+                            <div class="absolute top-[24px] bottom-0 left-0 right-0">
+                                <div class="text-center" v-show="navActive == 0">
+                                    <DialogWrappers />
+                                    <n-spin size="small" />
                                 </div>
                                 <n-scrollbar v-if="navActive == 1">
                                     <div class="flex text-start">
@@ -231,11 +231,10 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-
+import { UserStore } from "@/store/user"
+import { transferDark } from 'naive-ui';
 
 const show = ref(false)
-
-
 const navActive = ref(0)
 
 const emit = defineEmits(['close','mark'])
@@ -251,6 +250,32 @@ const handleMark = () => {
 const closeModal = () => {
     emit('close')
 }
+
+
+const loadDialogWrappers = () => {
+    nextTick(()=>{
+        if(!window.Vues){
+            return false;
+        }
+        new window.Vues.Vue({
+            el: document.querySelector('DialogWrappers'), 
+            store: window.Vues.store,
+            render: (h:any) => {
+                return h( window.Vues?.components?.DialogWrapper ,{
+                    props:{
+                        dialogId: 66
+                    }
+                },[ h("div",{slot:"head"}) ])
+            },
+        });
+    })
+}
+
+const afterEnter = () => {
+    loadDialogWrappers()
+}
+
+
 </script>
 <style lang="less" >
 .icon-title {

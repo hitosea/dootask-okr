@@ -42,8 +42,10 @@
         </n-card>
     </n-modal>
 </template>
+
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
+
 const props = defineProps({
     value: {
         type: Boolean,
@@ -58,6 +60,7 @@ const handleClose = () => {
     emit('close')
 }
 </script>
+
 <style lang="less" >
 .align-target {
 

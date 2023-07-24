@@ -44,9 +44,6 @@
             </n-tabs>
         </div>
     </div>
-    <!-- <div style="width: 300px;height: 500px; position: relative;">
-        <DialogWrappers />
-    </div> -->
     <addOkr v-model:show="addShow" @close="handleClose"></addOkr>
 </template>
 
@@ -54,29 +51,10 @@
 import { ref } from 'vue'
 import addOkr from '@/views/components/addOkr.vue';
 import Icreated from '@/views/manage/Icreated.vue'
-// import { UserStore } from "@/store/user"
 const addShow = ref(false)
 const searchObject = ref('')
 const searchShow = ref(false)
 const tabsName = ref('我创建的OKR')
-
-nextTick(() => {
-
-    //     console.log(UserStore().info)
-
-    //     new window.Vues.Vue({
-    //         el: document.querySelector('DialogWrappers'),
-    //         store: window.Vues.store,
-    //         render: (h: any) => {
-    //             return h(window.Vues?.components?.DialogWrapper, {
-    //                 props: {
-    //                     dialogId: 1
-    //                 }
-    //             }, [h("div", { slot: "head" })])
-    //         },
-    //     });
-
-})
 
 const changeTabs = (e)=>{
     tabsName.value = e
