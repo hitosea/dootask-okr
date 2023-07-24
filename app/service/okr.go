@@ -4,6 +4,7 @@ import (
 	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
+	"dootask-okr/app/repository"
 	"dootask-okr/app/utils/common"
 	"errors"
 	"fmt"
@@ -13,9 +14,17 @@ import (
 	"gorm.io/gorm"
 )
 
-var OkrService = okrService{}
+var OkrService = NewOkrService()
 
-type okrService struct{}
+type okrService struct {
+	okrLogRepo repository.OkrLogRepository
+}
+
+func NewOkrService() *okrService {
+	return &okrService{
+		okrLogRepo: repository.NewOkrLogRepository(),
+	}
+}
 
 // 创建目标
 func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrCreateReq) (*model.Okr, error) {
@@ -84,7 +93,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		}
 
 		// 动态日志
-		if err := s.InsertOkrLog(obj.Id, user.Userid, "add", "创建OKR", tx); err != nil {
+		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "创建OKR"); err != nil {
 			return err
 		}
 
@@ -174,7 +183,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		}
 
 		// 新增动态日志
-		if err := s.InsertOkrLog(obj.Id, user.Userid, "update", "更新OKR目标", tx); err != nil {
+		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
 			return err
 		}
 
@@ -431,7 +440,7 @@ func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
 	// 计算O评分
 	score := s.getObjectiveScore(obj)
 	if math.IsNaN(score) {
-		return errors.New("invalid KR score")
+		return errors.New("无效的KR分数")
 	}
 
 	// 更新O评分
@@ -809,7 +818,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 如果传值更新进度有值，则更新进度
 		if param.Progress != 0 {
 			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", obj.Title, obj.Progress, param.Progress)
-			if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent, tx); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			obj.Progress = param.Progress
@@ -818,7 +827,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 如果传值更新状态有值，则更新状态
 		if param.Status != 0 {
 			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", obj.Title, model.ProgressStatusMap[obj.ProgressStatus], model.ProgressStatusMap[param.Status])
-			if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent, tx); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			obj.ProgressStatus = param.Status
@@ -859,7 +868,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 				"Completed": 1,
 				"Progress":  progress,
 			}).Error; err != nil {
-				return fmt.Errorf("更新总目标失败：%w", err)
+				return err
 			}
 		} else {
 			if err := tx.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Update("progress", progress).Error; err != nil {
@@ -903,7 +912,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 			// 新增动态日志
 			logContent := fmt.Sprintf("责任人打分: %s", obj.Title)
-			if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent, tx); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
@@ -935,7 +944,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 			// 新增动态日志
 			logContent := fmt.Sprintf("上级打分: %s", obj.Title)
-			if err := s.InsertOkrLog(obj.Id, user.Userid, "update", logContent, tx); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
@@ -1224,12 +1233,8 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 	return okrAlignResps, nil
 }
 
-// 新增动态日志
-func (s *okrService) InsertOkrLog(okrId, userId int, operation, content string, tx ...*gorm.DB) error {
-	db := core.DB
-	if len(tx) > 0 {
-		db = tx[0]
-	}
+// tx新增动态日志
+func (s *okrService) InsertOkrLogTx(tx *gorm.DB, okrId, userId int, operation, content string) error {
 
 	log := &model.OkrLog{
 		OkrId:     okrId,
@@ -1238,21 +1243,18 @@ func (s *okrService) InsertOkrLog(okrId, userId int, operation, content string, 
 		Content:   content,
 	}
 
-	return db.Create(log).Error
+	return s.okrLogRepo.CreateTx(tx, log)
 }
 
 // 获取动态列表
 func (s *okrService) GetOkrLogList(okrId, page, pageSize int) (*interfaces.Pagination, error) {
-	var logs []*model.OkrLog
-	var count int64
-
-	db := core.DB.Model(&model.OkrLog{}).Where("okr_id = ?", okrId)
-	if err := db.Count(&count).Error; err != nil {
+	count, err := s.okrLogRepo.CountByOkrId(okrId)
+	if err != nil {
 		return nil, err
 	}
 
-	offset := (page - 1) * pageSize
-	if err := db.Order("created_at asc").Offset(offset).Limit(pageSize).Find(&logs).Error; err != nil {
+	logs, err := s.okrLogRepo.FindByOkrId(okrId, page, pageSize)
+	if err != nil {
 		return nil, err
 	}
 
