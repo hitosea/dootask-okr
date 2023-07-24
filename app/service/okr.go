@@ -1226,16 +1226,19 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 
 // 新增动态日志
 func (s *okrService) InsertOkrLog(okrId, userId int, operation, content string, tx ...*gorm.DB) error {
+	db := core.DB
+	if len(tx) > 0 {
+		db = tx[0]
+	}
+
 	log := &model.OkrLog{
 		OkrId:     okrId,
 		Userid:    userId,
 		Operation: operation,
 		Content:   content,
 	}
-	if len(tx) > 0 {
-		return tx[0].Create(log).Error
-	}
-	return core.DB.Create(log).Error
+
+	return db.Create(log).Error
 }
 
 // 获取动态列表
