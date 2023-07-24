@@ -5,5 +5,12 @@ ErrInvalidParameter: Argumen salah
 ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan untuk menerima
 ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
+ErrOkrInvalidKrScore: Anggota KR yang tidak valid
+ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
+ErrOkrKrScoreNotComplete: KR rating tidak lengkap
+ErrOkrNoData: Sudah tak terhitung jumlahnya
+ErrOkrNoPermissionScore: Tak ada tingkat izin sementara
+ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
+ErrOkrProgressNotEnough: Kurang dari 100%
 ErrRequestTimeout: Waktu permintaan
 ErrTypeNotLogin: Tidak login

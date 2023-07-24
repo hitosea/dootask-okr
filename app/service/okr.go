@@ -1,11 +1,13 @@
 package service
 
 import (
+	"dootask-okr/app/constant"
 	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/repository"
 	"dootask-okr/app/utils/common"
+	e "dootask-okr/app/utils/error"
 	"errors"
 	"fmt"
 	"math"
@@ -30,7 +32,7 @@ func NewOkrService() *okrService {
 func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrCreateReq) (*model.Okr, error) {
 	// 至少有一条关键结果
 	if len(param.KeyResults) == 0 {
-		return nil, errors.New("至少有一条关键结果")
+		return nil, e.New(constant.ErrOkrKeyResultAtLeastOne)
 	}
 
 	// 时间格式化
@@ -115,7 +117,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrUpdateReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(param.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	startAt, err := common.ParseTime(param.StartAt)
@@ -130,7 +132,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 	// 至少有一条关键结果
 	if len(param.KeyResults) == 0 {
-		return nil, errors.New("至少有一条关键结果")
+		return nil, e.New(constant.ErrOkrKeyResultAtLeastOne)
 	}
 
 	var participantIds []int // 所有参与人
@@ -259,7 +261,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	keyResult, err := s.GetObjectiveById(kr.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 父级目标标题
@@ -440,7 +442,7 @@ func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
 	// 计算O评分
 	score := s.getObjectiveScore(obj)
 	if math.IsNaN(score) {
-		return errors.New("无效的KR分数")
+		return e.New(constant.ErrOkrInvalidKrScore)
 	}
 
 	// 更新O评分
@@ -810,7 +812,7 @@ func (s *okrService) FollowObjective(userid, objectiveId int) (*model.OkrFollow,
 func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, param interfaces.OkrUpdateProgressReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 开始事务
@@ -890,11 +892,11 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces.OkrScoreReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 	// 检查进度是否为100%
 	if obj.Progress < 100 {
-		return nil, errors.New("进度不足100%")
+		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
@@ -902,7 +904,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	if !superior {
 		// 检查用户是否为目标负责人
 		if obj.Userid != user.Userid {
-			return nil, errors.New("暂无权限评分")
+			return nil, e.New(constant.ErrOkrNoPermissionScore)
 		}
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -924,7 +926,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	} else {
 		// 需要负责人评分才可以上级评分
 		if obj.Score == 0 {
-			return nil, errors.New("负责人未评分")
+			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
 		// 上级评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -996,7 +998,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 func (s *okrService) CancelObjective(okrId int) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(okrId)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 更新取消状态
@@ -1017,7 +1019,7 @@ func (s *okrService) CancelObjective(okrId int) (*model.Okr, error) {
 func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	obj.Participant = param.Participant
@@ -1032,7 +1034,7 @@ func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq)
 func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
-		return nil, errors.New("暂无数据")
+		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	obj.Confidence = param.Confidence
@@ -1054,7 +1056,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	// 检查关键结果是否已评分
 	for _, kr := range obj.KeyResults {
 		if kr.Score == 0 || kr.SuperiorScore == 0 {
-			return nil, errors.New("KR评分未完成")
+			return nil, e.New(constant.ErrOkrKrScoreNotComplete)
 		} else {
 			// 计算关键结果总评分
 			krScore := s.getKrScore(kr)

@@ -5,5 +5,12 @@ ErrInvalidParameter: 参数错误
 ErrMailContentReject: 邮件内容被拒绝，请检查邮箱是否开启接收功能
 ErrMailNotConfig: 发送邮箱未配置
 ErrMailToInvalid: 请输入正确的收件人地址
+ErrOkrInvalidKrScore: 无效的KR分数
+ErrOkrKeyResultAtLeastOne: 至少有一条关键结果
+ErrOkrKrScoreNotComplete: KR评分未完成
+ErrOkrNoData: 暂无数据
+ErrOkrNoPermissionScore: 暂无权限评分
+ErrOkrOwnerNotScore: 负责人未评分
+ErrOkrProgressNotEnough: 进度不足100%
 ErrRequestTimeout: 请求超时
 ErrTypeNotLogin: 未登录

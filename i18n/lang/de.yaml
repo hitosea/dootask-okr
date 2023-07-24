@@ -5,5 +5,12 @@ ErrInvalidParameter: Fehlerhafte parameter
 ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postfach die funktion empfangsfunktion geöffnet hat
 ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
 ErrMailToInvalid: Bitte geben sie die richtige adresse ein
+ErrOkrInvalidKrScore: Das fehlerhafte KRML
+ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis
+ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
+ErrOkrNoData: Eine vermutung nimmt man Von zeit zu zeit.
+ErrOkrNoPermissionScore: Nichtautorisierung durchführen
+ErrOkrOwnerNotScore: Leiter der mission unbenotet.
+ErrOkrProgressNotEnough: Wir haben nicht 100%.
 ErrRequestTimeout: Wir Bitten um mehr zeit.
 ErrTypeNotLogin: Nicht eingegeben.

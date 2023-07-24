@@ -5,5 +5,12 @@ ErrInvalidParameter: Parameter error
 ErrMailContentReject: The email content is rejected. Please check whether the receiving function is enabled
 ErrMailNotConfig: The sending mailbox is not configured
 ErrMailToInvalid: Please enter the correct recipient address
+ErrOkrInvalidKrScore: Invalid KR score
+ErrOkrKeyResultAtLeastOne: There was at least one key result
+ErrOkrKrScoreNotComplete: KR score is not complete
+ErrOkrNoData: No data available
+ErrOkrNoPermissionScore: No permission rating is available
+ErrOkrOwnerNotScore: Person in charge not rated
+ErrOkrProgressNotEnough: Less than 100% progress
 ErrRequestTimeout: Request timeout
 ErrTypeNotLogin: Not logged in

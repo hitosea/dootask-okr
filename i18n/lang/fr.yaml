@@ -5,5 +5,12 @@ ErrInvalidParameter: Paramètres incorrects
 ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre boîte aux lettres est active pour recevoir
 ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
+ErrOkrInvalidKrScore: Score KR non valide
+ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
+ErrOkrKrScoreNotComplete: KR score non terminé
+ErrOkrNoData: Données non disponibles
+ErrOkrNoPermissionScore: Pas encore d’autorisation score
+ErrOkrOwnerNotScore: Responsable non évalué
+ErrOkrProgressNotEnough: Progrès insuffisants 100%
 ErrRequestTimeout: La demande a expiré
 ErrTypeNotLogin: Pas de login
