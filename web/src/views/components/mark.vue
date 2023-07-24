@@ -1,25 +1,16 @@
 <template >
     <n-modal v-model:show="show" transform-origin="center">
-        <n-card class="w-[480px]" :title="$t('更新 KR 完成度')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[480px]" :title="$t('评分')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
-                    <n-form-item :label="$t('完成度')">
-                        <n-input-number v-model:value="formValue.complete" :show-button="false">
-                            <template #suffix> %</template>
-                        </n-input-number>
+                    <n-form-item >
+                        <n-select v-model:value="formValue.mark" :placeholder="$t('请选择评分')"
+                                    :options="markOptions" />
                     </n-form-item>
-                    <n-form-item :label="$t('状态')" class="">
-                        <n-radio-group v-model:value="formValue.status" name="radiogroup1">
-                            <n-space>
-                                <n-radio value="0">{{ $t('正常') }}</n-radio>
-                                <n-radio value="1">{{ $t('有风险') }}</n-radio>
-                                <n-radio value="2">{{ $t('已延期') }}</n-radio>
-                            </n-space>
-                        </n-radio-group>
-                    </n-form-item>
+
                 </n-form>
             </div>
 
@@ -44,9 +35,56 @@ import { Close } from "@vicons/ionicons5"
 const show = ref(false)
 const loadIng = ref(false)
 const formValue = ref({
-    complete: 0,
-    status: 0,
+    mark: null,
 })
+
+const markOptions = ref([
+    {
+        label: $t('0 未达成目标，态度问题'),
+        value: 0,
+    },
+    {
+        label: $t('1 未达成目标'),
+        value: 1,
+    },
+    {
+        label: $t('2 目标达成效果较差，未及时调整'),
+        value: 2,
+    },
+    {
+        label: $t('3 目标达成效果不佳 '),
+        value: 3,
+    },
+    {
+        label: $t('4 目标勉强达成，还需努力'),
+        value: 4,
+    },
+    {
+        label: $t('5 目标基本达成'),
+        value: 5,
+    },
+    {
+        label: $t('6 目标达成，效果一般'),
+        value: 6,
+    },
+    {
+        label: $t('7 目标达成，效果良好'),
+        value: 7,
+    },
+    {
+        label: $t('8 100%达成目标'),
+        value: 8,
+    },
+    {
+        label: $t('9 110%达成目标'),
+        value: 9,
+    },
+    {
+        label: $t('10 超出预期'),
+        value: 10,
+    },
+
+])
 
 const emit = defineEmits(['close'])
 
@@ -58,4 +96,5 @@ const handleClose = () => {
 :deep(.n-card__content){
     @apply pb-0 !important;
 }
+
 </style>

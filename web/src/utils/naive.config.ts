@@ -17,8 +17,9 @@ const themeOverrides = {
             color:"rgba(167, 171, 181, 0.1)",
             textColor:"#A7ABB5",
         },
-        Radio:{
-            buttonBorderColor:'#333'
+        Card:{
+            paddingHuge:"24px 24px 24px",
+            borderRadius:"12px"
         },
     },
     darkThemeOverrides: {
@@ -37,6 +38,10 @@ const themeOverrides = {
             borderRadius: "4px",
             color:"rgba(167, 171, 181, 0.1)",
             textColor:"#A7ABB5",
+        },
+        Card:{
+            paddingHuge:"24px 24px 24px",
+            borderRadius:"12px"
         },
     },
 }

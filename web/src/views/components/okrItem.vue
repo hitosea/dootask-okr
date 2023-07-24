@@ -49,18 +49,29 @@
     </div>
     <AlignTarget :value="alignTargetShow" @close="() => { alignTargetShow = false }"></AlignTarget>
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
-    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @mark="handleOpenMark"></OkrDetails>
+    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }"></DegreeOfCompletion>
+    <confidence v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></confidence>
+    <markVue v-model:show="markShow" @close="() => { markShow = false }"></markVue>
+    <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
+
 </template>
 <script setup lang="ts">
 import AlignTarget from '@/views/components/AlignTarget.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import OkrDetails from './OkrDetails.vue';
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
+import confidence from '@/views/components/confidence.vue';
+import markVue from '@/views/components/mark.vue';
+import AddMultiple from '@/views/components/AddMultiple.vue';
+
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
 const okrDetailsShow = ref(false)
 const degreeOfCompletionShow = ref(false)
+const confidenceShow = ref(false)
+const markShow = ref(false)
+const addMultipleShow = ref(true)
 
 const handleTarget = (e) => {
     if (e == 1) {
@@ -75,9 +86,18 @@ const handleOpenDetail = () => {
     okrDetailsShow.value = true
 }
 
-const handleOpenMark = () => {
+const handleOpenSchedule = () => {
     degreeOfCompletionShow.value = true
 }
+
+const handleConfidence = () => {
+    confidenceShow.value = true
+}
+const handleMark = () => {
+    markShow.value = true
+}
+
+
 </script>
 <style lang="less">
 .okr-item-main {
@@ -150,7 +170,7 @@ const handleOpenMark = () => {
             }
 
             .align-target {
-                @apply mt-16 text-text-tips text-12 cursor-pointer;
+                @apply mt-8 text-text-tips text-12 cursor-pointer;
             }
         }
     }

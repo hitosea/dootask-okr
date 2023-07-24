@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     NCheckbox: typeof import('naive-ui')['NCheckbox']
     NCheckboxGroup: typeof import('naive-ui')['NCheckboxGroup']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
+    NDataTable: typeof import('naive-ui')['NDataTable']
     NDatePicker: typeof import('naive-ui')['NDatePicker']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NDivider: typeof import('naive-ui')['NDivider']
@@ -53,6 +54,8 @@ declare module '@vue/runtime-core' {
     Result: typeof import('./src/components/Result.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TEditor: typeof import('./src/components/TEditor.vue')['default']
+    TEditorVUE3: typeof import('./src/components/TEditorVUE3.vue')['default']
     WCircle: typeof import('./src/components/WCircle.vue')['default']
   }
 }

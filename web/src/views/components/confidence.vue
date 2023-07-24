@@ -1,25 +1,17 @@
 <template >
     <n-modal v-model:show="show" transform-origin="center">
-        <n-card class="w-[480px]" :title="$t('更新 KR 完成度')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[480px]" :title="$t('信心指数')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
-                    <n-form-item :label="$t('完成度')">
-                        <n-input-number v-model:value="formValue.complete" :show-button="false">
-                            <template #suffix> %</template>
+                    <n-form-item >
+                        <n-input-number class="w-full" v-model:value="formValue.complete" :show-button="false">
+                         
                         </n-input-number>
                     </n-form-item>
-                    <n-form-item :label="$t('状态')" class="">
-                        <n-radio-group v-model:value="formValue.status" name="radiogroup1">
-                            <n-space>
-                                <n-radio value="0">{{ $t('正常') }}</n-radio>
-                                <n-radio value="1">{{ $t('有风险') }}</n-radio>
-                                <n-radio value="2">{{ $t('已延期') }}</n-radio>
-                            </n-space>
-                        </n-radio-group>
-                    </n-form-item>
+
                 </n-form>
             </div>
 

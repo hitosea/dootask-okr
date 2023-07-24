@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@micro-zoe/micro-app": "^0.8.11",
+        "@tinymce/tinymce-vue": "5.0.0",
         "echarts": "^5.4.3",
         "highlight.js": "^11.8.0",
         "le5le-store": "^1.0.7",
@@ -23,6 +24,7 @@
         "qrcode.vue": "^3.4.0",
         "quill": "^1.3.7",
         "quill-mention-hi": "^3.1.0-1",
+        "tinymce": "6.0.3",
         "ts-node": "^10.9.1",
         "vue": "^3.2.47",
         "vue-auto-translate": "^1.1.12"

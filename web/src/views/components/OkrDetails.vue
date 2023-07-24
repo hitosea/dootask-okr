@@ -75,17 +75,17 @@
                                         <p class="flex-1 text-text-li text-14">2023/07/01~2023/09/30</p>
                                     </div>
                                     <div class="flex items-center gap-6">
-                                        <div class="flex items-center">
+                                        <div class="flex items-center cursor-pointer" @click="handleSchedule">
                                             <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                                 :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                                 color="var(--primary-color)" status="success" :percentage="100" />
                                             <p class="text-text-li opacity-50 text-12">100%</p>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div class="flex items-center cursor-pointer" @click="handleConfidence">
                                             <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                             <p class="text-text-li opacity-50 text-12">100</p>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div class="flex items-center cursor-pointer" @click="handleMark">
                                             <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
                                             <p class="text-text-li opacity-50 text-12">8.5分</p>
                                         </div>
@@ -109,17 +109,17 @@
                                         <p class="flex-1 text-text-li text-14">2023/07/01~2023/09/30</p>
                                     </div>
                                     <div class="flex items-center gap-6">
-                                        <div class="flex items-center">
+                                        <div class="flex items-center cursor-pointer" @click="handleSchedule">
                                             <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                                 :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                                 color="var(--primary-color)" status="success" :percentage="20" />
                                             <p class="text-text-li opacity-50 text-12">20%</p>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div class="flex items-center cursor-pointer" @click="handleConfidence">
                                             <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                             <p class="text-text-li opacity-50 text-12">信心</p>
                                         </div>
-                                        <div class="flex items-center" @click="handleMark">
+                                        <div class="flex items-center cursor-pointer" @click="handleMark">
                                             <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">评分</p>
                                         </div>
@@ -237,12 +237,18 @@ import { transferDark } from 'naive-ui';
 const show = ref(false)
 const navActive = ref(0)
 
-const emit = defineEmits(['close','mark'])
+const emit = defineEmits(['close','schedule','confidence','mark'])
 
 const handleNav = (index) => {
     navActive.value = index
 }
 
+const handleSchedule = () => {
+    emit('schedule')
+}
+const handleConfidence = () => {
+    emit('confidence')
+}
 const handleMark = () => {
     emit('mark')
 }
@@ -303,7 +309,7 @@ const afterEnter = () => {
 }
 
 .align-target {
-    @apply flex flex-col gap-6 mt-20;
+    @apply flex flex-col gap-6 mt-8;
 
     .a-t-list {
         @apply flex items-center;

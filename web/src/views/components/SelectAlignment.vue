@@ -160,6 +160,6 @@ const pStatus = (p) => {
 }
 
 .button-box {
-    @apply flex items-center justify-between;
+    @apply flex items-center justify-between mt-0;
 }
 </style>

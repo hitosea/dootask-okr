@@ -3,7 +3,6 @@ import { UserState } from './interface';
 import piniaPersistConfig from "./config/pinia-persist";
 import { getUserInfo } from "../api/modules/user";
 import utils from "../utils/utils";
-
 export const UserStore = defineStore({
     id: 'UserState',
     state: (): UserState => ({

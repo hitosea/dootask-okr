@@ -1,5 +1,5 @@
 <template >
-    <n-upload :action="upUrl" :default-file-list="previewFileList" list-type="image-card" @preview="handlePreview"
+    <n-upload :action="upUrl" :default-file-list="previewFileList" :list-type="props.listType" @preview="handlePreview"
         :headers="uploadHeaders" @before-upload="beforeUpload" @finish="handleFinish" @error="handleError" method="POST"
         :max="props.maxNumber" :multiple="props.multiple" />
     <n-modal v-model:show="showModal" preset="card" style="width: 600px" :title="$t('查看')">
@@ -7,7 +7,7 @@
     </n-modal>
 </template>
 <script setup lang="ts">
-import { ref, defineProps, computed } from "vue"
+import { ref, computed } from "vue"
 import { UploadFileInfo, useMessage } from "naive-ui"
 import webTs from "@/utils/web";
 import utils from "@/utils/utils";
@@ -29,6 +29,10 @@ const props = defineProps({
     },
     value: {
     },
+    listType: {
+        type: String,
+        default: 'image-card',
+    }
 })
 
 //action上传api

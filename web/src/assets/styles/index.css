@@ -9,3 +9,13 @@
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
+.n-card-header{
+    @apply relative;
+}
+.n-card-header::before{
+    @apply w-[calc(100%-48px)] h-1 bg-[#F4F5F7] absolute bottom-16 ;
+    content: " ";
+}
+.n-card-header{
+    @apply pb-32 !important;
+}
