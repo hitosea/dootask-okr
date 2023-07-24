@@ -16,6 +16,8 @@ import (
 
 func Init(c *gin.Context) {
 	urlPath := strings.Replace(c.Request.URL.Path, "/microapp/okr/api/v1/", "/api/v1/", -1)
+	urlPath = strings.Replace(c.Request.URL.Path, "/manage/apps/okr/api/v1/", "/api/v1/", -1)
+	urlPath = strings.Replace(c.Request.URL.Path, "/apps/okr/api/v1/", "/api/v1/", -1)
 	// 接口
 	if strings.HasPrefix(urlPath, "/api/v1/") {
 		// 读取身份
@@ -42,8 +44,9 @@ func Init(c *gin.Context) {
 	}
 
 	// 静态资源
-	if strings.HasPrefix(urlPath, "/assets") || strings.HasPrefix(urlPath, "/manage/microapp/okr/assets") {
-		assets := strings.Replace(urlPath, "/manage/microapp/okr/assets", "/assets", -1)
+	if strings.HasPrefix(urlPath, "/assets") || strings.HasPrefix(urlPath, "/apps/okr/assets") || strings.HasPrefix(urlPath, "/manage/apps/okr/assets") {
+		assets := strings.Replace(urlPath, "/manage/apps/okr/assets", "/assets", -1)
+		assets = strings.Replace(assets, "/apps/okr/assets", "/assets", -1)
 		c.FileFromFS("dist"+assets, http.FS(web.Assets))
 		return
 	}
