@@ -1,7 +1,7 @@
 
 @import 'taskfont.css';
 @import 'dark.css';
-@import 'var.css';
+@import 'light.css';
 @import 'tailwind.css';
 * {
     margin: 0;

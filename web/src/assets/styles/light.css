@@ -1,4 +1,4 @@
-body.light{
+body,micro-app-body{
     --page-bg:#FAFAFA;
     --primary-color: #84C56A;
     --primary-color-80: rgba(132, 197, 106, 0.8);

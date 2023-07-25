@@ -1,5 +1,6 @@
 <template>
-    <n-config-provider :theme="theme" :class="themeName" :locale="locale" :date-locale="dateLocale"
+    <!-- :theme="theme" -->
+    <n-config-provider  :locale="locale" :date-locale="dateLocale"
         :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides">
         <n-loading-bar-provider>
             <n-message-provider>
@@ -41,8 +42,8 @@ const dateLocale = computed((): NDateLocale => {
 })
 
 watch(themeName,(newVal,oldVal)=>{
-    document.querySelector("body").classList.remove(oldVal)
-    document.querySelector("body").classList.add(newVal)
+    document.querySelector("body").classList.remove('okr-theme-'+oldVal)
+    document.querySelector("body").classList.add('okr-theme-'+newVal)
 },{immediate:true})
 
 </script>
