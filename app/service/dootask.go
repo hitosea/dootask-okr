@@ -169,8 +169,8 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 // 解码并检查返回数据
 func (s dootaskService) UnmarshalAndCheckResponse(resp []byte) (map[string]interface{}, error) {
 	var ret map[string]interface{}
-	if err := json.Unmarshal(resp, &ret); err == nil {
-		return nil, e.WithDetail(constant.ErrDooTaskUnmarshalResponse, "1212122d的说三道四的fxfs", nil)
+	if err := json.Unmarshal(resp, &ret); err != nil {
+		return nil, e.WithDetail(constant.ErrDooTaskUnmarshalResponse, err, nil)
 	}
 
 	retCode, ok := ret["ret"].(float64)
