@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -111,7 +112,7 @@ func WriteLangFile() error {
 				if language == "zh-Hant" {
 					language = "zh-CHT"
 				}
-				translatedText, err := youdaoTranslateText(message.Value, "zh-CHS", language)
+				translatedText, err := translateAndFilter(message.Value, "zh-CHS", language)
 				if err != nil {
 					log.Printf("Failed to translate message %q to %s: %v", message.ID, language, err)
 					continue
@@ -158,6 +159,32 @@ func readYamlFile(filename string) map[string]string {
 	}
 
 	return data
+}
+
+// 翻译文本并过滤掉
+func translateAndFilter(text, from string, targetLang string) (string, error) {
+	// 定义需要替换的文本和占位符
+	replacements := []string{"{{.detail}}", "{{.err}}", "{{.maps}}"}
+	placeholders := []string{"00001", "00002", "00003"}
+
+	// 使用正则表达式将需要替换的文本替换为占位符
+	for i, r := range replacements {
+		re := regexp.MustCompile(r)
+		text = re.ReplaceAllString(text, placeholders[i])
+	}
+
+	// 调用有道翻译 API 进行翻译
+	translation, err := youdaoTranslateText(text, from, targetLang)
+	if err != nil {
+		return "", err
+	}
+
+	// 使用正则表达式将占位符替换为翻译结果
+	for i, p := range placeholders {
+		translation = strings.ReplaceAll(translation, p, replacements[i])
+	}
+
+	return translation, nil
 }
 
 // 使用有道翻译API翻译文本

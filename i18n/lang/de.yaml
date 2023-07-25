@@ -1,5 +1,10 @@
 ErrCaptchaCode: Authentifizierungsfehler bestätigt
 ErrCmdTimeout: Der befehl wird mit verspätung ausgeführt
+ErrDooTaskDataFormat: Fehler bei der datenformat
+ErrDooTaskRequestFailed: Bitte abgelehnt.
+ErrDooTaskRequestFailedWithErr: 'Anfrage abgelehnt: {{.detail}}'
+ErrDooTaskResponseFormat: Format ist nicht korrekt.
+ErrDooTaskUnmarshalResponse: 'Nicht interpretieren können: {{.detail}} antworten'
 ErrEnvProhibition: Dies ist unter den aktuellen umständen verboten
 ErrInvalidParameter: Fehlerhafte parameter
 ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postfach die funktion empfangsfunktion geöffnet hat

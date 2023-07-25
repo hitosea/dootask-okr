@@ -1,5 +1,10 @@
 ErrCaptchaCode: Galat captcha
 ErrCmdTimeout: Waktu habis untuk perintah
+ErrDooTaskDataFormat: Salah format data
+ErrDooTaskRequestFailed: Permintaan gagal
+ErrDooTaskRequestFailedWithErr: 'Permintaan kegagalan: {{.detail}}'
+ErrDooTaskResponseFormat: Salah format respon
+ErrDooTaskUnmarshalResponse: 'Respon analisa gagal: {{.detail}}'
 ErrEnvProhibition: Lingkungan saat ini melarang operasi ini
 ErrInvalidParameter: Argumen salah
 ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan untuk menerima

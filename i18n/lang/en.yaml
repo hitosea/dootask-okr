@@ -1,5 +1,10 @@
 ErrCaptchaCode: Verification code error
 ErrCmdTimeout: Command execution timeout
+ErrDooTaskDataFormat: Data format error
+ErrDooTaskRequestFailed: Request failed
+ErrDooTaskRequestFailedWithErr: 'Request failed: {{.detail}}'
+ErrDooTaskResponseFormat: Response format error
+ErrDooTaskUnmarshalResponse: 'Parsing response failed: {{.detail}}'
 ErrEnvProhibition: This operation is prohibited in the current environment
 ErrInvalidParameter: Parameter error
 ErrMailContentReject: The email content is rejected. Please check whether the receiving function is enabled

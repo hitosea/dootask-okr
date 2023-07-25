@@ -1,5 +1,10 @@
 ErrCaptchaCode: Code de vérification incorrect
 ErrCmdTimeout: Délai d’exécution de la commande expire
+ErrDooTaskDataFormat: Format de données incorrect
+ErrDooTaskRequestFailed: La demande a échoué
+ErrDooTaskRequestFailedWithErr: 'Demande échouée: {{.detail}}'
+ErrDooTaskResponseFormat: Format de réponse incorrect
+ErrDooTaskUnmarshalResponse: 'Échec de la réponse résolue: {{.detail}}'
 ErrEnvProhibition: L’environnement actuel interdit cette opération
 ErrInvalidParameter: Paramètres incorrects
 ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre boîte aux lettres est active pour recevoir

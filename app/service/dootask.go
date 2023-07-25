@@ -1,12 +1,15 @@
 package service
 
 import (
+	"dootask-okr/app/constant"
 	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
+	e "dootask-okr/app/utils/error"
 	"dootask-okr/config"
 	"encoding/json"
+
 	"fmt"
 	"time"
 )
@@ -56,7 +59,7 @@ func (s dootaskService) GetUserList(token string) ([]interface{}, error) {
 
 	users, ok := data["list"].([]interface{})
 	if !ok {
-		return nil, fmt.Errorf("用户列表格式错误")
+		return nil, e.New(constant.ErrDooTaskDataFormat)
 	}
 	return users, nil
 }
@@ -76,7 +79,7 @@ func (s dootaskService) GetProjectList(token string) ([]interface{}, error) {
 
 	list, ok := data["data"].([]interface{})
 	if !ok {
-		return nil, fmt.Errorf("项目列表格式错误")
+		return nil, e.New(constant.ErrDooTaskDataFormat)
 	}
 
 	return list, nil
@@ -116,7 +119,7 @@ func (s dootaskService) DialogOkrAdd(token string, okr *model.Okr) (int, error) 
 
 	dialogId, ok := data["id"].(float64)
 	if !ok {
-		return 0, fmt.Errorf("dialogId is not an int")
+		return 0, e.New(constant.ErrDooTaskDataFormat)
 	}
 
 	return int(dialogId), nil
@@ -166,28 +169,28 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 // 解码并检查返回数据
 func (s dootaskService) UnmarshalAndCheckResponse(resp []byte) (map[string]interface{}, error) {
 	var ret map[string]interface{}
-	if err := json.Unmarshal(resp, &ret); err != nil {
-		return nil, fmt.Errorf("解析响应失败：%w", err)
+	if err := json.Unmarshal(resp, &ret); err == nil {
+		return nil, e.WithDetail(constant.ErrDooTaskUnmarshalResponse, "1212122d的说三道四的fxfs", nil)
 	}
 
 	retCode, ok := ret["ret"].(float64)
 	if !ok {
-		return nil, fmt.Errorf("响应格式错误")
+		return nil, e.New(constant.ErrDooTaskResponseFormat)
 	}
 
 	if retCode != 1 {
 		msg, ok := ret["msg"].(string)
 		if !ok {
-			return nil, fmt.Errorf("请求失败")
+			return nil, e.New(constant.ErrDooTaskRequestFailed)
 		}
-		return nil, fmt.Errorf("请求失败：%v", msg)
+		return nil, e.WithDetail(constant.ErrDooTaskRequestFailedWithErr, msg, nil)
 	}
 
 	data, ok := ret["data"].(map[string]interface{})
 	if !ok {
 		dataList, isList := ret["data"].([]interface{})
 		if !isList {
-			return nil, fmt.Errorf("数据格式错误")
+			return nil, e.New(constant.ErrDooTaskDataFormat)
 		}
 
 		data = make(map[string]interface{})

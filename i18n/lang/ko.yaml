@@ -1,5 +1,10 @@
 ErrCaptchaCode: 인증 코드 오류
 ErrCmdTimeout: 명령 실행 시간이 초과되었습니다
+ErrDooTaskDataFormat: 데이터 형식 오류
+ErrDooTaskRequestFailed: 요청 실패
+ErrDooTaskRequestFailedWithErr: 요청이 실패했습니다:{{.detail}}
+ErrDooTaskResponseFormat: 응답 형식이 잘못되었습니다
+ErrDooTaskUnmarshalResponse: 응답 분석 실패:{{.detail}}
 ErrEnvProhibition: 현재 환경에서는 사용하지 않습니다
 ErrInvalidParameter: 인자 오류
 ErrMailContentReject: 전자메일 내용이 거부되었습니다. 메일함의 수신이 켜져 있는지 확인하십시오

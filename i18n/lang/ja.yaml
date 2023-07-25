@@ -1,5 +1,10 @@
 ErrCaptchaCode: captchaエラーです
 ErrCmdTimeout: 命令実行タイムオーバーです
+ErrDooTaskDataFormat: データフォーマットエラーです。
+ErrDooTaskRequestFailed: 失敗をお願いします
+ErrDooTaskRequestFailedWithErr: 要求失敗:{{.detail}}です
+ErrDooTaskResponseFormat: 応答フォーマットエラーです
+ErrDooTaskUnmarshalResponse: 応答応答失敗:{{.detail}}です
 ErrEnvProhibition: 現在の環境ではこの動作は禁止されています
 ErrInvalidParameter: パラメータエラーです
 ErrMailContentReject: メールの内容が拒否された場合、受信機能がオンになっているか確認します。

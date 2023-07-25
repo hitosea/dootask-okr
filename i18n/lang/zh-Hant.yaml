@@ -1,5 +1,10 @@
 ErrCaptchaCode: 驗證碼錯誤
 ErrCmdTimeout: 命令執行超時
+ErrDooTaskDataFormat: 數據格式錯誤
+ErrDooTaskRequestFailed: 請求失敗
+ErrDooTaskRequestFailedWithErr: 請求失敗：{{.detail}}
+ErrDooTaskResponseFormat: 響應格式錯誤
+ErrDooTaskUnmarshalResponse: 解析響應失敗：{{.detail}}
 ErrEnvProhibition: 當前環境禁止此操作
 ErrInvalidParameter: 參數錯誤
 ErrMailContentReject: 郵件內容被拒絕，請檢查郵箱是否開啓接收功能
