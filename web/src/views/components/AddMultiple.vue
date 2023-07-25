@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer">
+    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar>
@@ -7,7 +7,7 @@
                         <h3 class="text-text-li text-18 font-normal mb-16">OKR</h3>
                         <n-data-table :columns="columns" :data="data" :single-line="false" />
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
-                        <!-- <TEditor></TEditor> -->
+                        <TEditor></TEditor>
                     </div>
                 </n-scrollbar>
                 <div class="button-box">
