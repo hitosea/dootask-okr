@@ -7,9 +7,8 @@ import (
 )
 
 // 获取个人完成与未完成目标数量
-
-func StatisticsAll(userID int) (*interfaces.StatisticsAllS, error) {
-	var statisticsAll interfaces.StatisticsAllS
+func OkrStatisticsAll(userID int) (*interfaces.OkrStatisticsAllS, error) {
+	var statisticsAll interfaces.OkrStatisticsAllS
 
 	db := core.DB.Model(&model.Okr{}).
 		Where("userid = ?", userID).
@@ -28,7 +27,6 @@ func StatisticsAll(userID int) (*interfaces.StatisticsAllS, error) {
 }
 
 // 获取个人整体评分与完成度
-
 func (s *okrService) GetOkrOverall(userId int) (*interfaces.OkrOverall, error) {
 	resp := &interfaces.OkrOverall{}
 

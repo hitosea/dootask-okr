@@ -4,7 +4,7 @@ export interface okrCompletedAndUncompleted {
     completed: number
 }
 
-export interface degreeOfCompletionAndScore {
+export interface okrDegreeOfCompletionAndScore {
     completion_sum: number,
     score_sum: number,
     total: number
