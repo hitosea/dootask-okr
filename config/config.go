@@ -17,5 +17,5 @@ var (
 	YoudaoAppKey    = "YOUDAO_APP_KEY"
 	YoudaoAppSecret = "YOUDAO_SEC_KEY"
 
-	DooTaskUrl = "http://127.0.0.1:2222"
+	DooTaskUrl = "http://10.98.101.3:2222"
 )
