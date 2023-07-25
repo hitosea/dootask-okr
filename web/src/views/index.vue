@@ -44,12 +44,12 @@
             </n-tabs>
         </div>
     </div>
-    <addOkr v-model:show="addShow" @close="handleClose"></addOkr>
+    <AddOkr v-model:show="addShow" @close="handleClose"></AddOkr>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import addOkr from '@/views/components/addOkr.vue';
+import AddOkr from '@/views/components/AddOkr.vue';
 import Icreated from '@/views/manage/Icreated.vue'
 const addShow = ref(false)
 const searchObject = ref('')
