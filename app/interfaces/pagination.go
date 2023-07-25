@@ -1,5 +1,7 @@
 package interfaces
 
+import "math"
+
 // 分页请求
 type Pages struct {
 	Page     int `form:"page,default=1" json:"page"`            // 当前页，默认:1
@@ -9,8 +11,9 @@ type Pages struct {
 // 分页数据结构
 type Pagination struct {
 	*Pages
-	Count int64       `json:"count"` // 总数
-	Data  interface{} `json:"data"`  // 数据
+	Count    int64       `json:"count"`     // 总数
+	Data     interface{} `json:"data"`      // 数据
+	LastPage int         `json:"last_page"` // 最后一页
 }
 
 // 分页数据返回
@@ -20,7 +23,8 @@ func PaginationRsp(page, pageSize int, count int64, data interface{}) *Paginatio
 			Page:     page,
 			PageSize: pageSize,
 		},
-		Count: count,
-		Data:  data,
+		Count:    count,
+		Data:     data,
+		LastPage: int(math.Ceil(float64(count) / float64(pageSize))),
 	}
 }
