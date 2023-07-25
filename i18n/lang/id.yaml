@@ -10,12 +10,21 @@ ErrInvalidParameter: Argumen salah
 ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan untuk menerima
 ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
+ErrOkrAscriptionInvalid: Target milik di parameter yang salah
+ErrOkrConfidenceInvalid: Parameter keyakinan eksponensial salah
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
+ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
 ErrOkrKrScoreNotComplete: KR rating tidak lengkap
 ErrOkrNoData: Sudah tak terhitung jumlahnya
 ErrOkrNoPermissionScore: Tak ada tingkat izin sementara
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
+ErrOkrPriorityInvalid: Target prioritas parameter salah
+ErrOkrProgressInvalid: Parameter jangkauan progres salah
 ErrOkrProgressNotEnough: Kurang dari 100%
+ErrOkrProgressStatusInvalid: Parameter status progres salah
+ErrOkrScoreInvalid: Parameternya salah
+ErrOkrTypeInvalid: Parameter jenis target salah
+ErrOkrVisibleRangeInvalid: Target terlihat parameter salah
 ErrRequestTimeout: Waktu permintaan
 ErrTypeNotLogin: Tidak login

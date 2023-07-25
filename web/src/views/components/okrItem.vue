@@ -1,25 +1,26 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail">
+        <div class="okr-item-box" @click="handleOpenDetail" v-for="(item, index) in list">
             <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
-                type="circle" :percentage="80" :offset-degree="180" :stroke-width="8">
-                <p class="text-primary-color text-14">80<span class="text-12">%</span></p>
+                type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
+                <p class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
             </n-progress>
             <div class="okr-list">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <span class="scale-[0.8333]">P0</span>
-                        <h3>完善团队制度，为了更好的服务客户</h3>
+                        <span class="scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
+                        <h3>{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star">&#xe683;</i>
+                        <i class="taskfont okr-title-star" v-if="item.is_follow">&#xe683;</i>
+                        <i class="taskfont pr-16" v-else>&#xe679;</i>
                         <i class="taskfont okr-title-icon">&#xe671;</i>
-                        <p>1/3</p>
+                        <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                     </div>
                 </div>
                 <div class="okr-time">
                     <i class="taskfont"> &#xe61a;</i>
-                    <p>张三</p>
+                    <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
                     <i class="taskfont"> &#xe71d;</i>
                     <p>6h23</p>
@@ -45,16 +46,16 @@
                 </div>
             </div>
         </div>
-
     </div>
     <AlignTarget :value="alignTargetShow" @close="() => { alignTargetShow = false }"></AlignTarget>
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
-    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
-    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }"></DegreeOfCompletion>
+    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule"
+        @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
+    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }">
+    </DegreeOfCompletion>
     <confidence v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></confidence>
     <markVue v-model:show="markShow" @close="() => { markShow = false }"></markVue>
     <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
-
 </template>
 <script setup lang="ts">
 import AlignTarget from '@/views/components/AlignTarget.vue';
@@ -71,7 +72,12 @@ const okrDetailsShow = ref(false)
 const degreeOfCompletionShow = ref(false)
 const confidenceShow = ref(false)
 const markShow = ref(false)
-const addMultipleShow = ref(true)
+const addMultipleShow = ref(false)
+
+interface Props {
+    list?: any,
+}
+defineProps<Props>()
 
 const handleTarget = (e) => {
     if (e == 1) {
@@ -80,6 +86,10 @@ const handleTarget = (e) => {
         selectAlignmentShow.value = true
     }
 
+}
+
+const pStatus = (p) => {
+    return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
 }
 
 const handleOpenDetail = () => {
@@ -97,6 +107,10 @@ const handleMark = () => {
     markShow.value = true
 }
 
+onMounted(()=>{
+    console.log(123123);
+        
+})
 
 </script>
 <style lang="less">
@@ -116,7 +130,19 @@ const handleMark = () => {
                     @apply flex items-center gap-2;
 
                     span {
-                        @apply bg-[#FF7070] text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3;
+                        @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3;
+                    }
+
+                    .span-1 {
+                        @apply bg-[#FF7070];
+                    }
+
+                    .span-2 {
+                        @apply bg-[#FC984B];
+                    }
+
+                    .span-3 {
+                        @apply bg-[#72A1F7];
                     }
 
                     h3 {

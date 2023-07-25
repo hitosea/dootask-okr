@@ -232,7 +232,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp,
 
 	// 信心指数 范围1-100
 	if kr.Confidence < 1 || kr.Confidence > 100 {
-		return nil, errors.New("信心指数范围1-100")
+		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 
 	keyResult := &model.Okr{
@@ -266,7 +266,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	// 信心指数 范围1-100
 	if kr.Confidence < 1 || kr.Confidence > 100 {
-		return nil, errors.New("信心指数范围1-100")
+		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 
 	keyResult, err := s.GetObjectiveById(kr.Id)
@@ -1160,6 +1160,7 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 
 // 获取目标所属名称
 func (s *okrService) getOwningAlias(ascription int, userid int, departmentId string) []string {
+	alias := []string{""}
 	if departmentId != "" && ascription == 1 {
 		departmentIds := common.ExplodeInt(",", departmentId, true)
 		if len(departmentIds) == 0 {
@@ -1167,20 +1168,20 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 		}
 
 		// 获取部门名称
-		var departmentNames []string
-		if err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("name", &departmentNames).Error; err != nil {
+		if err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("name", &alias).Error; err != nil {
 			return nil
 		}
 
-		return departmentNames
+		return alias
 	}
 
 	// 获取用户名称
-	var nickname string
-	if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Pluck("nickname", &nickname).Error; err != nil {
-		return nil
+	if userid > 0 && ascription == 2 {
+		if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Pluck("nickname", &alias).Error; err != nil {
+			return nil
+		}
 	}
-	return []string{nickname}
+	return alias
 }
 
 // UpdateAlignObjective 更新对齐目标

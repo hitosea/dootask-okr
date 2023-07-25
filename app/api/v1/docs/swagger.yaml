@@ -1,5 +1,76 @@
 basePath: /api/v1
 definitions:
+  interfaces.OkrAlignResp:
+    properties:
+      alias:
+        description: 目标别名
+        items:
+          type: string
+        type: array
+      align_objective:
+        description: 对齐目标
+        type: string
+      ascription:
+        type: integer
+      canceled:
+        type: integer
+      completed:
+        type: integer
+      confidence:
+        type: integer
+      created_at:
+        type: string
+      department_id:
+        type: string
+      dialog_id:
+        type: integer
+      end_at:
+        type: string
+      id:
+        type: integer
+      key_results:
+        items:
+          $ref: '#/definitions/model.Okr'
+        type: array
+      kr_score:
+        description: KR总评分
+        type: number
+      parent_id:
+        type: integer
+      parent_title:
+        description: 父级目标标题
+        type: string
+      participant:
+        type: string
+      prefix:
+        description: 前缀
+        type: string
+      priority:
+        type: string
+      progress:
+        type: integer
+      progress_status:
+        type: integer
+      project_id:
+        type: integer
+      score:
+        description: 个人评分和O总评分
+        type: number
+      start_at:
+        type: string
+      superior_score:
+        type: number
+      title:
+        type: string
+      type:
+        type: integer
+      updated_at:
+        type: string
+      userid:
+        type: integer
+      visible_range:
+        type: integer
+    type: object
   interfaces.OkrAnalyzeDept:
     properties:
       complete:
@@ -110,7 +181,7 @@ definitions:
           $ref: '#/definitions/interfaces.OkrKeyResultCreateReq'
         type: array
       priority:
-        description: 优先级
+        description: 优先级 （必填）
         type: string
       project_id:
         description: 项目id
@@ -119,57 +190,52 @@ definitions:
         description: 开始时间
         type: string
       title:
-        description: 目标
+        description: 目标 （必填）
         type: string
       type:
-        description: 类型 1-承诺型 2-挑战型
+        description: 类型 1-承诺型 2-挑战型 （必填）
         type: integer
       visible_range:
         description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
         type: integer
     required:
-    - align_objective
     - ascription
     - end_at
     - key_results
     - priority
-    - project_id
     - start_at
     - title
     - type
-    - visible_range
     type: object
   interfaces.OkrKeyResultCreateReq:
     properties:
       confidence:
-        description: 信心指数
+        description: 信心指数 1-100
         type: integer
       end_at:
-        description: 结束时间
+        description: 结束时间 （必填）
         type: string
       participant:
         description: 参与人,多个用逗号隔开
         type: string
       start_at:
-        description: 开始时间
+        description: 开始时间 （必填）
         type: string
       title:
-        description: 关键结果
+        description: 关键结果 （必填）
         type: string
     required:
-    - confidence
     - end_at
-    - participant
     - start_at
     - title
     type: object
   interfaces.OkrKeyResultUpdateReq:
     properties:
       confidence:
-        description: 信心指数
+        description: 信心指数 1-100
         type: integer
       end_at:
-        description: 结束时间
+        description: 结束时间 （必填）
         type: string
       id:
         description: okr id
@@ -181,16 +247,15 @@ definitions:
         description: 参与人,多个用逗号隔开
         type: string
       start_at:
-        description: 开始时间
+        description: 开始时间 （必填）
         type: string
       title:
-        description: 关键结果
+        description: 关键结果 （必填）
         type: string
     required:
-    - confidence
     - end_at
     - id
-    - participant
+    - is_delete
     - start_at
     - title
     type: object
@@ -203,6 +268,7 @@ definitions:
         description: okr id
         type: integer
     required:
+    - comment
     - okr_id
     type: object
   interfaces.OkrReplayCreateReq:
@@ -219,8 +285,86 @@ definitions:
         description: 回顾
         type: string
     required:
+    - comments
     - okr_id
     - review
+    type: object
+  interfaces.OkrResp:
+    properties:
+      alias:
+        description: 目标别名
+        items:
+          type: string
+        type: array
+      align_count:
+        description: 对齐目标数量
+        type: integer
+      ascription:
+        type: integer
+      canceled:
+        type: integer
+      completed:
+        type: integer
+      confidence:
+        type: integer
+      created_at:
+        type: string
+      department_id:
+        type: string
+      dialog_id:
+        type: integer
+      end_at:
+        type: string
+      id:
+        type: integer
+      is_follow:
+        description: 是否被关注
+        type: boolean
+      key_results:
+        items:
+          $ref: '#/definitions/model.Okr'
+        type: array
+      kr_count:
+        description: kr总数量
+        type: integer
+      kr_finish_count:
+        description: kr完成数量
+        type: integer
+      kr_score:
+        description: KR总评分
+        type: number
+      parent_id:
+        type: integer
+      parent_title:
+        description: 父级目标标题
+        type: string
+      participant:
+        type: string
+      priority:
+        type: string
+      progress:
+        type: integer
+      progress_status:
+        type: integer
+      project_id:
+        type: integer
+      score:
+        description: 个人评分和O总评分
+        type: number
+      start_at:
+        type: string
+      superior_score:
+        type: number
+      title:
+        type: string
+      type:
+        type: integer
+      updated_at:
+        type: string
+      userid:
+        type: integer
+      visible_range:
+        type: integer
     type: object
   interfaces.OkrUpdateReq:
     properties:
@@ -239,7 +383,7 @@ definitions:
           $ref: '#/definitions/interfaces.OkrKeyResultUpdateReq'
         type: array
       priority:
-        description: 优先级
+        description: 优先级 （必填）
         type: string
       project_id:
         description: 项目id
@@ -248,25 +392,39 @@ definitions:
         description: 开始时间
         type: string
       title:
-        description: 目标
+        description: 目标 （必填）
         type: string
       type:
-        description: 类型 1-承诺型 2-挑战型
+        description: 类型 1-承诺型 2-挑战型 （必填）
         type: integer
       visible_range:
         description: 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
         type: integer
     required:
-    - align_objective
     - end_at
     - id
     - key_results
     - priority
-    - project_id
     - start_at
     - title
     - type
-    - visible_range
+    type: object
+  interfaces.Pagination:
+    properties:
+      count:
+        description: 总数
+        type: integer
+      data:
+        description: 数据
+      last_page:
+        description: 最后一页
+        type: integer
+      page:
+        description: 当前页，默认:1
+        type: integer
+      page_size:
+        description: 每页显示数量，默认:50，最大:100
+        type: integer
     type: object
   interfaces.Response:
     properties:
@@ -278,6 +436,154 @@ definitions:
         description: 数据
       msg:
         description: 信息
+        type: string
+    type: object
+  model.Okr:
+    properties:
+      ascription:
+        type: integer
+      canceled:
+        type: integer
+      completed:
+        type: integer
+      confidence:
+        type: integer
+      created_at:
+        type: string
+      department_id:
+        type: string
+      dialog_id:
+        type: integer
+      end_at:
+        type: string
+      id:
+        type: integer
+      key_results:
+        items:
+          $ref: '#/definitions/model.Okr'
+        type: array
+      kr_score:
+        description: KR总评分
+        type: number
+      parent_id:
+        type: integer
+      parent_title:
+        description: 父级目标标题
+        type: string
+      participant:
+        type: string
+      priority:
+        type: string
+      progress:
+        type: integer
+      progress_status:
+        type: integer
+      project_id:
+        type: integer
+      score:
+        description: 个人评分和O总评分
+        type: number
+      start_at:
+        type: string
+      superior_score:
+        type: number
+      title:
+        type: string
+      type:
+        type: integer
+      updated_at:
+        type: string
+      userid:
+        type: integer
+      visible_range:
+        type: integer
+    type: object
+  model.OkrFollow:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      okr_id:
+        type: integer
+      updated_at:
+        type: string
+      userid:
+        type: integer
+    type: object
+  model.OkrLog:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      okr_id:
+        type: integer
+      operation:
+        type: string
+      userid:
+        type: integer
+    type: object
+  model.OkrReplay:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kr_history:
+        items:
+          $ref: '#/definitions/model.OkrReplayHistory'
+        type: array
+      okr_alias:
+        items:
+          type: string
+        type: array
+      okr_ascription:
+        type: integer
+      okr_department_id:
+        type: string
+      okr_id:
+        type: integer
+      okr_priority:
+        type: string
+      okr_progress:
+        type: integer
+      okr_title:
+        type: string
+      okr_userid:
+        type: integer
+      review:
+        type: string
+      updated_at:
+        type: string
+      userid:
+        type: integer
+    type: object
+  model.OkrReplayHistory:
+    properties:
+      comment:
+        type: string
+      confidence:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      okr_id:
+        type: integer
+      parent_id:
+        type: integer
+      progress:
+        type: integer
+      replay_id:
+        type: integer
+      score:
+        type: number
+      title:
+        type: string
+      updated_at:
         type: string
     type: object
 host: http://localhost
@@ -330,7 +636,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/interfaces.OkrAlignResp'
+                  type: array
+              type: object
       summary: 获取对齐目标by目标id
       tags:
       - Okr
@@ -356,7 +669,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.Okr'
+                        type: array
+                    type: object
+              type: object
       summary: 获取对齐目标列表
       tags:
       - Okr
@@ -380,7 +705,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 更新对齐目标
       tags:
       - Okr
@@ -511,7 +841,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 取消/重启目标
       tags:
       - Okr
@@ -521,7 +856,7 @@ paths:
       - application/json
       description: 更新信心指数
       parameters:
-      - description: 信心指数
+      - description: 信心指数 1-100
         in: formData
         name: confidence
         required: true
@@ -535,7 +870,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 更新信心指数
       tags:
       - Okr
@@ -555,7 +895,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 创建OKR
       tags:
       - Okr
@@ -605,7 +950,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
+                    type: object
+              type: object
       summary: 获取部门OKR列表
       tags:
       - Okr
@@ -624,7 +981,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrResp'
+              type: object
       summary: 获取OKR详情
       tags:
       - Okr
@@ -643,7 +1005,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OkrFollow'
+              type: object
       summary: 关注或取消关注目标
       tags:
       - Okr
@@ -669,7 +1036,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
+                    type: object
+              type: object
       summary: 获取关注的OKR列表
       tags:
       - Okr
@@ -696,7 +1075,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.OkrLog'
+                        type: array
+                    type: object
+              type: object
       summary: 获取动态列表by目标id
       tags:
       - Okr
@@ -722,7 +1113,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
+                    type: object
+              type: object
       summary: 获取我的OKR列表
       tags:
       - Okr
@@ -748,7 +1151,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
+                    type: object
+              type: object
       summary: 获取参与的OKR列表
       tags:
       - Okr
@@ -772,7 +1187,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 更新参与人
       tags:
       - Okr
@@ -805,7 +1225,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OkrReplay'
+              type: object
       summary: 添加复盘
       tags:
       - Okr
@@ -824,7 +1249,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OkrReplay'
+              type: object
       summary: 复盘详情
       tags:
       - Okr
@@ -850,7 +1280,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.OkrReplay'
+                        type: array
+                    type: object
+              type: object
       summary: 获取OKR复盘列表
       tags:
       - Okr
@@ -877,7 +1319,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.OkrReplay'
+                        type: array
+                    type: object
+              type: object
       summary: 获取复盘列表by目标id
       tags:
       - Okr
@@ -892,7 +1346,7 @@ paths:
         name: id
         required: true
         type: integer
-      - description: 个人评分
+      - description: 个人评分 0-10
         in: formData
         name: score
         type: number
@@ -900,7 +1354,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: OKR评分
       tags:
       - Okr
@@ -920,7 +1379,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 更新OKR
       tags:
       - Okr
@@ -935,11 +1399,11 @@ paths:
         name: id
         required: true
         type: integer
-      - description: 进度
+      - description: 进度 1-100
         in: formData
         name: progress
         type: integer
-      - description: 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
+      - description: 进度状态 0-默认 1-正常 2-有风险 3-延期
         in: formData
         name: status
         type: integer
@@ -947,7 +1411,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Okr'
+              type: object
       summary: 更新进度和进度状态
       tags:
       - Okr

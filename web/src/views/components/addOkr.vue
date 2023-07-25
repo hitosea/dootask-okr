@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" :width="728" :on-after-leave="closeDrawer">
+    <n-drawer v-model:show="show" :width="728" :on-after-leave="closeDrawer" :mask-closable="false">
         <n-drawer-content :title="$t('添加OKR')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar>
@@ -8,15 +8,15 @@
                         <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-placement="left"
                             label-width="auto" require-mark-placement="left">
 
-                            <n-form-item class="w-full" :label="$t('目标（O）')" path="object">
-                                <n-input v-model:value="formValue.object" :placeholder="$t('请输入目标')" />
+                            <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
+                                <n-input v-model:value="formValue.title" :placeholder="$t('请输入目标')" />
                             </n-form-item>
 
                             <n-form-item :label="$t('类型')" path="type">
                                 <n-radio-group v-model:value="formValue.type" name="radiogroup1">
                                     <n-space>
-                                        <n-radio value="0">{{ $t('承诺型') }}</n-radio>
-                                        <n-radio value="1">{{ $t('挑战性') }}</n-radio>
+                                        <n-radio :value="1">{{ $t('承诺型') }}</n-radio>
+                                        <n-radio :value="2">{{ $t('挑战性') }}</n-radio>
                                     </n-space>
                                 </n-radio-group>
                             </n-form-item>
@@ -24,16 +24,16 @@
                             <n-form-item :label="$t('优先级')" path="priority">
                                 <n-radio-group v-model:value="formValue.priority" name="radiogroup2">
                                     <n-space>
-                                        <template v-if="formValue.type == '0'">
-                                            <n-radio value="0">
+                                        <template v-if="formValue.type == 1">
+                                            <n-radio value="P0">
                                                 <span class="span span-1">P0</span>
                                             </n-radio>
-                                            <n-radio value="1">
+                                            <n-radio value="P1">
                                                 <span class="span span-2">P1</span>
                                             </n-radio>
                                         </template>
                                         <template v-else>
-                                            <n-radio value="2">
+                                            <n-radio value="P2">
                                                 <span class="span span-3">P2</span>
                                             </n-radio>
                                         </template>
@@ -41,36 +41,37 @@
                                 </n-radio-group>
                             </n-form-item>
 
-                            <n-form-item :label="$t('归属')" path="ownership">
-                                <n-radio-group v-model:value="formValue.ownership" name="radiogroup3">
+                            <n-form-item :label="$t('归属')" path="ascription">
+                                <n-radio-group v-model:value="formValue.ascription" name="radiogroup3">
                                     <n-space>
-                                        <n-radio value="0">{{ $t('部门') }}</n-radio>
-                                        <n-radio value="1">{{ $t('个人') }}</n-radio>
+                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>
+                                        <n-radio :value="2">{{ $t('个人') }}</n-radio>
                                     </n-space>
                                 </n-radio-group>
                             </n-form-item>
 
                             <n-form-item :label="$t('可见范围')">
-                                <n-select v-model:value="formValue.visibilityRange" :placeholder="$t('请选择可见范围')"
+                                <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
                                     :options="generalOptions" />
                             </n-form-item>
 
                             <n-form-item :label="$t('周期')">
-                                <n-date-picker class="w-full" v-model:value="formValue.time" type="daterange" clearable
-                                    size="medium" />
+                                <n-date-picker class="w-full" v-model:value="formValue.time"
+                                    value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
                             </n-form-item>
 
                             <n-form-item :label="$t('对齐目标')">
                                 <div @click="handleGoal"
                                     class="w-full h-[30px] bg-[#F4F5F7] border-[1px] border-[#F4F5F7] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
-                                    <p class="text-[rgba(194,194,194,1)] text-14">{{ $t('请选择对齐目标') }}</p>
+                                    <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'"
+                                        class=" text-14">{{ formValue.align_objective?.length > 0
+                                            ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
                                     <i class="taskfont text-[rgba(194,194,194,1)] ml-auto">&#xe72b;</i>
                                 </div>
                             </n-form-item>
 
                             <n-form-item :label="$t('关联项目')">
-                                <n-select v-model:value="formValue.item" :placeholder="$t('请选择项目')"
-                                    :options="itemOptions" />
+                                <ItemList v-model:value="formValue.project_id" />
                             </n-form-item>
                         </n-form>
                         <div>
@@ -93,26 +94,25 @@
                                 </div>
 
                                 <div class="p-24 pb-2">
-                                    <n-form ref="formRefs" :model="formKRValue[index]" size="medium" label-placement="left"
-                                        label-width="auto" require-mark-placement="left">
+                                    <n-form ref="formRefs" :model="formKRValue[index]" size="medium" :rules="timeRule"
+                                        label-placement="left" label-width="auto" require-mark-placement="left">
                                         <n-grid :cols="4" :x-gap="16">
                                             <n-form-item-gi :span="4" class="w-full" :label="$t('KR')">
-                                                <n-input v-model:value="item.KR" :placeholder="$t('请输入')" />
+                                                <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
                                             </n-form-item-gi>
 
-                                            <n-form-item-gi :span="4" :label="$t('周期')" :rule="timeRule">
+                                            <n-form-item-gi :span="4" :label="$t('周期')" path="time">
                                                 <n-date-picker class="w-full" v-model:value="item.time" type="daterange"
                                                     clearable size="medium" />
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('参与人')">
-                                                <n-select v-model:value="item.member" multiple :options="options"
-                                                    :render-label="renderLabel" :render-tag="renderMultipleSelectTag"
-                                                    filterable />
+                                                <UserList v-model:value="item.participant"></UserList>
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('信心')">
-                                                <n-input v-model:value="item.confidence" :placeholder="$t('0-100')" />
+                                                <n-input-number class="w-full" v-model:value="item.confidence"
+                                                    :placeholder="$t('0-100')" :show-button="false" />
                                             </n-form-item-gi>
                                         </n-grid>
                                     </n-form>
@@ -129,185 +129,84 @@
                 </div>
             </div>
         </n-drawer-content>
-        <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
+        <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
+            @submit="submitSelectAlignment"></SelectAlignment>
     </n-drawer>
-
 </template>
 <script setup lang="ts">
 import { watch } from "vue";
-import {
-    NAvatar,
-    NText,
-    NTag,
-    SelectRenderTag,
-    SelectRenderLabel
-} from 'naive-ui'
+
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
+import ItemList from "./ItemList.vue";
+import UserList from "./UserList.vue";
+import { addOkr } from '@/api/modules/created'
+import { useMessage } from "naive-ui"
+import utils from "@/utils/utils";
+import { ResultDialog } from "@/api"
 
 const emit = defineEmits(['close'])
 
+
+const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
 const selectAlignmentShow = ref(false)
 
-const formValue = reactive({
-    object: "",
-    type: "0",
-    priority: "0",
-    ownership: "0",
-    visibilityRange: null,
+
+
+const formValue = ref({
+    title: "",
+    type: 1,
+    priority: "P0",
+    ascription: 1,
+    visible_range: 1,
     time: null,
-    goal: null,
-    item: null,
+    align_objective: null,
+    project_id: null,
 })
 
-const formKRValue = reactive([
+
+const formKRValue = ref([
     {
-        KR: null,
+        title: null,
         time: null,
         confidence: null,
-        member: null,
+        participant: null,
     },
 
 ])
+
+watch(() => formValue.value.type, (newValue) => {
+    if (newValue) {
+        formValue.value.type == 1 ? formValue.value.priority = 'P0' : formValue.value.priority = 'P2'
+    }
+})
 
 const generalOptions = ref([
     {
         label: $t('全公司'),
-        value: 0,
+        value: 1,
     },
     {
         label: $t('仅相关成员'),
-        value: 1,
+        value: 2,
     },
     {
         label: $t('仅部门成员'),
-        value: 2,
+        value: 3,
     },
 ])
 
-const itemOptions = ref([
-    {
-        label: $t('项目1'),
-        value: 0,
-    },
-    {
-        label: $t('项目2'),
-        value: 1,
-    },
-    {
-        label: $t('项目3'),
-        value: 2,
-    },
-])
-
-const options = reactive([
-    {
-        label: '111',
-        value: '07akioni'
-    },
-    {
-        label: '222',
-        value: '08akioni'
-    },
-    {
-        label: '333',
-        value: '09akioni'
-    }
-])
-
-const renderLabel: SelectRenderLabel = (option) => {
-    return h(
-        'div',
-        {
-            style: {
-                display: 'flex',
-                alignItems: 'center'
-            }
-        },
-        [
-            h(NAvatar, {
-                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-                round: true,
-                size: 'small'
-            }),
-            h(
-                'div',
-                {
-                    style: {
-                        marginLeft: '12px',
-                        padding: '4px 0'
-                    }
-                },
-                [
-                    h('div', null, [option.label as string]),
-                    h(
-                        NText,
-                        { depth: 3, tag: 'div' },
-                    )
-                ]
-            )
-        ]
-    )
-}
-
-const renderMultipleSelectTag: SelectRenderTag = ({
-    option,
-    handleClose
-}) => {
-    return h(
-        NTag,
-        {
-            style: {
-                padding: '0 6px 0 4px'
-            },
-            round: true,
-            closable: true,
-            onClose: (e) => {
-                e.stopPropagation()
-                handleClose()
-            }
-        },
-        {
-            default: () =>
-                h(
-                    'div',
-                    {
-                        style: {
-                            display: 'flex',
-                            alignItems: 'center'
-                        }
-                    },
-                    [
-                        h(NAvatar, {
-                            src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-                            round: true,
-                            size: 22,
-                            style: {
-                                marginRight: '4px'
-                            }
-                        }),
-                        option.label as string
-                    ]
-                )
-        }
-    )
-}
 
 
-watch(() => formValue.type, (newValue) => {
-    if (newValue) {
-        formValue.type == '0' ? formValue.priority = '0' : formValue.priority = '2'
-    }
-})
-
-const rules = {
-    object: {
+const rules = <any>{
+    title: {
         required: true,
         message: $t('请输入目标'),
         trigger: ['input']
     },
     type: {
+        type: 'number',
         required: true,
         trigger: 'change',
         message: $t('请选择类型')
@@ -317,40 +216,109 @@ const rules = {
         trigger: 'change',
         message: $t('请选择优先级')
     },
-    ownership: {
+    ascription: {
+        type: 'number',
         required: true,
         trigger: 'change',
         message: $t('请选择归属')
     },
 }
-const timeRule = {
-    required: true,
-    trigger: 'change',
-    validator() {
 
-    },
+const timeRule = <any>{
+    time: {
+        type: 'array',
+        required: true,
+        trigger: 'change',
+        message: $t('请选择周期')
+    }
 }
 
+const submitSelectAlignment = (e) => {
+    formValue.value.align_objective = e
+}
+
+//提交
 const handleSubmit = () => {
-    emit('close')
-}
-const closeDrawer = () => {
+    if (!formValue.value.title) return message.info($t("请输入目标"))
+    if (!formValue.value.type) return message.info($t("请选择类型"))
+    if (!formValue.value.priority) return message.info($t("请选择优先级"))
+    if (!formValue.value.ascription) return message.info($t("请选择归属"))
+    loadIng.value = true
+    const keyResults = []
 
+    formKRValue.value.map(item => {
+        keyResults.push({
+            title: item.title,
+            confidence: item.confidence == null ? 0 : item.confidence,
+            participant: item.participant == null ? "0" : item.participant.join(','),
+            start_at: utils.formatDate('Y-m-d 00:00:00', item.time[0] / 1000),
+            end_at: utils.formatDate('Y-m-d 23:59:59', item.time[1] / 1000),
+        })
+    })
+    const upData = {
+        title: formValue.value.title,
+        type: formValue.value.type,
+        priority: formValue.value.priority,
+        ascription: formValue.value.ascription,
+        visible_range: formValue.value.visible_range,
+        start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
+        end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
+        project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
+        key_results: keyResults,
+    }
+    addOkr(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+            emit('close')
+        })
+
+}
+
+const handleclear = () => {
+    formValue.value = {
+        title: "",
+        type: 1,
+        priority: "P0",
+        ascription: 1,
+        visible_range: 1,
+        time: null,
+        align_objective: null,
+        project_id: null,
+    }
+
+    formKRValue.value = [
+        {
+            title: null,
+            time: null,
+            confidence: null,
+            participant: null,
+        },
+    ]
+}
+
+const closeDrawer = () => {
+    handleclear()
 }
 
 const handleAddKr = () => {
-    formKRValue.push(
+    formKRValue.value.push(
         {
-            KR: null,
+            title: null,
             time: null,
             confidence: null,
-            member: null,
+            participant: null,
         },
     )
 }
 
+
+
 const handleRemoveKr = (index) => {
-    formKRValue.splice(index, 1)
+    formKRValue.value.splice(index, 1)
 }
 
 const handleGoal = () => {

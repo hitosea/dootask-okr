@@ -35,7 +35,7 @@ type Okr struct {
 	EndAt          time.Time      `gorm:"comment:'结束时间'" json:"end_at"`
 	CreatedAt      time.Time      `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
 	UpdatedAt      time.Time      `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
-	DeletedAt      gorm.DeletedAt `gorm:"index;comment:'删除时间'" json:"deleted_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"index;comment:'删除时间'" json:"deleted_at" swaggerignore:"true"`
 	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score,omitempty"`     // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题

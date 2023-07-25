@@ -2,10 +2,11 @@ package v1
 
 import (
 	"dootask-okr/app/api/v1/helper"
+	"dootask-okr/app/constant"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/service"
+	"dootask-okr/app/utils/common"
 	"dootask-okr/app/utils/verify"
-	"log"
 )
 
 // @Tags Okr
@@ -13,11 +14,31 @@ import (
 // @Description 创建OKR
 // @Accept json
 // @Param request body interfaces.OkrCreateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/create [post]
 func (api *BaseApi) OkrCreate() {
 	var param = interfaces.OkrCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 类型
+	if !common.InArrayInt(param.Type, []int{1, 2}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrTypeInvalid, nil)
+		return
+	}
+	// 优先级
+	if !common.InArray(param.Priority, []string{"P0", "P1", "P2"}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrPriorityInvalid, nil)
+		return
+	}
+	// 归属
+	if !common.InArrayInt(param.Ascription, []int{1, 2}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrAscriptionInvalid, nil)
+		return
+	}
+	// 可见范围
+	if param.VisibleRange > 0 && !common.InArrayInt(param.VisibleRange, []int{1, 2, 3}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrVisibleRangeInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.Create(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -31,11 +52,26 @@ func (api *BaseApi) OkrCreate() {
 // @Description 更新OKR
 // @Accept json
 // @Param request body interfaces.OkrUpdateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/update [post]
 func (api *BaseApi) OkrUpdate() {
 	var param = interfaces.OkrUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 类型
+	if !common.InArrayInt(param.Type, []int{1, 2}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrTypeInvalid, nil)
+		return
+	}
+	// 优先级
+	if !common.InArray(param.Priority, []string{"P0", "P1", "P2"}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrPriorityInvalid, nil)
+		return
+	}
+	// 可见范围
+	if param.VisibleRange > 0 && !common.InArrayInt(param.VisibleRange, []int{1, 2, 3}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrVisibleRangeInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.Update(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -49,7 +85,7 @@ func (api *BaseApi) OkrUpdate() {
 // @Description 获取我的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/my/list [get]
 func (api *BaseApi) OkrMyList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -67,7 +103,7 @@ func (api *BaseApi) OkrMyList() {
 // @Description 获取参与的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/participant/list [get]
 func (api *BaseApi) OkrParticipantList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -85,11 +121,21 @@ func (api *BaseApi) OkrParticipantList() {
 // @Description 获取部门OKR列表
 // @Accept json
 // @Param request query interfaces.OkrDepartmentListReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/department/list [get]
 func (api *BaseApi) OkrDepartmentList() {
 	var param = interfaces.OkrDepartmentListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 类型
+	if param.Type > 0 && !common.InArrayInt(param.Type, []int{1, 2}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrTypeInvalid, nil)
+		return
+	}
+	// 是否已完成未评分
+	if !common.InArrayInt(param.Completed, []int{0, 1}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrIsFinishNotScoreInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.GetDepartmentList(api.Userinfo, param, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -103,7 +149,7 @@ func (api *BaseApi) OkrDepartmentList() {
 // @Description 获取关注的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/follow/list [get]
 func (api *BaseApi) OkrFollowList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -121,7 +167,7 @@ func (api *BaseApi) OkrFollowList() {
 // @Description 获取OKR复盘列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrReplay}}
 // @Router /okr/replay/list [get]
 func (api *BaseApi) OkrReplayList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -139,7 +185,7 @@ func (api *BaseApi) OkrReplayList() {
 // @Description 获取复盘列表by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdListReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrReplay}}
 // @Router /okr/replay/okr/list [get]
 func (api *BaseApi) OkrReplayOkrList() {
 	var param = interfaces.OkrIdListReq{}
@@ -157,7 +203,7 @@ func (api *BaseApi) OkrReplayOkrList() {
 // @Description 获取OKR详情
 // @Accept json
 // @Param request query interfaces.OkrIdReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.OkrResp}
 // @Router /okr/detail [get]
 func (api *BaseApi) OkrDetail() {
 	var param = interfaces.OkrIdReq{}
@@ -175,7 +221,7 @@ func (api *BaseApi) OkrDetail() {
 // @Description 关注或取消关注目标
 // @Accept json
 // @Param request query interfaces.OkrIdReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.OkrFollow}
 // @Router /okr/follow [get]
 func (api *BaseApi) OkrFollow() {
 	var param = interfaces.OkrIdReq{}
@@ -194,11 +240,21 @@ func (api *BaseApi) OkrFollow() {
 // @Description 更新进度和进度状态
 // @Accept json
 // @Param request formData interfaces.OkrUpdateProgressReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/update/progress [post]
 func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 进度
+	if param.Progress < 1 || param.Progress > 100 {
+		helper.ErrorWith(api.Context, constant.ErrOkrProgressInvalid, nil)
+		return
+	}
+	// 进度状态
+	if !common.InArrayInt(param.Status, []int{0, 1, 2, 3}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrProgressStatusInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.UpdateProgressAndStatus(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -213,11 +269,16 @@ func (api *BaseApi) OkrUpdateProgress() {
 // @Description OKR评分
 // @Accept json
 // @Param request formData interfaces.OkrScoreReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/score [post]
 func (api *BaseApi) OkrScore() {
 	var param = interfaces.OkrScoreReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 评分
+	if param.Score < 0 || param.Score > 10 {
+		helper.ErrorWith(api.Context, constant.ErrOkrScoreInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.UpdateScore(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -232,7 +293,7 @@ func (api *BaseApi) OkrScore() {
 // @Description 取消/重启目标
 // @Accept json
 // @Param request query interfaces.OkrIdReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/cancel [get]
 func (api *BaseApi) OkrCancel() {
 	var param = interfaces.OkrIdReq{}
@@ -251,7 +312,7 @@ func (api *BaseApi) OkrCancel() {
 // @Description 更新参与人
 // @Accept json
 // @Param request formData interfaces.OkrParticipantUpdateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/participant/update [post]
 func (api *BaseApi) OkrParticipantUpdate() {
 	var param = interfaces.OkrParticipantUpdateReq{}
@@ -270,11 +331,16 @@ func (api *BaseApi) OkrParticipantUpdate() {
 // @Description 更新信心指数
 // @Accept json
 // @Param request formData interfaces.OkrConfidenceUpdateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/confidence/update [post]
 func (api *BaseApi) OkrConfidenceUpdate() {
 	var param = interfaces.OkrConfidenceUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 信心指数
+	if param.Confidence < 0 || param.Confidence > 100 {
+		helper.ErrorWith(api.Context, constant.ErrOkrConfidenceInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.UpdateConfidence(param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -289,7 +355,7 @@ func (api *BaseApi) OkrConfidenceUpdate() {
 // @Description 添加复盘
 // @Accept json
 // @Param request body interfaces.OkrReplayCreateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.OkrReplay}
 // @Router /okr/replay/create [post]
 func (api *BaseApi) OkrReplayCreate() {
 	var param = interfaces.OkrReplayCreateReq{}
@@ -308,7 +374,7 @@ func (api *BaseApi) OkrReplayCreate() {
 // @Description 复盘详情
 // @Accept json
 // @Param request query interfaces.OkrReplayIdReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.OkrReplay}
 // @Router /okr/replay/detail [get]
 func (api *BaseApi) OkrReplayDetail() {
 	var param = interfaces.OkrReplayIdReq{}
@@ -331,10 +397,7 @@ func (api *BaseApi) OkrReplayDetail() {
 // @Router /okr/align/cancel [get]
 func (api *BaseApi) OkrAlignCancel() {
 	var param = interfaces.OkrAlignCancelReq{}
-	log.Println(param)
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	log.Println(param)
-
 	err := service.OkrService.CancelAlignObjective(param.OkrId, param.AlignOkrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -349,7 +412,7 @@ func (api *BaseApi) OkrAlignCancel() {
 // @Description 获取对齐目标列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.Okr}}
 // @Router /okr/align/list [get]
 func (api *BaseApi) OkrAlignList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -368,7 +431,7 @@ func (api *BaseApi) OkrAlignList() {
 // @Description 更新对齐目标
 // @Accept json
 // @Param request formData interfaces.OkrAlignUpdateReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/align/update [post]
 func (api *BaseApi) OkrAlignUpdate() {
 	var param = interfaces.OkrAlignUpdateReq{}
@@ -387,7 +450,7 @@ func (api *BaseApi) OkrAlignUpdate() {
 // @Description 获取动态列表by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdListReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrLog}}
 // @Router /okr/log/list [get]
 func (api *BaseApi) OkrLogList() {
 	var param = interfaces.OkrIdListReq{}
@@ -406,7 +469,7 @@ func (api *BaseApi) OkrLogList() {
 // @Description 获取对齐目标by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdReq true "request"
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=[]interfaces.OkrAlignResp}
 // @Router /okr/align/detail [get]
 func (api *BaseApi) OkrAlignDetail() {
 	var param = interfaces.OkrIdReq{}

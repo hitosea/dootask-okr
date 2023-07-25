@@ -87,7 +87,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/interfaces.OkrAlignResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -127,7 +142,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.Okr"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -163,7 +205,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -390,7 +444,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -409,7 +475,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "信心指数",
+                        "description": "信心指数 1-100",
                         "name": "confidence",
                         "in": "formData",
                         "required": true
@@ -426,7 +492,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -457,7 +535,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -533,7 +623,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -562,7 +679,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrResp"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -591,7 +720,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.OkrFollow"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -631,7 +772,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -672,7 +840,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrLog"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -712,7 +907,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -752,7 +974,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -788,7 +1037,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -839,7 +1100,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.OkrReplay"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -868,7 +1141,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.OkrReplay"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -908,7 +1193,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrReplay"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -949,7 +1261,34 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrReplay"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -975,7 +1314,7 @@ var doc = `{
                     },
                     {
                         "type": "number",
-                        "description": "个人评分",
+                        "description": "个人评分 0-10",
                         "name": "score",
                         "in": "formData"
                     }
@@ -984,7 +1323,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1015,7 +1366,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1041,13 +1404,13 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "description": "进度",
+                        "description": "进度 1-100",
                         "name": "progress",
                         "in": "formData"
                     },
                     {
                         "type": "integer",
-                        "description": "进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束",
+                        "description": "进度状态 0-默认 1-正常 2-有风险 3-延期",
                         "name": "status",
                         "in": "formData"
                     }
@@ -1056,7 +1419,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1104,6 +1479,110 @@ var doc = `{
         }
     },
     "definitions": {
+        "interfaces.OkrAlignResp": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "目标别名",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "align_objective": {
+                    "description": "对齐目标",
+                    "type": "string"
+                },
+                "ascription": {
+                    "type": "integer"
+                },
+                "canceled": {
+                    "type": "integer"
+                },
+                "completed": {
+                    "type": "integer"
+                },
+                "confidence": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "department_id": {
+                    "type": "string"
+                },
+                "dialog_id": {
+                    "type": "integer"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "key_results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Okr"
+                    }
+                },
+                "kr_score": {
+                    "description": "KR总评分",
+                    "type": "number"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "parent_title": {
+                    "description": "父级目标标题",
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "string"
+                },
+                "prefix": {
+                    "description": "前缀",
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "progress_status": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "description": "个人评分和O总评分",
+                    "type": "number"
+                },
+                "start_at": {
+                    "type": "string"
+                },
+                "superior_score": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrAnalyzeDept": {
             "type": "object",
             "properties": {
@@ -1237,16 +1716,13 @@ var doc = `{
         "interfaces.OkrCreateReq": {
             "type": "object",
             "required": [
-                "align_objective",
                 "ascription",
                 "end_at",
                 "key_results",
                 "priority",
-                "project_id",
                 "start_at",
                 "title",
-                "type",
-                "visible_range"
+                "type"
             ],
             "properties": {
                 "align_objective": {
@@ -1269,7 +1745,7 @@ var doc = `{
                     }
                 },
                 "priority": {
-                    "description": "优先级",
+                    "description": "优先级 （必填）",
                     "type": "string"
                 },
                 "project_id": {
@@ -1281,11 +1757,11 @@ var doc = `{
                     "type": "string"
                 },
                 "title": {
-                    "description": "目标",
+                    "description": "目标 （必填）",
                     "type": "string"
                 },
                 "type": {
-                    "description": "类型 1-承诺型 2-挑战型",
+                    "description": "类型 1-承诺型 2-挑战型 （必填）",
                     "type": "integer"
                 },
                 "visible_range": {
@@ -1297,19 +1773,17 @@ var doc = `{
         "interfaces.OkrKeyResultCreateReq": {
             "type": "object",
             "required": [
-                "confidence",
                 "end_at",
-                "participant",
                 "start_at",
                 "title"
             ],
             "properties": {
                 "confidence": {
-                    "description": "信心指数",
+                    "description": "信心指数 1-100",
                     "type": "integer"
                 },
                 "end_at": {
-                    "description": "结束时间",
+                    "description": "结束时间 （必填）",
                     "type": "string"
                 },
                 "participant": {
@@ -1317,11 +1791,11 @@ var doc = `{
                     "type": "string"
                 },
                 "start_at": {
-                    "description": "开始时间",
+                    "description": "开始时间 （必填）",
                     "type": "string"
                 },
                 "title": {
-                    "description": "关键结果",
+                    "description": "关键结果 （必填）",
                     "type": "string"
                 }
             }
@@ -1329,20 +1803,19 @@ var doc = `{
         "interfaces.OkrKeyResultUpdateReq": {
             "type": "object",
             "required": [
-                "confidence",
                 "end_at",
                 "id",
-                "participant",
+                "is_delete",
                 "start_at",
                 "title"
             ],
             "properties": {
                 "confidence": {
-                    "description": "信心指数",
+                    "description": "信心指数 1-100",
                     "type": "integer"
                 },
                 "end_at": {
-                    "description": "结束时间",
+                    "description": "结束时间 （必填）",
                     "type": "string"
                 },
                 "id": {
@@ -1358,11 +1831,11 @@ var doc = `{
                     "type": "string"
                 },
                 "start_at": {
-                    "description": "开始时间",
+                    "description": "开始时间 （必填）",
                     "type": "string"
                 },
                 "title": {
-                    "description": "关键结果",
+                    "description": "关键结果 （必填）",
                     "type": "string"
                 }
             }
@@ -1370,6 +1843,7 @@ var doc = `{
         "interfaces.OkrReplayComment": {
             "type": "object",
             "required": [
+                "comment",
                 "okr_id"
             ],
             "properties": {
@@ -1386,6 +1860,7 @@ var doc = `{
         "interfaces.OkrReplayCreateReq": {
             "type": "object",
             "required": [
+                "comments",
                 "okr_id",
                 "review"
             ],
@@ -1407,19 +1882,128 @@ var doc = `{
                 }
             }
         },
+        "interfaces.OkrResp": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "目标别名",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "align_count": {
+                    "description": "对齐目标数量",
+                    "type": "integer"
+                },
+                "ascription": {
+                    "type": "integer"
+                },
+                "canceled": {
+                    "type": "integer"
+                },
+                "completed": {
+                    "type": "integer"
+                },
+                "confidence": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "department_id": {
+                    "type": "string"
+                },
+                "dialog_id": {
+                    "type": "integer"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_follow": {
+                    "description": "是否被关注",
+                    "type": "boolean"
+                },
+                "key_results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Okr"
+                    }
+                },
+                "kr_count": {
+                    "description": "kr总数量",
+                    "type": "integer"
+                },
+                "kr_finish_count": {
+                    "description": "kr完成数量",
+                    "type": "integer"
+                },
+                "kr_score": {
+                    "description": "KR总评分",
+                    "type": "number"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "parent_title": {
+                    "description": "父级目标标题",
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "progress_status": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "description": "个人评分和O总评分",
+                    "type": "number"
+                },
+                "start_at": {
+                    "type": "string"
+                },
+                "superior_score": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrUpdateReq": {
             "type": "object",
             "required": [
-                "align_objective",
                 "end_at",
                 "id",
                 "key_results",
                 "priority",
-                "project_id",
                 "start_at",
                 "title",
-                "type",
-                "visible_range"
+                "type"
             ],
             "properties": {
                 "align_objective": {
@@ -1442,7 +2026,7 @@ var doc = `{
                     }
                 },
                 "priority": {
-                    "description": "优先级",
+                    "description": "优先级 （必填）",
                     "type": "string"
                 },
                 "project_id": {
@@ -1454,15 +2038,39 @@ var doc = `{
                     "type": "string"
                 },
                 "title": {
-                    "description": "目标",
+                    "description": "目标 （必填）",
                     "type": "string"
                 },
                 "type": {
-                    "description": "类型 1-承诺型 2-挑战型",
+                    "description": "类型 1-承诺型 2-挑战型 （必填）",
                     "type": "integer"
                 },
                 "visible_range": {
                     "description": "可见范围  1-全公司 2-仅相关成员 3-仅部门成员",
+                    "type": "integer"
+                }
+            }
+        },
+        "interfaces.Pagination": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "总数",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "数据"
+                },
+                "last_page": {
+                    "description": "最后一页",
+                    "type": "integer"
+                },
+                "page": {
+                    "description": "当前页，默认:1",
+                    "type": "integer"
+                },
+                "page_size": {
+                    "description": "每页显示数量，默认:50，最大:100",
                     "type": "integer"
                 }
             }
@@ -1479,6 +2087,229 @@ var doc = `{
                 },
                 "msg": {
                     "description": "信息",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Okr": {
+            "type": "object",
+            "properties": {
+                "ascription": {
+                    "type": "integer"
+                },
+                "canceled": {
+                    "type": "integer"
+                },
+                "completed": {
+                    "type": "integer"
+                },
+                "confidence": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "department_id": {
+                    "type": "string"
+                },
+                "dialog_id": {
+                    "type": "integer"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "key_results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Okr"
+                    }
+                },
+                "kr_score": {
+                    "description": "KR总评分",
+                    "type": "number"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "parent_title": {
+                    "description": "父级目标标题",
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "progress_status": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "description": "个人评分和O总评分",
+                    "type": "number"
+                },
+                "start_at": {
+                    "type": "string"
+                },
+                "superior_score": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.OkrFollow": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "okr_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.OkrLog": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "okr_id": {
+                    "type": "integer"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.OkrReplay": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kr_history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.OkrReplayHistory"
+                    }
+                },
+                "okr_alias": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "okr_ascription": {
+                    "type": "integer"
+                },
+                "okr_department_id": {
+                    "type": "string"
+                },
+                "okr_id": {
+                    "type": "integer"
+                },
+                "okr_priority": {
+                    "type": "string"
+                },
+                "okr_progress": {
+                    "type": "integer"
+                },
+                "okr_title": {
+                    "type": "string"
+                },
+                "okr_userid": {
+                    "type": "integer"
+                },
+                "review": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.OkrReplayHistory": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "confidence": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "okr_id": {
+                    "type": "integer"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "replay_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

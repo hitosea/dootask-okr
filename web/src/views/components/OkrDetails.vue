@@ -1,5 +1,5 @@
 <template >
-        <n-modal v-model:show="show" transform-origin="center" @after-enter="afterEnter">
+        <n-modal v-model:show="show" transform-origin="center" @after-enter="showDrawer"  @after-leave="closeDrawer">
             <n-card class="w-[1240px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
                 <div class="flex">
                     <div class="flex-1 flex flex-col pb-[64px]">
@@ -231,11 +231,11 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { UserStore } from "@/store/user"
-import { transferDark } from 'naive-ui';
 
 const show = ref(false)
 const navActive = ref(0)
+const dialogWrappersApp = ref()
+
 
 const emit = defineEmits(['close','schedule','confidence','mark'])
 
@@ -257,28 +257,36 @@ const closeModal = () => {
     emit('close')
 }
 
-
+// 加载聊天组件
 const loadDialogWrappers = () => {
     nextTick(()=>{
-        if(!window.Vues){
-            return false;
-        }
-        new window.Vues.Vue({
+        if(!window.Vues) return false;
+        dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
+        dialogWrappersApp.value = new window.Vues.Vue({
             el: document.querySelector('DialogWrappers'), 
             store: window.Vues.store,
             render: (h:any) => {
                 return h( window.Vues?.components?.DialogWrapper ,{
                     props:{
-                        dialogId: 66
+                        dialogId: 59
                     }
                 },[ h("div",{slot:"head"}) ])
-            },
+            }
         });
+        window.addEventListener('apps-unmount', function () {
+            dialogWrappersApp.value.$destroy()
+        })
     })
 }
 
-const afterEnter = () => {
+// 显示
+const showDrawer = () => {
     loadDialogWrappers()
+}
+
+// 关闭
+const closeDrawer = () => {
+    dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
 }
 
 

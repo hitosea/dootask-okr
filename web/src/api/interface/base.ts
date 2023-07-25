@@ -17,9 +17,12 @@ export interface DatabaseBase {
 }
 
 // 分页请求
-export interface PageReq {
-    page: number
+export interface PageReq<T = any> {
+    count?: number
+    data?: T
+    page?: number
     page_size?: number
+    last_page?: number
 }
 
 // 分页返回

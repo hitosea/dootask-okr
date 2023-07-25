@@ -6,7 +6,7 @@ import { UserStore } from "@/store/user"
 const initGlobaStore = (data:any) => {
     const globalStore = GlobalStore()
     const userStore = UserStore()
-    globalStore.setThemeName(data.theme)
+    globalStore.setThemeName(data.theme == 'auto' ? 'light' : data.theme)
     globalStore.setLanguage(data.languages?.languageType)
     globalStore.setVues(data.vues)
     userStore.setUserInfo(data.userInfo)
@@ -14,6 +14,7 @@ const initGlobaStore = (data:any) => {
 
 // 与基座进行数据交互
 export const handleMicroData = (router: Router) =>{
+
     // eventCenterForAppNameVite 是基座添加到window的数据通信对象
     if (window.eventCenterForAppNameVite) {
         // 主动获取基座下发的数据

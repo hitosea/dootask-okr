@@ -191,7 +191,7 @@ const loadComplete = () => {
             color: ['#8BCF70', '#bcbfca40'],
             data: [
                 { value: data.complete , name: $t('已完成') },
-                { value: data.total - data.complete, name: $t('未完成') },
+                { value: data.total < 1 ? 1 : data.total - data.complete , name: $t('未完成') },
             ]
         }]
     });
@@ -231,7 +231,7 @@ const loadScoreDistribute = () => {
                 { value: data.seven_to_ten, name: '7-10分' },
                 { value: data.three_to_seven, name: '3-7分' },
                 { value: data.zero_to_three, name: '0-3分' },
-                { value: data.unscored , name: '未评分' },
+                { value: data.total < 1 ? 1 : data.unscored , name: '未评分' },
             ]
         }]
     });
@@ -258,7 +258,7 @@ const loadScoreRate = () => {
             color: ['#8BCF70', '#bcbfca40'],
             data: [
                 { value: data.complete , name: $t('已完成') },
-                { value: data.total - data.complete, name: $t('未完成') },
+                { value: data.total < 1 ? 1 : data.total - data.complete, name: $t('未完成') },
             ]
         }]
     });
@@ -303,7 +303,7 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-analysis{
-    @apply p-24 h-full w-full bg-[#fafafa] box-border;
+    @apply p-24 h-full w-full bg-page-bg box-border;
     .page-title{
         @apply pb-24 text-title-color text-28 font-normal;
     }
@@ -352,18 +352,24 @@ nextTick(() => {
             .custom-progres{
                 @apply flex text-center mt-5;
                 .progres{
-                    color: #FFFFFF;
                     line-height: 20px;
-                    @apply flex flex-1 text-12 text-right h-20 rounded-md overflow-hidden bg-[#bcbfca40];
+                    @apply flex flex-1 text-12 text-right h-20 rounded-md overflow-hidden bg-[#bcbfca40] text-[#FFFFFF];
                     >p{
                         @apply whitespace-nowrap px-5;
                     }
                 }
+
                 .collect{
                     @apply w-50 text-[#8F8F8E];
                 }
             }
         }
+    }
+}
+
+.okr-theme-dark{
+    .progres{
+        @apply text-[#505050] !important;
     }
 }
 </style>
