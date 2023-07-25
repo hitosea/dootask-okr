@@ -4,7 +4,7 @@
             <div class="p-s-one-box">
                 <div class="p-s-one-title">
                     <h3>{{ $t('待完成数') }}</h3>
-                    <p>38</p>
+                    <p>{{analyzeDatas.okrCompletedAndUncompleted.uncompleted}}</p>
                 </div>
                 <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)]">
                     <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
@@ -14,7 +14,7 @@
             <div class="p-s-one-box">
                 <div class="p-s-one-title">
                     <h3>{{ $t('已完成/已取消数') }}</h3>
-                    <p>11</p>
+                    <p>{{analyzeDatas.okrCompletedAndUncompleted.completed}}</p>
                 </div>
                 <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)]">
                     <i class="taskfont text-[#87D068]">&#xe707;</i>
@@ -27,8 +27,8 @@
                 <p>{{ $t('这是你的目标整体完成度。') }}</p>
             </div>
             <div class="relative w-[150px] h-[67px]">
-                <div class="h-full w-[150px]" id="DegreeOfCompletion"></div>
-                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">20%</h3>
+                <div class="h-full w-[150px]" id="degreeOfCompletion"></div>
+                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">{{calculating(analyzeDatas.degreeOfCompletionAndScore.completion_sum , analyzeDatas.degreeOfCompletionAndScore.total)}}%</h3>
             </div>
         </div>
         <div class="p-s-box p-s-two">
@@ -38,105 +38,142 @@
             </div>
             <div class="relative w-[150px] h-[67px]">
                 <div class="h-full w-[150px]" id="mark"></div>
-                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">50%</h3>
+                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">{{calculating(analyzeDatas.degreeOfCompletionAndScore.score_sum , analyzeDatas.degreeOfCompletionAndScore.total , 1)}}</h3>
             </div>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import * as echarts from 'echarts';
+import * as http from '../../api/modules/icreated';
+
+// 总提数据
+const analyzeDatas = ref({
+    okrCompletedAndUncompleted: {
+        uncompleted: 0,
+        completed: 0
+    },
+    degreeOfCompletionAndScore: {
+        completion_sum: 0,
+        score_sum: 0,
+        total: 0
+    }
+})
+
+// 计算完成度
+const calculating = (complete:number,total:number,precision = 0) => {
+    return parseFloat((complete / (total || 1)).toFixed(precision))
+}
+
+// 获取数据
+const getData = () => {
+    // 我创建的OKR整体完成度
+    http.getNumberofOkrIcreatedPending().then(({ data }) => {
+        analyzeDatas.value.okrCompletedAndUncompleted = data
+    })
+    http.getDegreeOfCompletionAndScore().then(({ data }) => {
+        analyzeDatas.value.degreeOfCompletionAndScore = data
+        loadComplete()
+    })
+}
+
+// 我创建的OKR整体完成度
+const completeEcharts = ref(null);
+const scoreEcharts = ref(null);
+const loadComplete = () => {
+    let data = analyzeDatas.value.degreeOfCompletionAndScore
+
+    // 整体完成度饼图
+    const completeness =  data.completion_sum / (data.total || 1)
+    completeEcharts.value = completeEcharts.value || echarts.init(document.getElementById('degreeOfCompletion'));
+    completeEcharts.value.setOption({
+        tooltip: {
+            show: false,
+        },
+        grid: {
+            x: 90,
+            y: 0
+        },
+        series: [
+            {
+                name: 'Access From',
+                type: 'pie',
+                radius: ['150%', '200%'],
+                center: ['50%', '100%'],
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                silent: true,
+                startAngle: 180,
+                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
+                data: [
+                    { value: completeness , name: 'Search Engine' },
+                    { value: 100 - completeness, name: 'Direct' },
+                    {
+                        value: 100,
+                        itemStyle: {
+                            color: 'none',
+                            decal: {
+                                symbol: 'none'
+                            }
+                        },
+                        label: {
+                            show: false
+                        }
+                    }
+                ]
+            }
+        ]
+    });
+    // 整体评分饼图
+    const averageScore =  data.score_sum / (data.total || 1)
+    scoreEcharts.value = scoreEcharts.value || echarts.init(document.getElementById('mark'));
+    scoreEcharts.value.setOption({
+        tooltip: {
+            show: false,
+        },
+        grid: {
+            x: 90,
+            y: 0
+        },
+        series: [
+            {
+                name: 'Access From',
+                type: 'pie',
+                radius: ['150%', '200%'],
+                center: ['50%', '100%'],
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                silent: true,
+                startAngle: 180,
+                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
+                data: [
+                    { value: averageScore , name: 'Search Engine' },
+                    { value: 100 - averageScore, name: 'Direct' },
+                    {
+                        value: 100,
+                        itemStyle: {
+                            color: 'none',
+                            decal: {
+                                symbol: 'none'
+                            }
+                        },
+                        label: {
+                            show: false
+                        }
+                    }
+                ]
+            }
+        ]
+    });
+}
+
 
 nextTick(() => {
-    var chartDom = document.getElementById('DegreeOfCompletion');
-    var myChart = echarts.init(chartDom);
-    var option;
-    option = {
-        tooltip: {
-            show: false,
-        },
-        grid: {
-            x: 90,
-            y: 0
-        },
-        series: [
-            {
-                name: 'Access From',
-                type: 'pie',
-                radius: ['150%', '200%'],
-                center: ['50%', '100%'],
-                label: {
-                    show: false,
-                    position: 'center'
-                },
-                silent: true,
-                startAngle: 180,
-                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
-                data: [
-                    { value: 1048, name: 'Search Engine' },
-                    { value: 735, name: 'Direct' },
-                    {
-                        value: 1048 + 735,
-                        itemStyle: {
-                            color: 'none',
-                            decal: {
-                                symbol: 'none'
-                            }
-                        },
-                        label: {
-                            show: false
-                        }
-                    }
-                ]
-            }
-        ]
-    };
-    option && myChart.setOption(option);
-
-    var chartDomTwo = document.getElementById('mark');
-    var myChartTwo = echarts.init(chartDomTwo);
-    var optionTwo;
-    optionTwo = {
-        tooltip: {
-            show: false,
-        },
-        grid: {
-            x: 90,
-            y: 0
-        },
-        series: [
-            {
-                name: 'Access From',
-                type: 'pie',
-                radius: ['150%', '200%'],
-                center: ['50%', '100%'],
-                label: {
-                    show: false,
-                    position: 'center'
-                },
-                silent: true,
-                startAngle: 180,
-                color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
-                data: [
-                    { value: 1048, name: 'Search Engine' },
-                    { value: 735, name: 'Direct' },
-                    {
-                        value: 1048 + 735,
-                        itemStyle: {
-                            color: 'none',
-                            decal: {
-                                symbol: 'none'
-                            }
-                        },
-                        label: {
-                            show: false
-                        }
-                    }
-                ]
-            }
-        ]
-    };
-    optionTwo && myChartTwo.setOption(optionTwo);
-
+    getData()
 })
 
 
