@@ -6,14 +6,14 @@ import (
 
 // 基础OKR请求
 type OkrBaseReq struct {
-	Title          string `json:"title" binding:"required"`           // 目标
-	Type           int    `json:"type" binding:"required"`            // 类型 1-承诺型 2-挑战型
-	Priority       string `json:"priority" binding:"required"`        // 优先级
-	VisibleRange   int    `json:"visible_range" binding:"required"`   // 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
-	AlignObjective string `json:"align_objective" binding:"required"` // 对齐目标
-	ProjectId      int    `json:"project_id" binding:"required"`      // 项目id
-	StartAt        string `json:"start_at" binding:"required"`        // 开始时间
-	EndAt          string `json:"end_at" binding:"required"`          // 结束时间
+	Title          string `json:"title" binding:"required"`    // 目标 （必填）
+	Type           int    `json:"type" binding:"required"`     // 类型 1-承诺型 2-挑战型 （必填）
+	Priority       string `json:"priority" binding:"required"` // 优先级 （必填）
+	VisibleRange   int    `json:"visible_range"`               // 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
+	AlignObjective string `json:"align_objective"`             // 对齐目标
+	ProjectId      int    `json:"project_id"`                  // 项目id
+	StartAt        string `json:"start_at" binding:"required"` // 开始时间
+	EndAt          string `json:"end_at" binding:"required"`   // 结束时间
 }
 
 // 创建OKR请求
@@ -25,11 +25,11 @@ type OkrCreateReq struct {
 
 // 基础OKR关键结果请求
 type OkrKeyResultBaseReq struct {
-	Participant string `json:"participant" binding:"required"` // 参与人,多个用逗号隔开
-	Title       string `json:"title" binding:"required"`       // 关键结果
-	Confidence  int    `json:"confidence" binding:"required"`  // 信心指数
-	StartAt     string `json:"start_at" binding:"required"`    // 开始时间
-	EndAt       string `json:"end_at" binding:"required"`      // 结束时间
+	Title       string `json:"title" binding:"required"`    // 关键结果 （必填）
+	Participant string `json:"participant"`                 // 参与人,多个用逗号隔开
+	Confidence  int    `json:"confidence"`                  // 信心指数
+	StartAt     string `json:"start_at" binding:"required"` // 开始时间 （必填）
+	EndAt       string `json:"end_at" binding:"required"`   // 结束时间 （必填）
 }
 
 // 创建OKR关键结果请求
