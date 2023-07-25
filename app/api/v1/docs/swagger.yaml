@@ -640,7 +640,9 @@ paths:
             - $ref: '#/definitions/interfaces.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/interfaces.OkrAlignResp'
+                  items:
+                    $ref: '#/definitions/interfaces.OkrAlignResp'
+                  type: array
               type: object
       summary: 获取对齐目标by目标id
       tags:
@@ -675,7 +677,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/model.Okr'
+                        items:
+                          $ref: '#/definitions/model.Okr'
+                        type: array
                     type: object
               type: object
       summary: 获取对齐目标列表
@@ -954,7 +958,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/interfaces.OkrResp'
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
                     type: object
               type: object
       summary: 获取部门OKR列表
@@ -1038,7 +1044,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/interfaces.OkrResp'
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
                     type: object
               type: object
       summary: 获取关注的OKR列表
@@ -1075,7 +1083,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/model.OkrLog'
+                        items:
+                          $ref: '#/definitions/model.OkrLog'
+                        type: array
                     type: object
               type: object
       summary: 获取动态列表by目标id
@@ -1111,7 +1121,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/interfaces.OkrResp'
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
                     type: object
               type: object
       summary: 获取我的OKR列表
@@ -1147,7 +1159,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/interfaces.OkrResp'
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
                     type: object
               type: object
       summary: 获取参与的OKR列表
@@ -1274,7 +1288,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/model.OkrReplay'
+                        items:
+                          $ref: '#/definitions/model.OkrReplay'
+                        type: array
                     type: object
               type: object
       summary: 获取OKR复盘列表
@@ -1311,7 +1327,9 @@ paths:
                   - $ref: '#/definitions/interfaces.Pagination'
                   - properties:
                       data:
-                        $ref: '#/definitions/model.OkrReplay'
+                        items:
+                          $ref: '#/definitions/model.OkrReplay'
+                        type: array
                     type: object
               type: object
       summary: 获取复盘列表by目标id

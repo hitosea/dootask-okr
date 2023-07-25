@@ -95,7 +95,10 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/interfaces.OkrAlignResp"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/interfaces.OkrAlignResp"
+                                            }
                                         }
                                     }
                                 }
@@ -155,7 +158,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/model.Okr"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.Okr"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -633,7 +639,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/interfaces.OkrResp"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -779,7 +788,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/interfaces.OkrResp"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -844,7 +856,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/model.OkrLog"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrLog"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -908,7 +923,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/interfaces.OkrResp"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -972,7 +990,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/interfaces.OkrResp"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1188,7 +1209,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/model.OkrReplay"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrReplay"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1253,7 +1277,10 @@ var doc = `{
                                                     "type": "object",
                                                     "properties": {
                                                         "data": {
-                                                            "$ref": "#/definitions/model.OkrReplay"
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.OkrReplay"
+                                                            }
                                                         }
                                                     }
                                                 }

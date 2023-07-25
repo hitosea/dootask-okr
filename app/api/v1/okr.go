@@ -85,7 +85,7 @@ func (api *BaseApi) OkrUpdate() {
 // @Description 获取我的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=interfaces.OkrResp}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/my/list [get]
 func (api *BaseApi) OkrMyList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -103,7 +103,7 @@ func (api *BaseApi) OkrMyList() {
 // @Description 获取参与的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=interfaces.OkrResp}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/participant/list [get]
 func (api *BaseApi) OkrParticipantList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -121,13 +121,13 @@ func (api *BaseApi) OkrParticipantList() {
 // @Description 获取部门OKR列表
 // @Accept json
 // @Param request query interfaces.OkrDepartmentListReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=interfaces.OkrResp}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/department/list [get]
 func (api *BaseApi) OkrDepartmentList() {
 	var param = interfaces.OkrDepartmentListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	// 类型
-	if !common.InArrayInt(param.Type, []int{1, 2}) {
+	if param.Type > 0 && !common.InArrayInt(param.Type, []int{1, 2}) {
 		helper.ErrorWith(api.Context, constant.ErrOkrTypeInvalid, nil)
 		return
 	}
@@ -149,7 +149,7 @@ func (api *BaseApi) OkrDepartmentList() {
 // @Description 获取关注的OKR列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=interfaces.OkrResp}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
 // @Router /okr/follow/list [get]
 func (api *BaseApi) OkrFollowList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -167,7 +167,7 @@ func (api *BaseApi) OkrFollowList() {
 // @Description 获取OKR复盘列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=model.OkrReplay}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrReplay}}
 // @Router /okr/replay/list [get]
 func (api *BaseApi) OkrReplayList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -185,7 +185,7 @@ func (api *BaseApi) OkrReplayList() {
 // @Description 获取复盘列表by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdListReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=model.OkrReplay}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrReplay}}
 // @Router /okr/replay/okr/list [get]
 func (api *BaseApi) OkrReplayOkrList() {
 	var param = interfaces.OkrIdListReq{}
@@ -412,7 +412,7 @@ func (api *BaseApi) OkrAlignCancel() {
 // @Description 获取对齐目标列表
 // @Accept json
 // @Param request query interfaces.OkrListBaseReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=model.Okr}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.Okr}}
 // @Router /okr/align/list [get]
 func (api *BaseApi) OkrAlignList() {
 	var param = interfaces.OkrListBaseReq{}
@@ -450,7 +450,7 @@ func (api *BaseApi) OkrAlignUpdate() {
 // @Description 获取动态列表by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdListReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=model.OkrLog}}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrLog}}
 // @Router /okr/log/list [get]
 func (api *BaseApi) OkrLogList() {
 	var param = interfaces.OkrIdListReq{}
@@ -469,7 +469,7 @@ func (api *BaseApi) OkrLogList() {
 // @Description 获取对齐目标by目标id
 // @Accept json
 // @Param request query interfaces.OkrIdReq true "request"
-// @Success 200 {object} interfaces.Response{data=interfaces.OkrAlignResp}
+// @Success 200 {object} interfaces.Response{data=[]interfaces.OkrAlignResp}
 // @Router /okr/align/detail [get]
 func (api *BaseApi) OkrAlignDetail() {
 	var param = interfaces.OkrIdReq{}
