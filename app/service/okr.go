@@ -414,11 +414,11 @@ func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *
 
 // 额外信息
 func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, user *interfaces.UserInfoResp) *interfaces.OkrResp {
-	obj.IsFollow = s.isFollow(user.Userid, obj.Id)             // 是否被关注
-	obj.KrCount = len(krs)                                     // kr总数量
-	obj.KrFinishCount = s.getFinishCount(krs)                  // kr完成数量
-	obj.AlignCount = s.getAlignCount(obj.Id)                   // 对齐目标数量
-	obj.Alias = s.getOwningAlias(obj.Userid, obj.DepartmentId) // 目标所属名称
+	obj.IsFollow = s.isFollow(user.Userid, obj.Id)                             // 是否被关注
+	obj.KrCount = len(krs)                                                     // kr总数量
+	obj.KrFinishCount = s.getFinishCount(krs)                                  // kr完成数量
+	obj.AlignCount = s.getAlignCount(obj.Id)                                   // 对齐目标数量
+	obj.Alias = s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId) // 目标所属名称
 	return obj
 }
 
@@ -734,7 +734,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 
 	// 获取所属别名
 	for _, replay := range replays {
-		replay.OkrAlias = s.getOwningAlias(replay.Userid, replay.OkrDepartmentId)
+		replay.OkrAlias = s.getOwningAlias(replay.OkrAscription, replay.Userid, replay.OkrDepartmentId)
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
@@ -1082,6 +1082,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	replay := model.OkrReplay{
 		Userid:          userid,
 		OkrId:           req.OkrId,
+		OkrAscription:   obj.Ascription,
 		OkrUserid:       obj.Userid,
 		OkrDepartmentId: obj.DepartmentId,
 		OkrTitle:        obj.Title,
@@ -1144,7 +1145,7 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	}
 
 	// 获取目标所属别名
-	replay.OkrAlias = s.getOwningAlias(replay.OkrUserid, replay.OkrDepartmentId)
+	replay.OkrAlias = s.getOwningAlias(replay.OkrAscription, replay.OkrUserid, replay.OkrDepartmentId)
 
 	// 获取 KR 复盘历史记录
 	var history []*model.OkrReplayHistory
@@ -1158,8 +1159,8 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 }
 
 // 获取目标所属名称
-func (s *okrService) getOwningAlias(userid int, departmentId string) []string {
-	if departmentId != "" {
+func (s *okrService) getOwningAlias(ascription int, userid int, departmentId string) []string {
+	if departmentId != "" && ascription == 1 {
 		departmentIds := common.ExplodeInt(",", departmentId, true)
 		if len(departmentIds) == 0 {
 			return nil
@@ -1226,7 +1227,7 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 	for _, obj := range alignOkrs {
 		okrAlignResps = append(okrAlignResps, &interfaces.OkrAlignResp{
 			Okr:   obj,
-			Alias: s.getOwningAlias(obj.Userid, obj.DepartmentId),
+			Alias: s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId),
 			Prefix: func() string {
 				if obj.ParentId == 0 {
 					return "O"
