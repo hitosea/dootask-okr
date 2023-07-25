@@ -38,7 +38,7 @@
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
                     <div class="okr-scrollbar">
-                        
+                        <Okreplay></Okreplay>
                     </div>
                 </n-tab-pane>
             </n-tabs>
@@ -51,6 +51,7 @@
 import { ref } from 'vue'
 import addOkr from '@/views/components/addOkr.vue';
 import Icreated from '@/views/manage/Icreated.vue'
+import Okreplay from '@/views/manage/Okreplay.vue'
 const addShow = ref(false)
 const searchObject = ref('')
 const searchShow = ref(false)
