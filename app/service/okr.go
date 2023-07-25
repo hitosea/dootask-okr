@@ -230,6 +230,11 @@ func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp,
 		return nil, err
 	}
 
+	// 信心指数 范围1-100
+	if kr.Confidence < 1 || kr.Confidence > 100 {
+		return nil, errors.New("信心指数范围1-100")
+	}
+
 	keyResult := &model.Okr{
 		Userid:       user.Userid,
 		DepartmentId: common.ArrayImplode(user.Department),
@@ -257,6 +262,11 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
 		return nil, err
+	}
+
+	// 信心指数 范围1-100
+	if kr.Confidence < 1 || kr.Confidence > 100 {
+		return nil, errors.New("信心指数范围1-100")
 	}
 
 	keyResult, err := s.GetObjectiveById(kr.Id)
@@ -848,8 +858,12 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		krs := objWithKrs.KeyResults
 
 		allCompleted := true
-		var sumProgress int
+		sumProgress := 0
 		for _, kr := range krs {
+			// 更新 KR 进度值
+			if param.Id == kr.Id {
+				kr.Progress = param.Progress
+			}
 			// 进度全部完成 100%
 			if kr.Progress < 100 {
 				allCompleted = false
