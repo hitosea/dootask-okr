@@ -10,12 +10,21 @@ ErrInvalidParameter: Paramètres incorrects
 ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre boîte aux lettres est active pour recevoir
 ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
+ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
+ErrOkrConfidenceInvalid: Indice de confiance gamme paramètres erreur
 ErrOkrInvalidKrScore: Score KR non valide
+ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
 ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Données non disponibles
 ErrOkrNoPermissionScore: Pas encore d’autorisation score
 ErrOkrOwnerNotScore: Responsable non évalué
+ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
+ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
 ErrOkrProgressNotEnough: Progrès insuffisants 100%
+ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
+ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
+ErrOkrTypeInvalid: Type de cible paramètre erreur
+ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré
 ErrTypeNotLogin: Pas de login

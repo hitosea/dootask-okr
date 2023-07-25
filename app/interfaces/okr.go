@@ -27,7 +27,7 @@ type OkrCreateReq struct {
 type OkrKeyResultBaseReq struct {
 	Title       string `json:"title" binding:"required"`    // 关键结果 （必填）
 	Participant string `json:"participant"`                 // 参与人,多个用逗号隔开
-	Confidence  int    `json:"confidence"`                  // 信心指数
+	Confidence  int    `json:"confidence"`                  // 信心指数 1-100
 	StartAt     string `json:"start_at" binding:"required"` // 开始时间 （必填）
 	EndAt       string `json:"end_at" binding:"required"`   // 结束时间 （必填）
 }
@@ -46,8 +46,8 @@ type OkrUpdateReq struct {
 
 // 更新OKR关键结果请求
 type OkrKeyResultUpdateReq struct {
-	Id       int  `json:"id" binding:"required"` // okr id
-	IsDelete bool `json:"is_delete"`             // 是否删除 true-删除 false-不删除
+	Id       int  `json:"id" binding:"required"`        // okr id
+	IsDelete bool `json:"is_delete" binding:"required"` // 是否删除 true-删除 false-不删除
 	OkrKeyResultBaseReq
 }
 
@@ -84,14 +84,14 @@ type OkrDepartmentListReq struct {
 // OKR更新进度和进度状态请求
 type OkrUpdateProgressReq struct {
 	Id       int `form:"id" binding:"required" json:"id"` // okr id
-	Progress int `form:"progress" json:"progress"`        // 进度
-	Status   int `form:"status" json:"status"`            // 进度状态 0-默认 1-正常 2-有风险 3-延期 4-已结束
+	Progress int `form:"progress" json:"progress"`        // 进度 1-100
+	Status   int `form:"status" json:"status"`            // 进度状态 0-默认 1-正常 2-有风险 3-延期
 }
 
 // OKR评分请求
 type OkrScoreReq struct {
 	Id    int     `form:"id" binding:"required" json:"id"` // okr id
-	Score float64 `form:"score" json:"score"`              // 个人评分
+	Score float64 `form:"score" json:"score"`              // 个人评分 0-10
 }
 
 // 取消/重启目标
@@ -107,21 +107,21 @@ type OkrParticipantUpdateReq struct {
 
 // 更新信心指数请求
 type OkrConfidenceUpdateReq struct {
-	Id         int `form:"id" binding:"required" json:"id"`                               // okr id
-	Confidence int `form:"confidence" binding:"required,min=1,max=100" json:"confidence"` // 信心指数
+	Id         int `form:"id" binding:"required" json:"id"`                 // okr id
+	Confidence int `form:"confidence" binding:"required" json:"confidence"` // 信心指数 1-100
 }
 
 // 添加复盘请求
 type OkrReplayCreateReq struct {
-	OkrId    int                 `json:"okr_id" binding:"required"` // okr id
-	Comments []*OkrReplayComment `json:"comments"`                  // 复盘评价
-	Review   string              `json:"review" binding:"required"` // 回顾
+	OkrId    int                 `json:"okr_id" binding:"required"`   // okr id
+	Comments []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
+	Review   string              `json:"review" binding:"required"`   // 回顾
 }
 
 // 复盘评价
 type OkrReplayComment struct {
-	OkrId   int    `json:"okr_id" binding:"required"` // okr id
-	Comment string `json:"comment"`                   // 评价
+	OkrId   int    `json:"okr_id" binding:"required"`  // okr id
+	Comment string `json:"comment" binding:"required"` // 评价
 }
 
 // 取消对齐目标请求
