@@ -10,6 +10,7 @@ ErrInvalidParameter: 인자 오류
 ErrMailContentReject: 전자메일 내용이 거부되었습니다. 메일함의 수신이 켜져 있는지 확인하십시오
 ErrMailNotConfig: 보내는 편지함이 설정되지 않았습니다
 ErrMailToInvalid: 정확한 수취인 주소를 입력해 주세요
+ErrNoPermission: 권한이 부족합니다.
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
 ErrOkrConfidenceInvalid: 신뢰지수 범위 매개변수 오류
 ErrOkrInvalidKrScore: 잘못된 kr 점수

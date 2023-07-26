@@ -10,6 +10,7 @@ ErrInvalidParameter: Paramètres incorrects
 ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre boîte aux lettres est active pour recevoir
 ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
+ErrNoPermission: Manque de pouvoirs
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
 ErrOkrConfidenceInvalid: Indice de confiance gamme paramètres erreur
 ErrOkrInvalidKrScore: Score KR non valide

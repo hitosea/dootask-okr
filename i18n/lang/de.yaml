@@ -10,6 +10,7 @@ ErrInvalidParameter: Fehlerhafte parameter
 ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postfach die funktion empfangsfunktion geöffnet hat
 ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
 ErrMailToInvalid: Bitte geben sie die richtige adresse ein
+ErrNoPermission: Begrenzter zugang.
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
 ErrOkrConfidenceInvalid: Fehler im parameter des vertrauensindex
 ErrOkrInvalidKrScore: Das fehlerhafte KRML

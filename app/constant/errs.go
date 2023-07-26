@@ -10,6 +10,7 @@ var (
 	ErrMailToInvalid     = "ErrMailToInvalid"     //请输入正确的收件人地址
 	ErrRequestTimeout    = "ErrRequestTimeout"    //请求超时
 	ErrMailContentReject = "ErrMailContentReject" //邮件内容被拒绝，请检查邮箱是否开启接收功能
+	ErrNoPermission      = "ErrNoPermission"      //权限不足
 
 	// OKR
 	ErrOkrKeyResultAtLeastOne     = "ErrOkrKeyResultAtLeastOne"     //至少有一条关键结果

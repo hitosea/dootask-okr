@@ -10,6 +10,7 @@ ErrInvalidParameter: 参数错误
 ErrMailContentReject: 邮件内容被拒绝，请检查邮箱是否开启接收功能
 ErrMailNotConfig: 发送邮箱未配置
 ErrMailToInvalid: 请输入正确的收件人地址
+ErrNoPermission: 权限不足
 ErrOkrAscriptionInvalid: 目标归属参数错误
 ErrOkrConfidenceInvalid: 信心指数范围参数错误
 ErrOkrInvalidKrScore: 无效的KR分数

@@ -10,6 +10,7 @@ ErrInvalidParameter: Argumen salah
 ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan untuk menerima
 ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
+ErrNoPermission: Tidak cukup izin
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
 ErrOkrConfidenceInvalid: Parameter keyakinan eksponensial salah
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid

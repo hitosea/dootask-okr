@@ -10,6 +10,7 @@ ErrInvalidParameter: パラメータエラーです
 ErrMailContentReject: メールの内容が拒否された場合、受信機能がオンになっているか確認します。
 ErrMailNotConfig: 送信メールアドレス未設定です。
 ErrMailToInvalid: 正しい宛先を入力願います。
+ErrNoPermission: 権限が足りません。
 ErrOkrAscriptionInvalid: ターゲット・ホーム・パラメータ・エラー
 ErrOkrConfidenceInvalid: 信頼指数の範囲パラメータが間違っています
 ErrOkrInvalidKrScore: 無効なKRスコアです
