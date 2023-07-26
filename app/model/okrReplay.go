@@ -14,7 +14,7 @@ type OkrReplay struct {
 	OkrTitle        string              `gorm:"type:varchar(255);comment:'目标标题'" json:"okr_title"`
 	OkrProgress     int                 `gorm:"default:0;comment:'目标完成度'" json:"okr_progress"`
 	OkrPriority     string              `gorm:"type:varchar(10);comment:'优先级'" json:"okr_priority"`
-	Review          string              `gorm:"type:varchar(255);comment:'回顾'" json:"review"`
+	Review          string              `gorm:"type:longtext;comment:'回顾'" json:"review"`
 	CreatedAt       time.Time           `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
 	UpdatedAt       time.Time           `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
 	KrHistory       []*OkrReplayHistory `gorm:"foreignkey:ReplayId" json:"kr_history,omitempty"`

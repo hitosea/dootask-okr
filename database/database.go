@@ -8,7 +8,17 @@ import (
 )
 
 func Init() error {
-	m := gormigrate.New(core.DB, gormigrate.DefaultOptions, []*gormigrate.Migration{
+	options := &gormigrate.Options{
+		TableName:                 "migrations",
+		IDColumnName:              "id",
+		IDColumnSize:              255,
+		UseTransaction:            true,
+		ValidateUnknownMigrations: true,
+	}
+
+	db := core.DB.Set("gorm:table_options", "CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+
+	m := gormigrate.New(db, options, []*gormigrate.Migration{
 		migrations.AddTableOkr,
 		migrations.AddTableOkrFollow,
 		migrations.AddTableOkrAlign,
@@ -16,8 +26,10 @@ func Init() error {
 		migrations.AddTableOkrReplayHistory,
 		migrations.AddTableOkrLog,
 	})
+
 	if err := m.Migrate(); err != nil {
 		return err
 	}
+
 	return nil
 }

@@ -1227,8 +1227,20 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 	var okrAlignResps []*interfaces.OkrAlignResp
 	for _, obj := range alignOkrs {
 		okrAlignResps = append(okrAlignResps, &interfaces.OkrAlignResp{
-			Okr:   obj,
-			Alias: s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId),
+			Okr: obj,
+			Alias: func() []string {
+				if obj.ParentId == 0 {
+					// 个人或部门
+					return s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId)
+				}
+				// 参与人
+				ids := common.ExplodeInt(",", obj.Participant, true)
+				var nicknames []string
+				if err := core.DB.Model(&model.User{}).Where("userid in (?)", ids).Pluck("nickname", &nicknames).Error; err != nil {
+					return nil
+				}
+				return nicknames
+			}(),
 			Prefix: func() string {
 				if obj.ParentId == 0 {
 					return "O"
