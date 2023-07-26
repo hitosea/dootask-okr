@@ -12,8 +12,9 @@
                         <h3>{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star" v-if="item.is_follow">&#xe683;</i>
-                        <i class="taskfont pr-16" v-else>&#xe679;</i>
+                        <i class="taskfont okr-title-star" v-if="item.is_follow"
+                            @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
+                        <i class="taskfont pr-16" v-else @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="taskfont okr-title-icon">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                     </div>
@@ -68,9 +69,10 @@ import MarkVue from '@/views/components/Marks.vue';
 import AddMultiple from '@/views/components/AddMultiple.vue';
 import utils from '@/utils/utils';
 import webTs from '@/utils/web'
-import { alignUpdate } from '@/api/modules/okrList'
+import { alignUpdate, okrFollow } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
+import { getMyList } from '@/api/modules/okrList';
 
 
 const alignTargetShow = ref(false)
@@ -112,6 +114,21 @@ const handleOpenDetail = (id) => {
 
 const handleOpenSchedule = () => {
     degreeOfCompletionShow.value = true
+}
+
+const handleFollowOkr = (id) => {
+    const upData = {
+        id: id,
+    }
+    loadIng.value = true
+    okrFollow(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
 }
 
 const submitSelectAlignment = (e) => {
