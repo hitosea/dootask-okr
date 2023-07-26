@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -155,4 +156,50 @@ func IsHttpsUrl(str string) bool {
 	}
 	matched, _ := regexp.MatchString("^https*://", str)
 	return matched
+}
+
+// IsMobile 判断是否为手机号
+func IsMobile(str string) bool {
+	if len(str) != 11 {
+		return false
+	}
+	pattern := `^1[3-9]\d{9}$`
+	matched, _ := regexp.MatchString(pattern, str)
+	return matched
+}
+
+// CardFormat 格式化用户名、邮箱、手机帐号、银行卡号中间字符串以*隐藏
+func CardFormat(str string) string {
+	if strings.Contains(str, "@") {
+		emailArray := strings.Split(str, "@")
+		prevfix := str[0:3]
+		if len(emailArray[0]) < 4 {
+			prevfix = str[0:1]
+		}
+		count := 0
+		str = regexp.MustCompile(`([\d\w+_-]{0,100})@`).ReplaceAllStringFunc(str, func(_ string) string {
+			count++
+			return "***@"
+		})
+		return prevfix + str
+	}
+	if IsMobile(str) {
+		return str[0:3] + "****" + str[len(str)-4:]
+	}
+	patterns := []string{
+		`([\d]{4})([\d]{4})([\d]{4})([\d]{4})([\d]*)?`,
+		`([\d]{4})([\d]{4})([\d]{4})([\d]*)?`,
+		`([\d]{4})([\d]{4})([\d]*)?`,
+	}
+	replacements := []string{
+		"$1 **** **** **** $5",
+		"$1 **** **** $4",
+		"$1 **** $3",
+	}
+	for i, pattern := range patterns {
+		if matched, _ := regexp.MatchString(pattern, str); matched {
+			return regexp.MustCompile(pattern).ReplaceAllString(str, replacements[i])
+		}
+	}
+	return str[0:3] + "***" + str[len(str)-1:]
 }

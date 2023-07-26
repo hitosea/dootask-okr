@@ -35,6 +35,11 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		return nil, e.New(constant.ErrOkrKeyResultAtLeastOne)
 	}
 
+	// 创建部门OKR权限
+	if core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", user.Userid).First(&model.UserDepartment{}).Error != nil && param.Ascription == 1 {
+		return nil, e.New(constant.ErrNoPermission)
+	}
+
 	// 时间格式化
 	startAt, err := common.ParseTime(param.StartAt)
 	if err != nil {
@@ -86,7 +91,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 		// 关键结果
 		for _, kr := range param.KeyResults {
-			keyResult, err := s.createKeyResult(tx, user, obj.Id, kr)
+			keyResult, err := s.createKeyResult(tx, kr, user, obj)
 			if err != nil {
 				return err
 			}
@@ -140,13 +145,13 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		for _, kr := range param.KeyResults {
 			if kr.Id == 0 {
 				// 新增kr
-				var addKr interfaces.OkrKeyResultCreateReq
+				var addKr *interfaces.OkrKeyResultCreateReq
 				addKr.Title = kr.Title
 				addKr.Participant = kr.Participant
 				addKr.Confidence = kr.Confidence
 				addKr.StartAt = kr.StartAt
 				addKr.EndAt = kr.EndAt
-				keyResult, err := s.createKeyResult(tx, user, obj.Id, &addKr)
+				keyResult, err := s.createKeyResult(tx, addKr, user, obj)
 				if err != nil {
 					return err
 				}
@@ -219,7 +224,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 }
 
 // 创建关键结果
-func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp, parentId int, kr *interfaces.OkrKeyResultCreateReq) (*model.Okr, error) {
+func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCreateReq, user *interfaces.UserInfoResp, obj *model.Okr) (*model.Okr, error) {
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
 		return nil, err
@@ -238,7 +243,11 @@ func (s *okrService) createKeyResult(tx *gorm.DB, user *interfaces.UserInfoResp,
 	keyResult := &model.Okr{
 		Userid:       user.Userid,
 		DepartmentId: common.ArrayImplode(user.Department),
-		ParentId:     parentId,
+		ParentId:     obj.Id,
+		ProjectId:    obj.ProjectId,
+		DialogId:     obj.DialogId,
+		Priority:     obj.Priority,
+		Ascription:   obj.Ascription,
 		Participant:  kr.Participant,
 		Title:        kr.Title,
 		Confidence:   kr.Confidence,
@@ -1177,9 +1186,11 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 
 	// 获取用户名称
 	if userid > 0 && ascription == 2 {
-		if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Pluck("nickname", &alias).Error; err != nil {
+		var user model.User
+		if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Find(&user).Error; err != nil {
 			return nil
 		}
+		alias = []string{user.GetNickname()}
 	}
 	return alias
 }

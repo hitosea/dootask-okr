@@ -1,5 +1,9 @@
 package model
 
+import (
+	"dootask-okr/app/utils/common"
+)
+
 type User struct {
 	Token            string `json:"token"`             // token
 	Identity         string `json:"identity"`          // 身份
@@ -29,3 +33,11 @@ type User struct {
 }
 
 var UserModel = User{}
+
+// 用户昵称
+func (m *User) GetNickname() string {
+	if m.Nickname == "" {
+		return common.CardFormat(m.Email)
+	}
+	return m.Nickname
+}
