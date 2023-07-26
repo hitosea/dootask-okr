@@ -33,7 +33,7 @@
                     </div>
                     <n-tooltip trigger="hover">
                         <template #trigger>
-                            <i class="taskfont cursor-pointer text-text-tips ml-auto" @click="alignCancel"> &#xe680;</i>
+                            <i class="taskfont cursor-pointer text-text-tips ml-auto" @click="alignCancel(item.id)"> &#xe680;</i>
                         </template>
                         {{ $t('取消对齐') }}
                     </n-tooltip>
@@ -90,7 +90,7 @@ const getList = () => {
             loadIng.value = false
         })
 }
-const alignCancel = () => {
+const alignCancel = (itemID) => {
     dialog.info({
         title: $t('提示'),
         content: $t('你确定要取消对齐吗？'),
@@ -99,7 +99,8 @@ const alignCancel = () => {
         onPositiveClick: () => {
 
             const upData = {
-                id: props.id,
+                okr_id: props.id,
+                align_okr_id:itemID,
             }
             loadIng.value = true
             getAlignCancel(upData)

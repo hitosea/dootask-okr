@@ -1,6 +1,6 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail" v-for="(item) in list">
+        <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in list">
             <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
                 <p class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
@@ -50,7 +50,7 @@
     <AlignTarget :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"></AlignTarget>
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
-    <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule"
+    <OkrDetails :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule"
         @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }">
     </DegreeOfCompletion>
@@ -105,7 +105,8 @@ const pStatus = (p) => {
     return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
 }
 
-const handleOpenDetail = () => {
+const handleOpenDetail = (id) => {
+    eidtId.value = id
     okrDetailsShow.value = true
 }
 

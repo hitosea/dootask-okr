@@ -20,3 +20,8 @@ export const getAlignDetail = (data) => {
 export const getAlignCancel = (data) => {
     return http.get<PageReq>("okr/align/cancel",data)
 }
+
+//获取OKR详情
+export const getOkrDetail = (data) => {
+    return http.get<PageReq>("okr/detail",data)
+}

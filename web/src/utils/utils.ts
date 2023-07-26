@@ -448,6 +448,21 @@ const utils = {
         format = format.replace(/s/g, utils.zeroFill(dateObj.getSeconds(), 2))
         return format
     },
+    /**
+     * 接口返回时间转正常格式
+     * @param format
+     * @param v
+     * @returns {string}
+     */
+    GoDate(format) {
+        // 创建一个Date对象
+        const date = new Date(format);
+
+        // 构建日期时间字符串
+        const datetime = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} `;
+
+        return datetime
+    },
 
     /**
      * 补零

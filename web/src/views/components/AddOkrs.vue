@@ -44,8 +44,8 @@
                             <n-form-item :label="$t('归属')" path="ascription">
                                 <n-radio-group v-model:value="formValue.ascription" name="radiogroup3">
                                     <n-space>
-                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>
                                         <n-radio :value="2">{{ $t('个人') }}</n-radio>
+                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>                                   
                                     </n-space>
                                 </n-radio-group>
                             </n-form-item>
@@ -158,7 +158,7 @@ const formValue = ref({
     title: "",
     type: 1,
     priority: "P0",
-    ascription: 1,
+    ascription: 2,
     visible_range: 1,
     time: null,
     align_objective: null,

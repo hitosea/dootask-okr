@@ -5,7 +5,7 @@
             <div class="okr-right">
                 <div class="search-button" @click="()=>{searchShow = true}" :class="searchShow ? 'search-active' : ''">
                     <span class="search-button-span" v-if="searchShow" >{{ tabsName }}</span>
-                    <n-input v-if="searchShow" class=" border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
+                    <n-input v-if="searchShow" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
                     <i class="taskfont" >&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
@@ -58,6 +58,8 @@ const searchShow = ref(false)
 const tabsName = ref('我创建的OKR')
 
 const changeTabs = (e)=>{
+    searchObject.value = ''
+    searchShow.value = false
     tabsName.value = e
 }
 
