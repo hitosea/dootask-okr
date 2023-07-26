@@ -82,7 +82,7 @@ const handleClose = () => {
         @apply flex justify-between items-center;
 
         h2 {
-            @apply text-title-color text-36 font-normal;
+            @apply text-title-color text-28 font-normal;
         }
         .okr-right{
             @apply flex items-center gap-6;

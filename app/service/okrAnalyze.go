@@ -41,7 +41,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 		okrTable := core.DBTableName(&model.Okr{})
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
-		db := core.DB.Table(departmentTable+" AS dept").Joins(fmt.Sprintf(`
+		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
@@ -54,7 +54,8 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 			`, okrTable, userTable)).
 			Select("dept.id as department_id, dept.name as department_name, SUM(ifnull(b.total,0)) total, SUM(ifnull(b.completed,0)) completed").
 			Group("department_id").
-			Where("b.total > ?", 0)
+			Order("b.total desc")
+			// Where("b.total > ?", 0)
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}
@@ -109,7 +110,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 		okrTable := core.DBTableName(&model.Okr{})
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
-		db := core.DB.Table(departmentTable+" AS dept").Joins(fmt.Sprintf(`
+		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
@@ -133,7 +134,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 				SUM(ifnull(b.seven_to_ten,0)) seven_to_ten
 			`).
 			Group("department_id").
-			Where("b.total > ?", 0)
+			Order("b.total desc")
+			// Where("b.total > ?", 0)
 
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
@@ -221,7 +223,7 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 		okrTable := core.DBTableName(&model.Okr{})
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
-		db := core.DB.Table(departmentTable+" AS dept").Joins(fmt.Sprintf(`
+		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
@@ -241,7 +243,8 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 				SUM(ifnull(b.already_reviewed,0)) already_reviewed
 			`).
 			Group("department_id").
-			Where("b.total > ?", 0)
+			Order("b.total desc")
+			// Where("b.total > ?", 0)
 
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err

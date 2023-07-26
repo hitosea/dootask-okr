@@ -81,10 +81,10 @@
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
-                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
                                                 <p class="bg-[#FF7070]" v-if="item.zero_to_three" :style="{width:calculatingProgress(item.zero_to_three,item.total)+'%'}">{{item.zero_to_three}}{{$t('个')}}</p>
                                                 <p class="bg-[#FC984B]" v-if="item.three_to_seven" :style="{width:calculatingProgress(item.three_to_seven,item.total)+'%'}">{{item.three_to_seven}}{{$t('个')}}</p>
-                                                <p class="bg-[#8BCF70]" v-if="item.three_to_seven" :style="{width:calculatingProgress(item.seven_to_ten,item.total)+'%'}">{{item.seven_to_ten}}{{$t('个')}}</p>
+                                                <p class="bg-[#8BCF70]" v-if="item.seven_to_ten" :style="{width:calculatingProgress(item.seven_to_ten,item.total)+'%'}">{{item.seven_to_ten}}{{$t('个')}}</p>
+                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
                                             </div>
                                             <div class="collect">{{item.total}}{{$t('个')}}</div>
                                         </div>
@@ -121,8 +121,8 @@
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
-                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
                                                 <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}{{$t('个')}}</p>
+                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
                                             </div>
                                             <div class="collect">{{ item.total }}{{$t('个')}}</div>
                                         </div>

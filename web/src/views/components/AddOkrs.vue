@@ -1,5 +1,6 @@
 <template >
-    <n-drawer v-model:show="show" :width="728" :on-after-leave="closeDrawer" :mask-closable="false">
+    <n-drawer v-model:show="show" :width="728" @after-enter="showDrawer" :on-after-leave="closeDrawer"
+        :mask-closable="false" :z-index="1">
         <n-drawer-content :title="$t('添加OKR')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar>
@@ -107,7 +108,8 @@
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('参与人')">
-                                                <UserList v-model:value="item.participant"></UserList>
+                                                <UserSelects v-if="showUserSelect" :formkey="index"/>
+                                                <UserList v-else v-model:value="item.participant"></UserList>
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('信心')">
@@ -146,13 +148,12 @@ import { ResultDialog } from "@/api"
 
 const emit = defineEmits(['close'])
 
-
 const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
 const selectAlignmentShow = ref(false)
-
-
+const userSelectApps = ref([]);
+const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0 )
 
 const formValue = ref({
     title: "",
@@ -183,21 +184,10 @@ watch(() => formValue.value.type, (newValue) => {
 })
 
 const generalOptions = ref([
-    {
-        label: $t('全公司'),
-        value: 1,
-    },
-    {
-        label: $t('仅相关成员'),
-        value: 2,
-    },
-    {
-        label: $t('仅部门成员'),
-        value: 3,
-    },
+    { label: $t('全公司'), value: 1 },
+    { label: $t('仅相关成员'), value: 2 },
+    { label: $t('仅部门成员'), value: 3 },
 ])
-
-
 
 const rules = <any>{
     title: {
@@ -270,7 +260,7 @@ const handleSubmit = () => {
         visible_range: formValue.value.visible_range,
         start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
         end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
-        align_objective: formValue.value.align_objective == null ? "": formValue.value.align_objective.join(','),
+        align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
         project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
         key_results: keyResults,
     }
@@ -287,7 +277,42 @@ const handleSubmit = () => {
 
 }
 
-const handleclear = () => {
+
+// 加载选择用户组件
+const loadUserSelects = () => {
+    nextTick(() => {
+        if (!window.Vues) return false;
+        document.querySelectorAll('UserSelects').forEach(e=>{
+            let item = formKRValue.value[ e.getAttribute('formkey') ];
+            let app = new window.Vues.Vue({
+                el: e,
+                store: window.Vues.store,
+                render: (h: any) => {
+                    return h(window.Vues?.components?.UserSelect, {
+                        class:"okr-user-selects",
+                        props: {
+                            value: item.participant || [],
+                            title: $t('选择参与人'),
+                            border: true,
+                            avatarSize: 23,
+                        },
+                        on:{
+                            "on-show-change":(show:any,values:any) => {
+                                if(!show){
+                                    item.participant = values;
+                                }
+                            }
+                        }
+                    })
+                },
+            });
+            userSelectApps.value.push(app)
+        })
+    })
+}
+
+// 清除数据
+const handleClear = () => {
     formValue.value = {
         title: "",
         type: 1,
@@ -309,10 +334,7 @@ const handleclear = () => {
     ]
 }
 
-const closeDrawer = () => {
-    handleclear()
-}
-
+//  添加kr
 const handleAddKr = () => {
     formKRValue.value.push(
         {
@@ -322,18 +344,34 @@ const handleAddKr = () => {
             participant: null,
         },
     )
+    loadUserSelects()
 }
 
-
-
+// 删除kr
 const handleRemoveKr = (index) => {
     formKRValue.value.splice(index, 1)
 }
 
+// 对齐目标
 const handleGoal = () => {
     selectAlignmentShow.value = true
 }
 
+// 关闭Drawer
+const closeDrawer = () => {
+    handleClear()
+    userSelectApps.value.forEach(app=> app.$destroy() )
+}
+
+// 显示
+const showDrawer = () => {
+    loadUserSelects()
+}
+
+// 卸载
+window.addEventListener('apps-unmount', function () {
+    userSelectApps.value.forEach(app=> app.$destroy() )
+})
 </script>
 <style lang="less" >
 .n-drawer-body-content-wrapper {
@@ -371,4 +409,10 @@ const handleGoal = () => {
 .span-3 {
     @apply bg-[#72A1F7];
 }
+
+.okr-user-selects{
+    border: 1px solid #F4F5F7 !important;
+    @apply w-full bg-[#F4F5F7];
+}
+
 </style>
