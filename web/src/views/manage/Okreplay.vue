@@ -1,5 +1,10 @@
 <template>
-    <n-scrollbar trigger="hover">
+    <OkrNotDatas v-if="items.length == 0">
+        <template v-slot:content>
+            <p>{{$t('暂无复盘')}}</p>
+        </template>
+    </OkrNotDatas>
+    <n-scrollbar v-else trigger="hover">
         <div class="replay mt-[1%]">
             <div
                 v-for="(item, index) in items"
@@ -36,6 +41,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
+import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import * as http from "../../api/modules/replay"
 
 const addMultipleShow = ref(false)
@@ -52,7 +58,7 @@ const loadResplayList = (data)=>{
         krList: (itemData.kr_history?itemData.kr_history:[]),
         okrProgress:itemData.okr_progress,
         review: itemData.review
-  }));  
+  }));    
 }
 
 // 获取数据

@@ -2,22 +2,29 @@
     <n-scrollbar>
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
-<<<<<<< Updated upstream
-            <okrItem :list="list"></okrItem>
-=======
-            <OkrItems :list="list"></OkrItems>
->>>>>>> Stashed changes
+            <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
         </div>
+        <OkrNotDatas v-if="list.length == 0">
+            <template v-slot:content>
+                <div class="mt-5">
+                    <div class="mb-10">{{$t('暂无OKR')}}</div>     
+                    <div>
+                        <n-button type="primary" ghost>
+                            <i class="taskfont mr-5">&#xe731;</i>
+                            {{ $t('创建OKR') }}
+                        </n-button>
+                    </div>    
+
+                </div>
+            </template>
+        </OkrNotDatas>
     </n-scrollbar>
 </template>
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
-<<<<<<< Updated upstream
-import okrItem from '@/views/components/okrItem.vue'
-=======
 import OkrItems from '@/views/components/OkrItems.vue'
->>>>>>> Stashed changes
 import { getMyList } from '@/api/modules/okrList'
+import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 
 const loadIng = ref(false)
 const page = ref(1)
