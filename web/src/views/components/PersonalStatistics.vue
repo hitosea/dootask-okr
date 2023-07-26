@@ -76,7 +76,6 @@ const getData = () => {
     http.getOkrDegreeOfCompletionAndScore().then(({ data }) => {
         analyzeDatas.value.okrDegreeOfCompletionAndScore = data
         loadComplete()
-        console.log(data);
     })
 }
 
@@ -155,9 +154,9 @@ const loadComplete = () => {
                 color: ['#8BCF70', 'rgba(188, 191, 202, 0.25)'],
                 data: [
                     { value: averageScore , name: 'Search Engine' },
-                    { value: 100 - averageScore, name: 'Direct' },
+                    { value: 10 - averageScore, name: 'Direct' },
                     {
-                        value: 100,
+                        value: 10,
                         itemStyle: {
                             color: 'none',
                             decal: {
