@@ -2,22 +2,26 @@
     <n-scrollbar>
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
-            <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
+            <div v-if="loadIng" class="w-full h-full flex mt-[10%] justify-center">
+                <n-spin size="large"/>
+            </div>
+            <div v-else>
+                <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
+                <OkrNotDatas v-else>
+                    <template v-slot:content>
+                        <div class="mt-5">
+                            <div class="mb-10">{{$t('暂无OKR')}}</div>     
+                            <div>
+                                <n-button type="primary" ghost>
+                                    <i class="taskfont mr-5">&#xe731;</i>
+                                    {{ $t('创建OKR') }}
+                                </n-button>
+                            </div>    
+                        </div>
+                    </template>
+                </OkrNotDatas>
+            </div>
         </div>
-        <OkrNotDatas v-if="list.length == 0">
-            <template v-slot:content>
-                <div class="mt-5">
-                    <div class="mb-10">{{$t('暂无OKR')}}</div>     
-                    <div>
-                        <n-button type="primary" ghost>
-                            <i class="taskfont mr-5">&#xe731;</i>
-                            {{ $t('创建OKR') }}
-                        </n-button>
-                    </div>    
-
-                </div>
-            </template>
-        </OkrNotDatas>
     </n-scrollbar>
 </template>
 <script lang="ts" setup>
@@ -30,7 +34,6 @@ const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
-
 
 const getList = (type) => {
     if (last_page.value >= page.value || type == 'search') {
@@ -58,6 +61,7 @@ const getList = (type) => {
 }
 
 onMounted(() => {
+
     getList('')
 })
 </script>

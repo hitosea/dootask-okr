@@ -10,8 +10,10 @@
 import {DataTableColumn } from 'naive-ui';
 const props = defineProps(['okrReplayList']);
 
+// 回顾
 let review = ref('')
 
+// 加载表格
 const loadTable = (krReplay)=> {
     review = krReplay.review
     data.value = krReplay.krList.map((itemData, index) => {

@@ -1,40 +1,46 @@
 <template>
-    <OkrNotDatas v-if="items.length == 0">
-        <template v-slot:content>
-            <p>{{$t('暂无复盘')}}</p>
-        </template>
-    </OkrNotDatas>
-    <n-scrollbar v-else trigger="hover">
-        <div class="replay mt-[1%]">
-            <div
-                v-for="(item, index) in items"
-                :key="index"
-                :class="{ 'replay-item mt-20': true, 'replay-item-active': item.isActive }"
-                @click="openMultiple"
-            >
-                <div class="replay-item-head">
-                    <div>
-                        <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
-                        <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
+    <div v-if="loadIng" class="w-full mt-[15%] flex justify-center">
+        <n-spin size="large"/>
+    </div>
+    <div v-else>
+        <OkrNotDatas v-if="items.length == 0">
+            <template v-slot:content>
+                <p>{{$t('暂无复盘')}}</p>
+            </template>
+        </OkrNotDatas>
+        <n-scrollbar v-else trigger="hover">
+            <div class="replay mt-[1%]">
+                <div
+                    v-for="(item, index) in items"
+                    :key="index"
+                    :class="{ 'replay-item mt-20': true, 'replay-item-active': item.isActive }"
+                    @click="openMultiple"
+                >
+                    <div class="replay-item-head">
+                        <div>
+                            <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
+                            <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
+                            <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
+                        </div>
+                        <div class="replay-item-head-right cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                            <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
+                            <i class="replay-item-head-icon replay-item-head-right taskfont">&#xe705;</i>
+                        </div>
                     </div>
-                    <div class="replay-item-head-right cursor-pointer" @click="() => (item.isActive = !item.isActive)">
-                        <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
-                        <i class="replay-item-head-icon replay-item-head-right taskfont">&#xe705;</i>
+                    <div class="flex">
+                        <div class="replay-item-okr">
+                            <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
+                            <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex">
-                    <div class="replay-item-okr">
-                        <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
-                        <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
+                    <div class="replay-item-body" v-if="item.isActive">
+                        <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
                     </div>
-                </div>
-                <div class="replay-item-body" v-if="item.isActive">
-                    <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
                 </div>
             </div>
-        </div>
-    </n-scrollbar>
+        </n-scrollbar>
+    </div>
+    
     <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
 </template>
 
@@ -47,6 +53,7 @@ import * as http from "../../api/modules/replay"
 
 const addMultipleShow = ref(false)
 const items = ref([])
+const loadIng = ref(false)
 
 //封装复盘列表
 const loadResplayList = (data)=>{
@@ -64,10 +71,13 @@ const loadResplayList = (data)=>{
 
 // 获取数据
 const getData = () => {
+    loadIng.value = true
     // 获取复盘列表
     http.getReplayList().then(({ data }) => {
         loadResplayList(data.data)
-    })
+        loadIng.value = false
+    }) 
+    
 }
 
 // 状态
@@ -81,8 +91,7 @@ const openMultiple = () => {
     addMultipleShow.value = true;
 }
 
-
-nextTick(()=>{
+onMounted(()=>{
     getData()
 })
 </script>
