@@ -5,13 +5,12 @@
                 v-for="(item, index) in items"
                 :key="index"
                 :class="{ 'replay-item mt-20': true, 'replay-item-active': item.isActive }"
+                @click="openMultiple"
             >
                 <div class="replay-item-head">
                     <div>
                         <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <span class="text-[14px] m-[5px] text-[#333333]"
-                            ><b>{{ item.replayName }}</b></span
-                        >
+                        <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
                         <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
                     </div>
                     <div class="replay-item-head-right cursor-pointer" @click="() => (item.isActive = !item.isActive)">
@@ -26,19 +25,22 @@
                     </div>
                 </div>
                 <div class="replay-item-body" v-if="item.isActive">
-                    <okrReplayDetail :okrReplayList="item"></okrReplayDetail>
+                    <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
                 </div>
             </div>
         </div>
     </n-scrollbar>
+    <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue"
-import okrReplayDetail from "@/views/components/okrReplayDetail.vue"
+import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import * as http from "../../api/modules/replay"
 
+const addMultipleShow = ref(false)
 const items = ref([])
+
 //封装复盘列表
 const loadResplayList = (data)=>{
     items.value = data.map((itemData) => ({
@@ -61,13 +63,21 @@ const getData = () => {
     })
 }
 
-nextTick(()=>{
-    getData()
-})
-
+// 状态
 const pStatus = (p) => {
     return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
 }
+
+
+// 打开复盘
+const openMultiple = () => {
+    addMultipleShow.value = true;
+}
+
+
+nextTick(()=>{
+    getData()
+})
 </script>
 <style lang="less" scope>
 .replay {

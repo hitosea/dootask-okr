@@ -17,7 +17,9 @@
                             <div class="align-okr" v-for="(item, index) in okrList">
                                 <div class="object-field ">
                                     <n-checkbox :value="item.id" />
-                                    <i class="taskfont" @click="handleOpen(index, $event.target)">&#xe745;</i>
+                                    <i class="taskfont"
+                                        :class="item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer'"
+                                        @click="handleOpen(index, $event.target, item.key_results)">&#xe745;</i>
                                     <span class="span scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority
                                     }}</span>
                                     <h3 class="text-14 text-title-color font-normal line-clamp-1 ml-4 pr-16">
@@ -149,7 +151,8 @@ const getList = (type) => {
     }
 }
 
-const handleOpen = (index, event) => {
+const handleOpen = (index, event, keyResults) => {
+    if (keyResults == null) return;
     if (openList.value.indexOf(index) == -1) {
         openList.value.push(index)
         event.classList.add('active')
@@ -172,7 +175,7 @@ const pStatus = (p) => {
         @apply flex flex-initial items-center shrink-0 py-9;
 
         i {
-            @apply text-12 text-text-tips ml-12 cursor-pointer transition-all;
+            @apply text-12 ml-12 transition-all;
         }
 
         i.active {

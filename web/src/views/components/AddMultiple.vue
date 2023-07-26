@@ -1,13 +1,15 @@
 <template >
-    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1">
+    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1" :trap-focus="false">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
-                <n-scrollbar>
-                    <div class="flex-auto shrink-0">
+                <n-scrollbar class="h-full flex-auto">
+                    <div class="flex flex-col shrink-0 h-full">
                         <h3 class="text-text-li text-18 font-normal mb-16">OKR</h3>
-                        <n-data-table :columns="columns" :data="data" :single-line="false" />
+                        <n-data-table :columns="columns" :data="data" :single-line="false" :hover="false" size="small" style="--n-td-color-hover-modal:#ffffff"/>
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
-                        <TEditor></TEditor>
+                        <div class="flex-auto shrink-0 min-h-[250px]">
+                            <TEditor></TEditor>
+                        </div>
                     </div>
                 </n-scrollbar>
                 <div class="button-box">
@@ -123,5 +125,8 @@ const handleSubmit = () => {
 <style lang="less" scoped>
 .button-box {
     @apply flex gap-2 mt-32 flex-initial;
+}
+:deep(.n-scrollbar-content){
+    @apply h-full;
 }
 </style>

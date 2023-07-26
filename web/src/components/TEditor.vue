@@ -1,6 +1,6 @@
 <template>
     <div class="tinymce-box">
-        <textarea ref="myTextarea" id="tinymceTextarea">{{ content }}</textarea>
+        <div ref="myTextarea" :id="tinymceId">{{ content }}</div>
     </div>
 </template>
   
@@ -9,11 +9,14 @@ import tinymce from 'tinymce/tinymce';
 import { GlobalStore } from "../store"
 
 const globalStore = GlobalStore()
+const { themeName } = globalStore.appSetup()
 
-// const id = ref("apps_tinymce_" + Math.round(Math.random() * 10000)
+const tinymceId = ref("apps_tinymce_" + Math.round(Math.random() * 10000))
 const content = ref("Hello, World!")
 
-nextTick(()=>{
+content
+
+nextTick(() => {
 
     let lang = globalStore.language;
     switch (lang) {
@@ -32,7 +35,7 @@ nextTick(()=>{
     }
 
     tinymce.init({
-        selector: '#tinymceTextarea',
+        selector: '#' + tinymceId.value,
         base_url: location.origin + '/js/tinymce/',
         language: lang,
         menu: {
@@ -52,25 +55,29 @@ nextTick(()=>{
         // 设置插件
         plugins: 'codesample lists advlist link autolink charmap emoticons fullscreen preview code searchreplace table visualblocks wordcount insertdatetime image',
         toolbar_mode: "sliding",
-        resize:true,
+        resize: true,
         paste_data_images: true,
         inline: false,
-        content_css: "default",
+        content_css: themeName.value  == 'dark' ? 'dark' : 'default',
         convert_urls: false,
-        // height:'100%',
+        height:'100%',
         codesample_languages: [
-            {text:"HTML/VUE/XML",value:"markup"},
-            {text:"JavaScript",value:"javascript"},
-            {text:"CSS",value:"css"},
-            {text:"PHP",value:"php"},
-            {text:"Ruby",value:"ruby"},
-            {text:"Python",value:"python"},
-            {text:"Java",value:"java"},
-            {text:"C",value:"c"},
-            {text:"C#",value:"csharp"},
-            {text:"C++",value:"cpp"}
+            { text: "HTML/VUE/XML", value: "markup" },
+            { text: "JavaScript", value: "javascript" },
+            { text: "CSS", value: "css" },
+            { text: "PHP", value: "php" },
+            { text: "Ruby", value: "ruby" },
+            { text: "Python", value: "python" },
+            { text: "Java", value: "java" },
+            { text: "C", value: "c" },
+            { text: "C#", value: "csharp" },
+            { text: "C++", value: "cpp" }
         ],
-        // setup: (editor) => {
+        // onsavecallback: (e) => {
+        //     console.log(e)
+        //     // this.$emit('editorSave', e);
+        // },
+        setup: (editor) => {
             // editor.on('Init', (e) => {
             //     this.spinShow = false;
             //     this.editor = editor;
@@ -110,7 +117,7 @@ nextTick(()=>{
             // editor.on('blur', () => {
             //     this.$emit('on-blur');
             // });
-        // }
+        }
     });
 })
 
@@ -120,13 +127,8 @@ nextTick(()=>{
 <style lang="less" scoped>
 .tinymce-box {
     height: 100%;
-    
-    :deep(.tox-tinymce){
 
-        &.tox-silver-sink {
-            z-index: 13000;
-        }
-
+    :deep(.tox-tinymce) {
         box-shadow: none;
         box-sizing: border-box;
         border-color: #dddee1;
@@ -146,8 +148,19 @@ nextTick(()=>{
                 width: auto;
             }
         }
-           
+
     }
 }
 </style>
   
+
+<style lang="less">
+.okr-theme-light .tox, .okr-theme-dark .tox{
+    &.tox-silver-sink {
+        position: initial !important;
+    }
+    .tox-dialog-wrap__backdrop--opaque{
+        background-color: rgba(255,255,255,.75) !important;
+    }
+}
+</style>

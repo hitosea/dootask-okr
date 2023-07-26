@@ -1137,9 +1137,7 @@ button::-moz-focus-inner {
   top: 0;
   z-index: 1;
 }
-.tox .tox-dialog-wrap__backdrop--opaque {
-  background-color: #fff;
-}
+
 .tox .tox-dialog {
   background-color: #fff;
   border-color: #cccccc;

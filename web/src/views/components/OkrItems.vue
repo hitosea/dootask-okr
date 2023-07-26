@@ -54,8 +54,8 @@
         @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }">
     </DegreeOfCompletion>
-    <confidence v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></confidence>
-    <markVue v-model:show="markShow" @close="() => { markShow = false }"></markVue>
+    <Confidences v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></Confidences>
+    <MarkVue v-model:show="markShow" @close="() => { markShow = false }"></MarkVue>
     <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
 </template>
 <script setup lang="ts">
@@ -63,8 +63,8 @@ import AlignTarget from '@/views/components/AlignTarget.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import OkrDetails from './OkrDetails.vue';
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
-import confidence from '@/views/components/confidence.vue';
-import markVue from '@/views/components/mark.vue';
+import Confidences from '@/views/components/Confidences.vue';
+import MarkVue from '@/views/components/Marks.vue';
 import AddMultiple from '@/views/components/AddMultiple.vue';
 import utils from '@/utils/utils';
 import webTs from '@/utils/web'

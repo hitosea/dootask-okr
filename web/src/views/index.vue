@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import AddOkr from '@/views/components/AddOkr.vue';
+import AddOkr from '@/views/components/AddOkrs.vue';
 import Icreated from '@/views/manage/Icreated.vue'
 import Okreplay from '@/views/manage/Okreplay.vue'
 const addShow = ref(false)

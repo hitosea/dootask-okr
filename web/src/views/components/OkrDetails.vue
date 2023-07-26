@@ -1,5 +1,5 @@
 <template >
-        <n-modal v-model:show="show" transform-origin="center" @after-enter="showDrawer"  @after-leave="closeDrawer">
+        <n-modal v-model:show="show" transform-origin="center" @after-enter="showDrawer"  @after-leave="closeDrawer" :z-index="1">
             <n-card class="w-[1240px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
                 <div class="flex">
                     <div class="flex-1 flex flex-col pb-[64px]">
