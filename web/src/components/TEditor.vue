@@ -1,6 +1,6 @@
 <template>
     <div class="tinymce-box">
-        <div ref="myTextarea" :id="tinymceId">{{ content }}</div>
+        <div ref="myTextarea" :id="tinymceId">{{ props.value }}</div>
     </div>
 </template>
   
@@ -12,12 +12,23 @@ const globalStore = GlobalStore()
 const { themeName } = globalStore.appSetup()
 
 const tinymceId = ref("apps_tinymce_" + Math.round(Math.random() * 10000))
-const content = ref("Hello, World!")
+const editorVue = ref()
+const spinShow = ref(false)
 
-content
+const emit = defineEmits(['update:value','editorInit','keyup','change','focus','blur'])
+const props = defineProps({
+    value: {
+        type: String,
+        default: '',
+    },
+    readOnly: {
+        type: Boolean,
+        default: false,
+    },
+});
 
+// 加载
 nextTick(() => {
-
     let lang = globalStore.language;
     switch (lang) {
         case 'zh':
@@ -73,50 +84,31 @@ nextTick(() => {
             { text: "C#", value: "csharp" },
             { text: "C++", value: "cpp" }
         ],
-        // onsavecallback: (e) => {
-        //     console.log(e)
-        //     // this.$emit('editorSave', e);
-        // },
         setup: (editor) => {
-            // editor.on('Init', (e) => {
-            //     this.spinShow = false;
-            //     this.editor = editor;
-            //     this.editor.setContent(this.content);
-            //     if (this.readOnly || this.windowTouch) {
-            //         this.editor.setMode('readonly');
-            //         this.updateTouchContent();
-            //     } else {
-            //         this.editor.setMode('design');
-            //     }
-            //     this.$emit('editorInit', this.editor);
-            // });
-            // editor.on('KeyUp', (e) => {
-            //     if (this.editor !== null) {
-            //         this.submitNewContent();
-            //     }
-            // });
-            // editor.on('KeyDown', (e) => {
-            //     if (e.metaKey || e.ctrlKey) {
-            //         if (e.keyCode === 83) {
-            //             e.preventDefault();
-            //             this.$emit('editorSave', e);
-            //         }
-            //     }
-            // });
-            // editor.on('Change', (e) => {
-            //     if (this.editor !== null) {
-            //         if (this.getContent() !== this.value) {
-            //             this.submitNewContent();
-            //         }
-            //         this.$emit('editorChange', e);
-            //     }
-            // });
-            // editor.on('focus', () => {
-            //     this.$emit('on-focus');
-            // });
-            // editor.on('blur', () => {
-            //     this.$emit('on-blur');
-            // });
+            editor.on('Init', (e) => {
+                spinShow.value = false;
+                editorVue.value = editor;
+                editorVue.value.setContent(props.value);
+                if (props.readOnly) {
+                    editorVue.value.setMode('readonly');
+                } else {
+                    editorVue.value.setMode('design');
+                }
+                emit('editorInit')
+            });
+            editor.on('KeyUp', (e) => {
+                emit('update:value', editorVue.value.getContent())
+                emit('keyup', e)
+            });
+            editor.on('Change', (e) => {
+                emit('change', e)
+            });
+            editor.on('focus', (e) => {
+                emit('focus', e)
+            });
+            editor.on('blur', (e) => {
+                emit('blur', e)
+            });
         }
     });
 })
@@ -127,14 +119,12 @@ nextTick(() => {
 <style lang="less" scoped>
 .tinymce-box {
     height: 100%;
-
     :deep(.tox-tinymce) {
         box-shadow: none;
         box-sizing: border-box;
         border-color: #dddee1;
         border-radius: 4px;
         overflow: hidden;
-
         .tox-statusbar {
             span.tox-statusbar__branding {
                 a {
@@ -142,13 +132,11 @@ nextTick(() => {
                 }
             }
         }
-
         .tox-tbtn--bespoke {
             .tox-tbtn__select-label {
                 width: auto;
             }
         }
-
     }
 }
 </style>

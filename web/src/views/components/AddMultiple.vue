@@ -8,7 +8,7 @@
                         <n-data-table :columns="columns" :data="data" :single-line="false" :hover="false" size="small" style="--n-td-color-hover-modal:#ffffff"/>
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
                         <div class="flex-auto shrink-0 min-h-[250px]">
-                            <TEditor></TEditor>
+                            <TEditor v-model:value="editorContent" :readOnly="false"></TEditor>
                         </div>
                     </div>
                 </n-scrollbar>
@@ -27,6 +27,9 @@ import { NSelect, DataTableColumn } from 'naive-ui';
 import TEditor from '@/components/TEditor.vue';
 const show = ref(false)
 const loadIng = ref(false)
+const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
+
+
 
 const data = ref([
     {
