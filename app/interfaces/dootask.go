@@ -28,3 +28,13 @@ type UserInfoResp struct {
 	CreatedAt        string   `json:"created_at"`        // 创建时间
 	DisableAt        string   `json:"disable_at"`        // 禁用时间
 }
+
+// 判断是否是管理员
+func (u *UserInfoResp) IsAdmin() bool {
+	for _, v := range u.Identity {
+		if v == "admin" {
+			return true
+		}
+	}
+	return false
+}
