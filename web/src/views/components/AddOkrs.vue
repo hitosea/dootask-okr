@@ -108,8 +108,10 @@
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('参与人')">
-                                                <UserSelects v-if="showUserSelect" :formkey="index"/>
-                                                <UserList v-else v-model:value="item.participant"></UserList>
+                                                <div v-if="showUserSelect" class="w-full h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                                    <UserSelects :formkey="index"/>
+                                                </div>
+                                                <UserList v-if="!showUserSelect" v-model:value="item.participant"></UserList>
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('信心')">
@@ -411,8 +413,7 @@ window.addEventListener('apps-unmount', function () {
 }
 
 .okr-user-selects{
-    border: 1px solid #F4F5F7 !important;
-    @apply w-full bg-[#F4F5F7];
+    @apply w-full bg-none border-none !important;
 }
 
 </style>
