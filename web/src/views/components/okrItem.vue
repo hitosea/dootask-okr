@@ -1,6 +1,6 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail" v-for="(item, index) in list">
+        <div class="okr-item-box" @click="handleOpenDetail" v-for="(item) in list">
             <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
                 <p class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
@@ -23,32 +23,33 @@
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
                     <i class="taskfont"> &#xe71d;</i>
-                    <p>6h23</p>
+                    <p>{{ expiresFormat(item.end_at) }}</p>
                 </div>
                 <div class="kr-list">
-                    <div class="kr-list-item">
-                        <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR1</span>
-                        <p>完善团队制度，为了更好的服务客户，搭建一个团队使用的客户成功系统</p>
+                    <div class="kr-list-item" v-for="(childItem, index) in item.key_results">
+                        <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
+                        <p>{{ childItem.title }}</p>
                         <div class="kr-list-schedule">
                             <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                                 :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
-                                :percentage="20" />
-                            20%
+                                :percentage="childItem.progress" />
+                            {{ childItem.progress }}%
                         </div>
                     </div>
 
                 </div>
-                <div class="align-target" @click.stop="handleTarget(1)">
-                    对齐目标（5）
+                <div class="align-target" @click.stop="handleTarget(1, item.id)" v-if="item.align_count > 0">
+                    {{ $t('对齐目标') }}({{ item.align_count }}）
                 </div>
-                <div class="align-target" @click.stop="handleTarget(2)">
-                    向上对齐
+                <div class="align-target" @click.stop="handleTarget(2, item.id)" v-else>
+                    {{ $t('向上对齐') }}
                 </div>
             </div>
         </div>
     </div>
-    <AlignTarget :value="alignTargetShow" @close="() => { alignTargetShow = false }"></AlignTarget>
-    <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"></SelectAlignment>
+    <AlignTarget :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"></AlignTarget>
+    <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
+        @submit="submitSelectAlignment"></SelectAlignment>
     <OkrDetails v-model:show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule"
         @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }">
@@ -65,6 +66,12 @@ import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 import confidence from '@/views/components/confidence.vue';
 import markVue from '@/views/components/mark.vue';
 import AddMultiple from '@/views/components/AddMultiple.vue';
+import utils from '@/utils/utils';
+import webTs from '@/utils/web'
+import { alignUpdate } from '@/api/modules/okrList'
+import { useMessage } from "naive-ui"
+import { ResultDialog } from "@/api"
+
 
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
@@ -73,13 +80,19 @@ const degreeOfCompletionShow = ref(false)
 const confidenceShow = ref(false)
 const markShow = ref(false)
 const addMultipleShow = ref(false)
+const nowInterval = ref<any>(null)
+const nowTime = ref(0)
+const loadIng = ref(false)
+const message = useMessage()
+const eidtId = ref(0)
 
 interface Props {
     list?: any,
 }
 defineProps<Props>()
 
-const handleTarget = (e) => {
+const handleTarget = (e, id) => {
+    eidtId.value = id
     if (e == 1) {
         alignTargetShow.value = true
     } else {
@@ -100,6 +113,22 @@ const handleOpenSchedule = () => {
     degreeOfCompletionShow.value = true
 }
 
+const submitSelectAlignment = (e) => {
+    const upData = {
+        align_objective: e.join(','),
+        id: eidtId.value,
+    }
+    loadIng.value = true
+    alignUpdate(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+
 const handleConfidence = () => {
     confidenceShow.value = true
 }
@@ -107,9 +136,16 @@ const handleMark = () => {
     markShow.value = true
 }
 
-onMounted(()=>{
-    console.log(123123);
-        
+const expiresFormat = (date) => {
+    const Dates = new Date(date);
+    const timestamp = Dates.getTime();
+    return webTs.countDownFormat(timestamp, nowTime.value)
+}
+
+onMounted(() => {
+    nowInterval.value = setInterval(() => {
+        nowTime.value = utils.Time();
+    }, 1000);
 })
 
 </script>
@@ -196,7 +232,7 @@ onMounted(()=>{
             }
 
             .align-target {
-                @apply mt-8 text-text-tips text-12 cursor-pointer;
+                @apply mt-20 text-text-tips text-12 cursor-pointer;
             }
         }
     }

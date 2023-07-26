@@ -55,7 +55,7 @@
                                     :options="generalOptions" />
                             </n-form-item>
 
-                            <n-form-item :label="$t('周期')">
+                            <n-form-item :label="$t('周期')" path="time">
                                 <n-date-picker class="w-full" v-model:value="formValue.time"
                                     value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
                             </n-form-item>
@@ -222,6 +222,12 @@ const rules = <any>{
         trigger: 'change',
         message: $t('请选择归属')
     },
+    time: {
+        type: 'array',
+        required: true,
+        trigger: 'change',
+        message: $t('请选择周期')
+    }
 }
 
 const timeRule = <any>{
@@ -243,18 +249,19 @@ const handleSubmit = () => {
     if (!formValue.value.type) return message.info($t("请选择类型"))
     if (!formValue.value.priority) return message.info($t("请选择优先级"))
     if (!formValue.value.ascription) return message.info($t("请选择归属"))
-    loadIng.value = true
-    const keyResults = []
+    if (!formValue.value.time) return message.info($t("请选择目标(O)的周期"))
 
-    formKRValue.value.map(item => {
+    const keyResults = []
+    for (let index = 0; index < formKRValue.value.length; index++) {
+        if (!formKRValue.value[index].time) return message.info($t(`请选择KR${index + 1}周期`))
         keyResults.push({
-            title: item.title,
-            confidence: item.confidence == null ? 0 : item.confidence,
-            participant: item.participant == null ? "0" : item.participant.join(','),
-            start_at: utils.formatDate('Y-m-d 00:00:00', item.time[0] / 1000),
-            end_at: utils.formatDate('Y-m-d 23:59:59', item.time[1] / 1000),
+            title: formKRValue.value[index].title,
+            confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
+            participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
+            start_at: utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
+            end_at: utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
         })
-    })
+    }
     const upData = {
         title: formValue.value.title,
         type: formValue.value.type,
@@ -263,17 +270,19 @@ const handleSubmit = () => {
         visible_range: formValue.value.visible_range,
         start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
         end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
+        align_objective: formValue.value.align_objective == null ? "": formValue.value.align_objective.join(','),
         project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
         key_results: keyResults,
     }
+    loadIng.value = true
     addOkr(upData)
         .then(({ msg }) => {
             message.success(msg)
+            emit('close')
         })
         .catch(ResultDialog)
         .finally(() => {
             loadIng.value = false
-            emit('close')
         })
 
 }

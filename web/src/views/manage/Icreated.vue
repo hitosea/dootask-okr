@@ -3,14 +3,13 @@
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
             <okrItem :list="list"></okrItem>
-
         </div>
     </n-scrollbar>
 </template>
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import okrItem from '@/views/components/okrItem.vue'
-import { getMyList } from '@/api/modules/orkList'
+import { getMyList } from '@/api/modules/okrList'
 
 const loadIng = ref(false)
 const page = ref(1)
@@ -31,9 +30,11 @@ const getList = (type) => {
                 list.value = data.data
             }
             else {
-                data.data.map(item => {
-                    list.value.push(item)
-                })
+                if (data.data) {
+                    data.data.map(item => {
+                        list.value.push(item)
+                    })
+                }
             }
             last_page.value = data.last_page
             loadIng.value = false

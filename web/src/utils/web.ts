@@ -243,5 +243,56 @@ const webTs = {
         }
         return str
     },
+
+    /**
+     * 小于9补0
+     * @param val
+     * @returns {number|string}
+     */
+    formatBit(val) {
+        val = +val
+        return val > 9 ? val : '0' + val
+    },
+
+    /**
+     * 秒转时间
+     * @param second
+     * @returns {string}
+     */
+    formatSeconds(second) {
+        let duration
+        let days = Math.floor(second / 86400);
+        let hours = Math.floor((second % 86400) / 3600);
+        let minutes = Math.floor(((second % 86400) % 3600) / 60);
+        let seconds = Math.floor(((second % 86400) % 3600) % 60);
+        if (days > 0) {
+            if (hours > 0) duration = days + "d," + webTs.formatBit(hours) + "h";
+            else if (minutes > 0) duration = days + "d," + webTs.formatBit(minutes) + "min";
+            else if (seconds > 0) duration = days + "d," + webTs.formatBit(seconds) + "s";
+            else duration = days + "d";
+        }
+        else if (hours > 0) duration = webTs.formatBit(hours) + ":" + webTs.formatBit(minutes) + ":" + webTs.formatBit(seconds);
+        else if (minutes > 0) duration = webTs.formatBit(minutes) + ":" + webTs.formatBit(seconds);
+        else if (seconds > 0) duration = webTs.formatBit(seconds) + "s";
+        return duration;
+    },
+
+    /**
+ * 倒计时格式
+ * @param date
+ * @param nowTime
+ * @returns {string|*}
+ */
+    countDownFormat(date, nowTime) {         
+        let time = Math.round(new Date(date).getTime() / 1000) - nowTime;
+        if (time < 86400 * 7 && time > 0) {
+            return webTs.formatSeconds(time);
+        } else if (time < 0) {
+            return '-' + webTs.formatSeconds(time * -1);
+        } else if (time == 0) {
+            return 0 + 's';
+        }
+        return webTs.formatTime(date)
+    },
 }
 export default webTs
