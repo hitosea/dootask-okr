@@ -175,6 +175,7 @@ const loadComplete = () => {
 
 
 nextTick(() => {
+    loadComplete();
     getData()
 })
 
