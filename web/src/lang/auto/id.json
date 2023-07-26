@@ -223,5 +223,11 @@
     "请选择周期": "Pilih siklus",
     "的目标复盘": "tinjauan sasaran",
     "收起": "menyimpan",
-    "展开": "memperluas"
+    "展开": "memperluas",
+    "请选择目标(O)的周期": "Silakan pilih siklus target (O)",
+    "你确定要取消对齐吗？": "Yakin ingin membatalkan penyelarasan?",
+    "向上对齐": "menyelaraskan",
+    "暂无OKR": "Belum ada OKR",
+    "创建OKR": "Buat OKR",
+    "暂无复盘": "Belum ada ulasan"
 }

@@ -223,5 +223,11 @@
     "请选择周期": "Veuillez sélectionner un cycle",
     "的目标复盘": "examen cible",
     "收起": "ranger",
-    "展开": "développer"
+    "展开": "développer",
+    "请选择目标(O)的周期": "Veuillez sélectionner le cycle de la cible (O)",
+    "你确定要取消对齐吗？": "Êtes-vous sûr de vouloir désaligner ?",
+    "向上对齐": "aligner",
+    "暂无OKR": "Pas encore d'OKR",
+    "创建OKR": "Créer des OKR",
+    "暂无复盘": "Pas encore d'avis"
 }

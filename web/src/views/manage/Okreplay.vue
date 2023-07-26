@@ -42,6 +42,7 @@
 import { ref } from "vue"
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
+import AddMultiple from '@/views/components/AddMultiple.vue';
 import * as http from "../../api/modules/replay"
 
 const addMultipleShow = ref(false)
