@@ -1,6 +1,6 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in list">
+        <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
             <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
                 <p class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
@@ -120,10 +120,12 @@ const eidtId = ref(0)
 
 const RefOkrDetails = ref(null)
 
-interface Props {
-    list?: any,
-}
-defineProps<Props>()
+const props = defineProps({
+    list: {
+        type: undefined,
+        default:() => []
+    }
+});
 
 const emit = defineEmits(['upData','edit'])
 
