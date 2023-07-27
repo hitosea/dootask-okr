@@ -9,7 +9,6 @@ import (
 	e "dootask-okr/app/utils/error"
 	"dootask-okr/config"
 	"encoding/json"
-	"log"
 
 	"fmt"
 	"time"
@@ -52,7 +51,6 @@ func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, deptOnly bool
 		departments = common.ArrayImplode(user.Department)
 	}
 	url := fmt.Sprintf("%s%s?keys[departments]=%s&page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/users/search", departments, page, pageSize, user.Token)
-	log.Println(url)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err
