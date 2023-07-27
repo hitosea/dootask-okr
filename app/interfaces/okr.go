@@ -164,3 +164,9 @@ type OkrAlignUpdateReq struct {
 	Id             int    `form:"id" binding:"required" json:"id"`                           // okr id
 	AlignObjective string `form:"align_objective" binding:"required" json:"align_objective"` // 对齐目标
 }
+
+// 获取用户列表请求
+type OkrUserListReq struct {
+	DeptOnly bool `form:"dept_only,default=false" json:"dept_only"` // 是否只获取部门用户
+	*Pages
+}

@@ -26,13 +26,13 @@ func (api *BaseApi) OkrUserInfo() {
 // @Summary 获取用户列表
 // @Description 获取用户列表
 // @Accept json
-// @Param request query interfaces.Pages true "request"
+// @Param request query interfaces.OkrUserListReq true "request"
 // @Success 200 {object} interfaces.Response
 // @Router /okr/user/list [get]
 func (api *BaseApi) OkrUserList() {
-	var param = interfaces.Pages{}
+	var param = interfaces.OkrUserListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.DootaskService.GetUserList(api.Userinfo.Token, param.Page, param.PageSize)
+	result, err := service.DootaskService.GetUserList(api.Userinfo, param.DeptOnly, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

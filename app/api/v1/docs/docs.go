@@ -669,7 +669,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/interfaces.Response"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.UserDepartment"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1542,6 +1557,12 @@ var doc = `{
                 "summary": "获取用户列表",
                 "parameters": [
                     {
+                        "type": "boolean",
+                        "description": "是否只获取部门用户",
+                        "name": "dept_only",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "当前页，默认:1",
                         "name": "page",
@@ -2402,6 +2423,32 @@ var doc = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserDepartment": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "dialog_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_userid": {
+                    "type": "integer"
+                },
+                "parent_id": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"

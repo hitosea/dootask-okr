@@ -487,7 +487,7 @@ func (api *BaseApi) OkrAlignDetail() {
 // @Summary 获取部门列表
 // @Description 获取部门列表
 // @Accept json
-// @Success 200 {object} interfaces.Response
+// @Success 200 {object} interfaces.Response{data=[]model.UserDepartment}
 // @Router /okr/department/search [get]
 func (api *BaseApi) OkrDepartmentSearch() {
 	result, err := service.OkrService.GetDepartmentSearch()

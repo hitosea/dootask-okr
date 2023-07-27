@@ -591,6 +591,23 @@ definitions:
       updated_at:
         type: string
     type: object
+  model.UserDepartment:
+    properties:
+      created_at:
+        type: string
+      dialog_id:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      owner_userid:
+        type: integer
+      parent_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
 host: http://localhost
 info:
   contact: {}
@@ -979,7 +996,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/interfaces.Response'
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.UserDepartment'
+                  type: array
+              type: object
       summary: 获取部门列表
       tags:
       - Okr
@@ -1491,6 +1515,10 @@ paths:
       - application/json
       description: 获取用户列表
       parameters:
+      - description: 是否只获取部门用户
+        in: query
+        name: dept_only
+        type: boolean
       - description: 当前页，默认:1
         in: query
         name: page
