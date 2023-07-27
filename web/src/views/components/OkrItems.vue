@@ -39,28 +39,45 @@
                     </div>
 
                 </div>
-                <div class="align-target" @click.stop="handleTarget(1, item.id)" v-if="item.align_count > 0">
-                    {{ $t('对齐目标') }}({{ item.align_count }}）
+                <div class="align-target" v-if="item.align_count > 0">
+                    <div class=" cursor-pointer" @click.stop="handleTarget(1, item.id)">{{ $t('对齐目标') }}({{ item.align_count
+                    }}）</div>
                 </div>
-                <div class="align-target" @click.stop="handleTarget(2, item.id)" v-else>
-                    {{ $t('向上对齐') }}
+                <div class="align-target" v-else>
+                    <div class=" cursor-pointer" @click.stop="handleTarget(2, item.id)">
+                        {{ $t('向上对齐') }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <AlignTarget :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"></AlignTarget>
+    <!-- 查看对齐OKR -->
+    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"></AlignTargetModal>
+
+    <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
-    <OkrDetails :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @schedule="handleOpenSchedule"
-        @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
-    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" @close="() => { degreeOfCompletionShow = false }">
+
+    <!-- OKR详情 -->
+    <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
+        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
+
+    <!-- 更新进度   -->
+    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId" :progress="degreeOfCompletionProgress"
+        :progress_status="degreeOfCompletionProgressStatus" @close="handleCloseDedree">
     </DegreeOfCompletion>
+
+    <!-- 更新信心 -->
     <Confidences v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></Confidences>
+
+    <!-- 更新评分 -->
     <MarkVue v-model:show="markShow" @close="() => { markShow = false }"></MarkVue>
+
+    <!-- 新增复盘 -->
     <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
 </template>
 <script setup lang="ts">
-import AlignTarget from '@/views/components/AlignTarget.vue';
+import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import OkrDetails from './OkrDetails.vue';
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
@@ -72,13 +89,19 @@ import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
-import { getMyList } from '@/api/modules/okrList';
 
 
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
 const okrDetailsShow = ref(false)
+
+
 const degreeOfCompletionShow = ref(false)
+const degreeOfCompletionId = ref(0)
+const degreeOfCompletionProgress = ref(0)
+const degreeOfCompletionProgressStatus = ref(0)
+
+
 const confidenceShow = ref(false)
 const markShow = ref(false)
 const addMultipleShow = ref(false)
@@ -87,6 +110,8 @@ const nowTime = ref(0)
 const loadIng = ref(false)
 const message = useMessage()
 const eidtId = ref(0)
+
+const RefOkrDetails = ref(null)
 
 interface Props {
     list?: any,
@@ -112,8 +137,20 @@ const handleOpenDetail = (id) => {
     okrDetailsShow.value = true
 }
 
-const handleOpenSchedule = () => {
+//打开评分
+const handleOpenSchedule = (id,progress, progress_status) => {
+    degreeOfCompletionId.value = id
+    degreeOfCompletionProgress.value = progress
+    degreeOfCompletionProgressStatus.value = progress_status
     degreeOfCompletionShow.value = true
+}
+//关闭评分
+const handleCloseDedree = () => {
+    degreeOfCompletionId.value = 0
+    degreeOfCompletionProgress.value = 0
+    degreeOfCompletionProgressStatus.value = 0
+    degreeOfCompletionShow.value = false
+    RefOkrDetails.value.getDetail()
 }
 
 const handleFollowOkr = (id) => {
@@ -250,7 +287,7 @@ onMounted(() => {
             }
 
             .align-target {
-                @apply mt-20 text-text-tips text-12 cursor-pointer;
+                @apply flex items-start mt-20 text-text-tips text-12;
             }
         }
     }

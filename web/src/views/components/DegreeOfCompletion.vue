@@ -7,16 +7,16 @@
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item :label="$t('完成度')">
-                        <n-input-number v-model:value="formValue.complete" :show-button="false">
+                        <n-input-number v-model:value="formValue.progress" :max="100" :show-button="false">
                             <template #suffix> %</template>
                         </n-input-number>
                     </n-form-item>
                     <n-form-item :label="$t('状态')" class="">
-                        <n-radio-group v-model:value="formValue.status" name="radiogroup1">
+                        <n-radio-group v-model:value="formValue.progress_status" name="radiogroup1">
                             <n-space>
-                                <n-radio value="0">{{ $t('正常') }}</n-radio>
-                                <n-radio value="1">{{ $t('有风险') }}</n-radio>
-                                <n-radio value="2">{{ $t('已延期') }}</n-radio>
+                                <n-radio :value="1">{{ $t('正常') }}</n-radio>
+                                <n-radio :value="2">{{ $t('有风险') }}</n-radio>
+                                <n-radio :value="3">{{ $t('已延期') }}</n-radio>
                             </n-space>
                         </n-radio-group>
                     </n-form-item>
@@ -29,7 +29,7 @@
                         <n-button :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
-                        <n-button :loading="loadIng" type="primary" @click="">
+                        <n-button :loading="loadIng" type="primary" @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
                     </div>
@@ -41,21 +41,67 @@
 </template>
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
+import { updateProgress } from '@/api/modules/okrList'
+import { useMessage } from "naive-ui"
+import { ResultDialog } from "@/api"
+
+const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
+
 const formValue = ref({
-    complete: 0,
-    status: 0,
+    progress: 0,
+    progress_status: 0,
 })
 
-const emit = defineEmits(['close'])
+const props = defineProps({
+    id: {
+        type: Number,
+        default: 0,
+    },
+    progress: {
+        type: Number,
+        default: 0,
+    },
+    progress_status: {
+        type: Number,
+        default: 0,
+    },
+})
 
+watch(() => props.id, (newValue) => {
+    if (newValue) {
+        formValue.value.progress = props.progress
+        formValue.value.progress_status = props.progress_status
+    }
+}, { immediate: true })
+
+const emit = defineEmits(['close'])
+//提交
+const handleSubmit = () => {
+    const upData = {
+        id: props.id,
+        progress: formValue.value.progress,
+        status: formValue.value.progress_status,
+    }
+    loadIng.value = true
+    updateProgress(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            emit('close')
+            loadIng.value = false
+        })
+}
+//关闭
 const handleClose = () => {
     emit('close')
 }
 </script>
 <style lang="less" scoped>
-:deep(.n-card__content){
+:deep(.n-card__content) {
     @apply pb-0 !important;
 }
 </style>

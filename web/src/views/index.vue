@@ -18,17 +18,17 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
                     <div class="okr-scrollbar">
-                        <Icreated></Icreated>
+                        <Icreated ></Icreated>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
-                        
+
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-                        
+
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
@@ -89,7 +89,7 @@ const handleClose = () => {
             .add-button,
             .search-button {
                 @apply bg-bg-manage-menu w-12 h-12 rounded-full flex items-center justify-center cursor-pointer;
-    
+
                 i {
                     @apply text-20 text-emoji-users-color;
                 }

@@ -1,55 +1,46 @@
 <template >
-    <n-modal v-model:show="props.value" transform-origin="center">
-        <n-card class="w-[640px]" :title="$t('对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
-            <template #header-extra>
-                <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
-            </template>
-            <div class="align-target">
-                <div class="a-t-list" v-for="item in dataList">
-                    <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
-                        <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">{{ item.prefix
-                        }}</span>
-                        <n-tooltip trigger="hover" v-if="item.alias[0]">
-                            <template #trigger>
-                                <span v-if="item.alias[0]" class="a-t-tab-b "
-                                    :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
-                                        item.alias[0] }} {{ item.alias.length > 1 ? "+1" : '' }}</span>
-                            </template>
-                            {{ item.alias.join(',') }}
-                        </n-tooltip>
+    <div class="align-target">
+        <div class="a-t-list" v-for="item in dataList">
+            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
+                <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">{{ item.prefix
+                }}</span>
+                <n-tooltip trigger="hover" v-if="item.alias[0]">
+                    <template #trigger>
+                        <span v-if="item.alias[0]" class="a-t-tab-b "
+                            :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
+                                item.alias[0] }} {{ item.alias.length > 1 ? "+1" : '' }}</span>
+                    </template>
+                    {{ item.alias.join(',') }}
+                </n-tooltip>
 
-                        <div v-if="item.align_objective"
-                            class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
-                            <div class="w-[4px] h-1 bg-text-tips rotate-45 absolute right-0 top-[-3px]"></div>
-                            <div class="w-[4px] h-1 bg-text-tips -rotate-45 absolute right-0 top-[1px]"></div>
-                        </div>
-                    </div>
-
-                    <h3 class="a-t-title" v-if="!item.align_objective">{{ item.title }}</h3>
-                    <div v-else>
-                        <h4 class="a-t-title-s ">{{ item.align_objective }}</h4>
-                        <h3 class="a-t-title " :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
-                            item.title }}</h3>
-                    </div>
-                    <n-tooltip trigger="hover">
-                        <template #trigger>
-                            <i class="taskfont cursor-pointer text-text-tips ml-auto" @click="alignCancel(item.id)"> &#xe680;</i>
-                        </template>
-                        {{ $t('取消对齐') }}
-                    </n-tooltip>
+                <div v-if="item.align_objective"
+                    class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
+                    <div class="w-[4px] h-1 bg-text-tips rotate-45 absolute right-0 top-[-3px]"></div>
+                    <div class="w-[4px] h-1 bg-text-tips -rotate-45 absolute right-0 top-[1px]"></div>
                 </div>
-
             </div>
-        </n-card>
-    </n-modal>
+
+            <h3 class="a-t-title" v-if="!item.align_objective">{{ item.title }}</h3>
+            <div v-else>
+                <h4 class="a-t-title-s ">{{ item.align_objective }}</h4>
+                <h3 class="a-t-title " :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
+                    item.title }}</h3>
+            </div>
+            <n-tooltip trigger="hover">
+                <template #trigger>
+                    <i class="taskfont cursor-pointer text-text-tips ml-auto" @click="alignCancel(item.id)"> &#xe680;</i>
+                </template>
+                {{ $t('取消对齐') }}
+            </n-tooltip>
+        </div>
+
+    </div>
 </template>
 
 <script setup lang="ts">
-import { Close } from "@vicons/ionicons5"
-import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import { useMessage, useDialog } from "naive-ui"
+import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import { ResultDialog } from "@/api"
-
 
 const loadIng = ref(false)
 const message = useMessage()
@@ -67,13 +58,6 @@ const props = defineProps({
     },
 })
 
-watch(() => props.value, (newValue) => {
-    if (newValue) {
-        getList()
-    }
-})
-
-const emit = defineEmits(['close'])
 
 const getList = () => {
     const upData = {
@@ -82,7 +66,6 @@ const getList = () => {
     loadIng.value = true
     getAlignDetail(upData)
         .then(({ data }) => {
-            console.log(data);
             dataList.value = data
         })
         .catch(ResultDialog)
@@ -90,6 +73,7 @@ const getList = () => {
             loadIng.value = false
         })
 }
+
 const alignCancel = (itemID) => {
     dialog.info({
         title: $t('提示'),
@@ -100,7 +84,7 @@ const alignCancel = (itemID) => {
 
             const upData = {
                 okr_id: props.id,
-                align_okr_id:itemID,
+                align_okr_id: itemID,
             }
             loadIng.value = true
             getAlignCancel(upData)
@@ -113,21 +97,21 @@ const alignCancel = (itemID) => {
                 })
         },
         onNegativeClick: () => {
-          
+
         }
     })
 
 }
 
-
-
-const handleClose = () => {
-    emit('close')
-}
+watch(() => props.value, (newValue) => {
+    if (newValue) {
+        getList()
+    }
+}, { immediate: true })
 
 </script>
 
-<style lang="less" >
+<style lang="less">
 .align-target {
 
     @apply flex flex-col gap-6;
@@ -157,4 +141,3 @@ const handleClose = () => {
     }
 }
 </style>
-

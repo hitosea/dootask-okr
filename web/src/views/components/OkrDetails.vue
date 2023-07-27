@@ -1,11 +1,11 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" @after-leave="closeDrawer"
         :z-index="1">
-        <n-card class="w-[1240px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[1240px] relative" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div class="flex">
-                <div v-if="!loadIng" class="flex-1 flex flex-col pb-[64px]">
+                <div class="flex-1 flex flex-col pb-[64px]">
                     <div
-                        class="flex items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
+                        class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
                         <div class="flex items-center gap-4">
                             <n-popover v-if="detialData.completed == '0'" placement="bottom" trigger="click">
                                 <template #trigger>
@@ -50,7 +50,7 @@
                                 <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
                                 <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14">{{ detialData.alias[0] || $t('无')}}</p>
+                            <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{  detialData.alias[0] }}</p>
                         </div>
 
 
@@ -59,7 +59,8 @@
                                 <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
                                 <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14">{{utils.GoDate(detialData.start_at || 0)}} ~ {{utils.GoDate(detialData.end_at || 0)}}</p>
+                            <p class="flex-1 text-text-li text-14">{{ utils.GoDate(detialData.start_at || 0) }} ~
+                                {{ utils.GoDate(detialData.end_at || 0) }}</p>
                         </div>
 
                         <div class="flex items-center">
@@ -67,7 +68,7 @@
                                 <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
                                 <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
                             </p>
-                            <span class="span" :class="pStatus(detialData.priority)">{{  detialData.priority }}</span>
+                            <span class="span" :class="pStatus(detialData.priority)">{{ detialData.priority }}</span>
                         </div>
 
                     </div>
@@ -75,10 +76,10 @@
                     <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
 
                     <div class="flex flex-col mt-20 gap-6">
-                        <div class="flex flex-col">
+                        <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
                             <div class="flex items-center">
-                                <span class=" text-primary-color text-12 mr-8">KR1</span>
-                                <h4 class=" text-title-color text-14 font-normal line-clamp-1">确定一款持续绩效考核理念的考核工具</h4>
+                                <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
+                                <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
                             </div>
                             <div class="flex items-center justify-between mt-8">
                                 <div class="flex items-center">
@@ -89,106 +90,54 @@
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     </div>
                                     <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-14">2023/07/01~2023/09/30</p>
+                                    <p class="flex-1 text-text-li text-14">{{ utils.GoDate(item.start_at || 0) }} ~
+                                        {{ utils.GoDate(item.end_at || 0) }}</p>
                                 </div>
                                 <div class="flex items-center gap-6">
-                                    <div class="flex items-center cursor-pointer" @click="handleSchedule">
+                                    <div class="flex items-center cursor-pointer"
+                                        @click="handleSchedule(item.id, item.progress, item.progress_status)">
                                         <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                            color="var(--primary-color)" status="success" :percentage="100" />
-                                        <p class="text-text-li opacity-50 text-12">100%</p>
+                                            color="var(--primary-color)" status="success" :percentage="item.progress" />
+                                        <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
-                                    <div class="flex items-center cursor-pointer" @click="handleConfidence">
-                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
-                                        <p class="text-text-li opacity-50 text-12">100</p>
-                                    </div>
-                                    <div class="flex items-center cursor-pointer" @click="handleMark">
-                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
-                                        <p class="text-text-li opacity-50 text-12">8.5分</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="flex items-center">
-                                <span class=" text-primary-color text-12 mr-8">KR1</span>
-                                <h4 class=" text-title-color text-14 font-normal line-clamp-1">确定一款持续绩效考核理念的考核工具</h4>
-                            </div>
-                            <div class="flex items-center justify-between mt-8">
-                                <div class="flex items-center">
-                                    <div class="flex items-center gap-2">
-                                        <n-avatar round :size="20"
-                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                        <n-avatar round :size="20"
-                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                    </div>
-                                    <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-14">{{utils.GoDate(detialData.start_at || 0)}}~{{utils.GoDate(detialData.end_at || 0)}}</p>
-                                </div>
-                                <div class="flex items-center gap-6">
-                                    <div class="flex items-center cursor-pointer" @click="handleSchedule">
-                                        <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
-                                            :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                            color="var(--primary-color)" status="success" :percentage="20" />
-                                        <p class="text-text-li opacity-50 text-12">20%</p>
-                                    </div>
-                                    <div class="flex items-center cursor-pointer" @click="handleConfidence">
+
+                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
+                                        @click="handleConfidence">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
-                                        <p class="text-text-li opacity-50 text-12">信心</p>
+                                        <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
-                                    <div class="flex items-center cursor-pointer" @click="handleMark">
+                                    <div v-else class="flex items-center cursor-pointer" @click="handleConfidence">
+                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                        <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
+                                    </div>
+
+                                    <div v-if="item.score == '0'" class="flex items-center cursor-pointer"
+                                        @click="handleMark">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
-                                        <p class="text-text-li opacity-50 text-12">评分</p>
+                                        <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
+                                    <div v-else class="flex items-center cursor-pointer" @click="handleMark">
+                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                        <p class="text-text-li opacity-50 text-12">{{ item.score }}{{ $t('分') }}</p>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
                     <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
 
-                    <h4 class="text-text-li text-16 font-medium">{{ $t('对齐目标') }} <i
+                    <h4 class="text-text-li text-16 font-medium mb-12">{{ $t('对齐目标') }} <i
                             class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
 
-                    <div class="align-target">
-                        <div class="a-t-list">
-                            <div class="a-t-tab flex-[0] text-[--n-color-target]">
-                                <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">O</span>
-                                <span class="a-t-tab-b">财务部</span>
-                            </div>
-                            <h3 class="a-t-title">本季度实现1000万元的收入目标本季度实现1000万万元的收入目标</h3>
-                            <n-tooltip trigger="hover">
-                                <template #trigger>
-                                    <i class="taskfont cursor-pointer text-text-tips ml-auto"> &#xe680;</i>
-                                </template>
-                                {{ $t('取消对齐') }}
-                            </n-tooltip>
-                        </div>
-                        <div class="a-t-list">
-                            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
-                                <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">KR</span>
-                                <span class="a-t-tab-b">财务部</span>
-                                <div
-                                    class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
-                                    <div class="w-[4px] h-1 bg-text-tips rotate-45 absolute right-0 top-[-3px]"></div>
-                                    <div class="w-[4px] h-1 bg-text-tips -rotate-45 absolute right-0 top-[1px]"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="a-t-title-s ">完善团队制度，为了更好的服务客户</h4>
-                                <h3 class="a-t-title line-through opacity-25">本季度实现1000万元的收入目标本季度实现1000万万元的收入目标</h3>
-                            </div>
-                            <n-tooltip trigger="hover">
-                                <template #trigger>
-                                    <i class="taskfont cursor-pointer text-text-tips ml-auto"> &#xe680;</i>
-                                </template>
-                                {{ $t('取消对齐') }}
-                            </n-tooltip>
-                        </div>
-                    </div>
+                    <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
 
                 </div>
-                <div v-else class="w-full h-[400px] flex-1 flex justify-center items-center">
+                <div v-if="loadIng"
+                    class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
                     <n-spin size="small" />
                 </div>
                 <div
@@ -255,6 +204,7 @@
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
 import { getOkrDetail } from '@/api/modules/okrList'
+import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
 
@@ -275,7 +225,6 @@ const props = defineProps({
         default: 0,
     },
 })
-
 watch(() => props.show, (newValue) => {
     if (newValue) {
         getDetail()
@@ -298,16 +247,21 @@ const getDetail = () => {
         })
 }
 
+
+
 const handleNav = (index) => {
     navActive.value = index
 }
 
-const handleSchedule = () => {
-    emit('schedule')
+//更新进度
+const handleSchedule = (id, progress, progress_status) => {
+    emit('schedule', id, progress, progress_status)
 }
+
 const handleConfidence = () => {
     emit('confidence')
 }
+
 const handleMark = () => {
     emit('mark')
 }
@@ -347,10 +301,14 @@ const showDrawer = () => {
 const closeDrawer = () => {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
 }
+
 const pStatus = (p) => {
     return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
 }
 
+defineExpose({
+    getDetail
+})
 </script>
 <style lang="less" >
 .icon-title {
