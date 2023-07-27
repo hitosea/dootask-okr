@@ -1,5 +1,5 @@
 <template>
-    <n-data-table :columns="columns" :data="data" :single-line="false" />
+    <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
     <div class="replay-details">
         <div class="replay-details-title">{{$t('回顾')}}</div>
         <div>{{ review }}</div>
@@ -49,7 +49,6 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
@@ -79,7 +78,6 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
@@ -108,7 +106,6 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
@@ -162,7 +159,6 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
@@ -191,7 +187,6 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
@@ -220,11 +215,10 @@ const columns = ref<DataTableColumn[]>([
                     style: {
                         color: "#515A6E",
                         fontSize: "14px",
-                        fontWeight: "bold",
                     },
                     size: 24,
                 },
-                { default: () => "评价" },
+                { default: () => $t('评价') },
             )
         },
         render(row) {

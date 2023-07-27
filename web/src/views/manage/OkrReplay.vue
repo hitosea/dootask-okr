@@ -126,7 +126,7 @@ onMounted(()=>{
         }
         &-okr {
             background: #f4f5f7;
-            padding: 5px 16px;
+            padding: 6px 16px;
             @apply mt-10 h-auto flex rounded-lg items-center;
             &-icon {
                 @apply text-center text-10 leading-4 rounded-lg bg-[#87D068] text-[#87d068] mr-10;
