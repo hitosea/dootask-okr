@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: 진행 범위 인자 오류
 ErrOkrProgressNotEnough: 진행이 100% 미만입니다.
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrScoreInvalid: 채점 범위 인자 오류
+ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
 ErrOkrTypeInvalid: 대상 형식 인자 오류
 ErrOkrVisibleRangeInvalid: 대상 표시 범위 인자 오류

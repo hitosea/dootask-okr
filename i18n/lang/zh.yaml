@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: 进度范围参数错误
 ErrOkrProgressNotEnough: 进度不足100%
 ErrOkrProgressStatusInvalid: 进度状态参数错误
 ErrOkrScoreInvalid: 评分范围参数错误
+ErrOkrScoredNotUpdateProgress: 评分后不允许修改进度
 ErrOkrSuperiorScored: 上级已评分
 ErrOkrTypeInvalid: 目标类型参数错误
 ErrOkrVisibleRangeInvalid: 目标可见范围参数错误

@@ -31,6 +31,7 @@ var (
 	ErrOkrScoreInvalid            = "ErrOkrScoreInvalid"            //评分范围参数错误
 	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //负责人已评分
 	ErrOkrSuperiorScored          = "ErrOkrSuperiorScored"          //上级已评分
+	ErrOkrScoredNotUpdateProgress = "ErrOkrScoredNotUpdateProgress" //评分后不允许修改进度
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: 進捗範囲パラメータエラーです
 ErrOkrProgressNotEnough: 進捗は100%未満です
 ErrOkrProgressStatusInvalid: 進捗状態パラメータエラーです
 ErrOkrScoreInvalid: 採点範囲パラメータエラーです
+ErrOkrScoredNotUpdateProgress: 採点後の進捗修正は認められません。
 ErrOkrSuperiorScored: 上級機関が採点しました
 ErrOkrTypeInvalid: ターゲットタイプパラメータエラーです
 ErrOkrVisibleRangeInvalid: 目標可視範囲パラメータエラーです

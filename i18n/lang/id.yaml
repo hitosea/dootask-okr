@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: Parameter jangkauan progres salah
 ErrOkrProgressNotEnough: Kurang dari 100%
 ErrOkrProgressStatusInvalid: Parameter status progres salah
 ErrOkrScoreInvalid: Parameternya salah
+ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTypeInvalid: Parameter jenis target salah
 ErrOkrVisibleRangeInvalid: Target terlihat parameter salah

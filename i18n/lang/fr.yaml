@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
 ErrOkrProgressNotEnough: Progrès insuffisants 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
+ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTypeInvalid: Type de cible paramètre erreur
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect

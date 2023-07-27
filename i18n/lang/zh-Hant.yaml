@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: 進度範圍參數錯誤
 ErrOkrProgressNotEnough: 進度不足100%
 ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrScoreInvalid: 評分範圍參數錯誤
+ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度
 ErrOkrSuperiorScored: 上級已評分
 ErrOkrTypeInvalid: 目標類型參數錯誤
 ErrOkrVisibleRangeInvalid: 目標可見範圍參數錯誤

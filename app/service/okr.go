@@ -834,6 +834,11 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
+	// 评分后不允许修改进度
+	if obj.Score != 0 {
+		return nil, e.New(constant.ErrOkrScoredNotUpdateProgress)
+	}
+
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果传值更新进度有值，则更新进度

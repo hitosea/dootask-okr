@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: Fehlerhafter zeitplan
 ErrOkrProgressNotEnough: Wir haben nicht 100%.
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrScoreInvalid: Fehlerwerte werte putiert
+ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl
 ErrOkrSuperiorScored: An die vorgesetzten.
 ErrOkrTypeInvalid: Fehlerhafter zieltyp fehler
 ErrOkrVisibleRangeInvalid: Fehler im parameter des zieleintrags

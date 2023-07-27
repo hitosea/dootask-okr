@@ -26,6 +26,7 @@ ErrOkrProgressInvalid: The progress range parameter is incorrect
 ErrOkrProgressNotEnough: Less than 100% progress
 ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrScoreInvalid: The scoring range parameter is incorrect
+ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
 ErrOkrSuperiorScored: Superior rated
 ErrOkrTypeInvalid: The target type parameter is incorrect
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
