@@ -44,10 +44,10 @@ nextTick(() => {
             lang = "ko_KR";
             break;
     }
-
+    let isloca = location.origin.indexOf('127.0.0.1:5567') != -1 || location.origin.indexOf('localhost:5567') != -1
     tinymce.init({
         selector: '#' + tinymceId.value,
-        base_url: location.origin + '/js/tinymce/',
+        base_url: location.origin + (isloca ? '/apps/okr' : '') + '/js/tinymce/',
         language: lang,
         menu: {
             view: {
