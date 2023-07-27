@@ -35,3 +35,23 @@ export const okrFollow = (data) => {
 export const updateProgress = (data) => {
     return http.post<PageReq>("okr/update/progress",data)
 }
+
+//更新信心
+export const confidenceUpdate = (data) => {
+    return http.post<PageReq>("okr/confidence/update",data)
+}
+
+//评分
+export const okrScore = (data) => {
+    return http.post<PageReq>("okr/score",data)
+}
+
+//获取动态
+export const getLogList = (data) => {
+    return http.get<PageReq>("okr/log/list",data)
+}
+
+//获取动态
+export const getReplayList = (data) => {
+    return http.get<PageReq>("okr/replay/okr/list",data)
+}

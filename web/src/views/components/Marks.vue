@@ -7,7 +7,7 @@
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item >
-                        <n-select v-model:value="formValue.mark" :placeholder="$t('请选择评分')"
+                        <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')"
                                     :options="markOptions" />
                     </n-form-item>
 
@@ -20,7 +20,7 @@
                         <n-button :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
-                        <n-button :loading="loadIng" type="primary" @click="">
+                        <n-button :loading="loadIng" type="primary" @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
                     </div>
@@ -32,12 +32,16 @@
 </template>
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
+import { okrScore } from '@/api/modules/okrList'
+import { useMessage } from "naive-ui"
+import { ResultDialog } from "@/api"
+
+const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
 const formValue = ref({
-    mark: null,
+    score: null,
 })
-
 const markOptions = ref([
     {
         label: $t('0 未达成目标，态度问题'),
@@ -86,10 +90,47 @@ const markOptions = ref([
 
 ])
 
+
+
+const props = defineProps({
+    id: {
+        type: Number,
+        default: 0,
+    },
+    score: {
+        type: Number,
+        default: 0,
+    },
+})
+
+watch(() => props.id, (newValue) => {
+    if (newValue) {
+        formValue.value.score = props.score
+    }
+}, { immediate: true })
+
+
 const emit = defineEmits(['close'])
 
+const handleSubmit = () => {
+    const upData = {
+        id: props.id,
+        score: formValue.value.score,
+    }
+    loadIng.value = true
+    okrScore(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            emit('close',1)
+            loadIng.value = false
+        })
+}
+
 const handleClose = () => {
-    emit('close')
+    emit('close',2)
 }
 </script>
 <style lang="less" scoped>

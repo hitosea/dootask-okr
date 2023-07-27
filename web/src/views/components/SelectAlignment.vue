@@ -37,6 +37,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="flex justify-center">
                                 <n-spin size="small" v-if="loadIng" />
                             </div>
@@ -46,7 +48,11 @@
             </div>
             <template #footer>
                 <div class="button-box">
-                    <p>已选：{{ cities.length }} 项</p>
+                    <p>{{ $t('已选：') }}
+                        <span v-if="cities">{{ cities.length }}</span>
+                        <span v-else>0</span>
+                        {{ $t('项') }}
+                    </p>
                     <div class="flex items-center gap-4">
                         <n-button :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
@@ -64,35 +70,40 @@
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
 import { getAlignList } from '@/api/modules/created'
+import utils from "@/utils/utils";
 
 const props = defineProps({
     value: {
         type: Boolean,
         default: false,
     },
-})
-
-watch(() => props.value, (newValue) => {
-    if (newValue) {
-        getList('')
-    }
+    editData: {
+        type: Object,
+        default: {},
+    },
 })
 
 
 const emit = defineEmits(['close', 'submit'])
 
 const loadIng = ref(false)
-const cities = ref([])
+const cities = ref<any>([])
 const searchName = ref('')
 const openList = ref([])
 const okrList = ref<any>([])
 const page = ref(1)
 const last_page = ref(999999)
 
+watch(() => props.value, (newValue) => {
+    if (newValue) {
+        cities.value = utils.cloneJSON(props.editData)
+        getList('')
+    }
+})
 
 const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
-        // 重新请求数据      
+        // 重新请求数据
         if (!loadIng.value) {
             page.value++
             getList('')
@@ -126,8 +137,6 @@ const handleSubmit = () => {
     emit('close')
 }
 
-
-
 const getList = (type) => {
     if (last_page.value >= page.value || type == 'search') {
         const data = {
@@ -147,6 +156,16 @@ const getList = (type) => {
             }
             last_page.value = data.last_page
             loadIng.value = false
+
+            if (cities.value != null) {
+                okrList.value.map((item, index) => {
+                    item.key_results.map(items => {
+                        if (cities.value.indexOf(items.id) != -1) {
+                            openList.value.push(index)
+                        }
+                    })
+                })
+            }
         })
     }
 }
@@ -161,6 +180,7 @@ const handleOpen = (index, event, keyResults) => {
         event.classList.remove('active')
     }
 }
+
 
 const pStatus = (p) => {
     return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'

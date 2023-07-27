@@ -7,8 +7,8 @@
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item >
-                        <n-input-number class="w-full" v-model:value="formValue.complete" :show-button="false">
-                         
+                        <n-input-number class="w-full" v-model:value="formValue.confidence" :show-button="false">
+
                         </n-input-number>
                     </n-form-item>
 
@@ -21,7 +21,7 @@
                         <n-button :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
-                        <n-button :loading="loadIng" type="primary" @click="">
+                        <n-button :loading="loadIng" type="primary" @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
                     </div>
@@ -33,17 +33,57 @@
 </template>
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
+import { confidenceUpdate } from '@/api/modules/okrList'
+import { useMessage } from "naive-ui"
+import { ResultDialog } from "@/api"
+
+const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
 const formValue = ref({
-    complete: 0,
-    status: 0,
+    confidence: 0,
 })
+
+const props = defineProps({
+    id: {
+        type: Number,
+        default: 0,
+    },
+    confidence: {
+        type: Number,
+        default: 0,
+    },
+})
+
+watch(() => props.id, (newValue) => {
+    if (newValue) {
+        formValue.value.confidence = props.confidence
+    }
+}, { immediate: true })
 
 const emit = defineEmits(['close'])
 
+
+
+const handleSubmit = () => {
+    const upData = {
+        id: props.id,
+        confidence: formValue.value.confidence,
+    }
+    loadIng.value = true
+    confidenceUpdate(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            emit('close',1)
+            loadIng.value = false
+        })
+}
+
 const handleClose = () => {
-    emit('close')
+    emit('close',2)
 }
 </script>
 <style lang="less" scoped>

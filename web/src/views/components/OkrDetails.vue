@@ -1,6 +1,6 @@
 <template >
-    <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" @after-leave="closeDrawer"
-        :z-index="1">
+    <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" :mask-closable="false"
+        @after-leave="closeDrawer" :z-index="1">
         <n-card class="w-[1240px] relative" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div class="flex">
                 <div class="flex-1 flex flex-col pb-[64px]">
@@ -23,10 +23,10 @@
                             </n-popover>
                             <div v-else
                                 class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid "
-                                :class="detialData.completed == '0' || detialData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                                :class="detialData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                                 <n-icon v-if="detialData.completed == '1'"
-                                    :class="detialData.completed == '0' || detialData.canceled == '0' ? '' : 'text-primary-color'"
-                                    size="14" :component="CheckmarkSharp" />
+                                    :class="detialData.completed == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
+                                    :component="CheckmarkSharp" />
                             </div>
 
                             <n-tag v-if="detialData.canceled == '1'">{{ $t('已取消') }} </n-tag>
@@ -37,8 +37,12 @@
                             </p>
                         </div>
                         <div class="flex items-center gap-6">
-                            <i class="taskfont icon-title text-[#A7ACB6]">&#xe779;</i>
-                            <i class="taskfont icon-title text-[#A7ACB6]">&#xe679;</i>
+                            <i class="taskfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
+
+                            <i class="taskfont text-[#FFD023]" v-if="detialData.is_follow"
+                                @click.stop="handleFollowOkr(detialData.id)">&#xe683;</i>
+                            <i class="taskfont text-[#A7ACB6]" v-else
+                                @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
                         </div>
                     </div>
                     <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1">{{ detialData.title }}</h3>
@@ -50,7 +54,7 @@
                                 <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
                                 <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{  detialData.alias[0] }}</p>
+                            <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{ detialData.alias[0] }}</p>
                         </div>
 
 
@@ -103,21 +107,22 @@
                                     </div>
 
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
-                                        @click="handleConfidence">
+                                        @click="handleConfidence(item.id, item.confidence)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer" @click="handleConfidence">
+                                    <div v-else class="flex items-center cursor-pointer"
+                                        @click="handleConfidence(item.id, item.confidence)">
                                         <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
 
                                     <div v-if="item.score == '0'" class="flex items-center cursor-pointer"
-                                        @click="handleMark">
+                                        @click="handleMark(item.id, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer" @click="handleMark">
+                                    <div v-else class="flex items-center cursor-pointer">
                                         <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.score }}{{ $t('分') }}</p>
                                     </div>
@@ -162,20 +167,20 @@
                                 <n-spin size="small" />
                             </div>
                             <n-scrollbar v-if="navActive == 1">
-                                <div class="flex text-start">
+                                <div class="flex text-start mb-[24px]" v-for="item in logList">
                                     <n-avatar round :size="28" class="mr-8"
                                         src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     <div class="flex flex-col gap-3">
-                                        <p class="text-12 leading-3 text-text-li">张三<span class="opacity-60 ml-8">08-06
-                                                16:45</span></p>
-                                        <h4 class="text-14 leading-[14px] text-title-color font-normal">责任人打分 <span
-                                                class=" font-medium">搭建一个团队使用的客户成功系统</span></h4>
+                                        <p class="text-12 leading-3 text-text-li">张三<span class="opacity-60 ml-8">{{
+                                            utils.GoDate(item.created_at) }}</span></p>
+                                        <h4 class="text-14 leading-[14px] text-title-color font-normal"> <span
+                                                class=" font-medium">{{ item.content }}</span></h4>
                                     </div>
                                 </div>
                             </n-scrollbar>
                             <n-scrollbar v-if="navActive == 2">
-                                <p class="cursor-pointer"> <i class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
-                                        class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
+                                <p class="cursor-pointer" @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
+                                        class="text-14 text-text-tips" >{{ $t('添加复盘') }}</span></p>
                                 <div class="flex flex-col gap-3 mt-20">
                                     <div class="flex items-center justify-between">
                                         <h4 class="text-14 text-text-li font-normal">复盘 (2023/08/05)</h4>
@@ -203,17 +208,25 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail } from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList } from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
+import { useMessage } from "naive-ui"
 
 const navActive = ref(0)
 const dialogWrappersApp = ref()
 const loadIng = ref(false)
 const detialData = ref<any>({})
+const message = useMessage()
 
-const emit = defineEmits(['close', 'schedule', 'confidence', 'mark'])
+const logListPage = ref(1)
+const logList = ref<any>([])
+
+const replayListPage = ref(1)
+const replayList = ref<any>([])
+
+const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit','addMultiple'])
 
 const props = defineProps({
     show: {
@@ -247,10 +260,78 @@ const getDetail = () => {
         })
 }
 
+const handleFollowOkr = (id) => {
+    const upData = {
+        id: id,
+    }
+    loadIng.value = true
+    okrFollow(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
 
 
 const handleNav = (index) => {
     navActive.value = index
+    if (navActive.value == 1) {
+        logListPage.value = 1
+        logList.value = []
+        handleGetLogList()
+    }
+    if (navActive.value == 2) {
+        replayListPage.value = 1
+        replayList.value = []
+        handleGetReplayList()
+    }
+}
+
+const handleGetLogList = () => {
+    const upData = {
+        id: detialData.value.id,
+        page: logListPage.value,
+        page_size: 10,
+    }
+    loadIng.value = true
+    getLogList(upData)
+        .then(({ data }) => {
+            console.log(data);
+            data.data.map(item => {
+                logList.value.push(item)
+            })
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+const handleGetReplayList = () => {
+    const upData = {
+        id: detialData.value.id,
+        page: replayListPage.value,
+        page_size: 10,
+    }
+    loadIng.value = true
+    getReplayList(upData)
+        .then(({ data }) => {
+            console.log(data);
+            data.data.map(item => {
+                replayList.value.push(item)
+            })
+
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+
+const handleEdit = () => {
+    emit('edit', utils.cloneJSON(detialData.value))
 }
 
 //更新进度
@@ -258,12 +339,16 @@ const handleSchedule = (id, progress, progress_status) => {
     emit('schedule', id, progress, progress_status)
 }
 
-const handleConfidence = () => {
-    emit('confidence')
+const handleConfidence = (id, confidence) => {
+    emit('confidence', id, confidence)
 }
 
-const handleMark = () => {
-    emit('mark')
+const handleMark = (id, score) => {
+    emit('mark', id, score)
+}
+
+const handleAddMultiple = () => {
+    emit('addMultiple', detialData.value.id)
 }
 
 const closeModal = () => {
@@ -300,6 +385,7 @@ const showDrawer = () => {
 // 关闭
 const closeDrawer = () => {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
+    navActive.value = 0
 }
 
 const pStatus = (p) => {

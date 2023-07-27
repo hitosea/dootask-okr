@@ -1,7 +1,7 @@
 <template >
     <n-drawer v-model:show="show" :width="728" @after-enter="showDrawer" :on-after-leave="closeDrawer"
         :mask-closable="false" :z-index="1">
-        <n-drawer-content :title="$t('添加OKR')" closable>
+        <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar>
                     <div class="add-main-box">
@@ -23,7 +23,7 @@
                             </n-form-item>
 
                             <n-form-item :label="$t('优先级')" path="priority">
-                                <n-radio-group v-model:value="formValue.priority" name="radiogroup2">
+                                <n-radio-group v-model:value="formValue.priority" name="radiogroup2" :disabled="edit">
                                     <n-space>
                                         <template v-if="formValue.type == 1">
                                             <n-radio value="P0">
@@ -43,10 +43,10 @@
                             </n-form-item>
 
                             <n-form-item :label="$t('归属')" path="ascription">
-                                <n-radio-group v-model:value="formValue.ascription" name="radiogroup3">
+                                <n-radio-group v-model:value="formValue.ascription" name="radiogroup3" :disabled="edit">
                                     <n-space>
                                         <n-radio :value="2">{{ $t('个人') }}</n-radio>
-                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>                                   
+                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>
                                     </n-space>
                                 </n-radio-group>
                             </n-form-item>
@@ -69,10 +69,12 @@
                                             ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
                                     <i class="taskfont text-[rgba(194,194,194,1)] ml-auto">&#xe72b;</i>
                                 </div>
+
+
                             </n-form-item>
 
                             <n-form-item :label="$t('关联项目')">
-                                <ItemList v-model:value="formValue.project_id" />
+                                <ItemList :edit="props.edit" v-model:value="formValue.project_id" />
                             </n-form-item>
                         </n-form>
                         <div>
@@ -98,7 +100,7 @@
                                     <n-form ref="formRefs" :model="formKRValue[index]" size="medium" :rules="timeRule"
                                         label-placement="left" label-width="auto" require-mark-placement="left">
                                         <n-grid :cols="4" :x-gap="16">
-                                            <n-form-item-gi :span="4" class="w-full" :label="$t('KR')">
+                                            <n-form-item-gi :span="4" class="w-full" label="KR">
                                                 <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
                                             </n-form-item-gi>
 
@@ -108,15 +110,17 @@
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('参与人')">
-                                                <div v-if="showUserSelect" class="w-full h-[32px] bg-[#F4F5F7] rounded-[4px]">
-                                                    <UserSelects :formkey="index"/>
+                                                <div v-if="showUserSelect"
+                                                    class="w-full h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                                    <UserSelects :formkey="index" />
                                                 </div>
-                                                <UserList v-if="!showUserSelect" v-model:value="item.participant"></UserList>
+                                                <UserList :edit="props.edit" v-if="!showUserSelect"
+                                                    v-model:value="item.participant"></UserList>
                                             </n-form-item-gi>
 
                                             <n-form-item-gi :span="2" :label="$t('信心')">
-                                                <n-input-number class="w-full" v-model:value="item.confidence"
-                                                    :placeholder="$t('0-100')" :show-button="false" />
+                                                <n-input-number class="w-full" :max="100" v-model:value="item.confidence"
+                                                    placeholder="0-100" :show-button="false" />
                                             </n-form-item-gi>
                                         </n-grid>
                                     </n-form>
@@ -133,8 +137,8 @@
                 </div>
             </div>
         </n-drawer-content>
-        <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
-            @submit="submitSelectAlignment"></SelectAlignment>
+        <SelectAlignment :value="selectAlignmentShow" :editData="formValue.align_objective"
+            @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
     </n-drawer>
 </template>
 <script setup lang="ts">
@@ -143,7 +147,7 @@ import { watch } from "vue";
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import ItemList from "./ItemList.vue";
 import UserList from "./UserList.vue";
-import { addOkr } from '@/api/modules/created'
+import { addOkr, upDateOkr } from '@/api/modules/created'
 import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
 import { ResultDialog } from "@/api"
@@ -155,9 +159,20 @@ const show = ref(false)
 const loadIng = ref(false)
 const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
-const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0 )
+const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
-const formValue = ref({
+const props = defineProps({
+    edit: {
+        type: Boolean,
+        default: false,
+    },
+    editData: {
+        type: Object,
+        default: {},
+    },
+})
+
+const formValue = ref<any>({
     title: "",
     type: 1,
     priority: "P0",
@@ -169,7 +184,7 @@ const formValue = ref({
 })
 
 
-const formKRValue = ref([
+const formKRValue = ref<any>([
     {
         title: null,
         time: null,
@@ -179,11 +194,26 @@ const formKRValue = ref([
 
 ])
 
+//编辑
+watch(() => props.edit, (newValue) => {
+    if (newValue) {
+        formValue.value = utils.cloneJSON(props.editData)
+        formKRValue.value = utils.cloneJSON(props.editData.key_results)
+        if (formValue.value.project_id == 0) formValue.value.project_id = null
+        props.editData.key_results.map((item, index) => {
+            formKRValue.value[index].time = [Date.parse(item.start_at), Date.parse(item.end_at)]
+            formKRValue.value[index].participant = item.participant.split(",").map(Number)
+        })
+        formValue.value.time = [Date.parse(props.editData.start_at), Date.parse(props.editData.end_at)]
+    }
+}, { immediate: true })
+
 watch(() => formValue.value.type, (newValue) => {
     if (newValue) {
         formValue.value.type == 1 ? formValue.value.priority = 'P0' : formValue.value.priority = 'P2'
     }
 })
+
 
 const generalOptions = ref([
     { label: $t('全公司'), value: 1 },
@@ -243,10 +273,12 @@ const handleSubmit = () => {
     if (!formValue.value.ascription) return message.info($t("请选择归属"))
     if (!formValue.value.time) return message.info($t("请选择目标(O)的周期"))
 
+
     const keyResults = []
     for (let index = 0; index < formKRValue.value.length; index++) {
         if (!formKRValue.value[index].time) return message.info($t(`请选择KR${index + 1}周期`))
         keyResults.push({
+            id: formKRValue.value[index].id || 0,
             title: formKRValue.value[index].title,
             confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
             participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
@@ -255,6 +287,7 @@ const handleSubmit = () => {
         })
     }
     const upData = {
+        id: 0,
         title: formValue.value.title,
         type: formValue.value.type,
         priority: formValue.value.priority,
@@ -267,15 +300,28 @@ const handleSubmit = () => {
         key_results: keyResults,
     }
     loadIng.value = true
-    addOkr(upData)
-        .then(({ msg }) => {
-            message.success(msg)
-            emit('close')
-        })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIng.value = false
-        })
+    if (props.edit) {
+        upData.id = formValue.value.id
+        upDateOkr(upData)
+            .then(({ msg }) => {
+                message.success(msg)
+                emit('close')
+            })
+            .catch(ResultDialog)
+            .finally(() => {
+                loadIng.value = false
+            })
+    } else {
+        addOkr(upData)
+            .then(({ msg }) => {
+                message.success(msg)
+                emit('close')
+            })
+            .catch(ResultDialog)
+            .finally(() => {
+                loadIng.value = false
+            })
+    }
 
 }
 
@@ -284,23 +330,23 @@ const handleSubmit = () => {
 const loadUserSelects = () => {
     nextTick(() => {
         if (!window.Vues) return false;
-        document.querySelectorAll('UserSelects').forEach(e=>{
-            let item = formKRValue.value[ e.getAttribute('formkey') ];
+        document.querySelectorAll('UserSelects').forEach(e => {
+            let item = formKRValue.value[e.getAttribute('formkey')];
             let app = new window.Vues.Vue({
                 el: e,
                 store: window.Vues.store,
                 render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
-                        class:"okr-user-selects",
+                        class: "okr-user-selects",
                         props: {
                             value: item.participant || [],
                             title: $t('选择参与人'),
                             border: true,
                             avatarSize: 23,
                         },
-                        on:{
-                            "on-show-change":(show:any,values:any) => {
-                                if(!show){
+                        on: {
+                            "on-show-change": (show: any, values: any) => {
+                                if (!show) {
                                     item.participant = values;
                                 }
                             }
@@ -319,7 +365,7 @@ const handleClear = () => {
         title: "",
         type: 1,
         priority: "P0",
-        ascription: 1,
+        ascription: 2,
         visible_range: 1,
         time: null,
         align_objective: null,
@@ -362,7 +408,8 @@ const handleGoal = () => {
 // 关闭Drawer
 const closeDrawer = () => {
     handleClear()
-    userSelectApps.value.forEach(app=> app.$destroy() )
+    userSelectApps.value.forEach(app => app.$destroy())
+    emit('close')
 }
 
 // 显示
@@ -372,7 +419,7 @@ const showDrawer = () => {
 
 // 卸载
 window.addEventListener('apps-unmount', function () {
-    userSelectApps.value.forEach(app=> app.$destroy() )
+    userSelectApps.value.forEach(app => app.$destroy())
 })
 </script>
 <style lang="less" >
@@ -412,8 +459,7 @@ window.addEventListener('apps-unmount', function () {
     @apply bg-[#72A1F7];
 }
 
-.okr-user-selects{
+.okr-user-selects {
     @apply w-full bg-none border-none !important;
 }
-
 </style>

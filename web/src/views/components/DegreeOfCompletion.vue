@@ -91,13 +91,13 @@ const handleSubmit = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            emit('close')
+            emit('close',1)
             loadIng.value = false
         })
 }
 //关闭
 const handleClose = () => {
-    emit('close')
+    emit('close',2)
 }
 </script>
 <style lang="less" scoped>

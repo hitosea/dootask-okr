@@ -60,18 +60,20 @@
 
     <!-- OKR详情 -->
     <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark"></OkrDetails>
+        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple"></OkrDetails>
 
     <!-- 更新进度   -->
-    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId" :progress="degreeOfCompletionProgress"
-        :progress_status="degreeOfCompletionProgressStatus" @close="handleCloseDedree">
+    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId"
+        :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus"
+        @close="handleCloseDedree">
     </DegreeOfCompletion>
 
     <!-- 更新信心 -->
-    <Confidences v-model:show="confidenceShow" @close="() => { confidenceShow = false }"></Confidences>
+    <Confidences :id="confidencesId" :confidence="confidence" v-model:show="confidenceShow" @close="handleCloseConfidenes">
+    </Confidences>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" @close="() => { markShow = false }"></MarkVue>
+    <MarkVue v-model:show="markShow" :id="markId" :score="score" @close="handleCloseMarks"></MarkVue>
 
     <!-- 新增复盘 -->
     <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
@@ -101,9 +103,14 @@ const degreeOfCompletionId = ref(0)
 const degreeOfCompletionProgress = ref(0)
 const degreeOfCompletionProgressStatus = ref(0)
 
-
 const confidenceShow = ref(false)
+const confidencesId = ref(0)
+const confidence = ref(0)
+
 const markShow = ref(false)
+const markId = ref(0)
+const score = ref(0)
+
 const addMultipleShow = ref(false)
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
@@ -117,6 +124,8 @@ interface Props {
     list?: any,
 }
 defineProps<Props>()
+
+const emit = defineEmits(['upData','edit'])
 
 const handleTarget = (e, id) => {
     eidtId.value = id
@@ -132,25 +141,29 @@ const pStatus = (p) => {
     return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
 }
 
+//打开详情
 const handleOpenDetail = (id) => {
     eidtId.value = id
     okrDetailsShow.value = true
 }
 
-//打开评分
-const handleOpenSchedule = (id,progress, progress_status) => {
+//打开进度
+const handleOpenSchedule = (id, progress, progress_status) => {
     degreeOfCompletionId.value = id
     degreeOfCompletionProgress.value = progress
     degreeOfCompletionProgressStatus.value = progress_status
     degreeOfCompletionShow.value = true
 }
-//关闭评分
-const handleCloseDedree = () => {
+//关闭进度
+const handleCloseDedree = (type) => {
     degreeOfCompletionId.value = 0
     degreeOfCompletionProgress.value = 0
     degreeOfCompletionProgressStatus.value = 0
     degreeOfCompletionShow.value = false
-    RefOkrDetails.value.getDetail()
+    if (type == 1) {
+        RefOkrDetails.value.getDetail()
+        emit('upData')
+    }
 }
 
 const handleFollowOkr = (id) => {
@@ -184,11 +197,51 @@ const submitSelectAlignment = (e) => {
         })
 }
 
-const handleConfidence = () => {
+//打开信心
+const handleConfidence = (id, confidences) => {
+    confidencesId.value = id
+    confidence.value = confidences
     confidenceShow.value = true
 }
-const handleMark = () => {
+//关闭信心
+const handleCloseConfidenes = (type) => {
+    confidencesId.value = 0
+    confidence.value = 0
+    confidenceShow.value = false
+    if (type == 1) {
+        RefOkrDetails.value.getDetail()
+        emit('upData')
+    }
+}
+
+//打开评分
+const handleMark = (id, scores) => {
+    markId.value = id
+    score.value = scores
     markShow.value = true
+}
+//关闭评分
+const handleCloseMarks = (type) => {
+    markId.value = 0
+    score.value = 0
+    markShow.value = false
+    if (type == 1) {
+        RefOkrDetails.value.getDetail()
+        emit('upData')
+    }
+}
+
+//编辑
+const handleEdit = (data) => {
+    emit('edit',data)
+    okrDetailsShow.value = false
+}
+
+//添加复盘
+const handleAddMultiple = (id) => {
+    console.log(id);
+
+    addMultipleShow.value = true
 }
 
 const expiresFormat = (date) => {

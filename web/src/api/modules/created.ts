@@ -6,6 +6,10 @@ import * as Created from "../interface/created"
 export const addOkr = (params: Created.addOkr) => {
     return http.post("okr/create",params)
 }
+//更新OKR
+export const upDateOkr = (params: Created.addOkr) => {
+    return http.post("okr/update",params)
+}
 
 //获取能对齐的目标
 export const getAlignList = (data) => {

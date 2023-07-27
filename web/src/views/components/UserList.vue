@@ -18,6 +18,13 @@ const options = ref([])
 const page = ref(1)
 const loadIng = ref(false)
 
+const props = defineProps({
+    edit: {
+        type: Boolean,
+        default: false,
+    },
+})
+
 const renderLabel: SelectRenderLabel = (option) => {
     return h(
         'div',
@@ -119,6 +126,10 @@ const getItem = () => {
     })
 }
 
-
+watch(()=>props.edit,(newValue)=>{
+    if(newValue){
+        getItem()
+    }
+},{immediate:true} )
 </script>
 <style lang="less"></style>

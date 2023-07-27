@@ -10,6 +10,14 @@ const itemOptions = ref([])
 const page = ref(1)
 const loadIng = ref(false)
 
+const props = defineProps({
+    edit: {
+        type: Boolean,
+        default: false,
+    },
+})
+
+
 const openList = () => {
     getItem()
 }
@@ -31,5 +39,11 @@ const getItem = () => {
         loadIng.value = false
     })
 }
+
+watch(()=>props.edit,(newValue)=>{
+    if(newValue){
+        getItem()
+    }
+},{immediate:true} )
 </script>
 <style lang="less"></style>
