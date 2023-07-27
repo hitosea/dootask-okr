@@ -475,10 +475,9 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "信心指数 1-100",
+                        "description": "信心指数 0-100",
                         "name": "confidence",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "integer",
@@ -1341,6 +1340,46 @@ var doc = `{
                 }
             }
         },
+        "/okr/statistics/completes": {
+            "get": {
+                "description": "获取/未完成、已完成/已取消目标数量",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StatisticsAll"
+                ],
+                "summary": "获取/未完成、已完成/已取消目标数量",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/statistics/overall": {
+            "get": {
+                "description": "查询个人OKR整体完成度和评分",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取个人OKR整体完成度和与评分和",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/update": {
             "post": {
                 "description": "更新OKR",
@@ -1404,7 +1443,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "description": "进度 1-100",
+                        "description": "进度 0-100",
                         "name": "progress",
                         "in": "formData"
                     },
@@ -1779,7 +1818,7 @@ var doc = `{
             ],
             "properties": {
                 "confidence": {
-                    "description": "信心指数 1-100",
+                    "description": "信心指数 0-100",
                     "type": "integer"
                 },
                 "end_at": {
@@ -1811,7 +1850,7 @@ var doc = `{
             ],
             "properties": {
                 "confidence": {
-                    "description": "信心指数 1-100",
+                    "description": "信心指数 0-100",
                     "type": "integer"
                 },
                 "end_at": {

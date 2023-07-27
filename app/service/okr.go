@@ -235,8 +235,8 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		return nil, err
 	}
 
-	// 信心指数 范围1-100
-	if kr.Confidence < 1 || kr.Confidence > 100 {
+	// 信心指数 范围0-100
+	if kr.Confidence < 0 || kr.Confidence > 100 {
 		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 
@@ -273,8 +273,8 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 		return nil, err
 	}
 
-	// 信心指数 范围1-100
-	if kr.Confidence < 1 || kr.Confidence > 100 {
+	// 信心指数 范围0-100
+	if kr.Confidence < 0 || kr.Confidence > 100 {
 		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 

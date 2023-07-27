@@ -27,7 +27,7 @@ type OkrCreateReq struct {
 type OkrKeyResultBaseReq struct {
 	Title       string `json:"title" binding:"required"`    // 关键结果 （必填）
 	Participant string `json:"participant"`                 // 参与人,多个用逗号隔开
-	Confidence  int    `json:"confidence"`                  // 信心指数 1-100
+	Confidence  int    `json:"confidence"`                  // 信心指数 0-100
 	StartAt     string `json:"start_at" binding:"required"` // 开始时间 （必填）
 	EndAt       string `json:"end_at" binding:"required"`   // 结束时间 （必填）
 }
@@ -84,7 +84,7 @@ type OkrDepartmentListReq struct {
 // OKR更新进度和进度状态请求
 type OkrUpdateProgressReq struct {
 	Id       int `form:"id" binding:"required" json:"id"` // okr id
-	Progress int `form:"progress" json:"progress"`        // 进度 1-100
+	Progress int `form:"progress" json:"progress"`        // 进度 0-100
 	Status   int `form:"status" json:"status"`            // 进度状态 0-默认 1-正常 2-有风险 3-延期
 }
 
@@ -107,8 +107,8 @@ type OkrParticipantUpdateReq struct {
 
 // 更新信心指数请求
 type OkrConfidenceUpdateReq struct {
-	Id         int `form:"id" binding:"required" json:"id"`                 // okr id
-	Confidence int `form:"confidence" binding:"required" json:"confidence"` // 信心指数 1-100
+	Id         int `form:"id" binding:"required" json:"id"` // okr id
+	Confidence int `form:"confidence" json:"confidence"`    // 信心指数 0-100
 }
 
 // 添加复盘请求

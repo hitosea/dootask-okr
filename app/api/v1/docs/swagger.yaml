@@ -210,7 +210,7 @@ definitions:
   interfaces.OkrKeyResultCreateReq:
     properties:
       confidence:
-        description: 信心指数 1-100
+        description: 信心指数 0-100
         type: integer
       end_at:
         description: 结束时间 （必填）
@@ -232,7 +232,7 @@ definitions:
   interfaces.OkrKeyResultUpdateReq:
     properties:
       confidence:
-        description: 信心指数 1-100
+        description: 信心指数 0-100
         type: integer
       end_at:
         description: 结束时间 （必填）
@@ -856,10 +856,9 @@ paths:
       - application/json
       description: 更新信心指数
       parameters:
-      - description: 信心指数 1-100
+      - description: 信心指数 0-100
         in: formData
         name: confidence
-        required: true
         type: integer
       - description: okr id
         in: formData
@@ -1363,6 +1362,32 @@ paths:
       summary: OKR评分
       tags:
       - Okr
+  /okr/statistics/completes:
+    get:
+      consumes:
+      - application/json
+      description: 获取/未完成、已完成/已取消目标数量
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取/未完成、已完成/已取消目标数量
+      tags:
+      - StatisticsAll
+  /okr/statistics/overall:
+    get:
+      consumes:
+      - application/json
+      description: 查询个人OKR整体完成度和评分
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取个人OKR整体完成度和与评分和
+      tags:
+      - Okr
   /okr/update:
     post:
       consumes:
@@ -1399,7 +1424,7 @@ paths:
         name: id
         required: true
         type: integer
-      - description: 进度 1-100
+      - description: 进度 0-100
         in: formData
         name: progress
         type: integer
