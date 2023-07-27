@@ -21,9 +21,9 @@
                                 <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
                                 <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
                             </div>
-                            <div class="replay-item-head-right cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                            <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
                                 <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
-                                <i class="replay-item-head-icon replay-item-head-right taskfont">&#xe705;</i>
+                                <i class="replay-item-head-icon taskfont">&#xe705;</i>
                             </div>
                         </div>
                         <div class="flex">
