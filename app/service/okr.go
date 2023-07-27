@@ -426,8 +426,11 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 	obj.IsFollow = s.isFollow(user.Userid, obj.Id)                             // 是否被关注
 	obj.KrCount = len(krs)                                                     // kr总数量
 	obj.KrFinishCount = s.getFinishCount(krs)                                  // kr完成数量
-	obj.AlignCount = s.getAlignCount(obj.Id)                                   // 对齐目标数量
+	aliasIds := s.getAlignObjectiveIds(obj.Id)                                 // 对齐目标ids
+	obj.AlignObjective = aliasIds                                              // 对齐目标
+	obj.AlignCount = len(aliasIds)                                             // 对齐目标数量
 	obj.Alias = s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId) // 目标所属名称
+
 	return obj
 }
 
@@ -493,13 +496,13 @@ func (s *okrService) getFinishCount(krs []*model.Okr) int {
 	return count
 }
 
-// 对齐目标数量
-func (s *okrService) getAlignCount(objId int) int {
-	var count int64
-	if err := core.DB.Model(&model.OkrAlign{}).Where("okr_id = ?", objId).Count(&count).Error; err != nil {
-		return 0
+// 对齐目标ids
+func (s *okrService) getAlignObjectiveIds(objId int) []int {
+	var ids []int
+	if err := core.DB.Model(&model.OkrAlign{}).Where("okr_id = ?", objId).Pluck("align_okr_id", &ids).Error; err != nil {
+		return nil
 	}
-	return int(count)
+	return ids
 }
 
 // 获取参与的OKR列表
