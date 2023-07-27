@@ -229,5 +229,10 @@
     "向上对齐": "align up",
     "暂无OKR": "No OKRs yet",
     "创建OKR": "Create OKRs",
-    "暂无复盘": "No review yet"
+    "暂无复盘": "No review yet",
+    "选择参与人": "select participants",
+    "取消目标": "cancel target",
+    "重启目标": "restart target",
+    "已取消": "Cancelled",
+    "无": "none"
 }

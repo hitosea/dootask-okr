@@ -229,5 +229,10 @@
     "向上对齐": "aligner",
     "暂无OKR": "Pas encore d'OKR",
     "创建OKR": "Créer des OKR",
-    "暂无复盘": "Pas encore d'avis"
+    "暂无复盘": "Pas encore d'avis",
+    "选择参与人": "sélectionner les participants",
+    "取消目标": "annuler la cible",
+    "重启目标": "cible de redémarrage",
+    "已取消": "Annulé",
+    "无": "aucun"
 }

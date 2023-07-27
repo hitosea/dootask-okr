@@ -8,7 +8,6 @@
                 <OkrNotDatas v-else>
                     <template v-slot:content>
                         <div class="mt-5">
-                            <div class="mb-10">{{$t('暂无OKR')}}</div>     
                             <div>
                                 <n-button type="primary" ghost>
                                     <i class="taskfont mr-5">&#xe731;</i>

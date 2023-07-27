@@ -1,7 +1,7 @@
 <template>
     <n-data-table :columns="columns" :data="data" :single-line="false" />
-    <div class="replay">
-        <div class="replay-title">{{$t('回顾')}}</div>
+    <div class="replay-details">
+        <div class="replay-details-title">{{$t('回顾')}}</div>
         <div>{{ review }}</div>
     </div>
 </template>
@@ -244,15 +244,10 @@ const columns = ref<DataTableColumn[]>([
 </script>
 
 <style lang="less" scope>
-.replay {
+.replay-details {
     &-title {
-        @apply text-18 text-[#515A6E];
+        @apply mt-10 py-10 text-18 text-[#515A6E];
     }
-    &-head {
-        @apply mt-10 text-24 text-[#333333];
-    }
-    &-text {
-        @apply mt-10 leading-7 text-14 text-[#333333];
-    }
+ 
 }
 </style>

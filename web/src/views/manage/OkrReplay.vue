@@ -1,40 +1,34 @@
 <template>
     <n-scrollbar>
-        <OkrLoading v-if="loadIng"></OkrLoading>
-        <div v-else>
-            <OkrNotDatas v-if="items.length == 0">
-                <template v-slot:content>
-                    <p>{{$t('暂无复盘')}}</p>
-                </template>
-            </OkrNotDatas>
-            <div v-else trigger="hover">
-                <div class="replay mt-[1%]">
-                    <div
-                        v-for="(item, index) in items"
-                        :key="index"
-                        :class="{ 'replay-item mt-20': true, 'replay-item-active': item.isActive }"
-                        @click="openMultiple"
-                    >
-                        <div class="replay-item-head">
-                            <div>
-                                <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                                <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
-                                <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
-                            </div>
-                            <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
-                                <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
-                                <i class="replay-item-head-icon taskfont">&#xe705;</i>
-                            </div>
+        <div class="py-24">
+            <OkrLoading v-if="loadIng"></OkrLoading>
+            <OkrNotDatas v-else-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>
+            <div v-else class="replay">
+                <div
+                    v-for="(item, index) in items"
+                    :key="index"
+                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
+                    @click="openMultiple"
+                >
+                    <div class="replay-item-head">
+                        <div>
+                            <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
+                            <span class="text-[14px] m-[5px] text-[#333333]" ><b>{{ item.replayName }}</b></span>
+                            <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
                         </div>
-                        <div class="flex">
-                            <div class="replay-item-okr">
-                                <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
-                                <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
-                            </div>
+                        <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                            <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
+                            <i class="replay-item-head-icon taskfont">&#xe705;</i>
                         </div>
-                        <div class="replay-item-body" v-if="item.isActive">
-                            <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
+                    </div>
+                    <div class="flex">
+                        <div class="replay-item-okr">
+                            <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
+                            <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
                         </div>
+                    </div>
+                    <div class="replay-item-body" v-if="item.isActive">
+                        <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
                     </div>
                 </div>
             </div>
@@ -79,9 +73,9 @@ const getData = (type) => {
     if (last_page.value >= page.value || type == 'search') {
         // 获取复盘列表
         const data = {
-                page: page.value,
-                page_size: 10,
-            }
+            page: page.value,
+            page_size: 10,
+        }
         loadIng.value = true
         http.getReplayList(data).then(({ data }) => {
             if (type == 'search') {
@@ -117,13 +111,13 @@ onMounted(()=>{
 </script>
 <style lang="less" scope>
 .replay {
-    margin-top: 1%;
     width: 100%;
     height: 100%;
+    @apply flex flex-col gap-5;
     &-item {
         @apply bg-white rounded-lg h-auto p-24;
         &-head {
-            @apply flex items-center justify-between text-[#87d068] pl-[10px];
+            @apply flex items-center justify-between text-[#87d068];
             &-icon {
                 display: inline-block;
                 transform: rotate(0deg);
@@ -132,7 +126,7 @@ onMounted(()=>{
         }
         &-okr {
             background: #f4f5f7;
-            padding: 12px 16px;
+            padding: 5px 16px;
             @apply mt-10 h-auto flex rounded-lg items-center;
             &-icon {
                 @apply text-center text-10 leading-4 rounded-lg bg-[#87D068] text-[#87d068] mr-10;

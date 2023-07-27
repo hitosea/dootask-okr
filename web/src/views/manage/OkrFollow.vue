@@ -4,19 +4,7 @@
             <OkrLoading v-if="loadIng"></OkrLoading>
             <div v-else>
                 <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
-                <OkrNotDatas v-else>
-                    <template v-slot:content>
-                        <div class="mt-5">
-                            <div class="mb-10">{{$t('暂无OKR')}}</div>     
-                            <div>
-                                <n-button type="primary" ghost>
-                                    <i class="taskfont mr-5">&#xe731;</i>
-                                    {{ $t('创建OKR') }}
-                                </n-button>
-                            </div>    
-                        </div>
-                    </template>
-                </OkrNotDatas>
+                <OkrNotDatas v-else></OkrNotDatas>
             </div>
         </div>
     </n-scrollbar>
