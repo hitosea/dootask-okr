@@ -655,6 +655,26 @@ var doc = `{
                 }
             }
         },
+        "/okr/department/search": {
+            "get": {
+                "description": "获取部门列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取部门列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/detail": {
             "get": {
                 "description": "获取OKR详情",
@@ -1064,6 +1084,20 @@ var doc = `{
                     "Dootask"
                 ],
                 "summary": "获取项目列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1506,6 +1540,20 @@ var doc = `{
                     "Dootask"
                 ],
                 "summary": "获取用户列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1934,6 +1982,13 @@ var doc = `{
                 "align_count": {
                     "description": "对齐目标数量",
                     "type": "integer"
+                },
+                "align_objective": {
+                    "description": "对齐目标ids",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "ascription": {
                     "type": "integer"

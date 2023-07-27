@@ -45,8 +45,8 @@ func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, err
 }
 
 // 获取用户列表
-func (s dootaskService) GetUserList(token string) ([]interface{}, error) {
-	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/users/search?keys[key]=&keys[project_id]=0&keys[no_project_id]=0&keys[dialog_id]=0&keys[bot]=0&keys[disable]=0&take=50&token="+token)
+func (s dootaskService) GetUserList(token string, page, pageSize int) (*interfaces.Pagination, error) {
+	url := fmt.Sprintf("%s%s?page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/users/search", page, pageSize, token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err
@@ -56,17 +56,22 @@ func (s dootaskService) GetUserList(token string) ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	users, ok := data["list"].([]interface{})
+	count, ok := data["total"].(float64)
 	if !ok {
 		return nil, e.New(constant.ErrDooTaskDataFormat)
 	}
-	return users, nil
+
+	users, ok := data["data"].([]interface{})
+	if !ok {
+		return nil, e.New(constant.ErrDooTaskDataFormat)
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, int64(count), users), nil
 }
 
 // 获取项目列表
-func (s dootaskService) GetProjectList(token string) ([]interface{}, error) {
-	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/project/lists?type=team&keys[name]=&getuserid=yes&getstatistics=no&token="+token)
+func (s dootaskService) GetProjectList(token string, page, pageSize int) (*interfaces.Pagination, error) {
+	url := fmt.Sprintf("%s%s?page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/project/lists", page, pageSize, token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err
@@ -75,6 +80,11 @@ func (s dootaskService) GetProjectList(token string) ([]interface{}, error) {
 	data, err := s.UnmarshalAndCheckResponse(result)
 	if err != nil {
 		return nil, err
+	}
+
+	count, ok := data["total"].(float64)
+	if !ok {
+		return nil, e.New(constant.ErrDooTaskDataFormat)
 	}
 
 	list, ok := data["data"].([]interface{})
@@ -82,7 +92,7 @@ func (s dootaskService) GetProjectList(token string) ([]interface{}, error) {
 		return nil, e.New(constant.ErrDooTaskDataFormat)
 	}
 
-	return list, nil
+	return interfaces.PaginationRsp(page, pageSize, int64(count), list), nil
 }
 
 // 创建OKR评论会话

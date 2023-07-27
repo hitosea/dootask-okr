@@ -482,3 +482,19 @@ func (api *BaseApi) OkrAlignDetail() {
 
 	helper.Success(api.Context, result)
 }
+
+// @Tags Okr
+// @Summary 获取部门列表
+// @Description 获取部门列表
+// @Accept json
+// @Success 200 {object} interfaces.Response
+// @Router /okr/department/search [get]
+func (api *BaseApi) OkrDepartmentSearch() {
+	result, err := service.OkrService.GetDepartmentSearch()
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}

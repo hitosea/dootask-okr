@@ -1317,3 +1317,12 @@ func (s *okrService) GetOkrLogList(okrId, page, pageSize int) (*interfaces.Pagin
 
 	return interfaces.PaginationRsp(page, pageSize, count, logs), nil
 }
+
+// 获取部门列表
+func (s *okrService) GetDepartmentSearch() ([]*model.UserDepartment, error) {
+	var departments []*model.UserDepartment
+	if err := core.DB.Model(&model.UserDepartment{}).Order("created_at DESC").Find(&departments).Error; err != nil {
+		return nil, err
+	}
+	return departments, nil
+}

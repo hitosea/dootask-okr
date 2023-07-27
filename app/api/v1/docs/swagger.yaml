@@ -299,6 +299,11 @@ definitions:
       align_count:
         description: 对齐目标数量
         type: integer
+      align_objective:
+        description: 对齐目标ids
+        items:
+          type: integer
+        type: array
       ascription:
         type: integer
       canceled:
@@ -965,6 +970,19 @@ paths:
       summary: 获取部门OKR列表
       tags:
       - Okr
+  /okr/department/search:
+    get:
+      consumes:
+      - application/json
+      description: 获取部门列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取部门列表
+      tags:
+      - Okr
   /okr/detail:
     get:
       consumes:
@@ -1200,6 +1218,15 @@ paths:
       consumes:
       - application/json
       description: 获取项目列表
+      parameters:
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -1463,6 +1490,15 @@ paths:
       consumes:
       - application/json
       description: 获取用户列表
+      parameters:
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
