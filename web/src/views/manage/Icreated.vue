@@ -3,7 +3,8 @@
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
             <div>
-                <OkrItems :list="list" @upData="" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
+                <OkrLoading v-if="loadIng"></OkrLoading>
+                <OkrItems :list="list" @upData="" @edit="handleEdit" v-else-if="list.length != 0"></OkrItems>
                 <OkrNotDatas v-else>
                     <template v-slot:content>
                         <div class="mt-5">
@@ -17,7 +18,6 @@
                     </template>
                 </OkrNotDatas>
             </div>
-            <OkrLoading v-if="loadIng"></OkrLoading>
         </div>
     </n-scrollbar>
 </template>

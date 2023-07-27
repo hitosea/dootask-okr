@@ -1,7 +1,7 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" :mask-closable="false"
-        @after-leave="closeDrawer" :z-index="1">
-        <n-card class="w-[1240px] relative" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        @after-leave="closeDrawer" :z-index="13">
+        <n-card class="w-[90%] max-w-[1200px] relative" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div class="flex">
                 <div class="flex-1 flex flex-col pb-[64px]">
                     <div
