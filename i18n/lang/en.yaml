@@ -20,11 +20,13 @@ ErrOkrKrScoreNotComplete: KR score is not complete
 ErrOkrNoData: No data available
 ErrOkrNoPermissionScore: No permission rating is available
 ErrOkrOwnerNotScore: Person in charge not rated
+ErrOkrOwnerScored: Person in charge has scored
 ErrOkrPriorityInvalid: The target priority parameter is incorrect
 ErrOkrProgressInvalid: The progress range parameter is incorrect
 ErrOkrProgressNotEnough: Less than 100% progress
 ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrScoreInvalid: The scoring range parameter is incorrect
+ErrOkrSuperiorScored: Superior rated
 ErrOkrTypeInvalid: The target type parameter is incorrect
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
 ErrRequestTimeout: Request timeout

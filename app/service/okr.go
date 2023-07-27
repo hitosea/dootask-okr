@@ -929,6 +929,10 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		if obj.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrNoPermissionScore)
 		}
+		// 检查是否已评分
+		if obj.Score != 0 {
+			return nil, e.New(constant.ErrOkrOwnerScored)
+		}
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
 			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&obj).Error; err != nil {
@@ -950,6 +954,10 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		// 需要负责人评分才可以上级评分
 		if obj.Score == 0 {
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
+		}
+		// 检查是否已评分
+		if obj.SuperiorScore != 0 {
+			return nil, e.New(constant.ErrOkrSuperiorScored)
 		}
 		// 上级评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {

@@ -29,6 +29,8 @@ var (
 	ErrOkrProgressInvalid         = "ErrOkrProgressInvalid"         //进度范围参数错误
 	ErrOkrProgressStatusInvalid   = "ErrOkrProgressStatusInvalid"   //进度状态参数错误
 	ErrOkrScoreInvalid            = "ErrOkrScoreInvalid"            //评分范围参数错误
+	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //负责人已评分
+	ErrOkrSuperiorScored          = "ErrOkrSuperiorScored"          //上级已评分
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

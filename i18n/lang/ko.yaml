@@ -20,11 +20,13 @@ ErrOkrKrScoreNotComplete: kr 채점은 완료되지 않았다
 ErrOkrNoData: 불충분한 증거
 ErrOkrNoPermissionScore: 현재 점수를 매길 권한이 없습니다
 ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다
+ErrOkrOwnerScored: 책임자가 이미 채점하였다.
 ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 진행 범위 인자 오류
 ErrOkrProgressNotEnough: 진행이 100% 미만입니다.
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrScoreInvalid: 채점 범위 인자 오류
+ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
 ErrOkrTypeInvalid: 대상 형식 인자 오류
 ErrOkrVisibleRangeInvalid: 대상 표시 범위 인자 오류
 ErrRequestTimeout: 요청 시간 초과

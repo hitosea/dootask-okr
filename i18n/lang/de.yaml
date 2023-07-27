@@ -20,11 +20,13 @@ ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
 ErrOkrNoData: Eine vermutung nimmt man Von zeit zu zeit.
 ErrOkrNoPermissionScore: Nichtautorisierung durchführen
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.
+ErrOkrOwnerScored: Chefarzt hat sie bewertet.
 ErrOkrPriorityInvalid: Fehler der zielprioritäten
 ErrOkrProgressInvalid: Fehlerhafter zeitplan
 ErrOkrProgressNotEnough: Wir haben nicht 100%.
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrScoreInvalid: Fehlerwerte werte putiert
+ErrOkrSuperiorScored: An die vorgesetzten.
 ErrOkrTypeInvalid: Fehlerhafter zieltyp fehler
 ErrOkrVisibleRangeInvalid: Fehler im parameter des zieleintrags
 ErrRequestTimeout: Wir Bitten um mehr zeit.

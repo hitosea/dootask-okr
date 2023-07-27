@@ -20,11 +20,13 @@ ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Données non disponibles
 ErrOkrNoPermissionScore: Pas encore d’autorisation score
 ErrOkrOwnerNotScore: Responsable non évalué
+ErrOkrOwnerScored: Responsable a noté
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
 ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
 ErrOkrProgressNotEnough: Progrès insuffisants 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
+ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTypeInvalid: Type de cible paramètre erreur
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré
