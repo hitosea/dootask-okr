@@ -62,3 +62,17 @@ var AddTableOkrReplayHistoryComment = &gormigrate.Migration{
 		return tx.Migrator().AlterColumn(&model.OkrReplayHistory{}, "comment")
 	},
 }
+
+// 更改okr表 score和superior_score字段 AddTableOkrScore
+var AddTableOkrScore = &gormigrate.Migration{
+	ID: "2023071007-add-table-okr-score",
+	Migrate: func(tx *gorm.DB) error {
+		if err := tx.Migrator().AlterColumn(&model.Okr{}, "score"); err != nil {
+			return err
+		}
+		if err := tx.Migrator().AlterColumn(&model.Okr{}, "superior_score"); err != nil {
+			return err
+		}
+		return nil
+	},
+}

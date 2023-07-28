@@ -26,6 +26,7 @@ func Init() error {
 		migrations.AddTableOkrReplayHistory,
 		migrations.AddTableOkrLog,
 		migrations.AddTableOkrReplayHistoryComment,
+		migrations.AddTableOkrScore,
 	})
 
 	if err := m.Migrate(); err != nil {
