@@ -487,10 +487,13 @@ func (api *BaseApi) OkrAlignDetail() {
 // @Summary 获取部门列表
 // @Description 获取部门列表
 // @Accept json
-// @Success 200 {object} interfaces.Response{data=[]model.UserDepartment}
+// @Param request query interfaces.Pages true "request"
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.UserDepartment}}
 // @Router /okr/department/search [get]
 func (api *BaseApi) OkrDepartmentSearch() {
-	result, err := service.OkrService.GetDepartmentSearch()
+	var param = interfaces.Pages{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetDepartmentSearch(param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

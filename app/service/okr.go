@@ -1338,10 +1338,18 @@ func (s *okrService) GetOkrLogList(user *interfaces.UserInfoResp, okrId, page, p
 }
 
 // 获取部门列表
-func (s *okrService) GetDepartmentSearch() ([]*model.UserDepartment, error) {
+func (s *okrService) GetDepartmentSearch(page, pageSize int) (*interfaces.Pagination, error) {
 	var departments []*model.UserDepartment
-	if err := core.DB.Model(&model.UserDepartment{}).Order("created_at DESC").Find(&departments).Error; err != nil {
+	var count int64
+
+	if err := core.DB.Model(&model.UserDepartment{}).Count(&count).Error; err != nil {
 		return nil, err
 	}
-	return departments, nil
+
+	offset := (page - 1) * pageSize
+	if err := core.DB.Model(&model.UserDepartment{}).Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&departments).Error; err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, departments), nil
 }

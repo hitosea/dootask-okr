@@ -996,6 +996,15 @@ paths:
       consumes:
       - application/json
       description: 获取部门列表
+      parameters:
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       responses:
         "200":
           description: OK
@@ -1004,9 +1013,14 @@ paths:
             - $ref: '#/definitions/interfaces.Response'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/model.UserDepartment'
-                  type: array
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.UserDepartment'
+                        type: array
+                    type: object
               type: object
       summary: 获取部门列表
       tags:
