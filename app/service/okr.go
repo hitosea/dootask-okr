@@ -855,13 +855,13 @@ func (s *okrService) FollowObjective(userid, objectiveId int) (*model.OkrFollow,
 
 // 更新进度和进度状态
 func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, param interfaces.OkrUpdateProgressReq) (*model.Okr, error) {
-	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
+	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 评分后不允许修改进度
-	if obj.Score > -1 {
+	if kr.Score > -1 {
 		return nil, e.New(constant.ErrOkrScoredNotUpdateProgress)
 	}
 
@@ -869,29 +869,29 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果传值更新进度有值，则更新进度
 		if param.Progress != 0 {
-			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", obj.Title, obj.Progress, param.Progress)
-			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
+			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", kr.Title, kr.Progress, param.Progress)
+			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
-			obj.Progress = param.Progress
+			kr.Progress = param.Progress
 		}
 
 		// 如果传值更新状态有值，则更新状态
 		if param.Status != 0 {
-			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", obj.Title, model.ProgressStatusMap[obj.ProgressStatus], model.ProgressStatusMap[param.Status])
-			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
+			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", kr.Title, model.ProgressStatusMap[kr.ProgressStatus], model.ProgressStatusMap[param.Status])
+			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
-			obj.ProgressStatus = param.Status
+			kr.ProgressStatus = param.Status
 		}
 
 		// 更新目标
-		if err := tx.Save(obj).Error; err != nil {
+		if err := tx.Save(kr).Error; err != nil {
 			return err
 		}
 
 		// 检查所在目标的 KR 是否全部完成
-		objWithKrs, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
+		objWithKrs, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
 		if err != nil {
 			return err
 		}
@@ -899,17 +899,17 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 
 		allCompleted := true
 		sumProgress := 0
-		for _, kr := range krs {
+		for _, item := range krs {
 			// 更新 KR 进度值
-			if param.Id == kr.Id {
-				kr.Progress = param.Progress
+			if param.Id == item.Id {
+				item.Progress = param.Progress
 			}
 			// 进度全部完成 100%
-			if kr.Progress < 100 {
+			if item.Progress < 100 {
 				allCompleted = false
 				break
 			}
-			sumProgress += kr.Progress
+			sumProgress += item.Progress
 		}
 
 		// 未完成，则更新总目标进度值，kr 进度值相加/kr 数量
@@ -920,14 +920,14 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 
 		// 更新总目标的状态是否完成
 		if allCompleted {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Updates(map[string]interface{}{
+			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Updates(map[string]interface{}{
 				"Completed": 1,
 				"Progress":  progress,
 			}).Error; err != nil {
 				return err
 			}
 		} else {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", obj.ParentId).Update("progress", progress).Error; err != nil {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Update("progress", progress).Error; err != nil {
 				return err
 			}
 		}
@@ -939,40 +939,40 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		return nil, err
 	}
 
-	return obj, nil
+	return kr, nil
 }
 
 // 更新评分
 func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces.OkrScoreReq) (*model.Okr, error) {
-	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
+	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 	// 检查进度是否为100%
-	if obj.Progress < 100 {
+	if kr.Progress < 100 {
 		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
-	superior := s.IsObjectiveManager(obj, user)
+	superior := s.IsObjectiveManager(kr, user)
 	if !superior {
 		// 检查用户是否为目标负责人
-		if obj.Userid != user.Userid {
+		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrNoPermissionScore)
 		}
 		// 检查是否已评分
-		if obj.Score > -1 {
+		if kr.Score > -1 {
 			return nil, e.New(constant.ErrOkrOwnerScored)
 		}
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&obj).Error; err != nil {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&kr).Error; err != nil {
 				return err
 			}
 
 			// 新增动态日志
-			logContent := fmt.Sprintf("责任人打分: %s", obj.Title)
-			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
+			logContent := fmt.Sprintf("责任人打分: %s", kr.Title)
+			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
@@ -983,27 +983,27 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		}
 	} else {
 		// 需要负责人评分才可以上级评分
-		if obj.Score == -1 {
+		if kr.Score == -1 {
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
 		// 检查是否已评分
-		if obj.SuperiorScore > -1 {
+		if kr.SuperiorScore > -1 {
 			return nil, e.New(constant.ErrOkrSuperiorScored)
 		}
 		// 上级评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Scan(&obj).Error; err != nil {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Scan(&kr).Error; err != nil {
 				return err
 			}
 
 			// 新增动态日志
-			logContent := fmt.Sprintf("上级打分: %s", obj.Title)
-			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
+			logContent := fmt.Sprintf("上级打分: %s", kr.Title)
+			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
 			// 更新O评分
-			obj, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
+			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
 			if err != nil {
 				return err
 			}
@@ -1019,7 +1019,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		}
 	}
 
-	return obj, nil
+	return kr, nil
 }
 
 // 检查用户是否为目标上级
@@ -1058,53 +1058,53 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 
 // 取消/重启目标
 func (s *okrService) CancelObjective(okrId int) (*model.Okr, error) {
-	obj, err := s.GetObjectiveById(okrId)
+	kr, err := s.GetObjectiveById(okrId)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 更新取消状态
-	if obj.Canceled == 0 {
-		obj.Canceled = 1
-	} else if obj.Canceled == 1 {
-		obj.Canceled = 0
+	if kr.Canceled == 0 {
+		kr.Canceled = 1
+	} else if kr.Canceled == 1 {
+		kr.Canceled = 0
 	}
 
-	if err := core.DB.Save(obj).Error; err != nil {
+	if err := core.DB.Save(kr).Error; err != nil {
 		return nil, err
 	}
 
-	return obj, nil
+	return kr, nil
 }
 
 // 更新参与人
 func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq) (*model.Okr, error) {
-	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
+	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	obj.Participant = param.Participant
-	if err := core.DB.Save(obj).Error; err != nil {
+	kr.Participant = param.Participant
+	if err := core.DB.Save(kr).Error; err != nil {
 		return nil, err
 	}
 
-	return obj, nil
+	return kr, nil
 }
 
 // 更新信心指数
 func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) (*model.Okr, error) {
-	obj, err := s.GetObjectiveByIdIsKeyResult(param.Id)
+	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	obj.Confidence = param.Confidence
-	if err := core.DB.Save(obj).Error; err != nil {
+	kr.Confidence = param.Confidence
+	if err := core.DB.Save(kr).Error; err != nil {
 		return nil, err
 	}
 
-	return obj, nil
+	return kr, nil
 }
 
 // 创建 OKR 复盘记录
