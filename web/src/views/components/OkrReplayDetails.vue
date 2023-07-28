@@ -2,7 +2,7 @@
     <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
     <div class="replay-details">
         <div class="replay-details-title">{{$t('回顾')}}</div>
-        <div>{{ review }}</div>
+        <pre>{{ review }}</pre>
     </div>
 </template>
 
