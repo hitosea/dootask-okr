@@ -841,7 +841,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 	}
 
 	// 评分后不允许修改进度
-	if obj.Score != 0 {
+	if obj.Score > -1 {
 		return nil, e.New(constant.ErrOkrScoredNotUpdateProgress)
 	}
 
@@ -941,7 +941,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrNoPermissionScore)
 		}
 		// 检查是否已评分
-		if obj.Score != 0 {
+		if obj.Score > -1 {
 			return nil, e.New(constant.ErrOkrOwnerScored)
 		}
 		// 负责人评分
@@ -963,11 +963,11 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		}
 	} else {
 		// 需要负责人评分才可以上级评分
-		if obj.Score == 0 {
+		if obj.Score == -1 {
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
 		// 检查是否已评分
-		if obj.SuperiorScore != 0 {
+		if obj.SuperiorScore > -1 {
 			return nil, e.New(constant.ErrOkrSuperiorScored)
 		}
 		// 上级评分
