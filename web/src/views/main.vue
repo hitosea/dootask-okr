@@ -1,4 +1,9 @@
 <template>
+    <h1 class="text-center mt-[12%]">欢迎使用okr子系统</h1>
+    <div class="text-center mt-[20px]">
+        <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
+        <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
+    </div>
     <OkrDetails ref="RefOkrDetails" 
         :id="globalStore.okrDetail.id" 
         :show="okrDetailsShow" 
