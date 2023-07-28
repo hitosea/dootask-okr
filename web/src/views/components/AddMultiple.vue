@@ -10,12 +10,15 @@
                             style="--n-td-color-hover-modal:#ffffff" />
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
                         <div class="flex-auto shrink-0 min-h-[250px]">
-                            <TEditor v-model:value="editorContent" :readOnly="false"></TEditor>
+                            <TEditor v-if="props.multipleId == 0 " v-model:value="editorContent" :readOnly="false"></TEditor>
+                            <div v-else v-html="editorContent">
+
+                            </div>
                         </div>
                     </div>
                 </n-scrollbar>
                 <div class="button-box">
-                    <n-button :loading="loadIng" type="primary" @click="handleSubmit">
+                    <n-button  v-if="props.multipleId == 0 " :loading="loadIng" type="primary" @click="handleSubmit">
                         {{ $t('提交') }}
                     </n-button>
                 </div>
@@ -162,15 +165,13 @@ watch(() => props.data, (newValue) => {
 
 //查看详情
 watch(() => props.multipleId, (newValue) => {
-    console.log(newValue);
     if (newValue) {
         const upData = {
             id: newValue,
         }
         loadIng.value = true
         replayDetail(upData)
-            .then(({ data }) => {
-                console.log(data)
+            .then(({ data  }) => {
                 tableData.value.push({
                     O: data.okr_title,
                     lenght: data.kr_history.length,

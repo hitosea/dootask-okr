@@ -17,7 +17,7 @@
                                             size="14" :component="CheckmarkSharp" />
                                     </div>
                                 </template>
-                                <span class="cursor-pointer" @click="() => { console.log(123123) }">
+                                <span class="cursor-pointer" @click="handleCancel">
                                     {{ detialData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                                 </span>
                             </n-popover>
@@ -139,10 +139,10 @@
                             class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
 
                     <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
-                    <div v-if="loadIng"
+                    <!-- <div v-if="loadIng"
                         class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
                         <n-spin size="small" />
-                    </div>
+                    </div> -->
                 </div>
 
                 <div
@@ -207,7 +207,7 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail, okrFollow, getLogList, getReplayList } from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList ,okrCancel} from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
@@ -226,7 +226,7 @@ const logList = ref<any>([])
 const replayListPage = ref(1)
 const replayList = ref([])
 
-const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple'])
+const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple','upData'])
 
 const props = defineProps({
     show: {
@@ -255,7 +255,7 @@ const getDetail = (type) => {
     })
     .catch(ResultDialog)
     .finally(() => {
-        if(type=='first') loadIng.value = false
+        // if(type=='first') loadIng.value = false
     })
 }
 
@@ -267,6 +267,8 @@ const handleFollowOkr = (id) => {
     okrFollow(upData)
         .then(({ msg }) => {
             message.success(msg)
+            emit('upData',id)
+            getDetail('')
         })
         .catch(ResultDialog)
         .finally(() => {
@@ -298,7 +300,6 @@ const handleGetLogList = () => {
     loadIngR.value = true
     getLogList(upData)
         .then(({ data }) => {
-            console.log(data);
             data.data.map(item => {
                 logList.value.push(item)
             })
@@ -317,7 +318,6 @@ const handleGetReplayList = () => {
     loadIngR.value = true
     getReplayList(upData)
         .then(({ data }) => {
-            console.log(data);
             data.data.map(item => {
                 replayList.value.push(item)
             })
@@ -356,6 +356,25 @@ const handleView = (id) => {
 const closeModal = () => {
     emit('close')
 }
+
+const handleCancel = () => {
+
+    const upData = {
+        id: detialData.value.id,
+    }
+    loadIng.value = true
+    okrCancel(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+            emit('upData',detialData.value.id)
+            getDetail('')
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+
 
 // 加载聊天组件
 const loadDialogWrappers = () => {

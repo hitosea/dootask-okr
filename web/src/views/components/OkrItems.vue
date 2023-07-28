@@ -1,15 +1,16 @@
 <template >
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
-            <n-progress style="width: 52px;" color="var(--primary-color)" indicator-text-color="var(--primary-color)"
+            <n-progress :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
-                <p class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
+                <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
+                <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
             </n-progress>
-            <div class="okr-list">
+            <div class="okr-list" :class="item.progress == 100 ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
                         <span class="scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <h3>{{ item.title }}</h3>
+                        <h3 :class="item.progress == 100 ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
                         <i class="taskfont okr-title-star" v-if="item.is_follow"
@@ -60,7 +61,7 @@
 
     <!-- OKR详情 -->
     <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple" @checkMultiple="handleCheckMultiple"></OkrDetails>
+        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple" @checkMultiple="handleCheckMultiple" @upData="(id)=>{emit('upData',id)}"></OkrDetails>
 
     <!-- 更新进度   -->
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId"
@@ -167,7 +168,7 @@ const handleCloseDedree = (type) => {
         RefOkrDetails.value.getDetail()
         props.list.map((item,index)=>{
             item.key_results.map(CItem=>{
-                if (CItem.id == degreeOfCompletionId.value) { 
+                if (CItem.id == degreeOfCompletionId.value) {
                     emit('upData',props.list[index].id)
                 }
             })
@@ -253,8 +254,7 @@ const handleEdit = (data) => {
 
 //添加复盘
 const handleAddMultiple = (data) => {
-    console.log(data);
-    
+
     okrDetailsShow.value = false
     addMultipleData.value = data
     addMultipleShow.value = true
@@ -262,7 +262,6 @@ const handleAddMultiple = (data) => {
 
 //查看复盘
 const handleCheckMultiple = (id) => {
-    console.log(id);
     okrDetailsShow.value = false
     multipleId.value = id
     addMultipleShow.value = true
@@ -290,7 +289,7 @@ onMounted(() => {
 })
 
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .okr-item-main {
     @apply flex flex-col gap-6;
 
@@ -378,4 +377,5 @@ onMounted(() => {
         }
     }
 }
+
 </style>

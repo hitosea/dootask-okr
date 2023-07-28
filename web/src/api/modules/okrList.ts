@@ -1,5 +1,5 @@
 import http from "../index"
-import { PageReq } from "../interface/base"
+import { PageReq ,replayData} from "../interface/base"
 
 
 export const getMyList = (data) => {
@@ -62,5 +62,10 @@ export const replayCreate = (data) => {
 }
 //复盘详情
 export const replayDetail = (data) => {
-    return http.post<PageReq>("okr/replay/detail",data)
+    return http.post<replayData>("okr/replay/detail",data)
+}
+
+//取消重启目标
+export const okrCancel = (data) => {
+    return http.get<PageReq>("okr/cancel",data)
 }

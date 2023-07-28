@@ -36,3 +36,10 @@ export interface Page {
 
     total: number
 }
+//
+export interface replayData {
+    okr_title?:any
+    kr_history?:any
+    okr_progress?:any
+    review?:any
+}
