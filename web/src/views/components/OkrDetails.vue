@@ -163,8 +163,8 @@
                     <div class="flex-auto relative">
                         <div class="absolute top-[24px] bottom-0 left-0 right-0">
                             <div class="text-center" v-show="navActive == 0">
+                                <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin>
                                 <DialogWrappers />
-                                <n-spin size="small" />
                             </div>
                             <n-scrollbar v-if="navActive == 1">
                                 <div class="flex text-start mb-[24px]" v-for="item in logList">
@@ -249,7 +249,7 @@ const getDetail = (type) => {
     const upData = {
         id: props.id,
     }
-    if(type=='first') loadIng.value = true
+    // if(type=='first') loadIng.value = true
     getOkrDetail(upData).then(({ data }) => {
         detialData.value = data
     })
