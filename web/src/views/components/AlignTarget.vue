@@ -111,7 +111,7 @@ watch(() => props.value, (newValue) => {
 
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .align-target {
 
     @apply flex flex-col gap-6;

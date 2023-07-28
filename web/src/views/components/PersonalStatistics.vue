@@ -181,7 +181,7 @@ nextTick(() => {
 
 
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .personal-statistics {
     @apply flex gap-6;
 

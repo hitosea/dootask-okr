@@ -48,8 +48,6 @@ watch(themeName,(newVal,oldVal)=>{
 },{immediate:true})
 
 </script>
-<style lang="less">
-.child-view {
-    @apply absolute w-full bottom-0 top-0 right-0 left-0 min-h-full;
-}
+<style lang="less" scoped>
+
 </style>

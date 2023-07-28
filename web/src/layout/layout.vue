@@ -47,12 +47,10 @@ const otherEvents = () => {
 
 otherEvents()
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .root-layout {
     @apply absolute w-full bottom-0 top-0 right-0 left-0 min-h-full;
 
-    .child-view {
-        @apply absolute w-full bottom-0 top-0 right-0 left-0 min-h-full;
-    }
+
 }
 </style>

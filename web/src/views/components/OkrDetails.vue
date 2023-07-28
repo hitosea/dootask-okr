@@ -45,100 +45,104 @@
                                 @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
                         </div>
                     </div>
-                    <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1">{{ detialData.title }}</h3>
+
+                    <n-spin :show="loadIng">
+                        <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1">{{ detialData.title }}</h3>
 
 
-                    <div class="mt-24 flex flex-col gap-4">
-                        <div class="flex items-center">
-                            <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
-                            </p>
-                            <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{ detialData.alias[0] }}</p>
-                        </div>
-
-
-                        <div class="flex items-center">
-                            <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
-                            </p>
-                            <p class="flex-1 text-text-li text-14">{{ utils.GoDate(detialData.start_at || 0) }} ~
-                                {{ utils.GoDate(detialData.end_at || 0) }}</p>
-                        </div>
-
-                        <div class="flex items-center">
-                            <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
-                            </p>
-                            <span class="span" :class="pStatus(detialData.priority)">{{ detialData.priority }}</span>
-                        </div>
-
-                    </div>
-
-                    <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
-
-                    <div class="flex flex-col mt-20 gap-6">
-                        <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
+                        <div class="mt-24 flex flex-col gap-4">
                             <div class="flex items-center">
-                                <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
-                                <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
+                                <p class="flex items-center w-[115px]">
+                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
+                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
+                                </p>
+                                <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{ detialData.alias[0] }}</p>
                             </div>
-                            <div class="flex items-center justify-between mt-8">
-                                <div class="flex items-center">
-                                    <div class="flex items-center gap-2">
-                                        <n-avatar round :size="20"
-                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                        <n-avatar round :size="20"
-                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                    </div>
-                                    <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-14">{{ utils.GoDate(item.start_at || 0) }} ~
-                                        {{ utils.GoDate(item.end_at || 0) }}</p>
-                                </div>
-                                <div class="flex items-center gap-6">
-                                    <div class="flex items-center cursor-pointer"
-                                        @click="handleSchedule(item.id, item.progress, item.progress_status)">
-                                        <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
-                                            :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                            color="var(--primary-color)" status="success" :percentage="item.progress" />
-                                        <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
-                                    </div>
 
-                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
-                                        @click="handleConfidence(item.id, item.confidence)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
-                                        <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
-                                    </div>
-                                    <div v-else class="flex items-center cursor-pointer"
-                                        @click="handleConfidence(item.id, item.confidence)">
-                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
-                                        <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
-                                    </div>
 
-                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
-                                        @click="handleMark(item.id, item.score)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
-                                        <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
-                                    </div>
-                                    <div v-else class="flex items-center cursor-pointer">
-                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
-                                        <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
-                                    </div>
-
-                                </div>
+                            <div class="flex items-center">
+                                <p class="flex items-center w-[115px]">
+                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
+                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
+                                </p>
+                                <p class="flex-1 text-text-li text-14">{{ utils.GoDate(detialData.start_at || 0) }} ~
+                                    {{ utils.GoDate(detialData.end_at || 0) }}</p>
                             </div>
+
+                            <div class="flex items-center">
+                                <p class="flex items-center w-[115px]">
+                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
+                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
+                                </p>
+                                <span class="span" :class="pStatus(detialData.priority)">{{ detialData.priority }}</span>
+                            </div>
+
                         </div>
 
-                    </div>
+                        <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
 
-                    <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
+                        <div class="flex flex-col mt-20 gap-6">
+                            <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
+                                <div class="flex items-center">
+                                    <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
+                                    <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
+                                </div>
+                                <div class="flex items-center justify-between mt-8">
+                                    <div class="flex items-center">
+                                        <div class="flex items-center gap-2">
+                                            <div v-if="showUserSelect">
+                                                        <UserSelects :formkey="index" />
+                                                    </div>
+                                            <n-avatar v-if="!showUserSelect" round :size="20"
+                                                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                        </div>
+                                        <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
+                                        <p class="flex-1 text-text-li text-14">{{ utils.GoDate(item.start_at || 0) }} ~
+                                            {{ utils.GoDate(item.end_at || 0) }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-6">
+                                        <div class="flex items-center cursor-pointer"
+                                            @click="handleSchedule(item.id, item.progress, item.progress_status)">
+                                            <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                                :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                                                color="var(--primary-color)" status="success" :percentage="item.progress" />
+                                            <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+                                        </div>
 
-                    <h4 class="text-text-li text-16 font-medium mb-12">{{ $t('对齐目标') }} <i
-                            class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
+                                        <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
+                                            @click="handleConfidence(item.id, item.confidence)">
+                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                            <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
+                                        </div>
+                                        <div v-else class="flex items-center cursor-pointer"
+                                            @click="handleConfidence(item.id, item.confidence)">
+                                            <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                            <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
+                                        </div>
 
-                    <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
+                                        <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
+                                            @click="handleMark(item.id, item.score)">
+                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                            <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
+                                        </div>
+                                        <div v-else class="flex items-center cursor-pointer">
+                                            <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                            <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
+
+                        <h4 class="text-text-li text-16 font-medium mb-12">{{ $t('对齐目标') }} <i
+                                class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
+
+                        <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
+                    </n-spin>
                     <!-- <div v-if="loadIng"
                         class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
                         <n-spin size="small" />
@@ -149,7 +153,7 @@
                     class="w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
                     <div
                         class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] h-[28px]">
-                        <ul v-if="!loadIng" class="flex items-center gap-8">
+                        <ul class="flex items-center gap-8">
                             <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
                             </li>
                             <li class="li-nav" :class="navActive == 1 ? 'active' : ''" @click="handleNav(1)">{{ $t('动态') }}
@@ -157,7 +161,6 @@
                             <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                             </li>
                         </ul>
-                        <ul v-else></ul>
                         <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="closeModal">&#xe6e5;</i>
                     </div>
                     <div class="flex-auto relative">
@@ -213,6 +216,7 @@ import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
 import { useMessage } from "naive-ui"
 
+const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
 const loadIng = ref(false)
@@ -225,6 +229,7 @@ const logList = ref<any>([])
 
 const replayListPage = ref(1)
 const replayList = ref([])
+const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
 const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple','upData'])
 
@@ -241,6 +246,7 @@ const props = defineProps({
 
 watch(() => detialData.value.dialog_id, (newValue) => {
     if (newValue) {
+        loadUserSelects();
         loadDialogWrappers()
     }
 })
@@ -249,13 +255,13 @@ const getDetail = (type) => {
     const upData = {
         id: props.id,
     }
-    // if(type=='first') loadIng.value = true
+    if(type=='first') loadIng.value = true
     getOkrDetail(upData).then(({ data }) => {
         detialData.value = data
     })
     .catch(ResultDialog)
     .finally(() => {
-        // if(type=='first') loadIng.value = false
+        if(type=='first') loadIng.value = false
     })
 }
 
@@ -392,16 +398,55 @@ const loadDialogWrappers = () => {
                 }, [h("div", { slot: "head" })])
             }
         });
-        window.addEventListener('apps-unmount', function () {
-            dialogWrappersApp.value.$destroy()
+    })
+}
+
+// 加载选择用户组件
+const loadUserSelects = () => {
+    nextTick(() => {
+        if (!window.Vues) return false;
+        document.querySelectorAll('UserSelects').forEach(e => {
+            let item = detialData.value.key_results[e.getAttribute('formkey')];
+            let app = new window.Vues.Vue({
+                el: e,
+                store: window.Vues.store,
+                render: (h: any) => {
+                    console.log(item.participant);
+
+                    return h(window.Vues?.components?.UserSelect, {
+                        class: "okr-user-selects",
+                        props: {
+                            value:  item.participant,
+                            title: $t('选择参与人'),
+                            border: true,
+                            avatarSize: 20,
+                        },
+                        on: {
+                            "on-show-change": (show: any, values: any) => {
+                                if (!show) {
+                                    item.participant = values;
+                                }
+                            }
+                        }
+                    })
+                },
+            });
+            userSelectApps.value.push(app)
         })
     })
 }
+
+// 卸载
+window.addEventListener('apps-unmount', function () {
+    dialogWrappersApp.value && dialogWrappersApp.value.$destroy()
+    userSelectApps.value.forEach(app => app.$destroy())
+})
 
 // 显示
 const showDrawer = () => {
     getDetail('first')
     if(detialData.value.dialog_id>0){
+        loadUserSelects();
         loadDialogWrappers()
     }
 }
@@ -410,7 +455,8 @@ const showDrawer = () => {
 const closeDrawer = () => {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
     navActive.value = 0
-    detialData.value.dialog_id = 0;
+    detialData.value = {};
+    userSelectApps.value.forEach(app => app.$destroy())
 }
 
 const pStatus = (p) => {
@@ -421,7 +467,7 @@ defineExpose({
     getDetail
 })
 </script>
-<style lang="less" >
+<style lang="less" scoped>
 .icon-title {
     @apply text-16 cursor-pointer;
 }

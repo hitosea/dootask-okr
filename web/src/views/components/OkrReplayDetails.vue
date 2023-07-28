@@ -32,7 +32,7 @@ const loadTable = (krReplay)=> {
 
 nextTick(()=>{
     loadTable(props.okrReplayList)
-    
+
 })
 
 const data = ref([])
@@ -237,11 +237,11 @@ const columns = ref<DataTableColumn[]>([
 ])
 </script>
 
-<style lang="less" scope>
+<style lang="less" scoped>
 .replay-details {
     &-title {
         @apply mt-10 py-10 text-18 text-[#515A6E];
     }
- 
+
 }
 </style>

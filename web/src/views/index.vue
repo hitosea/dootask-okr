@@ -54,7 +54,7 @@ import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
-import OkrDepartment from './manage/OkrDepartment.vue'; 
+import OkrDepartment from './manage/OkrDepartment.vue';
 
 
 const addShow = ref(false)
@@ -90,7 +90,7 @@ const handleClose = () => {
 
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .page-okr {
     @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col p-24 bg-page-bg;
 
@@ -119,7 +119,7 @@ const handleClose = () => {
                 .search-button-span{
                     @apply text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
                 }
-                .n-input{
+                :deep(.n-input){
                     @apply flex-1 bg-transparent border-0;
                     .n-input__border,.n-input__state-border,.n-input__border:focus,.n-input__state-border:focus{
                         @apply  border-0 shadow-none;
@@ -138,7 +138,7 @@ const handleClose = () => {
     .okr-tabs {
         @apply flex-1 relative;
 
-        .n-tabs {
+        :deep(.n-tabs) {
             @apply absolute left-0 right-0 top-0 bottom-0;
 
             .n-tabs-pane-wrapper {

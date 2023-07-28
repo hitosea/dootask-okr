@@ -425,8 +425,8 @@ window.addEventListener('apps-unmount', function () {
     userSelectApps.value.forEach(app => app.$destroy())
 })
 </script>
-<style lang="less" >
-.n-drawer-body-content-wrapper {
+<style lang="less" scoped>
+:deep(.n-drawer-body-content-wrapper) {
     @apply relative;
 }
 
@@ -438,7 +438,7 @@ window.addEventListener('apps-unmount', function () {
     @apply flex gap-2 mt-32 flex-initial;
 }
 
-.n-drawer-header__close {
+:deep(.n-drawer-header__close) {
     @apply absolute -left-36;
 
     i {
