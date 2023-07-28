@@ -18,13 +18,18 @@ type Pagination struct {
 
 // 分页数据返回
 func PaginationRsp(page, pageSize int, count int64, data interface{}) *Pagination {
-	return &Pagination{
+	p := &Pagination{
 		Pages: &Pages{
 			Page:     page,
 			PageSize: pageSize,
 		},
-		Count:    count,
-		Data:     data,
-		LastPage: int(math.Ceil(float64(count) / float64(pageSize))),
+		Count: count,
+		Data:  data,
 	}
+	if count > 0 && pageSize > 0 {
+		p.LastPage = int(math.Ceil(float64(count) / float64(pageSize)))
+	} else {
+		p.LastPage = 0
+	}
+	return p
 }

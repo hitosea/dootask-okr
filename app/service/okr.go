@@ -635,7 +635,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
 	if departmentId != 0 {
-		db = db.Where("department_id = ?", departmentId)
+		db = db.Where("FIND_IN_SET(?, department_id) > 0", departmentId)
 	}
 
 	// 部门负责人可以通过人员筛选
