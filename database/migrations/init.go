@@ -54,3 +54,11 @@ var AddTableOkrLog = &gormigrate.Migration{
 		return tx.AutoMigrate(&model.OkrLog{})
 	},
 }
+
+// 更改复盘历史表 comment 字段 AddTableOkrReplayHistoryComment
+var AddTableOkrReplayHistoryComment = &gormigrate.Migration{
+	ID: "2023071006-add-table-okr-replay-history-comment",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.Migrator().AlterColumn(&model.OkrReplayHistory{}, "comment")
+	},
+}
