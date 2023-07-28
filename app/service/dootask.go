@@ -28,7 +28,7 @@ func newDootaskService() *dootaskService {
 
 // 获取用户的信息
 func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, error) {
-	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/users/info?token="+token)
+	url := fmt.Sprintf("%s%s?token=%s", config.DooTaskUrl, "/api/users/info", token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err
@@ -42,6 +42,20 @@ func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, err
 		return nil, err
 	}
 	return userInfo, nil
+}
+
+// 获取指定会员基础信息
+func (s dootaskService) GetUserBasic(token string, userid int) (interface{}, error) {
+	url := fmt.Sprintf("%s%s?userid=%d&token=%s", config.DooTaskUrl, "/api/users/basic", userid, token)
+	result, err := s.client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	info, err := s.UnmarshalAndCheckResponse(result)
+	if err != nil {
+		return nil, err
+	}
+	return info, nil
 }
 
 // 获取用户列表

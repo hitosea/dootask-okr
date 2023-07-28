@@ -1304,7 +1304,7 @@ func (s *okrService) InsertOkrLogTx(tx *gorm.DB, okrId, userId int, operation, c
 }
 
 // 获取动态列表
-func (s *okrService) GetOkrLogList(okrId, page, pageSize int) (*interfaces.Pagination, error) {
+func (s *okrService) GetOkrLogList(user *interfaces.UserInfoResp, okrId, page, pageSize int) (*interfaces.Pagination, error) {
 	count, err := s.okrLogRepo.CountByOkrId(okrId)
 	if err != nil {
 		return nil, err
@@ -1313,6 +1313,25 @@ func (s *okrService) GetOkrLogList(okrId, page, pageSize int) (*interfaces.Pagin
 	logs, err := s.okrLogRepo.FindByOkrId(okrId, page, pageSize)
 	if err != nil {
 		return nil, err
+	}
+
+	// 获取用户头像、昵称
+	for _, log := range logs {
+		userInfo, err := DootaskService.GetUserBasic(user.Token, log.Userid)
+		if err != nil {
+			return nil, err
+		}
+		userInfoMap, _ := userInfo.(map[string]interface{})
+		userList, _ := userInfoMap["list"].([]interface{})
+		if len(userList) > 0 {
+			user := userList[0].(map[string]interface{})
+			if userImg, ok := user["userimg"].(string); ok {
+				log.UserAvatar = userImg
+			}
+			if nickname, ok := user["nickname"].(string); ok {
+				log.UserNickname = nickname
+			}
+		}
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, logs), nil

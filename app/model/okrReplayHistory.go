@@ -11,7 +11,7 @@ type OkrReplayHistory struct {
 	Progress   int       `gorm:"default:0;comment:'完成度'" json:"progress"`
 	Confidence int       `gorm:"default:0;comment:'信心指数'" json:"confidence"`
 	Score      float64   `gorm:"default:0;comment:'总评分'" json:"score"`
-	Comment    string    `gorm:"type:varchar(255);comment:'复盘评价'" json:"comment"`
+	Comment    int       `gorm:"default:0;comment:'复盘评价'" json:"comment"`
 	CreatedAt  time.Time `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
 }

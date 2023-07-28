@@ -5,6 +5,7 @@ import (
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/service"
 	"dootask-okr/app/utils/verify"
+	"strconv"
 )
 
 // @Tags Dootask
@@ -15,6 +16,27 @@ import (
 // @Router /okr/user/info [get]
 func (api *BaseApi) OkrUserInfo() {
 	result, err := service.DootaskService.GetUserInfo(api.Userinfo.Token)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Dootask
+// @Summary 获取指定会员基础信息
+// @Description 获取指定会员基础信息
+// @Accept json
+// @Param userid query number true "用户id"
+// @Success 200 {object} interfaces.Response
+// @Router /okr/user/basic [get]
+func (api *BaseApi) OkrUserBasic() {
+	userid, err := strconv.Atoi(api.Context.Query("userid"))
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	result, err := service.DootaskService.GetUserBasic(api.Userinfo.Token, userid)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

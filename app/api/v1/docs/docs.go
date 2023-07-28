@@ -1525,6 +1525,35 @@ var doc = `{
                 }
             }
         },
+        "/okr/user/basic": {
+            "get": {
+                "description": "获取指定会员基础信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dootask"
+                ],
+                "summary": "获取指定会员基础信息",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/user/info": {
             "get": {
                 "description": "获取用户信息",
@@ -1956,8 +1985,8 @@ var doc = `{
             ],
             "properties": {
                 "comment": {
-                    "description": "评价",
-                    "type": "string"
+                    "description": "评价 1-做得好的 2-可提升的",
+                    "type": "integer"
                 },
                 "okr_id": {
                     "description": "okr id",
@@ -2333,6 +2362,12 @@ var doc = `{
                 "operation": {
                     "type": "string"
                 },
+                "user_avatar": {
+                    "type": "string"
+                },
+                "user_nickname": {
+                    "type": "string"
+                },
                 "userid": {
                     "type": "integer"
                 }
@@ -2395,7 +2430,7 @@ var doc = `{
             "type": "object",
             "properties": {
                 "comment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "confidence": {
                     "type": "integer"

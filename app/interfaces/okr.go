@@ -121,8 +121,8 @@ type OkrReplayCreateReq struct {
 
 // 复盘评价
 type OkrReplayComment struct {
-	OkrId   int    `json:"okr_id" binding:"required"`  // okr id
-	Comment string `json:"comment" binding:"required"` // 评价
+	OkrId   int `json:"okr_id" binding:"required"`  // okr id
+	Comment int `json:"comment" binding:"required"` // 评价 1-做得好的 2-可提升的
 }
 
 // 取消对齐目标请求

@@ -262,8 +262,8 @@ definitions:
   interfaces.OkrReplayComment:
     properties:
       comment:
-        description: 评价
-        type: string
+        description: 评价 1-做得好的 2-可提升的
+        type: integer
       okr_id:
         description: okr id
         type: integer
@@ -528,6 +528,10 @@ definitions:
         type: integer
       operation:
         type: string
+      user_avatar:
+        type: string
+      user_nickname:
+        type: string
       userid:
         type: integer
     type: object
@@ -569,7 +573,7 @@ definitions:
   model.OkrReplayHistory:
     properties:
       comment:
-        type: string
+        type: integer
       confidence:
         type: integer
       created_at:
@@ -1496,6 +1500,25 @@ paths:
       summary: 更新进度和进度状态
       tags:
       - Okr
+  /okr/user/basic:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定会员基础信息
+      parameters:
+      - description: 用户id
+        in: query
+        name: userid
+        required: true
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 获取指定会员基础信息
+      tags:
+      - Dootask
   /okr/user/info:
     get:
       consumes:

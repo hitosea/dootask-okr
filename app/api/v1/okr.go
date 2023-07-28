@@ -455,7 +455,7 @@ func (api *BaseApi) OkrAlignUpdate() {
 func (api *BaseApi) OkrLogList() {
 	var param = interfaces.OkrIdListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetOkrLogList(param.Id, param.Page, param.PageSize)
+	result, err := service.OkrService.GetOkrLogList(api.Userinfo, param.Id, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
