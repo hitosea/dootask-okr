@@ -234,5 +234,18 @@
     "取消目标": "cancel target",
     "重启目标": "restart target",
     "已取消": "Cancelled",
-    "无": "none"
+    "无": "none",
+    "请选择评价": "Please select a comment",
+    "做得好的": "well done",
+    "可提升的": "upliftable",
+    "编辑OKR": "Edit OKRs",
+    "负责人自评分数：": "The responsible person's self-assessment score:",
+    "分": "point",
+    "已选：": "selected:",
+    "全部": "all",
+    "时间": "time",
+    "请选择时间": "Please select a time",
+    "搜索": "search",
+    "已完成未评分": "Completed Not rated",
+    "挑战型": "Challenging"
 }

@@ -234,5 +234,18 @@
     "取消目标": "annuler la cible",
     "重启目标": "cible de redémarrage",
     "已取消": "Annulé",
-    "无": "aucun"
+    "无": "aucun",
+    "请选择评价": "Veuillez sélectionner un commentaire",
+    "做得好的": "bien joué",
+    "可提升的": "élevable",
+    "编辑OKR": "Modifier les OKR",
+    "负责人自评分数：": "Le score d'auto-évaluation de la personne responsable :",
+    "分": "indiquer",
+    "已选：": "choisi:",
+    "全部": "tous",
+    "时间": "temps",
+    "请选择时间": "Veuillez sélectionner une heure",
+    "搜索": "recherche",
+    "已完成未评分": "Complété Non évalué",
+    "挑战型": "Difficile"
 }
