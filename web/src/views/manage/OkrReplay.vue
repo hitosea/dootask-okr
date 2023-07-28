@@ -79,7 +79,7 @@ const getData = (type) => {
         loadIng.value = true
         http.getReplayList(data).then(({ data }) => {
             if (type == 'search') {
-                loadResplayList(data.data)
+                data.data?loadResplayList(data.data):[]
             }
             else {
                 if (data.data) {

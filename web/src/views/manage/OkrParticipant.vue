@@ -1,6 +1,6 @@
 <template >
     <n-scrollbar>
-        <div class="okr-follow-main">
+        <div class="okr-participant-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <div v-else>
                 <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
@@ -11,7 +11,7 @@
 </template>
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getFollowList } from '@/api/modules/follow'
+import { getParticipantList } from '@/api/modules/participant'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from "@/views/components/OkrLoading.vue"
 
@@ -27,7 +27,7 @@ const getList = (type) => {
             page_size: 10,
         }
         loadIng.value = true
-        getFollowList(data).then(({ data }) => {
+        getParticipantList(data).then(({ data }) => {
             if (type == 'search') {
                 data.data ? list.value = data.data : []
             }
@@ -49,7 +49,7 @@ onMounted(() => {
 })
 </script>
 <style lang="less" scoped>
-.okr-follow-main {
+.okr-participant-main {
     @apply py-24 flex flex-col gap-6;
 }
 </style>

@@ -23,7 +23,7 @@
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
-
+                        <OkrParticipant></OkrParticipant>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
@@ -53,6 +53,7 @@ import AddOkr from '@/views/components/AddOkrs.vue';
 import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
+import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 const addShow = ref(false)
 const searchObject = ref('')
 const searchShow = ref(false)
