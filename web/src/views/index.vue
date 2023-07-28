@@ -16,27 +16,27 @@
         </div>
         <div class="okr-tabs">
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
-                <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
+                <n-tab-pane :tab="$t('我创建的OKR')" name="IcreatedRef">
                     <div class="okr-scrollbar">
-                        <Icreated @edit="handleEdit"></Icreated>
+                        <Icreated ref="IcreatedRef" @edit="handleEdit"></Icreated>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
-                    <div class="okr-scrollbar">
-
-                    </div>
-                </n-tab-pane>
-                <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
+                <n-tab-pane :tab="$t('参与的OKR')" name="22">
                     <div class="okr-scrollbar">
 
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
+                <n-tab-pane :tab="$t('部门OKR')" name="33">
+                    <div class="okr-scrollbar">
+
+                    </div>
+                </n-tab-pane>
+                <n-tab-pane :tab="$t('关注的OKR')" name="OkrFollowRwf">
                     <div class="okr-scrollbar">
                         <OkrFollow></OkrFollow>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
+                <n-tab-pane :tab="$t('OKR复盘')" name="OkrReplayRef">
                     <div class="okr-scrollbar">
                         <OkrReplay></OkrReplay>
                     </div>
@@ -44,7 +44,7 @@
             </n-tabs>
         </div>
     </div>
-    <AddOkr v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkr>
+    <AddOkr v-model:show="addShow" :edit="edit" :editData="editData" @upData="upData" @close="handleClose"></AddOkr>
 </template>
 
 <script lang="ts" setup>
@@ -59,8 +59,8 @@ const edit = ref(false)
 let editData = {}
 const searchObject = ref('')
 const searchShow = ref(false)
-const tabsName = ref('我创建的OKR')
-
+const tabsName = ref('IcreatedRef')
+const IcreatedRef = ref(null)
 
 const changeTabs = (e)=>{
     searchObject.value = ''
@@ -83,6 +83,12 @@ const handleClose = () => {
     edit.value = false
     editData = {}
     addShow.value = false
+}
+
+const upData = (id)=>{
+    if(tabsName.value == 'IcreatedRef'){
+        IcreatedRef.value.upData(id)
+    }
 }
 
 </script>

@@ -51,7 +51,16 @@ export const getLogList = (data) => {
     return http.get<PageReq>("okr/log/list",data)
 }
 
-//获取动态
+//获取复盘
 export const getReplayList = (data) => {
     return http.get<PageReq>("okr/replay/okr/list",data)
+}
+
+//添加复盘
+export const replayCreate = (data) => {
+    return http.post<PageReq>("okr/replay/create",data)
+}
+//复盘详情
+export const replayDetail = (data) => {
+    return http.post<PageReq>("okr/replay/detail",data)
 }

@@ -1,10 +1,10 @@
 <template >
-    <n-scrollbar>
+    <n-scrollbar :on-scroll="onScroll">
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
             <div>
                 <OkrLoading v-if="loadIng"></OkrLoading>
-                <OkrItems :list="list" @upData="" @edit="handleEdit" v-else-if="list.length != 0"></OkrItems>
+                <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-else-if="list.length != 0"></OkrItems>
                 <OkrNotDatas v-else>
                     <template v-slot:content>
                         <div class="mt-5">
@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getMyList } from '@/api/modules/okrList'
+import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from "@/views/components/OkrLoading.vue"
 
@@ -32,6 +32,7 @@ const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
+
 
 const emit = defineEmits(['edit'])
 
@@ -61,14 +62,43 @@ const getList = (type) => {
 
 //编辑
 const handleEdit = (data) => {
-    emit('edit',data)
+    emit('edit', data)
+}
+
+//更新数据
+const upData = (id) => {
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            const upData = {
+                id: id,
+            }
+            getOkrDetail(upData)
+                .then(({ data }) => {
+                    list.value[index] = data
+                })
+                .catch()
+                .finally(() => {
+                })
+        }
+    })
+}
+
+const onScroll = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            page.value++
+            getList('')
+        }
+    }
 }
 
 onMounted(() => {
     getList('')
 })
-
-
+defineExpose({
+    upData
+})
 </script>
 <style lang="less" scoped>
 .i-created-main {

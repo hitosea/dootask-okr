@@ -1,16 +1,15 @@
 <template >
-    <n-modal v-model:show="show" transform-origin="center">
+    <n-modal v-model:show="show" transform-origin="center"  @after-leave="closeModal" >
         <n-card class="w-[480px]" :title="$t('评分')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
             <div>
+                <p v-if="Mark > -1" class="mb-12 text-title-color text-14">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{ Mark }}</span></p>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
-                    <n-form-item >
-                        <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')"
-                                    :options="markOptions" />
+                    <n-form-item>
+                        <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')" :options="markOptions" />
                     </n-form-item>
-
                 </n-form>
             </div>
 
@@ -42,6 +41,9 @@ const loadIng = ref(false)
 const formValue = ref({
     score: null,
 })
+
+const Mark = ref(-1);
+
 const markOptions = ref([
     {
         label: $t('0 未达成目标，态度问题'),
@@ -105,7 +107,7 @@ const props = defineProps({
 
 watch(() => props.id, (newValue) => {
     if (newValue) {
-        formValue.value.score = props.score
+        Mark.value = props.score
     }
 }, { immediate: true })
 
@@ -124,18 +126,20 @@ const handleSubmit = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            emit('close',1)
+            emit('close', 1)
             loadIng.value = false
         })
 }
 
 const handleClose = () => {
-    emit('close',2)
+    emit('close', 2)
+}
+const closeModal = () => {
+    formValue.value.score = null
 }
 </script>
 <style lang="less" scoped>
-:deep(.n-card__content){
+:deep(.n-card__content) {
     @apply pb-0 !important;
 }
-
 </style>

@@ -1,9 +1,9 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" :mask-closable="false"
         @after-leave="closeDrawer" :z-index="13">
-        <n-card class="w-[90%] max-w-[1200px] relative" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[90%] max-w-[1200px] " :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div class="flex">
-                <div class="flex-1 flex flex-col pb-[64px]">
+                <div class="flex-1 flex flex-col pb-[64px] relative">
                     <div
                         class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
                         <div class="flex items-center gap-4">
@@ -117,14 +117,14 @@
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
 
-                                    <div v-if="item.score == '0'" class="flex items-center cursor-pointer"
+                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
                                         @click="handleMark(item.id, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer">
                                         <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
-                                        <p class="text-text-li opacity-50 text-12">{{ item.score }}{{ $t('分') }}</p>
+                                        <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
                                     </div>
 
                                 </div>
@@ -139,14 +139,14 @@
                             class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
 
                     <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
+                    <div v-if="loadIng"
+                        class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
+                        <n-spin size="small" />
+                    </div>
+                </div>
 
-                </div>
-                <div v-if="loadIng"
-                    class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
-                    <n-spin size="small" />
-                </div>
                 <div
-                    class="w-[414px] flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
+                    class="w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
                     <div
                         class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] h-[28px]">
                         <ul v-if="!loadIng" class="flex items-center gap-8">
@@ -168,35 +168,34 @@
                             </div>
                             <n-scrollbar v-if="navActive == 1">
                                 <div class="flex text-start mb-[24px]" v-for="item in logList">
-                                    <n-avatar round :size="28" class="mr-8"
-                                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-avatar round :size="28" class="mr-8" :src="item.user_avatar" />
                                     <div class="flex flex-col gap-3">
-                                        <p class="text-12 leading-3 text-text-li">张三<span class="opacity-60 ml-8">{{
-                                            utils.GoDate(item.created_at) }}</span></p>
+                                        <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
+                                                class="opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
                                         <h4 class="text-14 leading-[14px] text-title-color font-normal"> <span
                                                 class=" font-medium">{{ item.content }}</span></h4>
                                     </div>
                                 </div>
                             </n-scrollbar>
                             <n-scrollbar v-if="navActive == 2">
-                                <p class="cursor-pointer" @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
-                                        class="text-14 text-text-tips" >{{ $t('添加复盘') }}</span></p>
-                                <div class="flex flex-col gap-3 mt-20">
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-14 text-text-li font-normal">复盘 (2023/08/05)</h4>
-                                        <p class="text-12 text-text-li opacity-60">08-04 12:45</p>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-14 text-text-li font-normal">复盘 (2023/08/05)</h4>
-                                        <p class="text-12 text-text-li opacity-60">08-04 12:45</p>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <h4 class="text-14 text-text-li font-normal">复盘 (2023/08/05)</h4>
-                                        <p class="text-12 text-text-li opacity-60">08-04 12:45</p>
+                                <p class="cursor-pointer" @click="handleAddMultiple"> <i
+                                        class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
+                                        class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
+                                <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
+                                    <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList" @click="handleView(item.id)">
+                                        <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
+                                            utils.GoDate(item.created_at) }})</h4>
+                                        <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}
+                                        </p>
                                     </div>
                                 </div>
+                                <p v-else class="text-12 mt-20 text-text-tips text-center">{{ $t('暂无复盘') }}</p>
                             </n-scrollbar>
                         </div>
+                    </div>
+                    <div v-if="loadIngR"
+                        class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
+                        <n-spin size="small" />
                     </div>
                 </div>
             </div>
@@ -217,6 +216,7 @@ import { useMessage } from "naive-ui"
 const navActive = ref(0)
 const dialogWrappersApp = ref()
 const loadIng = ref(false)
+const loadIngR = ref(false)
 const detialData = ref<any>({})
 const message = useMessage()
 
@@ -224,9 +224,9 @@ const logListPage = ref(1)
 const logList = ref<any>([])
 
 const replayListPage = ref(1)
-const replayList = ref<any>([])
+const replayList = ref([])
 
-const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit','addMultiple'])
+const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple'])
 
 const props = defineProps({
     show: {
@@ -240,15 +240,15 @@ const props = defineProps({
 })
 watch(() => props.show, (newValue) => {
     if (newValue) {
-        getDetail()
+        getDetail('first')
     }
 })
 
-const getDetail = () => {
+const getDetail = (type) => {
     const upData = {
         id: props.id,
     }
-    loadIng.value = true
+    if(type=='first') loadIng.value = true
     getOkrDetail(upData)
         .then(({ data }) => {
             console.log(data);
@@ -256,7 +256,7 @@ const getDetail = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            loadIng.value = false
+            if(type=='first') loadIng.value = false
         })
 }
 
@@ -296,7 +296,7 @@ const handleGetLogList = () => {
         page: logListPage.value,
         page_size: 10,
     }
-    loadIng.value = true
+    loadIngR.value = true
     getLogList(upData)
         .then(({ data }) => {
             console.log(data);
@@ -306,7 +306,7 @@ const handleGetLogList = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            loadIng.value = false
+            loadIngR.value = false
         })
 }
 const handleGetReplayList = () => {
@@ -315,7 +315,7 @@ const handleGetReplayList = () => {
         page: replayListPage.value,
         page_size: 10,
     }
-    loadIng.value = true
+    loadIngR.value = true
     getReplayList(upData)
         .then(({ data }) => {
             console.log(data);
@@ -326,7 +326,7 @@ const handleGetReplayList = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            loadIng.value = false
+            loadIngR.value = false
         })
 }
 
@@ -348,7 +348,10 @@ const handleMark = (id, score) => {
 }
 
 const handleAddMultiple = () => {
-    emit('addMultiple', detialData.value.id)
+    emit('addMultiple', utils.cloneJSON(detialData.value))
+}
+const handleView = (id) => {
+    emit('checkMultiple',id)
 }
 
 const closeModal = () => {

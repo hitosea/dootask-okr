@@ -115,21 +115,23 @@ const getItem = () => {
     loadIng.value = true
     getUserList(data).then(({ data }) => {
         options.value = []
-        data.map(item => {
-            options.value.push({
-                label: item.nickname,
-                value: item.userid,
-                userimg:item.userimg,
+        if (data.data) {
+            data.data.map(item => {
+                options.value.push({
+                    label: item.nickname,
+                    value: item.userid,
+                    userimg: item.userimg,
+                })
             })
-        })
+        }
         loadIng.value = false
     })
 }
 
-watch(()=>props.edit,(newValue)=>{
-    if(newValue){
+watch(() => props.edit, (newValue) => {
+    if (newValue) {
         getItem()
     }
-},{immediate:true} )
+}, { immediate: true })
 </script>
 <style lang="less"></style>

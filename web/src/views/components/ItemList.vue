@@ -30,7 +30,7 @@ const getItem = () => {
     loadIng.value = true
     getProjectList(data).then(({ data }) => {
         itemOptions.value = []
-        data.map(item => {
+        data.data?.map(item => {
             itemOptions.value.push({
                 label: item.name,
                 value: item.id,

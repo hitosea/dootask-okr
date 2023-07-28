@@ -465,6 +465,25 @@ const utils = {
     },
 
     /**
+     * 接口返回时间转正常格式
+     * @param format
+     * @param v
+     * @returns {string}
+     */
+    GoDateHMS(format) {
+        const dateObj = new Date(format);
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const hours = String(dateObj.getHours()).padStart(2, "0");
+        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+        const seconds = String(dateObj.getSeconds()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
+        const formattedTime = `${hours}:${minutes}:${seconds}`;
+        return (formattedDate + ' ' + formattedTime)
+    },
+
+    /**
      * 补零
      * @param str
      * @param length

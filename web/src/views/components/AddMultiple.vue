@@ -1,11 +1,13 @@
 <template >
-    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1" :trap-focus="false">
+    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1" :mask-closable="false"
+        :trap-focus="false">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar class="h-full flex-auto">
                     <div class="flex flex-col shrink-0 h-full">
                         <h3 class="text-text-li text-18 font-normal mb-16">OKR</h3>
-                        <n-data-table :columns="columns" :data="data" :single-line="false" :hover="false" size="small" style="--n-td-color-hover-modal:#ffffff"/>
+                        <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" size="small"
+                            style="--n-td-color-hover-modal:#ffffff" />
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
                         <div class="flex-auto shrink-0 min-h-[250px]">
                             <TEditor v-model:value="editorContent" :readOnly="false"></TEditor>
@@ -25,38 +27,28 @@
 <script setup lang="ts">
 import { NSelect, DataTableColumn } from 'naive-ui';
 import TEditor from '@/components/TEditor.vue';
+import { replayCreate, replayDetail } from '@/api/modules/okrList'
+import { ResultDialog } from "@/api"
+import { useMessage } from "naive-ui"
+
+const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
 const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
 
+const props = defineProps({
+    data: {
+        type: Object,
+        default: () => { },
+    },
+    multipleId: {
+        type: Number,
+        default: 0,
+    },
+})
 
 
-const data = ref([
-    {
-        O: '这个是目标啊',
-        lenght: 3,
-        Ocomplete: 32,
-        crux: '这个是关键KR',
-        KR: 'New York No. 1 Lake Park',
-        KRcomplete: '60%',
-        KRMark: 60,
-        evaluate: 2,
-    },
-    {
-        crux: '这个是关键KR',
-        KR: 'New York No. 1 Lake Park',
-        KRcomplete: '60%',
-        KRMark: 80,
-        evaluate: 0,
-    },
-    {
-        crux: '这个是关键KR',
-        KR: 'New York No. 1 Lake Park',
-        KRcomplete: '60%',
-        KRMark: 80,
-        evaluate: null,
-    }
-])
+const tableData = ref<any>([])
 
 const columns = ref<DataTableColumn[]>([
     {
@@ -71,7 +63,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         title: $t('关键KR'),
-        key: 'crux',
+        key: 'KR',
     },
     {
         title: $t('KR完成度'),
@@ -87,9 +79,10 @@ const columns = ref<DataTableColumn[]>([
         minWidth: 150,
         render(rowData) {
             return h(NSelect, {
-                placeholder: $t('请选择项目'),
+                placeholder: $t('请选择评价'),
                 value: rowData.evaluate,
                 options: itemOptions.value,
+                disabled: props.multipleId > 0,
                 onUpdateValue: (e: any) => {
                     rowData.evaluate = e
                 },
@@ -100,15 +93,11 @@ const columns = ref<DataTableColumn[]>([
 
 const itemOptions = ref([
     {
-        label: $t('项目1'),
-        value: 0,
-    },
-    {
-        label: $t('项目2'),
+        label: $t('做得好的'),
         value: 1,
     },
     {
-        label: $t('项目3'),
+        label: $t('可提升的'),
         value: 2,
     },
 ])
@@ -117,19 +106,105 @@ const itemOptions = ref([
 const emit = defineEmits(['close'])
 
 const closeDrawer = () => {
-
+    tableData.value = []
+    editorContent.value = `<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`
 }
+
 
 
 const handleSubmit = () => {
-    emit('close')
+    const upData = {
+        okr_id: props.data.id,
+        review: editorContent.value,
+        comments: [],
+    }
+    tableData.value.map((item, index) => {
+        upData.comments.push({
+            okr_id: props.data.key_results[index].id,
+            comment: item.evaluate,
+        })
+    })
+
+    loadIng.value = true
+    replayCreate(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+            emit('close')
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+
 }
+
+watch(() => props.data, (newValue) => {
+    if (newValue) {
+        tableData.value.push({
+            O: newValue.title,
+            lenght: newValue.key_results.length,
+            Ocomplete: newValue.progress + '%',
+            KR: newValue.key_results[0].title,
+            KRcomplete: newValue.key_results[0].progress + '%',
+            KRMark: newValue.key_results[0].kr_score,
+            evaluate: null,
+        })
+        for (let index = 1; index < newValue.key_results.length; index++) {
+            tableData.value.push({
+                KR: newValue.key_results[index].title,
+                KRcomplete: newValue.key_results[index].progress + '%',
+                KRMark: newValue.key_results[index].kr_score,
+                evaluate: null,
+            })
+        }
+    }
+}, { immediate: true })
+
+//查看详情
+watch(() => props.multipleId, (newValue) => {
+    console.log(newValue);
+    if (newValue) {
+        const upData = {
+            id: newValue,
+        }
+        loadIng.value = true
+        replayDetail(upData)
+            .then(({ data }) => {
+                console.log(data)
+                tableData.value.push({
+                    O: data.okr_title,
+                    lenght: data.kr_history.length,
+                    Ocomplete: data.okr_progress + '%',
+                    KR: data.kr_history[0].title,
+                    KRcomplete: data.kr_history[0].progress + '%',
+                    KRMark: data.kr_history[0].score,
+                    evaluate: data.kr_history[0].comment,
+                })
+                for (let index = 1; index < data.kr_history.length; index++) {
+                    tableData.value.push({
+                        KR: data.kr_history[index].title,
+                        KRcomplete: data.kr_history[index].progress + '%',
+                        KRMark: data.kr_history[index].score,
+                        evaluate: data.kr_history[index].comment,
+                    })
+                }
+                editorContent.value = data.review
+            })
+            .catch(ResultDialog)
+            .finally(() => {
+                loadIng.value = false
+            })
+
+    }
+})
+
 </script>
 <style lang="less" scoped>
 .button-box {
     @apply flex gap-2 mt-32 flex-initial;
 }
-:deep(.n-scrollbar-content){
+
+:deep(.n-scrollbar-content) {
     @apply h-full;
 }
 </style>

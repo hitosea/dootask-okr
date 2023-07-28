@@ -60,7 +60,7 @@
 
     <!-- OKR详情 -->
     <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple"></OkrDetails>
+        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple" @checkMultiple="handleCheckMultiple"></OkrDetails>
 
     <!-- 更新进度   -->
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId"
@@ -76,7 +76,7 @@
     <MarkVue v-model:show="markShow" :id="markId" :score="score" @close="handleCloseMarks"></MarkVue>
 
     <!-- 新增复盘 -->
-    <AddMultiple v-model:show="addMultipleShow" @close="() => { addMultipleShow = false }"></AddMultiple>
+    <AddMultiple v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultiple>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
@@ -112,6 +112,10 @@ const markId = ref(0)
 const score = ref(0)
 
 const addMultipleShow = ref(false)
+const multipleId = ref(0)
+const addMultipleData = ref(null)
+
+
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 const loadIng = ref(false)
@@ -156,16 +160,23 @@ const handleOpenSchedule = (id, progress, progress_status) => {
     degreeOfCompletionProgressStatus.value = progress_status
     degreeOfCompletionShow.value = true
 }
+
 //关闭进度
 const handleCloseDedree = (type) => {
+    if (type == 1) {
+        RefOkrDetails.value.getDetail()
+        props.list.map((item,index)=>{
+            item.key_results.map(CItem=>{
+                if (CItem.id == degreeOfCompletionId.value) { 
+                    emit('upData',props.list[index].id)
+                }
+            })
+        })
+    }
     degreeOfCompletionId.value = 0
     degreeOfCompletionProgress.value = 0
     degreeOfCompletionProgressStatus.value = 0
     degreeOfCompletionShow.value = false
-    if (type == 1) {
-        RefOkrDetails.value.getDetail()
-        emit('upData')
-    }
 }
 
 const handleFollowOkr = (id) => {
@@ -176,6 +187,7 @@ const handleFollowOkr = (id) => {
     okrFollow(upData)
         .then(({ msg }) => {
             message.success(msg)
+            emit('upData',id)
         })
         .catch(ResultDialog)
         .finally(() => {
@@ -240,11 +252,30 @@ const handleEdit = (data) => {
 }
 
 //添加复盘
-const handleAddMultiple = (id) => {
-    console.log(id);
-
+const handleAddMultiple = (data) => {
+    console.log(data);
+    
+    okrDetailsShow.value = false
+    addMultipleData.value = data
     addMultipleShow.value = true
 }
+
+//查看复盘
+const handleCheckMultiple = (id) => {
+    console.log(id);
+    okrDetailsShow.value = false
+    multipleId.value = id
+    addMultipleShow.value = true
+}
+
+//关闭复盘
+const handleCloseMultiple = () => {
+    addMultipleData.value = null
+    multipleId.value = 0
+    addMultipleShow.value = false
+}
+
+
 
 const expiresFormat = (date) => {
     const Dates = new Date(date);

@@ -152,7 +152,7 @@ import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
 import { ResultDialog } from "@/api"
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close','upData'])
 
 const message = useMessage()
 const show = ref(false)
@@ -407,6 +407,9 @@ const handleGoal = () => {
 
 // 关闭Drawer
 const closeDrawer = () => {
+    if (formValue.value.id) {
+        emit('upData', formValue.value.id)
+    }
     handleClear()
     userSelectApps.value.forEach(app => app.$destroy())
     emit('close')
