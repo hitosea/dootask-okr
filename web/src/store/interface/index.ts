@@ -21,7 +21,8 @@ export interface GlobalState {
     windowScrollY: number
     keyboardType: any
     keyboardHeight: any
-    windowTouch: any
+    windowTouch: any,
+    okrDetail: any
 }
 
 export interface UserState {

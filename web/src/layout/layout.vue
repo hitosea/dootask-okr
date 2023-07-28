@@ -21,7 +21,6 @@ watch(
     { immediate: true }
 )
 
-
 onMounted(() => {
     loadingBarApiRef.value = loadingBar
     loadingBar.finish()
@@ -44,6 +43,8 @@ const otherEvents = () => {
         })
     });
 }
+
+
 otherEvents()
 </script>
 <style lang="less">

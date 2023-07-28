@@ -238,9 +238,10 @@ const props = defineProps({
         default: 0,
     },
 })
-watch(() => props.show, (newValue) => {
+
+watch(() => detialData.value.dialog_id, (newValue) => {
     if (newValue) {
-        getDetail('first')
+        loadDialogWrappers()
     }
 })
 
@@ -249,15 +250,13 @@ const getDetail = (type) => {
         id: props.id,
     }
     if(type=='first') loadIng.value = true
-    getOkrDetail(upData)
-        .then(({ data }) => {
-            console.log(data);
-            detialData.value = data
-        })
-        .catch(ResultDialog)
-        .finally(() => {
-            if(type=='first') loadIng.value = false
-        })
+    getOkrDetail(upData).then(({ data }) => {
+        detialData.value = data
+    })
+    .catch(ResultDialog)
+    .finally(() => {
+        if(type=='first') loadIng.value = false
+    })
 }
 
 const handleFollowOkr = (id) => {
@@ -369,7 +368,7 @@ const loadDialogWrappers = () => {
             render: (h: any) => {
                 return h(window.Vues?.components?.DialogWrapper, {
                     props: {
-                        dialogId: 59
+                        dialogId: detialData.value.dialog_id
                     }
                 }, [h("div", { slot: "head" })])
             }
@@ -382,7 +381,10 @@ const loadDialogWrappers = () => {
 
 // 显示
 const showDrawer = () => {
-    loadDialogWrappers()
+    getDetail('first')
+    if(detialData.value.dialog_id>0){
+        loadDialogWrappers()
+    }
 }
 
 // 关闭

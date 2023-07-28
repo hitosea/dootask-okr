@@ -27,12 +27,22 @@ export const GlobalStore = defineStore({
         keyboardType: null,
         keyboardHeight: 0,  // 键盘高度
         windowTouch: "ontouchend" in document,
+        okrDetail: {
+            show: false,
+            id: 0,
+        }
     }),
     actions: {
         async init() {
             this.isLoading = 0;
             if (["light", "dark"].indexOf(this.themeName) === -1) {
                 this.themeName = useOsTheme().value;
+            }
+        },
+        openOkrDetails(id) {
+            this.okrDetail = {
+                show: true,
+                id: id
             }
         },
         setLoading() {

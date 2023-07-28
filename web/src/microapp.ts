@@ -19,13 +19,20 @@ export const handleMicroData = (router: Router) =>{
     if (window.eventCenterForAppNameVite) {
         // 主动获取基座下发的数据
         let info = window.eventCenterForAppNameVite.getData();
-        if(info.type == "init"){
+        if(info?.type == "init"){
             initGlobaStore(info)
         }
+
         // 监听基座下发的数据变化
         window.eventCenterForAppNameVite.addDataListener((data: Record<string, unknown>) => {
+            if(!data){
+                return false;
+            }
             if(data.type == "init"){
                 initGlobaStore(data)
+            }
+            if(data.type == "okrDetails" && data.show){
+                GlobalStore().openOkrDetails(data.id || 0)
             }
             if (data.path && typeof data.path === 'string') {
                 data.path = data.path.replace(/^#/, '')

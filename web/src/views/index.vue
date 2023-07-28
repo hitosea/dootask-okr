@@ -16,27 +16,27 @@
         </div>
         <div class="okr-tabs">
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
-                <n-tab-pane :tab="$t('我创建的OKR')" name="IcreatedRef">
+                <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
                     <div class="okr-scrollbar">
-                        <Icreated ref="IcreatedRef" @edit="handleEdit"></Icreated>
+                        <Icreated ></Icreated>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('参与的OKR')" name="22">
-                    <div class="okr-scrollbar">
-
-                    </div>
-                </n-tab-pane>
-                <n-tab-pane :tab="$t('部门OKR')" name="33">
+                <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
 
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('关注的OKR')" name="OkrFollowRwf">
+                <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
+                    <div class="okr-scrollbar">
+
+                    </div>
+                </n-tab-pane>
+                <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
                     <div class="okr-scrollbar">
                         <OkrFollow></OkrFollow>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('OKR复盘')" name="OkrReplayRef">
+                <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
                     <div class="okr-scrollbar">
                         <OkrReplay></OkrReplay>
                     </div>
@@ -44,7 +44,7 @@
             </n-tabs>
         </div>
     </div>
-    <AddOkr v-model:show="addShow" :edit="edit" :editData="editData" @upData="upData" @close="handleClose"></AddOkr>
+    <AddOkr v-model:show="addShow" @close="handleClose"></AddOkr>
 </template>
 
 <script lang="ts" setup>
@@ -53,14 +53,10 @@ import AddOkr from '@/views/components/AddOkrs.vue';
 import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
-
 const addShow = ref(false)
-const edit = ref(false)
-let editData = {}
 const searchObject = ref('')
 const searchShow = ref(false)
-const tabsName = ref('IcreatedRef')
-const IcreatedRef = ref(null)
+const tabsName = ref('我创建的OKR')
 
 const changeTabs = (e)=>{
     searchObject.value = ''
@@ -68,27 +64,12 @@ const changeTabs = (e)=>{
     tabsName.value = e
 }
 
-//编辑
-const handleEdit = (data) => {
-    addShow.value = true
-    edit.value = true
-    editData = data
-}
-
 const handleAdd = () => {
     addShow.value = true
 }
 
 const handleClose = () => {
-    edit.value = false
-    editData = {}
     addShow.value = false
-}
-
-const upData = (id)=>{
-    if(tabsName.value == 'IcreatedRef'){
-        IcreatedRef.value.upData(id)
-    }
 }
 
 </script>

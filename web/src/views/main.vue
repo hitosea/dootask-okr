@@ -1,61 +1,33 @@
 <template>
-    <div class="main">
-        <div class="welcome">
-            {{ $t("main.welcome") }}
-        </div>
-        <n-date-picker panel type="date" />
-
-        <div class="buttons">
-            <n-button tertiary @click="handleThemeUpdate">
-                {{ themeLabel }}
-            </n-button>
-
-            <n-button tertiary @click="handleLanguageUpdate">
-                {{ languageLabel }}
-            </n-button>
-        </div>
-    </div>
+    <OkrDetails ref="RefOkrDetails" 
+        :id="globalStore.okrDetail.id" 
+        :show="okrDetailsShow" 
+        @close="close" 
+    ></OkrDetails>
 </template>
 
 <script lang="ts" setup>
-import { GlobalStore } from "../store"
-import { computed } from "vue"
+import {watch} from 'vue';
+import OkrDetails from './components/OkrDetails.vue';
+import { GlobalStore } from "@/store"
+
+const okrDetailsShow = ref(false)
 const globalStore = GlobalStore()
 
-const themeLabel = computed(
-    () =>
-        ({
-            dark: "浅色",
-            light: "深色",
-        }[globalStore.themeName]),
-)
-const handleThemeUpdate = () => {
-    if (globalStore.themeName === "dark") {
-        globalStore.setThemeName("light")
-    } else {
-        globalStore.setThemeName("dark")
+// 监听打开
+watch(() => globalStore.okrDetail, (newValue) => {
+    if(newValue.show){
+        okrDetailsShow.value = false
+        nextTick(() => {
+            okrDetailsShow.value = true;
+        })
     }
+}, { immediate: true })
+
+// 关闭
+const close = () => {
+    okrDetailsShow.value = false
+    globalStore.okrDetail.id = 0
+    globalStore.okrDetail.show = false
 }
-
-const languageLabel = computed(
-    () =>
-        ({
-            zh: "English",
-            en: "中文",
-        }[globalStore.language]),
-)
-
-const handleLanguageUpdate = () => {
-    if (globalStore.language === "en") {
-        globalStore.setLanguage("zh")
-    } else {
-        globalStore.setLanguage("en")
-    }
-}
-
-
 </script>
-
-<style lang="less" scoped>
-
-</style>
