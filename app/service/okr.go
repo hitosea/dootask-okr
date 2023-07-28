@@ -436,6 +436,9 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 
 // KR总评分 KR评分=【自评*40%+上级评分*60%】
 func (s *okrService) getKrScore(obj *model.Okr) float64 {
+	if obj.Score == -1 || obj.SuperiorScore == -1 {
+		return 0
+	}
 	return math.Round((obj.Score*0.4+obj.SuperiorScore*0.6)*10) / 10
 }
 
