@@ -28,7 +28,7 @@
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-
+                        <OkrDepartment></OkrDepartment>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
@@ -54,6 +54,9 @@ import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
+import OkrDepartment from './manage/OkrDepartment.vue'; 
+
+
 const addShow = ref(false)
 const edit = ref(false)
 let editData = {}
