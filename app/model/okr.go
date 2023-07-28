@@ -29,15 +29,15 @@ type Okr struct {
 	Progress       int            `gorm:"default:0;comment:'进度指数0-100'" json:"progress"`
 	ProgressStatus int            `gorm:"default:0;comment:'进度状态 0-未开始 1-正常 2-有风险 3-已延期'" json:"progress_status"`
 	Confidence     int            `gorm:"default:0;comment:'信心指数0-100'" json:"confidence"`
-	Score          float64        `gorm:"default:0;comment:'个人评分'" json:"score"` // 个人评分和O总评分
-	SuperiorScore  float64        `gorm:"default:0;comment:'上级评分'" json:"superior_score"`
+	Score          float64        `gorm:"default:-1;comment:'个人评分'" json:"score"`          // 个人评分和O总评分
+	SuperiorScore  float64        `gorm:"default:-1;comment:'上级评分'" json:"superior_score"` // 上级评分
 	StartAt        time.Time      `gorm:"comment:'开始时间' " json:"start_at"`
 	EndAt          time.Time      `gorm:"comment:'结束时间'" json:"end_at"`
 	CreatedAt      time.Time      `gorm:"autoCreateTime;comment:'创建时间'" json:"created_at"`
 	UpdatedAt      time.Time      `gorm:"autoUpdateTime;comment:'更新时间'" json:"updated_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index;comment:'删除时间'" json:"deleted_at" swaggerignore:"true"`
 	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
-	KrScore        float64        `gorm:"-" json:"kr_score,omitempty"`     // KR总评分
+	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 }
 
