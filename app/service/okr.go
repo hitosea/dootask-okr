@@ -972,7 +972,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 			// 新增动态日志
 			logContent := fmt.Sprintf("责任人打分: %s", obj.Title)
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
@@ -996,6 +996,12 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 				return err
 			}
 
+			// 新增动态日志
+			logContent := fmt.Sprintf("上级打分: %s", obj.Title)
+			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
+				return err
+			}
+
 			// 更新O评分
 			obj, err := s.GetObjectiveByIdWithKeyResults(obj.ParentId)
 			if err != nil {
@@ -1003,12 +1009,6 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			}
 			err = s.UpdateObjectiveScoreTx(tx, obj)
 			if err != nil {
-				return err
-			}
-
-			// 新增动态日志
-			logContent := fmt.Sprintf("上级打分: %s", obj.Title)
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 
@@ -1031,7 +1031,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	}
 
 	// 负责人 = 部门负责人
-	if kr.Userid == user.Userid && kr.Score == 0 {
+	if kr.Userid == user.Userid && kr.Score == -1 {
 		return false
 	}
 
