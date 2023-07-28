@@ -391,6 +391,7 @@ const showDrawer = () => {
 const closeDrawer = () => {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
     navActive.value = 0
+    detialData.value.dialog_id = 0;
 }
 
 const pStatus = (p) => {

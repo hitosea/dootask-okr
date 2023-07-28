@@ -2,10 +2,8 @@
     <n-scrollbar>
         <div class="okr-participant-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <div v-else>
-                <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
-                <OkrNotDatas v-else></OkrNotDatas>
-            </div>
+            <OkrItems  v-else-if="list.length != 0" :list="list"></OkrItems>
+            <OkrNotDatas v-else></OkrNotDatas>
         </div>
     </n-scrollbar>
 </template>
@@ -28,18 +26,15 @@ const getList = (type) => {
         }
         loadIng.value = true
         getParticipantList(data).then(({ data }) => {
+            loadIng.value = false
             if (type == 'search') {
-                data.data ? list.value = data.data : []
-            }
-            else {
-                if (data.data) {
-                    data.data.map(item => {
-                        list.value.push(item)
-                    })
-                }
+                list.value = data.data || []
+            } else {
+                (data.data || []).map(item => {
+                    list.value.push(item)
+                })
             }
             last_page.value = data.last_page
-            loadIng.value = false
         })
     }
 }

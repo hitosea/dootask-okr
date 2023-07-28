@@ -1,6 +1,6 @@
 <template >
-    <n-drawer v-model:show="show" :width="728" @after-enter="showDrawer" :on-after-leave="closeDrawer"
-        :mask-closable="false" :z-index="1">
+    <n-drawer v-model:show="show" :width="600" @after-enter="showDrawer" :on-after-leave="closeDrawer"
+        :mask-closable="false" :z-index="13">
         <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
                 <n-scrollbar>

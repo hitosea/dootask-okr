@@ -44,18 +44,16 @@ const getList = (type) => {
         }
         loadIng.value = true
         getMyList(data).then(({ data }) => {
+            loadIng.value = false
             if (type == 'search') {
-                list.value = data.data
+                list.value = data.data || []
             }
             else {
-                if (data.data) {
-                    data.data.map(item => {
-                        list.value.push(item)
-                    })
-                }
+                (data.data || []).map(item => {
+                    list.value.push(item)
+                })
             }
             last_page.value = data.last_page
-            loadIng.value = false
         })
     }
 }

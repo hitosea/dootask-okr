@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="1" :mask-closable="false"
+    <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
         :trap-focus="false">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
