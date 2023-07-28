@@ -1727,6 +1727,7 @@ var doc = `{
                     "type": "string"
                 },
                 "superior_score": {
+                    "description": "上级评分",
                     "type": "number"
                 },
                 "title": {
@@ -2145,6 +2146,7 @@ var doc = `{
                     "type": "string"
                 },
                 "superior_score": {
+                    "description": "上级评分",
                     "type": "number"
                 },
                 "title": {
@@ -2331,6 +2333,7 @@ var doc = `{
                     "type": "string"
                 },
                 "superior_score": {
+                    "description": "上级评分",
                     "type": "number"
                 },
                 "title": {

@@ -850,7 +850,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 如果传值更新进度有值，则更新进度
 		if param.Progress != 0 {
 			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", obj.Title, obj.Progress, param.Progress)
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			obj.Progress = param.Progress
@@ -859,7 +859,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 如果传值更新状态有值，则更新状态
 		if param.Status != 0 {
 			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", obj.Title, model.ProgressStatusMap[obj.ProgressStatus], model.ProgressStatusMap[param.Status])
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
+			if err := s.InsertOkrLogTx(tx, obj.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			obj.ProgressStatus = param.Status
@@ -1319,20 +1319,20 @@ func (s *okrService) GetOkrLogList(user *interfaces.UserInfoResp, okrId, page, p
 	}
 
 	// 获取用户头像、昵称
+	var userids []int
+	err = core.DB.Model(&model.OkrLog{}).Where("okr_id = ?", okrId).Pluck("DISTINCT userid", &userids).Error
+	if err != nil {
+		return nil, err
+	}
+	userList, err := DootaskService.GetUserBasic(user.Token, userids)
+	if err != nil {
+		return nil, err
+	}
 	for _, log := range logs {
-		userInfo, err := DootaskService.GetUserBasic(user.Token, log.Userid)
-		if err != nil {
-			return nil, err
-		}
-		userInfoMap, _ := userInfo.(map[string]interface{})
-		userList, _ := userInfoMap["list"].([]interface{})
-		if len(userList) > 0 {
-			user := userList[0].(map[string]interface{})
-			if userImg, ok := user["userimg"].(string); ok {
-				log.UserAvatar = userImg
-			}
-			if nickname, ok := user["nickname"].(string); ok {
-				log.UserNickname = nickname
+		for _, user := range userList {
+			if user.Userid == log.Userid {
+				log.UserAvatar = user.Userimg
+				log.UserNickname = user.Nickname
 			}
 		}
 	}

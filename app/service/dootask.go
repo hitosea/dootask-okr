@@ -45,8 +45,8 @@ func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, err
 }
 
 // 获取指定会员基础信息
-func (s dootaskService) GetUserBasic(token string, userid int) (interface{}, error) {
-	url := fmt.Sprintf("%s%s?userid=%d&token=%s", config.DooTaskUrl, "/api/users/basic", userid, token)
+func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.UserBasicResp, error) {
+	url := fmt.Sprintf("%s%s?userid=%v&token=%s", config.DooTaskUrl, "/api/users/basic", common.StructToJson(userid), token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,23 @@ func (s dootaskService) GetUserBasic(token string, userid int) (interface{}, err
 	if err != nil {
 		return nil, err
 	}
-	return info, nil
+
+	list, ok := info["list"].([]interface{})
+	if !ok {
+		return nil, e.New(constant.ErrDooTaskDataFormat)
+	}
+
+	var userBasicArr []*interfaces.UserBasicResp
+	if len(list) > 0 {
+		for _, v := range list {
+			var userBasic interfaces.UserBasicResp
+			if err := common.MapToStruct(v.(map[string]interface{}), &userBasic); err != nil {
+				return nil, err
+			}
+			userBasicArr = append(userBasicArr, &userBasic)
+		}
+	}
+	return userBasicArr, nil
 }
 
 // 获取用户列表

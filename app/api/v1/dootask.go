@@ -36,12 +36,12 @@ func (api *BaseApi) OkrUserBasic() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	result, err := service.DootaskService.GetUserBasic(api.Userinfo.Token, userid)
+	result, err := service.DootaskService.GetUserBasic(api.Userinfo.Token, []int{userid})
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	helper.Success(api.Context, result)
+	helper.Success(api.Context, result[0])
 }
 
 // @Tags Dootask

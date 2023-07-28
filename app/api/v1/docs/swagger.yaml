@@ -59,6 +59,7 @@ definitions:
       start_at:
         type: string
       superior_score:
+        description: 上级评分
         type: number
       title:
         type: string
@@ -359,6 +360,7 @@ definitions:
       start_at:
         type: string
       superior_score:
+        description: 上级评分
         type: number
       title:
         type: string
@@ -491,6 +493,7 @@ definitions:
       start_at:
         type: string
       superior_score:
+        description: 上级评分
         type: number
       title:
         type: string
