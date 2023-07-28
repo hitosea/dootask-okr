@@ -32,6 +32,8 @@ var (
 	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //负责人已评分
 	ErrOkrSuperiorScored          = "ErrOkrSuperiorScored"          //上级已评分
 	ErrOkrScoredNotUpdateProgress = "ErrOkrScoredNotUpdateProgress" //评分后不允许修改进度
+	ErrOkrKeyResultTitleEmpty     = "ErrOkrKeyResultTitleEmpty"     //关键结果标题不能为空
+	ErrOkrTimeEmpty               = "ErrOkrTimeEmpty"               //时间不能为空
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: 신뢰지수 범위 매개변수 오류
 ErrOkrInvalidKrScore: 잘못된 kr 점수
 ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
 ErrOkrKeyResultAtLeastOne: 적어도 하나의 중요한 결과가 있습니다
+ErrOkrKeyResultTitleEmpty: 중요 결과 제목이 비어 있을 수 없습니다
 ErrOkrKrScoreNotComplete: kr 채점은 완료되지 않았다
 ErrOkrNoData: 불충분한 증거
 ErrOkrNoPermissionScore: 현재 점수를 매길 권한이 없습니다
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrScoreInvalid: 채점 범위 인자 오류
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
+ErrOkrTimeEmpty: 시간을 비워 두면 안 된다
 ErrOkrTypeInvalid: 대상 형식 인자 오류
 ErrOkrVisibleRangeInvalid: 대상 표시 범위 인자 오류
 ErrRequestTimeout: 요청 시간 초과

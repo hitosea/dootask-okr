@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: Parameter keyakinan eksponensial salah
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
 ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
+ErrOkrKeyResultTitleEmpty: Judul hasil kritis tidak bisa kosong
 ErrOkrKrScoreNotComplete: KR rating tidak lengkap
 ErrOkrNoData: Sudah tak terhitung jumlahnya
 ErrOkrNoPermissionScore: Tak ada tingkat izin sementara
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: Parameter status progres salah
 ErrOkrScoreInvalid: Parameternya salah
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
 ErrOkrSuperiorScored: Lebih tinggi dinilai
+ErrOkrTimeEmpty: Waktu tidak boleh kosong
 ErrOkrTypeInvalid: Parameter jenis target salah
 ErrOkrVisibleRangeInvalid: Target terlihat parameter salah
 ErrRequestTimeout: Waktu permintaan

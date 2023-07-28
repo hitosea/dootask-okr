@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: The confidence index range parameter is incorrect
 ErrOkrInvalidKrScore: Invalid KR score
 ErrOkrIsFinishNotScoreInvalid: Complete No score parameter is incorrect
 ErrOkrKeyResultAtLeastOne: There was at least one key result
+ErrOkrKeyResultTitleEmpty: The key result header cannot be empty
 ErrOkrKrScoreNotComplete: KR score is not complete
 ErrOkrNoData: No data available
 ErrOkrNoPermissionScore: No permission rating is available
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrScoreInvalid: The scoring range parameter is incorrect
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
 ErrOkrSuperiorScored: Superior rated
+ErrOkrTimeEmpty: Time cannot be empty
 ErrOkrTypeInvalid: The target type parameter is incorrect
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
 ErrRequestTimeout: Request timeout

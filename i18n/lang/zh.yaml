@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: 信心指数范围参数错误
 ErrOkrInvalidKrScore: 无效的KR分数
 ErrOkrIsFinishNotScoreInvalid: 是否已完成未评分参数错误
 ErrOkrKeyResultAtLeastOne: 至少有一条关键结果
+ErrOkrKeyResultTitleEmpty: 关键结果标题不能为空
 ErrOkrKrScoreNotComplete: KR评分未完成
 ErrOkrNoData: 暂无数据
 ErrOkrNoPermissionScore: 暂无权限评分
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: 进度状态参数错误
 ErrOkrScoreInvalid: 评分范围参数错误
 ErrOkrScoredNotUpdateProgress: 评分后不允许修改进度
 ErrOkrSuperiorScored: 上级已评分
+ErrOkrTimeEmpty: 时间不能为空
 ErrOkrTypeInvalid: 目标类型参数错误
 ErrOkrVisibleRangeInvalid: 目标可见范围参数错误
 ErrRequestTimeout: 请求超时

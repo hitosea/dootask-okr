@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: Indice de confiance gamme paramètres erreur
 ErrOkrInvalidKrScore: Score KR non valide
 ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
+ErrOkrKeyResultTitleEmpty: Le titre des résultats clés ne peut pas être vide
 ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Données non disponibles
 ErrOkrNoPermissionScore: Pas encore d’autorisation score
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté
+ErrOkrTimeEmpty: Le temps ne peut pas être vide
 ErrOkrTypeInvalid: Type de cible paramètre erreur
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré

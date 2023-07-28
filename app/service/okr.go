@@ -225,6 +225,21 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 // 创建关键结果
 func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCreateReq, user *interfaces.UserInfoResp, obj *model.Okr) (*model.Okr, error) {
+	// KR标题
+	if kr.Title == "" {
+		return nil, e.New(constant.ErrOkrKeyResultTitleEmpty)
+	}
+
+	// 信心指数 范围0-100
+	if kr.Confidence < 0 || kr.Confidence > 100 {
+		return nil, e.New(constant.ErrOkrConfidenceInvalid)
+	}
+
+	// 时间
+	if kr.StartAt == "" || kr.EndAt == "" {
+		return nil, e.New(constant.ErrOkrTimeEmpty)
+	}
+
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
 		return nil, err
@@ -233,11 +248,6 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
 		return nil, err
-	}
-
-	// 信心指数 范围0-100
-	if kr.Confidence < 0 || kr.Confidence > 100 {
-		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 
 	keyResult := &model.Okr{
@@ -263,6 +273,21 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 
 // 更新关键结果
 func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpdateReq, user *interfaces.UserInfoResp, obj *model.Okr) (*model.Okr, error) {
+	// KR标题
+	if kr.Title == "" {
+		return nil, e.New(constant.ErrOkrKeyResultTitleEmpty)
+	}
+
+	// 信心指数 范围0-100
+	if kr.Confidence < 0 || kr.Confidence > 100 {
+		return nil, e.New(constant.ErrOkrConfidenceInvalid)
+	}
+
+	// 时间
+	if kr.StartAt == "" || kr.EndAt == "" {
+		return nil, e.New(constant.ErrOkrTimeEmpty)
+	}
+
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
 		return nil, err
@@ -271,11 +296,6 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
 		return nil, err
-	}
-
-	// 信心指数 范围0-100
-	if kr.Confidence < 0 || kr.Confidence > 100 {
-		return nil, e.New(constant.ErrOkrConfidenceInvalid)
 	}
 
 	keyResult, err := s.GetObjectiveById(kr.Id)

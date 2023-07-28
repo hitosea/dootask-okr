@@ -16,6 +16,7 @@ ErrOkrConfidenceInvalid: Fehler im parameter des vertrauensindex
 ErrOkrInvalidKrScore: Das fehlerhafte KRML
 ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
 ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis
+ErrOkrKeyResultTitleEmpty: Die prioritätsergebnisse stehen nicht Leer
 ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
 ErrOkrNoData: Eine vermutung nimmt man Von zeit zu zeit.
 ErrOkrNoPermissionScore: Nichtautorisierung durchführen
@@ -28,6 +29,7 @@ ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrScoreInvalid: Fehlerwerte werte putiert
 ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl
 ErrOkrSuperiorScored: An die vorgesetzten.
+ErrOkrTimeEmpty: Die zeit ist nicht Leer
 ErrOkrTypeInvalid: Fehlerhafter zieltyp fehler
 ErrOkrVisibleRangeInvalid: Fehler im parameter des zieleintrags
 ErrRequestTimeout: Wir Bitten um mehr zeit.
