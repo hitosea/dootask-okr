@@ -44,55 +44,7 @@
     </div>
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-department-main">
-<<<<<<< Updated upstream
-            <OkrLoading v-if="loadIng"></OkrLoading>
-            <div class=" flex items-center mb-16 mt-0 nowrap">
-
-                <div class=" mb-2 mr-8  custom-div">
-                    {{$t('部门')}}
-                </div>
-                <n-select
-                    v-model:value="departmentsvalue"
-                    :options="departments"
-                    class="custom-select"
-                    :placeholder="$t('全部')"/>
-
-                <div class=" mb-2 mr-8 ml-24 custom-div">
-                    {{$t('负责人')}}
-                </div>
-                <n-select
-                    v-model:value="principalvalue"
-                    :options="principal"
-                    class="custom-select"
-                    :placeholder="$t('全部')"/>
-
-                <div class=" mb-2 mr-8 ml-24 custom-div">
-                    {{$t('类型')}}
-                </div>
-                <n-select
-                    v-model:value="typevalue"
-                    :options="types"
-                    class="custom-select"
-                    :placeholder="$t('全部')"/>
-
-                <div class=" mb-2 mr-8 ml-24 custom-div">
-                    {{$t('时间')}}
-                </div>
-                <n-date-picker class="custom-select" v-model:value="daterange"
-                value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" :placeholder="$t('请选择时间')"/>
-
-                <n-button type="primary" class=" mb-4 ml-24 rounded" @click="getList('search')">
-                    <i class="taskfont mr-5">&#xe72a;</i>
-                    {{ $t('搜索') }}
-                </n-button>
-                <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div ml-10" @click="getList('search')">
-                    {{ $t('已完成未评分') }}
-                </n-checkbox>
-            </div>
-            <OkrItems @upData="upData" @edit="handleEdit" :list="list" v-if="list.length != 0"></OkrItems>
-=======
             <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
->>>>>>> Stashed changes
             <OkrNotDatas v-else :msg="$t('暂无OKR')"></OkrNotDatas>
         </div>
     </n-scrollbar>
