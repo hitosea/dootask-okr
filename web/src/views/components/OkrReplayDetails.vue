@@ -1,38 +1,40 @@
 <template>
     <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
     <div class="replay-details">
-        <div class="replay-details-title">{{$t('回顾')}}</div>
-        <pre v-html="review"></pre>
+        <div class="replay-details-title">{{ $t("回顾") }}</div>
+        <pre class="whitespace-normal break-words" v-html="review"></pre>
     </div>
 </template>
 
 <script lang="ts" setup>
-import {DataTableColumn } from 'naive-ui';
-const props = defineProps(['okrReplayList']);
+import { DataTableColumn } from "naive-ui"
+const props = defineProps(["okrReplayList"])
 
 // 回顾
-let review = ref('')
+let review = ref("")
 
 // 加载表格
-const loadTable = (krReplay)=> {
+const loadTable = (krReplay) => {
     review = krReplay.review
     data.value = krReplay.krList.map((itemData, index) => {
-    const additionalProps = index === 0 ? { targetTitle: krReplay.okrName,length: krReplay.krList.length,completeness: krReplay.okrProgress} : {};
-    return {
-      id: itemData.id,
-      krList: itemData.kr_history,
-      krTitle: itemData.title,
-      krCompleteness: itemData.progress,
-      score: itemData.score,
-      evaluate: itemData.comment,
-      ...additionalProps,
-    };
-  });
+        const additionalProps =
+            index === 0
+                ? { targetTitle: krReplay.okrName, length: krReplay.krList.length, completeness: krReplay.okrProgress }
+                : {}
+        return {
+            id: itemData.id,
+            krList: itemData.kr_history,
+            krTitle: itemData.title,
+            krCompleteness: itemData.progress,
+            score: itemData.score,
+            evaluate: itemData.comment,
+            ...additionalProps,
+        }
+    })
 }
 
-nextTick(()=>{
+nextTick(() => {
     loadTable(props.okrReplayList)
-
 })
 
 const data = ref([])
@@ -52,7 +54,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('目标（O）') },
+                { default: () => $t("目标（O）") },
             )
         },
         render(row) {
@@ -81,7 +83,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('O完成度') },
+                { default: () => $t("O完成度") },
             )
         },
         render(row) {
@@ -93,7 +95,7 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.completeness+'%' },
+                { default: () => row.completeness + "%" },
             )
         },
     },
@@ -109,7 +111,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('关键KR') },
+                { default: () => $t("关键KR") },
             )
         },
         render(row) {
@@ -162,7 +164,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('KR完成度') },
+                { default: () => $t("KR完成度") },
             )
         },
         render(row) {
@@ -174,7 +176,7 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.krCompleteness+'%' },
+                { default: () => row.krCompleteness + "%" },
             )
         },
     },
@@ -190,7 +192,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('KR评分') },
+                { default: () => $t("KR评分") },
             )
         },
         render(row) {
@@ -218,7 +220,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     size: 24,
                 },
-                { default: () => $t('评价') },
+                { default: () => $t("评价") },
             )
         },
         render(row) {
@@ -242,6 +244,5 @@ const columns = ref<DataTableColumn[]>([
     &-title {
         @apply mt-10 py-10 text-18 text-[#515A6E];
     }
-
 }
 </style>
