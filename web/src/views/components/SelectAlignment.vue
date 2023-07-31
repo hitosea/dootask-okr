@@ -159,7 +159,7 @@ const getList = (type) => {
 
             if (cities.value != null) {
                 okrList.value.map((item, index) => {
-                    item.key_results.map(items => {
+                    item.key_results?.map(items => {
                         if (cities.value.indexOf(items.id) != -1) {
                             openList.value.push(index)
                         }

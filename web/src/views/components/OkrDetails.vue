@@ -45,18 +45,21 @@
                                 @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
                         </div>
                     </div>
+
                     <n-scrollbar class="pr-[10px]">
-                    <n-spin :show="loadIng">
-                        <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 ">{{ detialData.title }}</h3>
-
-
+                    <n-spin :show="false">
+                        <h3  class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 min-h-[40px]">
+                            {{ detialData.title}}
+                        </h3>
                         <div class="mt-24 flex flex-col gap-4">
                             <div class="flex items-center">
                                 <p class="flex items-center w-[115px]">
                                     <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
                                     <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
                                 </p>
-                                <p class="flex-1 text-text-li text-14" v-if="detialData.alias">{{ detialData.alias[0] }}</p>
+                                <p class="flex-1 text-text-li text-14">
+                                    {{ detialData.alias && detialData.alias[0] }}
+                                </p>
                             </div>
 
 
@@ -65,8 +68,9 @@
                                     <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
                                     <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
                                 </p>
-                                <p class="flex-1 text-text-li text-14">{{ utils.GoDate(detialData.start_at || 0) }} ~
-                                    {{ utils.GoDate(detialData.end_at || 0) }}</p>
+                                <p class="flex-1 text-text-li text-14">
+                                    <span v-if="detialData.start_at">{{ utils.GoDate(detialData.start_at || 0) }} ~ {{ utils.GoDate(detialData.end_at || 0) }}</span>
+                                </p>
                             </div>
 
                             <div class="flex items-center">
@@ -81,7 +85,7 @@
 
                         <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
 
-                        <div class="flex flex-col mt-20 gap-6">
+                        <div class="flex flex-col mt-20 gap-6 min-h-[60px]">
                             <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
                                 <div class="flex items-center">
                                     <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
@@ -97,8 +101,7 @@
                                                 src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                         </div>
                                         <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                        <p class="flex-1 text-text-li text-14">{{ utils.GoDate(item.start_at || 0) }} ~
-                                            {{ utils.GoDate(item.end_at || 0) }}</p>
+                                        <p class="flex-1 text-text-li text-14 min-w-[140px]">{{ utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}</p>
                                     </div>
                                     <div class="flex items-center gap-6">
                                         <div class="flex items-center cursor-pointer"
@@ -108,7 +111,6 @@
                                                 color="var(--primary-color)" status="success" :percentage="item.progress" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                         </div>
-
                                         <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
                                             @click="handleConfidence(item.id, item.confidence)">
                                             <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
@@ -119,7 +121,6 @@
                                             <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                         </div>
-
                                         <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
                                             @click="handleMark(item.id, item.score)">
                                             <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
@@ -129,17 +130,17 @@
                                             <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
 
-                        <h4 class="text-text-li text-16 font-medium mb-12">{{ $t('对齐目标') }} <i
-                                class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
+                        <h4 class="text-text-li text-16 font-medium mb-12">
+                            {{ $t('对齐目标') }} 
+                            <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i>
+                        </h4>
 
                         <AlignTarget class="pb-[28px]" :value="props.show" :id="props.id"></AlignTarget>
                     </n-spin>
@@ -163,8 +164,9 @@
                     <div class="flex-auto relative">
                         <div class="absolute top-[24px] bottom-0 left-0 right-0">
                             <div class="text-center" v-show="navActive == 0">
-                                <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin>
-                                <DialogWrappers />
+                                <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
+                                <span v-if="!showDialogWrapper">子应用无法加载</span>
+                                <DialogWrappers v-else/>
                             </div>
                             <n-scrollbar v-if="navActive == 1">
                                 <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
@@ -228,6 +230,7 @@ const logList = ref<any>([])
 
 const replayListPage = ref(1)
 const replayList = ref([])
+const showDialogWrapper = computed(() => window.Vues?.components?.DialogWrapper ? 1 : 0)
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
 const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple','upData'])
@@ -243,6 +246,12 @@ const props = defineProps({
     },
 })
 
+watch(() => props.show, (newValue) => {
+    if (newValue) {
+        getDetail('first')
+    }
+})
+
 watch(() => detialData.value.dialog_id, (newValue) => {
     if (newValue) {
         loadUserSelects();
@@ -250,12 +259,12 @@ watch(() => detialData.value.dialog_id, (newValue) => {
     }
 })
 
+// 明细
 const getDetail = (type) => {
-    const upData = {
-        id: props.id,
-    }
     if(type=='first') loadIng.value = true
-    getOkrDetail(upData).then(({ data }) => {
+    getOkrDetail({
+        id: props.id,
+    }).then(({ data }) => {
         detialData.value = data
     })
     .catch(ResultDialog)
@@ -264,24 +273,23 @@ const getDetail = (type) => {
     })
 }
 
+// 关注
 const handleFollowOkr = (id) => {
-    const upData = {
-        id: id,
-    }
     loadIng.value = true
-    okrFollow(upData)
-        .then(({ msg }) => {
-            message.success(msg)
-            emit('upData',id)
-            getDetail('')
-        })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIng.value = false
-        })
+    okrFollow({
+        id: id,
+    }).then(({ msg }) => {
+        message.success(msg)
+        emit('upData',id)
+        getDetail('')
+    })
+    .catch(ResultDialog)
+    .finally(() => {
+        loadIng.value = false
+    })
 }
 
-
+// 
 const handleNav = (index) => {
     navActive.value = index
     if (navActive.value == 1) {
@@ -296,42 +304,40 @@ const handleNav = (index) => {
     }
 }
 
+// 日志列表
 const handleGetLogList = () => {
-    const upData = {
+    loadIngR.value = true
+    getLogList({
         id: detialData.value.id,
         page: logListPage.value,
         page_size: 10,
-    }
-    loadIngR.value = true
-    getLogList(upData)
-        .then(({ data }) => {
-            data.data.map(item => {
-                logList.value.push(item)
-            })
+    }).then(({ data }) => {
+        data.data.map(item => {
+            logList.value.push(item)
         })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIngR.value = false
-        })
+    })
+    .catch(ResultDialog)
+    .finally(() => {
+        loadIngR.value = false
+    })
 }
+
+// 复盘列表
 const handleGetReplayList = () => {
-    const upData = {
+    loadIngR.value = true
+    getReplayList({
         id: detialData.value.id,
         page: replayListPage.value,
         page_size: 10,
-    }
-    loadIngR.value = true
-    getReplayList(upData)
-        .then(({ data }) => {
-            data.data.map(item => {
-                replayList.value.push(item)
-            })
-
+    }).then(({ data }) => {
+        data.data.map(item => {
+            replayList.value.push(item)
         })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIngR.value = false
-        })
+    })
+    .catch(ResultDialog)
+    .finally(() => {
+        loadIngR.value = false
+    })
 }
 
 const handleEdit = () => {
@@ -362,24 +368,21 @@ const closeModal = () => {
     emit('close')
 }
 
+// 取消
 const handleCancel = () => {
-
-    const upData = {
-        id: detialData.value.id,
-    }
     loadIng.value = true
-    okrCancel(upData)
-        .then(({ msg }) => {
-            message.success(msg)
-            emit('upData',detialData.value.id)
-            getDetail('')
-        })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIng.value = false
-        })
+    okrCancel({
+        id: detialData.value.id,
+    }).then(({ msg }) => {
+        message.success(msg)
+        emit('upData',detialData.value.id)
+        getDetail('')
+    })
+    .catch(ResultDialog)
+    .finally(() => {
+        loadIng.value = false
+    })
 }
-
 
 // 加载聊天组件
 const loadDialogWrappers = () => {
@@ -443,11 +446,7 @@ window.addEventListener('apps-unmount', function () {
 
 // 显示
 const showDrawer = () => {
-    getDetail('first')
-    if(detialData.value.dialog_id>0){
-        loadUserSelects();
-        loadDialogWrappers()
-    }
+    
 }
 
 // 关闭
@@ -455,6 +454,7 @@ const closeDrawer = () => {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
     navActive.value = 0
     detialData.value = {};
+    loadIng.value = true;
     userSelectApps.value.forEach(app => app.$destroy())
 }
 
