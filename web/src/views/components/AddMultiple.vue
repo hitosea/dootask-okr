@@ -1,8 +1,8 @@
 <template >
     <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
-        :trap-focus="false">
+        :trap-focus="false" drawer-class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
-            <div class="flex flex-col absolute left-[24px] right-[24px] top-[16px] bottom-[16px]">
+            <div class="flex flex-col h-full">
                 <n-scrollbar class="h-full flex-auto">
                     <div class="flex flex-col shrink-0 h-full">
                         <h3 class="text-text-li text-18 font-normal mb-16">OKR</h3>
@@ -11,9 +11,7 @@
                         <h3 class="text-text-li text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
                         <div class="flex-auto shrink-0 min-h-[250px]">
                             <TEditor v-if="props.multipleId == 0 " v-model:value="editorContent" :readOnly="false"></TEditor>
-                            <div v-else v-html="editorContent">
-
-                            </div>
+                            <div v-else v-html="editorContent"></div>
                         </div>
                     </div>
                 </n-scrollbar>
@@ -23,7 +21,6 @@
                     </n-button>
                 </div>
             </div>
-
         </n-drawer-content>
     </n-drawer>
 </template>
@@ -37,7 +34,8 @@ import { useMessage } from "naive-ui"
 const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
-const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
+const editorContent = ref(``)
+// const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
 
 const props = defineProps({
     data: {

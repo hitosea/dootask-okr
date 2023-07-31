@@ -410,21 +410,21 @@ const loadUserSelects = () => {
             let app = new window.Vues.Vue({
                 el: e,
                 store: window.Vues.store,
-                render: (h: any) => {
-                    console.log(item.participant);
-
+                render: (h: any) =>{
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
                         props: {
-                            value:  item.participant,
+                            value: (item.participant).split(',').map(h=> Number(h) )  ,
                             title: $t('选择参与人'),
-                            border: true,
+                            border: false,
                             avatarSize: 20,
+                            addIcon: false,
+                            disable:true
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
                                 if (!show) {
-                                    item.participant = values;
+                                    item.participant = values.join(',');
                                 }
                             }
                         }
