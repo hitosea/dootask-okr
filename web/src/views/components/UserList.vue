@@ -1,5 +1,5 @@
 <template >
-    <n-select v-model:value="value" :placeholder="$t('请选择项目')" filterable multiple :options="options"
+    <n-select v-model:value="value" :placeholder="$t('请选择参与人')" filterable multiple :options="options"
         :render-label="renderLabel" :render-tag="renderMultipleSelectTag" :on-focus="openList" />
 </template>
 <script setup lang="ts">

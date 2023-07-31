@@ -205,4 +205,17 @@ watch(() => props.multipleId, (newValue) => {
 :deep(.n-scrollbar-content) {
     @apply h-full;
 }
+:deep(.n-drawer-header__close) {
+    @apply absolute -left-36 ;
+    &:focus{
+        @apply bg-none;
+    }
+    i {
+        @apply text-[#fff];
+    }
+}
+
+:deep(.n-base-close:not(.n-base-close--disabled):focus::before) {
+        @apply bg-transparent;
+}
 </style>

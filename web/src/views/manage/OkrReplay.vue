@@ -1,5 +1,5 @@
 <template>
-    <n-scrollbar>
+    <n-scrollbar >
         <div class="py-24">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <OkrNotDatas v-else-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>

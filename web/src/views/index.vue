@@ -23,22 +23,22 @@
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrParticipant></OkrParticipant>
+                        <OkrParticipant  @edit="handleEdit"></OkrParticipant>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-                        <OkrDepartment></OkrDepartment>
+                        <OkrDepartment @edit="handleEdit"></OkrDepartment>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrFollow></OkrFollow>
+                        <OkrFollow @edit="handleEdit"></OkrFollow>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
                     <div class="okr-scrollbar">
-                        <OkrReplay></OkrReplay>
+                        <OkrReplay @edit="handleEdit"></OkrReplay>
                     </div>
                 </n-tab-pane>
             </n-tabs>

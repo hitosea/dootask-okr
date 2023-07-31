@@ -1,8 +1,8 @@
 <template >
-    <n-scrollbar>
+    <n-scrollbar :on-scroll="onScroll">
         <div class="okr-follow-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrItems v-else-if="list.length != 0" :list="list" ></OkrItems>
+            <OkrItems @upData="upData" @edit="handleEdit" v-else-if="list.length != 0" :list="list"></OkrItems>
             <OkrNotDatas v-else></OkrNotDatas>
         </div>
     </n-scrollbar>
@@ -10,8 +10,11 @@
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getFollowList } from '@/api/modules/follow'
+import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from "@/views/components/OkrLoading.vue"
+
+const emit = defineEmits(['edit'])
 
 const loadIng = ref(false)
 const page = ref(1)
@@ -29,7 +32,7 @@ const getList = (type) => {
             loadIng.value = false
             if (type == 'search') {
                 list.value = data.data || []
-            }else {
+            } else {
                 (data.data || []).map(item => {
                     list.value.push(item)
                 })
@@ -39,6 +42,38 @@ const getList = (type) => {
     }
 }
 
+//编辑
+const handleEdit = (data) => {
+    emit('edit', data)
+}
+
+//更新数据
+const upData = (id) => {
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            const upData = {
+                id: id,
+            }
+            getOkrDetail(upData)
+                .then(({ data }) => {
+                    list.value[index] = data
+                })
+                .catch()
+                .finally(() => {
+                })
+        }
+    })
+}
+
+const onScroll = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            page.value++
+            getList('')
+        }
+    }
+}
 onMounted(() => {
     getList('')
 })

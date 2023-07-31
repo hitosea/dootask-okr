@@ -2,8 +2,8 @@
     <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" :mask-closable="false"
         @after-leave="closeDrawer" :z-index="13">
         <n-card class="w-[90%] max-w-[1200px] " :bordered="false" size="huge" role="dialog" aria-modal="true">
-            <div class="flex">
-                <div class="flex-1 flex flex-col pb-[64px] relative">
+            <div class="flex max-h-[640px]">
+                <div class="flex-1 flex flex-col  relative">
                     <div
                         class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
                         <div class="flex items-center gap-4">
@@ -45,9 +45,9 @@
                                 @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
                         </div>
                     </div>
-
+                    <n-scrollbar >
                     <n-spin :show="loadIng">
-                        <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1">{{ detialData.title }}</h3>
+                        <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 ">{{ detialData.title }}</h3>
 
 
                         <div class="mt-24 flex flex-col gap-4">
@@ -141,12 +141,9 @@
                         <h4 class="text-text-li text-16 font-medium mb-12">{{ $t('对齐目标') }} <i
                                 class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i></h4>
 
-                        <AlignTarget :value="props.show" :id="props.id"></AlignTarget>
+                        <AlignTarget class="pb-[28px]" :value="props.show" :id="props.id"></AlignTarget>
                     </n-spin>
-                    <!-- <div v-if="loadIng"
-                        class="absolute top-[71px] bottom-[24px] left-0 right-0 z-10 bg-[rgba(255,255,255,0.8)] flex-1 flex justify-center items-center">
-                        <n-spin size="small" />
-                    </div> -->
+                </n-scrollbar>
                 </div>
 
                 <div

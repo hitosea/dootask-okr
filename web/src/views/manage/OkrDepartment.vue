@@ -1,5 +1,5 @@
 <template >
-    <n-scrollbar>
+    <n-scrollbar :on-scroll="onScroll">
         <div class="okr-department-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <div class=" flex items-center mb-16 mt-0 nowrap">
@@ -7,28 +7,28 @@
                 <div class=" mb-2 mr-8  custom-div">
                     {{$t('部门')}}
                 </div>
-                <n-select 
-                    v-model:value="departmentsvalue" 
-                    :options="departments" 
-                    class="custom-select" 
+                <n-select
+                    v-model:value="departmentsvalue"
+                    :options="departments"
+                    class="custom-select"
                     :placeholder="$t('全部')"/>
 
                 <div class=" mb-2 mr-8 ml-24 custom-div">
                     {{$t('负责人')}}
                 </div>
-                <n-select 
-                    v-model:value="principalvalue" 
-                    :options="principal" 
-                    class="custom-select" 
+                <n-select
+                    v-model:value="principalvalue"
+                    :options="principal"
+                    class="custom-select"
                     :placeholder="$t('全部')"/>
 
                 <div class=" mb-2 mr-8 ml-24 custom-div">
                     {{$t('类型')}}
                 </div>
-                <n-select 
-                    v-model:value="typevalue" 
-                    :options="types" 
-                    class="custom-select" 
+                <n-select
+                    v-model:value="typevalue"
+                    :options="types"
+                    class="custom-select"
                     :placeholder="$t('全部')"/>
 
                 <div class=" mb-2 mr-8 ml-24 custom-div">
@@ -39,13 +39,13 @@
 
                 <n-button type="primary" class=" mb-4 ml-24 rounded" @click="getList('search')">
                     <i class="taskfont mr-5">&#xe72a;</i>
-                    {{ $t('搜索') }}  
+                    {{ $t('搜索') }}
                 </n-button>
                 <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div" @click="getList('search')">
-                    {{ $t('已完成未评分') }}    
-                </n-checkbox>             
+                    {{ $t('已完成未评分') }}
+                </n-checkbox>
             </div>
-            <OkrItems :list="list" v-if="list.length != 0"></OkrItems>
+            <OkrItems @upData="upData" @edit="handleEdit" :list="list" v-if="list.length != 0"></OkrItems>
             <OkrNotDatas v-else :msg="$t('暂无OKR')"></OkrNotDatas>
         </div>
     </n-scrollbar>
@@ -53,10 +53,11 @@
 
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getDepartmentOkrList } from '@/api/modules/department' 
+import { getDepartmentOkrList } from '@/api/modules/department'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from "@/views/components/OkrLoading.vue"
 import { getDepartmentList } from '@/api/modules/department'
+import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'
 import utils from '@/utils/utils'
 
@@ -81,6 +82,8 @@ const types = ref([
 const daterange = ref(null)
 const completednotrated = ref(false)
 
+const emit = defineEmits(['edit'])
+
 const init = () => {
 
     const sendata = {
@@ -95,7 +98,7 @@ const init = () => {
             })
         })
     })
-    
+
     getDepartmentList().then(({data}) => {
         data.data.map(item =>{
             departments.value.push({
@@ -104,11 +107,11 @@ const init = () => {
             })
         })
     })
-    
+
 }
 
 const getList = (type) => {
-    
+
     if (last_page.value >= page.value || type == 'search') {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
@@ -120,11 +123,11 @@ const getList = (type) => {
             start_at : daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000) : null,
             type: typevalue.value,
             userid: principalvalue.value,
-        }   
+        }
 
         loadIng.value = true
         getDepartmentOkrList(sendata).then(({ data }) => {
-            if (type == 'search') { 
+            if (type == 'search') {
                 data.data ?  list.value = data.data : list.value = []
             }
             else {
@@ -139,6 +142,42 @@ const getList = (type) => {
         loadIng.value = false
     }
 }
+
+//编辑
+const handleEdit = (data) => {
+    emit('edit', data)
+}
+
+//更新数据
+const upData = (id) => {
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            const upData = {
+                id: id,
+            }
+            getOkrDetail(upData)
+                .then(({ data }) => {
+                    list.value[index] = data
+                })
+                .catch()
+                .finally(() => {
+                })
+        }
+    })
+}
+
+
+const onScroll = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            page.value++
+            getList('')
+        }
+    }
+}
+
+
 
 onMounted(() => {
     init()
@@ -157,7 +196,7 @@ onMounted(() => {
 }
 .custom-div{
     white-space: nowrap;
-    
+
 }
 
 </style>
