@@ -146,10 +146,12 @@
 
                             <h4 class="text-text-li text-16 font-medium mb-12">
                                 {{ $t('对齐目标') }}
-                                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="()=>{selectAlignmentShow = true}">&#xe779;</i>
+                                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                                    @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
-                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id"></AlignTarget>
+                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id">
+                            </AlignTarget>
                         </n-spin>
                     </n-scrollbar>
                 </div>
@@ -193,7 +195,7 @@
                                             class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
                                     <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
                                         <div class="flex items-center justify-between cursor-pointer"
-                                            v-for="item in replayList" @click="handleView(item.id)">
+                                            v-for="item in replayList" @click="handleCheckMultiple(item.id)">
                                             <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
                                                 utils.GoDate(item.created_at) }})</h4>
                                             <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at)
@@ -212,9 +214,27 @@
                     </div>
                 </div>
             </div>
+            <!-- 对齐目标 -->
 
             <SelectAlignment :value="selectAlignmentShow" :editData="detialData.align_objective"
-            @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
+                @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
+
+            <!-- 更新进度   -->
+            <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId"
+                :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus"
+                @close="handleCloseDedree">
+            </DegreeOfCompletion>
+
+            <!-- 更新信心 -->
+            <Confidences :id="confidencesId" :confidence="confidence" v-model:show="confidenceShow"
+                @close="handleCloseConfidenes">
+            </Confidences>
+
+            <!-- 更新评分 -->
+            <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore"
+                @close="handleCloseMarks"></MarkVue>
+
+
         </n-card>
 
     </n-modal>
@@ -227,7 +247,12 @@ import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
 import { useMessage } from "naive-ui"
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
+import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
+import Confidences from '@/views/components/Confidences.vue';
+import MarkVue from '@/views/components/Marks.vue';
+import { GlobalStore } from '@/store';
 
+const globalStore = GlobalStore()
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
@@ -247,7 +272,22 @@ const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 
 const selectAlignmentShow = ref(false)
 const AlignTargetRef = ref(null)
 
-const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple', 'checkMultiple', 'upData'])
+const degreeOfCompletionShow = ref(false)
+const degreeOfCompletionId = ref(0)
+const degreeOfCompletionProgress = ref(0)
+const degreeOfCompletionProgressStatus = ref(0)
+
+const confidenceShow = ref(false)
+const confidencesId = ref(0)
+const confidence = ref(0)
+
+const markShow = ref(false)
+const markId = ref(0)
+const score = ref(0)
+const superiorScore = ref(0)
+
+
+const emit = defineEmits(['close', 'edit', 'upData'])
 
 const props = defineProps({
     show: {
@@ -354,32 +394,69 @@ const handleGetReplayList = () => {
         })
 }
 
+
 const handleEdit = () => {
     emit('edit', utils.cloneJSON(detialData.value))
 }
 
-//更新进度
-const handleSchedule = (id, progress, progress_status) => {
-    emit('schedule', id, progress, progress_status)
-}
-
-const handleConfidence = (id, confidence) => {
-    emit('confidence', id, confidence)
-}
-
-const handleMark = (id, score, superior_score) => {
-    emit('mark', id, score, superior_score)
-}
-
-const handleAddMultiple = () => {
-    emit('addMultiple', utils.cloneJSON(detialData.value))
-}
-const handleView = (id) => {
-    emit('checkMultiple', id)
-}
-
 const closeModal = () => {
     emit('close')
+}
+
+
+
+//打开进度
+const handleSchedule = (id, progress, progress_status) => {
+    degreeOfCompletionId.value = id
+    degreeOfCompletionProgress.value = progress
+    degreeOfCompletionProgressStatus.value = progress_status
+    degreeOfCompletionShow.value = true
+}
+
+//关闭进度
+const handleCloseDedree = (type) => {
+    if (type == 1) {
+        getDetail('')
+        emit('upData', detialData.value.id)
+    }
+    degreeOfCompletionId.value = 0
+    degreeOfCompletionProgress.value = 0
+    degreeOfCompletionProgressStatus.value = 0
+    degreeOfCompletionShow.value = false
+}
+
+//打开信心
+const handleConfidence = (id, confidences) => {
+    confidencesId.value = id
+    confidence.value = confidences
+    confidenceShow.value = true
+}
+//关闭信心
+const handleCloseConfidenes = (type) => {
+    confidencesId.value = 0
+    confidence.value = 0
+    confidenceShow.value = false
+    if (type == 1) {
+        getDetail('')
+    }
+}
+
+//打开评分
+const handleMark = (id, scores, superior_score) => {
+    markId.value = id
+    score.value = scores
+    superiorScore.value = superior_score
+    markShow.value = true
+}
+//关闭评分
+const handleCloseMarks = (type) => {
+    markId.value = 0
+    score.value = 0
+    superiorScore.value = 0
+    markShow.value = false
+    if (type == 1) {
+        getDetail('')
+    }
 }
 
 // 取消
@@ -416,6 +493,29 @@ const loadDialogWrappers = () => {
         });
     })
 }
+
+//添加复盘
+const handleAddMultiple = () => {
+    closeModal()
+    globalStore.$patch((state) => {
+        state.addMultipleData = detialData.value
+        state.addMultipleShow = true
+    })
+    console.log(globalStore.addMultipleShow);
+    
+}
+
+
+//查看复盘
+const handleCheckMultiple = (id) => {
+    closeModal()
+    globalStore.$patch((state) => {
+        state.multipleId = id
+        state.addMultipleShow = true
+    })
+}
+
+
 
 // 加载选择用户组件
 const loadUserSelects = () => {
@@ -558,4 +658,5 @@ defineExpose({
 
 .li-nav.active {
     @apply text-title-color text-16 opacity-100;
-}</style>
+}
+</style>

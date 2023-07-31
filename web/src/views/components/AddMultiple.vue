@@ -1,6 +1,6 @@
 <template >
-    <n-drawer v-model:show="show" drawer-style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
-        :trap-focus="false" class="okr">
+    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
+        :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
                 <n-scrollbar class="h-full flex-auto">

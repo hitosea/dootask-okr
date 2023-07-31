@@ -61,32 +61,16 @@
 
     <!-- OKR详情 -->
     <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @schedule="handleOpenSchedule" @confidence="handleConfidence" @mark="handleMark" @edit="handleEdit" @addMultiple="handleAddMultiple" @checkMultiple="handleCheckMultiple" @upData="(id)=>{emit('upData',id)}"></OkrDetails>
+         @edit="handleEdit" @upData="(id)=>{emit('upData',id)}"></OkrDetails>
 
-    <!-- 更新进度   -->
-    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId"
-        :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus"
-        @close="handleCloseDedree">
-    </DegreeOfCompletion>
-
-    <!-- 更新信心 -->
-    <Confidences :id="confidencesId" :confidence="confidence" v-model:show="confidenceShow" @close="handleCloseConfidenes">
-    </Confidences>
-
-    <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" @close="handleCloseMarks"></MarkVue>
-
-    <!-- 新增复盘 -->
-    <AddMultiple v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultiple>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import OkrDetails from './OkrDetails.vue';
-import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
-import Confidences from '@/views/components/Confidences.vue';
-import MarkVue from '@/views/components/Marks.vue';
-import AddMultiple from '@/views/components/AddMultiple.vue';
+
+
+
 import utils from '@/utils/utils';
 import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
@@ -97,26 +81,6 @@ import { ResultDialog } from "@/api"
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
 const okrDetailsShow = ref(false)
-
-
-const degreeOfCompletionShow = ref(false)
-const degreeOfCompletionId = ref(0)
-const degreeOfCompletionProgress = ref(0)
-const degreeOfCompletionProgressStatus = ref(0)
-
-const confidenceShow = ref(false)
-const confidencesId = ref(0)
-const confidence = ref(0)
-
-const markShow = ref(false)
-const markId = ref(0)
-const score = ref(0)
-const superiorScore = ref(0)
-
-const addMultipleShow = ref(false)
-const multipleId = ref(0)
-const addMultipleData = ref(null)
-
 
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
@@ -155,31 +119,7 @@ const handleOpenDetail = (id) => {
     okrDetailsShow.value = true
 }
 
-//打开进度
-const handleOpenSchedule = (id, progress, progress_status) => {
-    degreeOfCompletionId.value = id
-    degreeOfCompletionProgress.value = progress
-    degreeOfCompletionProgressStatus.value = progress_status
-    degreeOfCompletionShow.value = true
-}
 
-//关闭进度
-const handleCloseDedree = (type) => {
-    if (type == 1) {
-        RefOkrDetails.value.getDetail()
-        props.list.map((item,index)=>{
-            item.key_results.map(CItem=>{
-                if (CItem.id == degreeOfCompletionId.value) {
-                    emit('upData',props.list[index].id)
-                }
-            })
-        })
-    }
-    degreeOfCompletionId.value = 0
-    degreeOfCompletionProgress.value = 0
-    degreeOfCompletionProgressStatus.value = 0
-    degreeOfCompletionShow.value = false
-}
 
 const handleFollowOkr = (id) => {
     const upData = {
@@ -213,70 +153,15 @@ const submitSelectAlignment = (e) => {
         })
 }
 
-//打开信心
-const handleConfidence = (id, confidences) => {
-    confidencesId.value = id
-    confidence.value = confidences
-    confidenceShow.value = true
-}
-//关闭信心
-const handleCloseConfidenes = (type) => {
-    confidencesId.value = 0
-    confidence.value = 0
-    confidenceShow.value = false
-    if (type == 1) {
-        RefOkrDetails.value.getDetail()
-        emit('upData')
-    }
-}
 
-//打开评分
-const handleMark = (id, scores,superior_score) => {
-    markId.value = id
-    score.value = scores
-    superiorScore.value = superior_score
-    markShow.value = true
-}
-//关闭评分
-const handleCloseMarks = (type) => {
-    markId.value = 0
-    score.value = 0
-    superiorScore.value = 0
-    markShow.value = false
-    if (type == 1) {
-        RefOkrDetails.value.getDetail()
-        emit('upData')
-    }
-}
+
+
 
 //编辑
 const handleEdit = (data) => {
     emit('edit',data)
     okrDetailsShow.value = false
 }
-
-//添加复盘
-const handleAddMultiple = (data) => {
-
-    okrDetailsShow.value = false
-    addMultipleData.value = data
-    addMultipleShow.value = true
-}
-
-//查看复盘
-const handleCheckMultiple = (id) => {
-    okrDetailsShow.value = false
-    multipleId.value = id
-    addMultipleShow.value = true
-}
-
-//关闭复盘
-const handleCloseMultiple = () => {
-    addMultipleData.value = null
-    multipleId.value = 0
-    addMultipleShow.value = false
-}
-
 
 
 const expiresFormat = (date) => {

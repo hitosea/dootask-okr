@@ -1,6 +1,8 @@
 <template>
     <n-layout class="root-layout">
         <router-view />
+    <!-- 新增复盘 -->
+    <AddMultiple v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultiple>
     </n-layout>
 </template>
 
@@ -10,16 +12,28 @@ import { useLoadingBar } from 'naive-ui'
 import { loadingBarApiRef } from "../routes";
 import { UserStore } from "../store/user";
 import { GlobalStore } from '@/store';
+import AddMultiple from '@/views/components/AddMultiple.vue';
 
 const userStore = UserStore()
 const loadingBar = useLoadingBar()
 const globalStore = GlobalStore()
+const { addMultipleShow, multipleId,addMultipleData} = globalStore.multipleSetup()
+
+//关闭复盘
+const handleCloseMultiple = () => {
+    globalStore.$patch((state) => {
+        state.addMultipleData = null
+        state.multipleId = 0
+        state.addMultipleShow = false
+    })
+}
 
 watch(
     () => userStore.info,
     () => { },
     { immediate: true }
 )
+
 
 onMounted(() => {
     loadingBarApiRef.value = loadingBar

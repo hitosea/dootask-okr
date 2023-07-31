@@ -19,9 +19,9 @@ export const GlobalStore = defineStore({
         themeName: "",
         timer: {},
         // 浏览器窗口方向
-        windowOrientation: computed(() => {return screenOrientation}),
-        windowLandscape: computed(() => {return windowLandscape}), // 横屏
-        windowPortrait:  computed(() => {return windowPortrait;}),   // 竖屏
+        windowOrientation: computed(() => { return screenOrientation }),
+        windowLandscape: computed(() => { return windowLandscape }), // 横屏
+        windowPortrait: computed(() => { return windowPortrait; }),   // 竖屏
         windowActive: true,
         windowScrollY: 0,
         keyboardType: null,
@@ -30,7 +30,10 @@ export const GlobalStore = defineStore({
         okrDetail: {
             show: false,
             id: 0,
-        }
+        },
+        addMultipleShow: false,
+        multipleId: 0,
+        addMultipleData: null,
     }),
     actions: {
         async init() {
@@ -67,6 +70,19 @@ export const GlobalStore = defineStore({
                 }),
                 theme: computed(() => {
                     return this.themeName === "dark" ? darkTheme : null;
+                }),
+            };
+        },
+        multipleSetup() {
+            return {
+                addMultipleShow: computed(() => {
+                    return this.addMultipleShow;
+                }),
+                multipleId: computed(() => {
+                    return this.multipleId ;
+                }),
+                addMultipleData: computed(() => {
+                    return this.addMultipleData ;
                 }),
             };
         },
