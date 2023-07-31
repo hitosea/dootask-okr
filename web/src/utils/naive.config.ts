@@ -1,7 +1,7 @@
-import { datePickerDark } from "naive-ui"
+import { GlobalThemeOverrides } from "naive-ui"
 
 const themeOverrides = {
-    lightThemeOverrides: {
+    lightThemeOverrides:<GlobalThemeOverrides> {
         common: {
             primaryColor: "#84C56A",
             primaryColorHover: "#a2d98d",
@@ -21,8 +21,12 @@ const themeOverrides = {
             paddingHuge:"24px 24px 24px",
             borderRadius:"12px"
         },
+        Form: {
+            feedbackHeightMedium: "20px",
+            feedbackFontSizeMedium: "12px"
+        }
     },
-    darkThemeOverrides: {
+    darkThemeOverrides:<GlobalThemeOverrides>  {
         common: {
             primaryColor: "#67a050",
             primaryColorHover: "#568342",

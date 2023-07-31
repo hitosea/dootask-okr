@@ -1,12 +1,12 @@
 <template >
     <n-drawer v-model:show="show" :width="600" @after-enter="showDrawer" :on-after-leave="closeDrawer"
-        :mask-closable="false" :z-index="13" class="okr">
+        :mask-closable="false" :z-index="13" class="okr" style="--n-body-padding:16px 20px 16px 34px">
         <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
             <div class="flex flex-col h-full">
                 <n-scrollbar>
-                    <div class="add-main-box">
+                    <div class="add-main-box pr-14">
 
-                        <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-placement="left"
+                        <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-align="left" label-placement="left"
                             label-width="auto" require-mark-placement="left">
 
                             <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
@@ -86,21 +86,20 @@
                                 </div>
                             </div>
 
-                            <div v-for="(item, index) in formKRValue"
-                                class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
+                            <div v-for="(item, index) in formKRValue" class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
                                 <div
-                                    class="flex items-center justify-between px-[12px] py-[13px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
+                                    class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                                     <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
                                     <div class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
                                         <i class="taskfont text-14 text-text-tips">&#xe787;</i>
                                     </div>
                                 </div>
 
-                                <div class="p-24 pb-2">
+                                <div class="p-24 py-20 pb-8">
                                     <n-form ref="formRefs" :model="formKRValue[index]" size="medium" :rules="timeRule"
                                         label-placement="left" label-width="auto" require-mark-placement="left">
                                         <n-grid :cols="4" :x-gap="16">
-                                            <n-form-item-gi :span="4" class="w-full" label="KR">
+                                            <n-form-item-gi :span="4" class="w-full" label="KR" path="title">
                                                 <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
                                             </n-form-item-gi>
 
@@ -157,6 +156,8 @@ const emit = defineEmits(['close','upData'])
 const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
+const formRef = ref()
+const formRefs = ref()
 const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
@@ -253,6 +254,11 @@ const rules = <any>{
 }
 
 const timeRule = <any>{
+    title: {
+        required: true,
+        message: $t('请输入KR内容'),
+        trigger: ['input']
+    },
     time: {
         type: 'array',
         required: true,
@@ -267,62 +273,63 @@ const submitSelectAlignment = (e) => {
 
 //提交
 const handleSubmit = () => {
-    if (!formValue.value.title) return message.info($t("请输入目标"))
-    if (!formValue.value.type) return message.info($t("请选择类型"))
-    if (!formValue.value.priority) return message.info($t("请选择优先级"))
-    if (!formValue.value.ascription) return message.info($t("请选择归属"))
-    if (!formValue.value.time) return message.info($t("请选择目标(O)的周期"))
+    formRef.value?.validate((errors) => {
+        formRefs.value?.forEach(element => {
+            element.validate((errors) => {
+                if (errors) return false;
+            })
+        });
+        if (errors) return false;
+        const keyResults = []
+        for (let index = 0; index < formKRValue.value.length; index++) {
+            if (!formKRValue.value[index].title || !formKRValue.value[index].time) return
+            keyResults.push({
+                id: formKRValue.value[index].id || 0,
+                title: formKRValue.value[index].title,
+                confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
+                participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
+                start_at: utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
+                end_at: utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
+            })
+        }
+        const upData = {
+            id: 0,
+            title: formValue.value.title,
+            type: formValue.value.type,
+            priority: formValue.value.priority,
+            ascription: formValue.value.ascription,
+            visible_range: formValue.value.visible_range,
+            start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
+            end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
+            align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
+            project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
+            key_results: keyResults,
+        }
+        loadIng.value = true
+        if (props.edit) {
+            upData.id = formValue.value.id
+            upDateOkr(upData)
+                .then(({ msg }) => {
+                    message.success(msg)
+                    emit('close')
+                })
+                .catch(ResultDialog)
+                .finally(() => {
+                    loadIng.value = false
+                })
+        } else {
+            addOkr(upData)
+                .then(({ msg }) => {
+                    message.success(msg)
+                    emit('close')
+                })
+                .catch(ResultDialog)
+                .finally(() => {
+                    loadIng.value = false
+                })
+        }
 
-
-    const keyResults = []
-    for (let index = 0; index < formKRValue.value.length; index++) {
-        if (!formKRValue.value[index].time) return message.info($t(`请选择KR${index + 1}周期`))
-        keyResults.push({
-            id: formKRValue.value[index].id || 0,
-            title: formKRValue.value[index].title,
-            confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
-            participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
-            start_at: utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
-            end_at: utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
-        })
-    }
-    const upData = {
-        id: 0,
-        title: formValue.value.title,
-        type: formValue.value.type,
-        priority: formValue.value.priority,
-        ascription: formValue.value.ascription,
-        visible_range: formValue.value.visible_range,
-        start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
-        end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
-        align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
-        project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
-        key_results: keyResults,
-    }
-    loadIng.value = true
-    if (props.edit) {
-        upData.id = formValue.value.id
-        upDateOkr(upData)
-            .then(({ msg }) => {
-                message.success(msg)
-                emit('close')
-            })
-            .catch(ResultDialog)
-            .finally(() => {
-                loadIng.value = false
-            })
-    } else {
-        addOkr(upData)
-            .then(({ msg }) => {
-                message.success(msg)
-                emit('close')
-            })
-            .catch(ResultDialog)
-            .finally(() => {
-                loadIng.value = false
-            })
-    }
-
+    })
 }
 
 
