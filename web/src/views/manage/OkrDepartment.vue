@@ -1,6 +1,50 @@
 <template >
+    <div class=" flex items-center my-16 nowrap">
+        <div class=" mb-2 mr-8  custom-div">
+            {{$t('部门')}}
+        </div>
+        <n-select
+            v-model:value="departmentsvalue"
+            :options="departments"
+            class="custom-select"
+            :placeholder="$t('全部')"/>
+
+        <div class=" mb-2 mr-8 ml-24 custom-div">
+            {{$t('负责人')}}
+        </div>
+        <n-select
+            v-model:value="principalvalue"
+            :options="principal"
+            class="custom-select"
+            :placeholder="$t('全部')"/>
+
+        <div class=" mb-2 mr-8 ml-24 custom-div">
+            {{$t('类型')}}
+        </div>
+        <n-select
+            v-model:value="typevalue"
+            :options="types"
+            class="custom-select"
+            :placeholder="$t('全部')"/>
+
+        <div class=" mb-2 mr-8 ml-24 custom-div">
+            {{$t('时间')}}
+        </div>
+        <n-date-picker class="custom-select" v-model:value="daterange"
+        value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" :placeholder="$t('请选择时间')"/>
+
+        <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded" @click="handleClick()">
+            <i class="taskfont mr-5" v-if="!(isLoading)">&#xe72a;</i>
+            {{ $t('搜索') }}
+        </n-button>
+
+        <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div" @click="getList('search')">
+            {{ $t('已完成未评分') }}
+        </n-checkbox>
+    </div>
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-department-main">
+<<<<<<< Updated upstream
             <OkrLoading v-if="loadIng"></OkrLoading>
             <div class=" flex items-center mb-16 mt-0 nowrap">
 
@@ -46,9 +90,18 @@
                 </n-checkbox>
             </div>
             <OkrItems @upData="upData" @edit="handleEdit" :list="list" v-if="list.length != 0"></OkrItems>
+=======
+            <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
+>>>>>>> Stashed changes
             <OkrNotDatas v-else :msg="$t('暂无OKR')"></OkrNotDatas>
         </div>
     </n-scrollbar>
+    <div class="mask" v-if="loadIng">
+        <OkrLoading></OkrLoading>
+    </div>
+    <div class="maskbottom" v-if="loadIngBottom">
+        <OkrLoading></OkrLoading>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -61,7 +114,14 @@ import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'
 import utils from '@/utils/utils'
 
+function handleClick() {
+    isLoading.value = true
+    getList('search');
+}
+
 const loadIng = ref(false)
+const loadIngBottom = ref(false)
+const isLoading = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
@@ -112,6 +172,9 @@ const init = () => {
 
 const getList = (type) => {
 
+    if (type == 'search'){
+        page.value = 1
+    }
     if (last_page.value >= page.value || type == 'search') {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
@@ -124,8 +187,11 @@ const getList = (type) => {
             type: typevalue.value,
             userid: principalvalue.value,
         }
-
-        loadIng.value = true
+        if (type != 'search'){
+            loadIngBottom.value = true
+        }else{
+            loadIng.value = true
+        }
         getDepartmentOkrList(sendata).then(({ data }) => {
             if (type == 'search') {
                 data.data ?  list.value = data.data : list.value = []
@@ -138,8 +204,11 @@ const getList = (type) => {
                 }
             }
             last_page.value = data.last_page
+            loadIng.value = false
+            isLoading.value = false   
+            loadIngBottom.value = false         
+
         })
-        loadIng.value = false
     }
 }
 
@@ -181,13 +250,13 @@ const onScroll = (e) => {
 
 onMounted(() => {
     init()
-    getList('')
+    getList('search')
 })
 
 </script>
 <style lang="less" scoped>
 .okr-department-main {
-    @apply py-24 flex flex-col gap-6;
+    @apply py-24 flex flex-col gap-6 pt-0;
 }
 
 .custom-select {
@@ -198,5 +267,28 @@ onMounted(() => {
     white-space: nowrap;
 
 }
+
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+  }
+  .maskbottom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 9999; 
+  }
 
 </style>
