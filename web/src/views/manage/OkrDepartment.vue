@@ -41,7 +41,7 @@
                     <i class="taskfont mr-5">&#xe72a;</i>
                     {{ $t('搜索') }}
                 </n-button>
-                <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div" @click="getList('search')">
+                <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div ml-10" @click="getList('search')">
                     {{ $t('已完成未评分') }}
                 </n-checkbox>
             </div>

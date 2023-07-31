@@ -1,8 +1,8 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" @after-enter="showDrawer" :mask-closable="false"
         @after-leave="closeDrawer" :z-index="13">
-        <n-card class="w-[90%] max-w-[1200px] " :bordered="false" size="huge" role="dialog" aria-modal="true">
-            <div class="flex max-h-[640px]">
+        <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
+            <div class="flex max-h-[640px] min-h-[640px]">
                 <div class="flex-1 flex flex-col  relative">
                     <div
                         class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
