@@ -45,7 +45,7 @@
                                 @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
                         </div>
                     </div>
-                    <n-scrollbar >
+                    <n-scrollbar class="pr-[10px]">
                     <n-spin :show="loadIng">
                         <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 ">{{ detialData.title }}</h3>
 
@@ -147,9 +147,9 @@
                 </div>
 
                 <div
-                    class="w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5] pl-24 ml-24">
+                    class="w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
                     <div
-                        class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] h-[28px]">
+                        class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] ml-24 h-[28px]">
                         <ul class="flex items-center gap-8">
                             <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
                             </li>
@@ -167,7 +167,7 @@
                                 <DialogWrappers />
                             </div>
                             <n-scrollbar v-if="navActive == 1">
-                                <div class="flex text-start mb-[24px]" v-for="item in logList">
+                                <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
                                     <n-avatar round :size="28" class="mr-8" :src="item.user_avatar" />
                                     <div class="flex flex-col gap-3">
                                         <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
@@ -178,18 +178,20 @@
                                 </div>
                             </n-scrollbar>
                             <n-scrollbar v-if="navActive == 2">
-                                <p class="cursor-pointer" @click="handleAddMultiple"> <i
-                                        class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
-                                        class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
-                                <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
-                                    <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList" @click="handleView(item.id)">
-                                        <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
-                                            utils.GoDate(item.created_at) }})</h4>
-                                        <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}
-                                        </p>
+                                <div class="pl-24 pr-[10px]" >
+                                    <p class="cursor-pointer" @click="handleAddMultiple"> <i
+                                            class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
+                                            class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
+                                    <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
+                                        <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList" @click="handleView(item.id)">
+                                            <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
+                                                utils.GoDate(item.created_at) }})</h4>
+                                            <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}
+                                            </p>
+                                        </div>
                                     </div>
+                                    <p v-else class="text-12 mt-20 text-text-tips text-center">{{ $t('暂无复盘') }}</p>
                                 </div>
-                                <p v-else class="text-12 mt-20 text-text-tips text-center">{{ $t('暂无复盘') }}</p>
                             </n-scrollbar>
                         </div>
                     </div>

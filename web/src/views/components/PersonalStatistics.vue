@@ -6,7 +6,7 @@
                     <h3>{{ $t('待完成数') }}</h3>
                     <p>{{analyzeDatas.okrCompletedAndUncompleted.uncompleted}}</p>
                 </div>
-                <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)]">
+                <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)] shrink-0   ">
                     <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
                 </div>
             </div>
@@ -16,7 +16,7 @@
                     <h3>{{ $t('已完成/已取消数') }}</h3>
                     <p>{{analyzeDatas.okrCompletedAndUncompleted.completed}}</p>
                 </div>
-                <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)]">
+                <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)] shrink-0">
                     <i class="taskfont text-[#87D068]">&#xe707;</i>
                 </div>
             </div>

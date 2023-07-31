@@ -6,8 +6,8 @@
                 <n-scrollbar>
                     <div class="add-main-box pr-14">
 
-                        <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-align="left" label-placement="left"
-                            label-width="auto" require-mark-placement="left">
+                        <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-align="left"
+                            label-placement="left" label-width="auto" require-mark-placement="left">
 
                             <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
                                 <n-input v-model:value="formValue.title" :placeholder="$t('请输入目标')" />
@@ -86,7 +86,8 @@
                                 </div>
                             </div>
 
-                            <div v-for="(item, index) in formKRValue" class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
+                            <div v-for="(item, index) in formKRValue"
+                                class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
                                 <div
                                     class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                                     <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
@@ -151,7 +152,7 @@ import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
 import { ResultDialog } from "@/api"
 
-const emit = defineEmits(['close','upData'])
+const emit = defineEmits(['close', 'upData'])
 
 const message = useMessage()
 const show = ref(false)
@@ -404,6 +405,7 @@ const handleAddKr = () => {
 
 // 删除kr
 const handleRemoveKr = (index) => {
+    if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
 }
 
@@ -446,17 +448,19 @@ window.addEventListener('apps-unmount', function () {
 }
 
 :deep(.n-drawer-header__close) {
-    @apply absolute -left-36 ;
-    &:focus{
+    @apply absolute -left-36;
+
+    &:focus {
         @apply bg-none;
     }
+
     i {
         @apply text-[#fff];
     }
 }
 
 :deep(.n-base-close:not(.n-base-close--disabled):focus::before) {
-        @apply bg-transparent;
+    @apply bg-transparent;
 }
 
 .span {
@@ -477,5 +481,4 @@ window.addEventListener('apps-unmount', function () {
 
 .okr-user-selects {
     @apply w-full bg-none border-none !important;
-}
-</style>
+}</style>
