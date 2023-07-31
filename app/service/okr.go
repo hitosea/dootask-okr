@@ -380,6 +380,9 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 	var obj model.Okr
 	if err := core.DB.Where("id = ? and parent_id > 0", id).First(&obj).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
 		return nil, err
 	}
 	return &obj, nil
@@ -389,6 +392,9 @@ func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) {
 	var obj model.Okr
 	if err := core.DB.Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
 		return nil, err
 	}
 	return &obj, nil
@@ -662,7 +668,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		if err != nil {
 			return nil, err
 		}
-		db = db.Where("start_at >= ? and end_at <= ?", startAt, endAt)
+		db = db.Where("(start_at >= ? AND start_at <= ?) OR (end_at >= ? AND end_at <= ?) OR (start_at <= ? AND end_at >= ?)", startAt, endAt, startAt, endAt, startAt, endAt)
 	}
 
 	// 类型筛选
