@@ -1,6 +1,6 @@
 <template >
     <n-drawer v-model:show="show" :width="948" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
-        :trap-focus="false" drawer-class="okr">
+        :trap-focus="false" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
                 <n-scrollbar class="h-full flex-auto">
@@ -108,10 +108,9 @@ const emit = defineEmits(['close'])
 
 const closeDrawer = () => {
     tableData.value = []
-    editorContent.value = `<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`
+    editorContent.value = ``
+    // editorContent.value = `<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`
 }
-
-
 
 const handleSubmit = () => {
     const upData = {

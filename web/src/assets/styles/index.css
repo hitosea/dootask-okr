@@ -9,7 +9,7 @@
     padding: 0;
 }
 
-.n-card-header{
+/* .n-card-header{
     @apply relative;
 }
 .n-card-header::before{
@@ -19,13 +19,13 @@
 .n-card-header{
     @apply pb-32 !important;
    
-}
+} */
 
 /* drawer样式调整  */
-.n-drawer--right-placement.okr{
+.okr.n-drawer--right-placement{
     border-radius: 18px 0 0 18px;
 }
-.n-drawer--right-placement.okr .n-drawer-header{
+.okr.n-drawer--right-placement .n-drawer-header{
     border-bottom:none !important;
     line-height: 1.5 !important;
 }
