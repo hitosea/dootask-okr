@@ -47,104 +47,111 @@
                     </div>
 
                     <n-scrollbar class="pr-[10px]">
-                    <n-spin :show="false">
-                        <h3  class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 min-h-[40px]">
-                            {{ detialData.title}}
-                        </h3>
-                        <div class="mt-24 flex flex-col gap-4">
-                            <div class="flex items-center">
-                                <p class="flex items-center w-[115px]">
-                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
-                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
-                                </p>
-                                <p class="flex-1 text-text-li text-14">
-                                    {{ detialData.alias && detialData.alias[0] }}
-                                </p>
-                            </div>
-
-
-                            <div class="flex items-center">
-                                <p class="flex items-center w-[115px]">
-                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
-                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
-                                </p>
-                                <p class="flex-1 text-text-li text-14">
-                                    <span v-if="detialData.start_at">{{ utils.GoDate(detialData.start_at || 0) }} ~ {{ utils.GoDate(detialData.end_at || 0) }}</span>
-                                </p>
-                            </div>
-
-                            <div class="flex items-center">
-                                <p class="flex items-center w-[115px]">
-                                    <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
-                                    <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
-                                </p>
-                                <span class="span" :class="pStatus(detialData.priority)">{{ detialData.priority }}</span>
-                            </div>
-
-                        </div>
-
-                        <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
-
-                        <div class="flex flex-col mt-20 gap-6 min-h-[60px]">
-                            <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
+                        <n-spin :show="false">
+                            <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 min-h-[40px]">
+                                {{ detialData.title }}
+                            </h3>
+                            <div class="mt-24 flex flex-col gap-4">
                                 <div class="flex items-center">
-                                    <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
-                                    <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
+                                    <p class="flex items-center w-[115px]">
+                                        <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
+                                        <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
+                                    </p>
+                                    <p class="flex-1 text-text-li text-14">
+                                        {{ detialData.alias && detialData.alias[0] }}
+                                    </p>
                                 </div>
-                                <div class="flex items-center justify-between mt-8">
+
+
+                                <div class="flex items-center">
+                                    <p class="flex items-center w-[115px]">
+                                        <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
+                                        <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
+                                    </p>
+                                    <p class="flex-1 text-text-li text-14">
+                                        <span v-if="detialData.start_at">{{ utils.GoDate(detialData.start_at || 0) }} ~ {{
+                                            utils.GoDate(detialData.end_at || 0) }}</span>
+                                    </p>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <p class="flex items-center w-[115px]">
+                                        <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
+                                        <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
+                                    </p>
+                                    <span class="span" :class="pStatus(detialData.priority)">{{ detialData.priority
+                                    }}</span>
+                                </div>
+
+                            </div>
+
+                            <h4 class="text-text-li text-16 font-medium mt-36">KR</h4>
+
+                            <div class="flex flex-col mt-20 gap-6 min-h-[60px]">
+                                <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
                                     <div class="flex items-center">
-                                        <div class="flex items-center gap-2">
-                                            <div v-if="showUserSelect">
-                                                        <UserSelects :formkey="index" />
-                                                    </div>
-                                            <n-avatar v-if="!showUserSelect" round :size="20"
-                                                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                        </div>
-                                        <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                        <p class="flex-1 text-text-li text-14 min-w-[140px]">{{ utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}</p>
+                                        <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
+                                        <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
                                     </div>
-                                    <div class="flex items-center gap-6">
-                                        <div class="flex items-center cursor-pointer"
-                                            @click="handleSchedule(item.id, item.progress, item.progress_status)">
-                                            <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
-                                                :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                                color="var(--primary-color)" status="success" :percentage="item.progress" />
-                                            <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+                                    <div class="flex items-center justify-between mt-8">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center gap-2">
+                                                <div v-if="showUserSelect">
+                                                    <UserSelects :formkey="index" />
+                                                </div>
+                                                <n-avatar v-if="!showUserSelect" round :size="20"
+                                                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                            </div>
+                                            <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
+                                            <p class="flex-1 text-text-li text-14 min-w-[140px]">{{
+                                                utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
+                                            </p>
                                         </div>
-                                        <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
-                                            @click="handleConfidence(item.id, item.confidence)">
-                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
-                                            <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
-                                        </div>
-                                        <div v-else class="flex items-center cursor-pointer"
-                                            @click="handleConfidence(item.id, item.confidence)">
-                                            <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
-                                            <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
-                                        </div>
-                                        <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
-                                            @click="handleMark(item.id, item.score)">
-                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
-                                            <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
-                                        </div>
-                                        <div v-else class="flex items-center cursor-pointer">
-                                            <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
-                                            <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
+                                        <div class="flex items-center gap-6">
+                                            <div class="flex items-center cursor-pointer"
+                                                @click="handleSchedule(item.id, item.progress, item.progress_status)">
+                                                <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                                    :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                                                    color="var(--primary-color)" status="success"
+                                                    :percentage="item.progress" />
+                                                <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+                                            </div>
+                                            <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
+                                                @click="handleConfidence(item.id, item.confidence)">
+                                                <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                                <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
+                                            </div>
+                                            <div v-else class="flex items-center cursor-pointer"
+                                                @click="handleConfidence(item.id, item.confidence)">
+                                                <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                                <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
+                                            </div>
+                                            <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
+                                                @click="handleMark(item.id, item.score, item.superior_score)">
+                                                <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                                <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
+                                            </div>
+                                            <div v-else class="flex items-center cursor-pointer"
+                                                @click="handleMark(item.id, item.score, item.superior_score)">
+                                                <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                                <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
+                            <div class="border-solid border-0 border-b-[1px] border-[#F2F3F5] my-36"></div>
 
-                        <h4 class="text-text-li text-16 font-medium mb-12">
-                            {{ $t('对齐目标') }} 
-                            <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]">&#xe779;</i>
-                        </h4>
+                            <h4 class="text-text-li text-16 font-medium mb-12">
+                                {{ $t('对齐目标') }}
+                                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="()=>{selectAlignmentShow = true}">&#xe779;</i>
+                            </h4>
 
-                        <AlignTarget class="pb-[28px]" :value="props.show" :id="props.id"></AlignTarget>
-                    </n-spin>
-                </n-scrollbar>
+                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id"></AlignTarget>
+                        </n-spin>
+                    </n-scrollbar>
                 </div>
 
                 <div
@@ -165,8 +172,8 @@
                         <div class="absolute top-[24px] bottom-0 left-0 right-0">
                             <div class="text-center" v-show="navActive == 0">
                                 <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
-                                <span v-if="!showDialogWrapper">子应用无法加载</span>
-                                <DialogWrappers v-else/>
+                                <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
+                                <DialogWrappers v-else />
                             </div>
                             <n-scrollbar v-if="navActive == 1">
                                 <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
@@ -180,15 +187,17 @@
                                 </div>
                             </n-scrollbar>
                             <n-scrollbar v-if="navActive == 2">
-                                <div class="pl-24 pr-[10px]" >
+                                <div class="pl-24 pr-[10px]">
                                     <p class="cursor-pointer" @click="handleAddMultiple"> <i
                                             class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
                                             class="text-14 text-text-tips">{{ $t('添加复盘') }}</span></p>
                                     <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
-                                        <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList" @click="handleView(item.id)">
+                                        <div class="flex items-center justify-between cursor-pointer"
+                                            v-for="item in replayList" @click="handleView(item.id)">
                                             <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
                                                 utils.GoDate(item.created_at) }})</h4>
-                                            <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}
+                                            <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at)
+                                            }}
                                             </p>
                                         </div>
                                     </div>
@@ -204,18 +213,20 @@
                 </div>
             </div>
 
-
+            <SelectAlignment :value="selectAlignmentShow" :editData="detialData.align_objective"
+            @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
         </n-card>
 
     </n-modal>
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail, okrFollow, getLogList, getReplayList ,okrCancel} from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate } from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
 import { useMessage } from "naive-ui"
+import SelectAlignment from '@/views/components/SelectAlignment.vue'
 
 const userSelectApps = ref([]);
 const navActive = ref(0)
@@ -233,7 +244,10 @@ const replayList = ref([])
 const showDialogWrapper = computed(() => window.Vues?.components?.DialogWrapper ? 1 : 0)
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
-const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple','checkMultiple','upData'])
+const selectAlignmentShow = ref(false)
+const AlignTargetRef = ref(null)
+
+const emit = defineEmits(['close', 'schedule', 'confidence', 'mark', 'edit', 'addMultiple', 'checkMultiple', 'upData'])
 
 const props = defineProps({
     show: {
@@ -261,16 +275,16 @@ watch(() => detialData.value.dialog_id, (newValue) => {
 
 // 明细
 const getDetail = (type) => {
-    if(type=='first') loadIng.value = true
+    if (type == 'first') loadIng.value = true
     getOkrDetail({
         id: props.id,
     }).then(({ data }) => {
         detialData.value = data
     })
-    .catch(ResultDialog)
-    .finally(() => {
-        if(type=='first') loadIng.value = false
-    })
+        .catch(ResultDialog)
+        .finally(() => {
+            if (type == 'first') loadIng.value = false
+        })
 }
 
 // 关注
@@ -280,16 +294,16 @@ const handleFollowOkr = (id) => {
         id: id,
     }).then(({ msg }) => {
         message.success(msg)
-        emit('upData',id)
+        emit('upData', id)
         getDetail('')
     })
-    .catch(ResultDialog)
-    .finally(() => {
-        loadIng.value = false
-    })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
 }
 
-// 
+//
 const handleNav = (index) => {
     navActive.value = index
     if (navActive.value == 1) {
@@ -316,10 +330,10 @@ const handleGetLogList = () => {
             logList.value.push(item)
         })
     })
-    .catch(ResultDialog)
-    .finally(() => {
-        loadIngR.value = false
-    })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIngR.value = false
+        })
 }
 
 // 复盘列表
@@ -334,10 +348,10 @@ const handleGetReplayList = () => {
             replayList.value.push(item)
         })
     })
-    .catch(ResultDialog)
-    .finally(() => {
-        loadIngR.value = false
-    })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIngR.value = false
+        })
 }
 
 const handleEdit = () => {
@@ -353,15 +367,15 @@ const handleConfidence = (id, confidence) => {
     emit('confidence', id, confidence)
 }
 
-const handleMark = (id, score) => {
-    emit('mark', id, score)
+const handleMark = (id, score, superior_score) => {
+    emit('mark', id, score, superior_score)
 }
 
 const handleAddMultiple = () => {
     emit('addMultiple', utils.cloneJSON(detialData.value))
 }
 const handleView = (id) => {
-    emit('checkMultiple',id)
+    emit('checkMultiple', id)
 }
 
 const closeModal = () => {
@@ -375,13 +389,13 @@ const handleCancel = () => {
         id: detialData.value.id,
     }).then(({ msg }) => {
         message.success(msg)
-        emit('upData',detialData.value.id)
+        emit('upData', detialData.value.id)
         getDetail('')
     })
-    .catch(ResultDialog)
-    .finally(() => {
-        loadIng.value = false
-    })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
 }
 
 // 加载聊天组件
@@ -412,16 +426,16 @@ const loadUserSelects = () => {
             let app = new window.Vues.Vue({
                 el: e,
                 store: window.Vues.store,
-                render: (h: any) =>{
+                render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
                         props: {
-                            value: (item.participant).split(',').map(h=> Number(h) )  ,
+                            value: (item.participant).split(',').map(h => Number(h)),
                             title: $t('选择参与人'),
                             border: false,
                             avatarSize: 20,
                             addIcon: false,
-                            disable:true
+                            disable: true
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
@@ -438,6 +452,25 @@ const loadUserSelects = () => {
     })
 }
 
+//添加对齐目标
+const submitSelectAlignment = (e) => {
+    const upData = {
+        align_objective: e.join(','),
+        id: detialData.value.id,
+    }
+    loadIng.value = true
+    alignUpdate(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+            emit('upData', detialData.value.id)
+            AlignTargetRef.value.getList()
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+
 // 卸载
 window.addEventListener('apps-unmount', function () {
     dialogWrappersApp.value && dialogWrappersApp.value.$destroy()
@@ -446,7 +479,7 @@ window.addEventListener('apps-unmount', function () {
 
 // 显示
 const showDrawer = () => {
-    
+
 }
 
 // 关闭
@@ -525,5 +558,4 @@ defineExpose({
 
 .li-nav.active {
     @apply text-title-color text-16 opacity-100;
-}
-</style>
+}</style>

@@ -109,6 +109,10 @@ watch(() => props.value, (newValue) => {
     }
 }, { immediate: true })
 
+defineExpose({
+    getList
+})
+
 </script>
 
 <style lang="less" scoped>

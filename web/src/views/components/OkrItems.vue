@@ -74,7 +74,7 @@
     </Confidences>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" @close="handleCloseMarks"></MarkVue>
+    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" @close="handleCloseMarks"></MarkVue>
 
     <!-- 新增复盘 -->
     <AddMultiple v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultiple>
@@ -111,6 +111,7 @@ const confidence = ref(0)
 const markShow = ref(false)
 const markId = ref(0)
 const score = ref(0)
+const superiorScore = ref(0)
 
 const addMultipleShow = ref(false)
 const multipleId = ref(0)
@@ -230,15 +231,17 @@ const handleCloseConfidenes = (type) => {
 }
 
 //打开评分
-const handleMark = (id, scores) => {
+const handleMark = (id, scores,superior_score) => {
     markId.value = id
     score.value = scores
+    superiorScore.value = superior_score
     markShow.value = true
 }
 //关闭评分
 const handleCloseMarks = (type) => {
     markId.value = 0
     score.value = 0
+    superiorScore.value = 0
     markShow.value = false
     if (type == 1) {
         RefOkrDetails.value.getDetail()

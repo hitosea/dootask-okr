@@ -27,6 +27,7 @@
                     <div class="replay-item-body" v-if="item.isActive">
                         <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
                     </div>
+
                 </div>
             </div>
         </div>

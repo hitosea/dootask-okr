@@ -79,7 +79,7 @@ const props = defineProps({
     },
     editData: {
         type: Object,
-        default: {},
+        default: null,
     },
 })
 
@@ -156,7 +156,6 @@ const getList = (type) => {
             }
             last_page.value = data.last_page
             loadIng.value = false
-
             if (cities.value != null) {
                 okrList.value.map((item, index) => {
                     item.key_results?.map(items => {

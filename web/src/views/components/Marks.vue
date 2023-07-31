@@ -5,8 +5,12 @@
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
             <div>
-                <p v-if="Mark > -1" class="mb-12 text-title-color text-14">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{ Mark }}</span></p>
-                <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
+                <div class="flex items-center">
+                    <p v-if="Mark > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{ Mark }}</span></p>
+                <p v-if="superiorScore > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('上级评分分数：') }}<span class=" text-primary-color">{{ superiorScore }}</span></p>
+                </div>
+
+                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item>
                         <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')" :options="markOptions" />
                     </n-form-item>
@@ -43,6 +47,7 @@ const formValue = ref({
 })
 
 const Mark = ref(-1);
+const superiorScore = ref(-1);
 
 const markOptions = ref([
     {
@@ -103,11 +108,16 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    superior_score: {
+        type: Number,
+        default: 0,
+    },
 })
 
 watch(() => props.id, (newValue) => {
     if (newValue) {
         Mark.value = props.score
+        superiorScore.value = props.superior_score
     }
 }, { immediate: true })
 
