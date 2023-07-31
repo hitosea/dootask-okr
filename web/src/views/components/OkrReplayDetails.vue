@@ -22,12 +22,12 @@ const loadTable = (krReplay) => {
                 ? { targetTitle: krReplay.okrName, length: krReplay.krList.length, completeness: krReplay.okrProgress }
                 : {}
         return {
-            id: itemData.id,
-            krList: itemData.kr_history,
-            krTitle: itemData.title,
-            krCompleteness: itemData.progress,
-            score: itemData.score,
-            evaluate: itemData.comment,
+            id: itemData.id, //目标id
+            krList: itemData.kr_history, //kr列表
+            krTitle: itemData.title, //标题
+            krCompleteness: itemData.progress, //完成度
+            score: itemData.score, //评分
+            evaluate: itemData.comment == 1 ? $t("做得好的") : $t("可提升的"), //评价
             ...additionalProps,
         }
     })

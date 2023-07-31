@@ -1,25 +1,32 @@
 <template>
-    <n-scrollbar >
+    <n-scrollbar>
         <div class="py-24">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <OkrNotDatas v-else-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>
             <div v-else class="replay">
-                <div v-for="(item, index) in items" :key="index"
-                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
+                <div
+                    v-for="(item, index) in items"
+                    :key="index"
+                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
+                    @click="openMultiple"
+                >
                     <div class="replay-item-head">
                         <div>
                             <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
-                                item.priority }}</span>
-                            <span class="text-[14px] m-[5px] text-[#333333]"><b>{{ item.replayName }}</b></span>
-                            <span class="text-[#515a6e] text-12">{{ $t('的目标复盘') }}</span>
+                                item.priority
+                            }}</span>
+                            <span class="text-[14px] m-[5px] text-[#333333]"
+                                ><b>{{ item.replayName }}</b></span
+                            >
+                            <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
-                            <span class="mr-[10px]">{{ item.isActive == true ? $t('收起') : $t('展开') }}</span>
+                            <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
                             <i class="replay-item-head-icon taskfont">&#xe705;</i>
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="replay-item-okr">
+                        <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
                             <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
                             <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
                         </div>
@@ -30,6 +37,17 @@
 
                 </div>
             </div>
+            <!-- OKR详情 -->
+            <OkrDetails
+                ref="RefOkrDetails"
+                :id="detailId"
+                :show="okrDetailsShow"
+                @close="
+                    () => {
+                        okrDetailsShow = false
+                    }
+                "
+            ></OkrDetails>
         </div>
     </n-scrollbar>
 </template>
@@ -40,6 +58,7 @@ import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from "@/views/components/OkrLoading.vue"
 import * as http from "../../api/modules/replay"
+import OkrDetails from "@/views/components/OkrDetails.vue"
 
 const addMultipleShow = ref(false)
 const items = ref([])
@@ -47,9 +66,12 @@ const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 
+const okrDetailsShow = ref(false)
+const detailId = ref(0)
+
 //封装复盘列表
 const loadResplayList = (data) => {
-    items.value = data.map((itemData) => (returnReplayItem(itemData)));
+    items.value = data.map((itemData) => returnReplayItem(itemData))
 }
 
 //提取复盘信息
@@ -60,15 +82,15 @@ const returnReplayItem = (replay) => {
         replayName: replay.okr_alias.join(","),
         okrName: replay.okr_title,
         priority: replay.okr_priority,
-        krList: (replay.kr_history ? replay.kr_history : []),
+        krList: replay.kr_history ? replay.kr_history : [],
         okrProgress: replay.okr_progress,
-        review: replay.review
+        review: replay.review,
     }
 }
 
 // 获取数据
 const getData = (type) => {
-    if (last_page.value >= page.value || type == 'search') {
+    if (last_page.value >= page.value || type == "search") {
         // 获取复盘列表
         const data = {
             page: page.value,
@@ -77,11 +99,10 @@ const getData = (type) => {
         loadIng.value = true
         http.getReplayList(data).then(({ data }) => {
             loadIng.value = false
-            if (type == 'search') {
+            if (type == "search") {
                 data.data ? loadResplayList(data.data) : []
-            }
-            else {
-                (data.data || []).map(item => {
+            } else {
+                ;(data.data || []).map((item) => {
                     items.value.push(returnReplayItem(item))
                 })
             }
@@ -92,17 +113,22 @@ const getData = (type) => {
 
 // 状态
 const pStatus = (p) => {
-    return p == 'P0' ? 'span-1' : p == 'P1' ? 'span-2' : 'span-3'
+    return p == "P0" ? "span-1" : p == "P1" ? "span-2" : "span-3"
 }
-
 
 // 打开复盘
 const openMultiple = () => {
-    addMultipleShow.value = true;
+    addMultipleShow.value = true
+}
+
+//查看okr详情
+const openOkrDetail = (id) => {
+    okrDetailsShow.value = !okrDetailsShow.value
+    detailId.value = id
 }
 
 onMounted(() => {
-    getData('')
+    getData("")
 })
 </script>
 
@@ -162,4 +188,5 @@ onMounted(() => {
 
 .span-3 {
     @apply bg-[#72A1F7];
-}</style>
+}
+</style>
