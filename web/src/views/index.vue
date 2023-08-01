@@ -90,16 +90,16 @@ const handleAdd = () => {
 const handleClose = (e,id) => {
     //重新获取列表
     if(tabsName.value == $t('我创建的OKR') && e == 1){
-        ICreatedRef.value.getList('')      
+        ICreatedRef.value.getList('search')     
     }
     else if(tabsName.value == $t('参与的OKR') && e == 1){
-        OkrParticipantRef.value.getList('')
+        OkrParticipantRef.value.getList('search')
     }
     else if(tabsName.value == $t('部门OKR') && e == 1){
-        OkrDepartmentRef.value.getList('')
+        OkrDepartmentRef.value.getList('search')
     }
     else if(tabsName.value == $t('关注的OKR') && e == 1){
-        OkrFollowRef.value.getList('')
+        OkrFollowRef.value.getList('search')
     }
 
     //更新单条数据
