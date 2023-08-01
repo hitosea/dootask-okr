@@ -31,6 +31,7 @@ class RequestHttp {
             function (config) {
                 const userInfo = JSON.parse(localStorage.getItem("UserState"))
                 config.headers.Token = userInfo?.info?.token
+                config.headers.Language = localStorage.getItem("lang")
                 return config
             },
             function (error) {

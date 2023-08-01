@@ -47,6 +47,8 @@ const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
+const emit = defineEmits(['unalign'])
+
 const props = defineProps({
     value: {
         type: Boolean,
@@ -81,7 +83,6 @@ const alignCancel = (itemID) => {
         positiveText: $t('确定'),
         negativeText: $t('取消'),
         onPositiveClick: () => {
-
             const upData = {
                 okr_id: props.id,
                 align_okr_id: itemID,
@@ -90,6 +91,8 @@ const alignCancel = (itemID) => {
             getAlignCancel(upData)
                 .then(({ msg }) => {
                     message.success(msg)
+                    getList();
+                    emit('unalign',props.id)
                 })
                 .catch(ResultDialog)
                 .finally(() => {

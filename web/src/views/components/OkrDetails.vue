@@ -151,7 +151,7 @@
                                     @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
-                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id">
+                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id" @unalign="handleUnalign">
                             </AlignTarget>
                         </n-spin>
                     </n-scrollbar>
@@ -506,6 +506,12 @@ const handleCancel = () => {
         })
 }
 
+// 取消
+const handleUnalign = () => {
+        emit('upData', detialData.value.id)
+        getDetail('')
+}
+
 // 加载聊天组件
 const loadDialogWrappers = () => {
     nextTick(() => {
@@ -620,6 +626,7 @@ const submitSelectAlignment = (e) => {
         .then(({ msg }) => {
             message.success(msg)
             emit('upData', detialData.value.id)
+            getDetail('')
             AlignTargetRef.value.getList()
         })
         .catch(ResultDialog)

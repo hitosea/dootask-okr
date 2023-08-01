@@ -53,7 +53,7 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"  @upData="(id)=>{emit('upData',id)}"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"

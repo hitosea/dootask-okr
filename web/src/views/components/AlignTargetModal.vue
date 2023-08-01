@@ -4,7 +4,7 @@
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
-            <AlignTarget :value="props.value" :id="props.id"></AlignTarget>
+            <AlignTarget :value="props.value" :id="props.id" @unalign="handleUnalign"></AlignTarget>
         </n-card>
     </n-modal>
 </template>
@@ -25,9 +25,14 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close','upData'])
 const handleClose = () => {
     emit('close')
+}
+
+// 取消
+const handleUnalign = (id) => {
+        emit('upData', id)
 }
 
 </script>
