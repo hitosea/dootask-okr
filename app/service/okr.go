@@ -145,13 +145,13 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		for _, kr := range param.KeyResults {
 			if kr.Id == 0 {
 				// 新增kr
-				var addKr *interfaces.OkrKeyResultCreateReq
+				var addKr interfaces.OkrKeyResultCreateReq
 				addKr.Title = kr.Title
 				addKr.Participant = kr.Participant
 				addKr.Confidence = kr.Confidence
 				addKr.StartAt = kr.StartAt
 				addKr.EndAt = kr.EndAt
-				keyResult, err := s.createKeyResult(tx, addKr, user, obj)
+				keyResult, err := s.createKeyResult(tx, &addKr, user, obj)
 				if err != nil {
 					return err
 				}
@@ -575,46 +575,70 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 // 获取对齐目标列表
 // 1. 显示所在部门（即我可见的）+　我参与的
 func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
-	// 构造部门查询条件
-	departmentSql := make([]string, 0, len(user.Department))
-	krSql := make([]string, 0, len(user.Department))
-	for _, departmentId := range user.Department {
-		departmentSql = append(departmentSql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
-		krSql = append(krSql, fmt.Sprintf("FIND_IN_SET(%d, department_id) = 0", departmentId))
-	}
-
-	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0")
-	// 标题筛选
-	if objective != "" {
-		krSql = append(krSql, fmt.Sprintf("title LIKE '%%%s%%'", objective))
-		db = db.Where(fmt.Sprintf("title LIKE '%%%s%%'", objective))
-	}
-	db = db.Where(strings.Join(departmentSql, " OR "))
-	db = db.Or("id IN (?)", core.DB.Model(&model.Okr{}).
-		Select("DISTINCT parent_id").
-		Where("FIND_IN_SET(?, participant) > 0", user.Userid).
-		Where(strings.Join(krSql, " AND ")),
+	var (
+		departmentSql  strings.Builder
+		participantSql strings.Builder
+		participantIds []int
+		okrs           []*model.Okr
+		count          int64
+		err            error
+		okrTable       = core.DBTableName(&model.Okr{})
 	)
 
-	var count int64
-	if err := db.Count(&count).Error; err != nil {
+	for i, departmentId := range user.Department {
+		if i > 0 {
+			departmentSql.WriteString(" OR ")
+			participantSql.WriteString(" AND ")
+		}
+		fmt.Fprintf(&departmentSql, "FIND_IN_SET(%d, okr.department_id) > 0", departmentId)
+		fmt.Fprintf(&participantSql, "FIND_IN_SET(%d, okr2.department_id) = 0", departmentId)
+	}
+
+	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Order("okr.created_at desc")
+	participantDb := core.DB.Table(okrTable + " AS okr2").Order("okr2.created_at desc")
+
+	// 标题筛选
+	if objective != "" {
+		// 部门
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son ON okr.id = son.parent_id`, okrTable))
+		db = db.Where(`(okr.title LIKE ? OR son.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
+
+		// 我参与的
+		participantDb = participantDb.Joins(fmt.Sprintf(`LEFT JOIN %s AS parent ON okr2.parent_id = parent.id`, okrTable))
+		participantDb = participantDb.Where(`(okr2.title LIKE ? OR parent.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
+	}
+
+	db = db.Where(departmentSql.String())
+	db = db.Where("okr.parent_id = 0")
+
+	if err = participantDb.
+		Where("FIND_IN_SET(?, okr2.participant) > 0", user.Userid).
+		Where(participantSql.String()).
+		Pluck("DISTINCT okr2.parent_id", &participantIds).Error; err != nil {
 		return nil, err
 	}
 
-	var okrs []*model.Okr
+	db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
+
+	if err = db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
 	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&okrs).Error; err != nil {
 		return nil, err
 	}
 
 	// 参与的O中，只显示我参与的KR
 	for _, obj := range okrs {
-		krs := make([]*model.Okr, 0, len(obj.KeyResults))
-		for _, kr := range obj.KeyResults {
-			if strings.Contains(kr.Participant, fmt.Sprintf("%d", user.Userid)) {
-				krs = append(krs, kr)
+		if common.InArrayInt(obj.Id, participantIds) {
+			krs := make([]*model.Okr, 0, len(obj.KeyResults))
+			for _, kr := range obj.KeyResults {
+				if strings.Contains(kr.Participant, fmt.Sprintf("%d", user.Userid)) {
+					krs = append(krs, kr)
+				}
 			}
+			obj.KeyResults = krs
 		}
-		obj.KeyResults = krs
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
