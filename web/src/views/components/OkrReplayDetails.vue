@@ -16,6 +16,7 @@ let review = ref("")
 // 加载表格
 const loadTable = (krReplay) => {
     review = krReplay.review
+    let count = 1
     data.value = krReplay.krList.map((itemData, index) => {
         const additionalProps =
             index === 0
@@ -23,6 +24,7 @@ const loadTable = (krReplay) => {
                 : {}
         return {
             id: itemData.id, //目标id
+            num: count++, //kr位置
             krList: itemData.kr_history, //kr列表
             krTitle: itemData.title, //标题
             krCompleteness: itemData.progress, //完成度
@@ -128,7 +130,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     {
                         default: () => {
-                            return "KR" + row.id
+                            return "KR" + row.num
                         },
                     },
                 ),
