@@ -516,13 +516,6 @@ func (s *okrService) getObjectiveScore(obj *model.Okr) float64 {
 
 // 所有KR更新评分是否完成，完成则更新O评分，否则不更新
 func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
-	// 检查所有KR评分是否完成
-	for _, kr := range obj.KeyResults {
-		if kr.Score == 0 || kr.SuperiorScore == 0 {
-			return nil
-		}
-	}
-
 	// 计算O评分
 	score := s.getObjectiveScore(obj)
 	if math.IsNaN(score) {
@@ -1066,7 +1059,8 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			}
 
 			// 更新O评分
-			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			var obj *model.Okr
+			tx.Preload("KeyResults").Where("id = ?", kr.ParentId).First(&obj)
 			if err != nil {
 				return err
 			}
@@ -1192,7 +1186,7 @@ func (s *okrService) UpdateConfidence(userid int, param interfaces.OkrConfidence
 		return nil, err
 	}
 
-	logContent := fmt.Sprintf("修改KR信心指数: [%d%%=>%d%%]", kr.Confidence, param.Confidence)
+	logContent := fmt.Sprintf("修改KR信心指数: %s [%d%%=>%d%%]", kr.Title, kr.Confidence, param.Confidence)
 	if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", logContent); err != nil {
 		return nil, err
 	}
