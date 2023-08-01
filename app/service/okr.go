@@ -1135,7 +1135,7 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 	}
 
 	// 日志
-	if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", logContent); err != nil {
+	if err := s.InsertOkrLogTx(core.DB, kr.Id, userid, "update", logContent); err != nil {
 		return nil, err
 	}
 
