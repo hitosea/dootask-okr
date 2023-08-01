@@ -12,6 +12,8 @@ ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
 ErrNoPermission: Manque de pouvoirs
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
+ErrOkrCanceled: O cible annulée inopérable
+ErrOkrCompleted: O objectif atteint inopérationnel
 ErrOkrConfidenceInvalid: Indice de confiance gamme paramètres erreur
 ErrOkrInvalidKrScore: Score KR non valide
 ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
 ErrOkrProgressNotEnough: Progrès insuffisants 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
+ErrOkrScored: KR a été évalué non opérationnel
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTimeEmpty: Le temps ne peut pas être vide

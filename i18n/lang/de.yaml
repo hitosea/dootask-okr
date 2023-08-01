@@ -12,6 +12,8 @@ ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
 ErrMailToInvalid: Bitte geben sie die richtige adresse ein
 ErrNoPermission: Begrenzter zugang.
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
+ErrOkrCanceled: O ziel nicht betriebsbereit
+ErrOkrCompleted: O ziel nicht erreichbar
 ErrOkrConfidenceInvalid: Fehler im parameter des vertrauensindex
 ErrOkrInvalidKrScore: Das fehlerhafte KRML
 ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: Fehlerhafter zeitplan
 ErrOkrProgressNotEnough: Wir haben nicht 100%.
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrScoreInvalid: Fehlerwerte werte putiert
+ErrOkrScored: Die infrarot-anlage ist nicht mehr fehleranfällig
 ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl
 ErrOkrSuperiorScored: An die vorgesetzten.
 ErrOkrTimeEmpty: Die zeit ist nicht Leer

@@ -298,7 +298,7 @@ func (api *BaseApi) OkrScore() {
 func (api *BaseApi) OkrCancel() {
 	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.CancelObjective(param.Id)
+	result, err := service.OkrService.CancelObjective(api.Userinfo.Userid, param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -317,7 +317,7 @@ func (api *BaseApi) OkrCancel() {
 func (api *BaseApi) OkrParticipantUpdate() {
 	var param = interfaces.OkrParticipantUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.UpdateParticipant(param)
+	result, err := service.OkrService.UpdateParticipant(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -341,7 +341,7 @@ func (api *BaseApi) OkrConfidenceUpdate() {
 		helper.ErrorWith(api.Context, constant.ErrOkrConfidenceInvalid, nil)
 		return
 	}
-	result, err := service.OkrService.UpdateConfidence(param)
+	result, err := service.OkrService.UpdateConfidence(api.Userinfo.Userid, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -436,7 +436,7 @@ func (api *BaseApi) OkrAlignList() {
 func (api *BaseApi) OkrAlignUpdate() {
 	var param = interfaces.OkrAlignUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.UpdateAlignObjective(param.Id, param.AlignObjective)
+	result, err := service.OkrService.UpdateAlignObjective(api.Userinfo.Userid, param.Id, param.AlignObjective)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

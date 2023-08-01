@@ -12,6 +12,8 @@ ErrMailNotConfig: 發送郵箱未配置
 ErrMailToInvalid: 請輸入正確的收件人地址
 ErrNoPermission: 權限不足
 ErrOkrAscriptionInvalid: 目標歸屬參數錯誤
+ErrOkrCanceled: O目標已取消無法操作
+ErrOkrCompleted: O目標已完成無法操作
 ErrOkrConfidenceInvalid: 信心指數範圍參數錯誤
 ErrOkrInvalidKrScore: 無效的KR分數
 ErrOkrIsFinishNotScoreInvalid: 是否已完成未評分參數錯誤
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: 進度範圍參數錯誤
 ErrOkrProgressNotEnough: 進度不足100%
 ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrScoreInvalid: 評分範圍參數錯誤
+ErrOkrScored: KR已評分無法操作
 ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度
 ErrOkrSuperiorScored: 上級已評分
 ErrOkrTimeEmpty: 時間不能爲空

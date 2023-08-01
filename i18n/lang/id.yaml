@@ -12,6 +12,8 @@ ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
 ErrNoPermission: Tidak cukup izin
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
+ErrOkrCanceled: O target telah dibatalkan
+ErrOkrCompleted: O target selesai
 ErrOkrConfidenceInvalid: Parameter keyakinan eksponensial salah
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
 ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: Parameter jangkauan progres salah
 ErrOkrProgressNotEnough: Kurang dari 100%
 ErrOkrProgressStatusInvalid: Parameter status progres salah
 ErrOkrScoreInvalid: Parameternya salah
+ErrOkrScored: KR telah dinilai tidak dapat dioperasi
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTimeEmpty: Waktu tidak boleh kosong

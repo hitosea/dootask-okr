@@ -84,7 +84,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 		// 对齐目标
 		if param.AlignObjective != "" {
-			if err := s.updateAlignment(obj.Id, param.AlignObjective, tx); err != nil {
+			if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, true, tx); err != nil {
 				return err
 			}
 		}
@@ -123,6 +123,11 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	obj, err := s.GetObjectiveById(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
+	}
+
+	err = s.CheckObjectiveOperation(obj)
+	if err != nil {
+		return nil, err
 	}
 
 	startAt, err := common.ParseTime(param.StartAt)
@@ -181,17 +186,18 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		// O目标变动时，发送提示消息
 		participantIds = common.ArrayUniqueInt(participantIds)
 		if obj.Title != param.Title {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标标题"); err != nil {
+				return err
+			}
 			go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
 		}
 
 		// O时间变动时，发送提示消息
 		if obj.StartAt != startAt || obj.EndAt != endAt {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标周期"); err != nil {
+				return err
+			}
 			go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
-		}
-
-		// 新增动态日志
-		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "更新OKR目标"); err != nil {
-			return err
 		}
 
 		obj.Title = param.Title
@@ -208,7 +214,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 		// 更新对齐目标
 		if param.AlignObjective != "" {
-			if err := s.updateAlignment(obj.Id, param.AlignObjective, tx); err != nil {
+			if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, false, tx); err != nil {
 				return err
 			}
 		}
@@ -312,16 +318,25 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	// KR变动时，发送提示消息
 	if keyResult.Title != kr.Title {
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR标题"); err != nil {
+			return nil, err
+		}
 		go DootaskService.DialogOkrPush(keyResult, user.Token, 3, newParticipant)
 	}
 
 	// KR时间变动时，发送提示消息
 	if keyResult.StartAt != startAt || keyResult.EndAt != endAt {
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR周期"); err != nil {
+			return nil, err
+		}
 		go DootaskService.DialogOkrPush(keyResult, user.Token, 6, newParticipant)
 	}
 
 	// 为KR添加新参与人时，发送提示消息
 	if len(diffParticipant) > 0 {
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR参与人"); err != nil {
+			return nil, err
+		}
 		go DootaskService.DialogOkrPush(keyResult, user.Token, 4, diffParticipant)
 	}
 
@@ -340,28 +355,46 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 }
 
 // 更新对齐目标
-func (s *okrService) updateAlignment(objId int, alignObjective string, tx ...*gorm.DB) error {
+func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective string, isCreate bool, tx ...*gorm.DB) error {
 	db := core.DB
 	if len(tx) > 0 {
 		db = tx[0]
 	}
 
-	if err := db.Where("okr_id = ?", objId).Delete(&model.OkrAlign{}).Error; err != nil {
+	var ids []int
+	if err := db.Model(&model.OkrAlign{}).Where("okr_id = ?", obj.Id).Pluck("align_okr_id", &ids).Error; err != nil {
 		return err
 	}
 
 	alignmentIds := common.ExplodeInt(",", alignObjective, true)
+
+	if !common.IsEqual(ids, alignmentIds) {
+		if !isCreate {
+			if err := s.InsertOkrLogTx(db, obj.Id, userid, "update", "修改对齐目标"); err != nil {
+				return err
+			}
+		}
+	}
+
+	// 删除旧的对齐目标
+	if err := db.Where("okr_id = ?", obj.Id).Delete(&model.OkrAlign{}).Error; err != nil {
+		return err
+	}
+
+	// 批量插入新的对齐目标
+	var alignmentObjs []*model.OkrAlign
 	for _, alignmentId := range alignmentIds {
 		if err := db.Where("id = ?", alignmentId).First(&model.Okr{}).Error; err != nil {
 			continue
 		}
-		alignmentObj := &model.OkrAlign{
-			OkrId:      objId,
+		alignmentObjs = append(alignmentObjs, &model.OkrAlign{
+			OkrId:      obj.Id,
 			AlignOkrId: alignmentId,
-		}
-		if err := db.Create(alignmentObj).Error; err != nil {
-			return err
-		}
+		})
+	}
+
+	if err := db.Create(alignmentObjs).Error; err != nil {
+		return err
 	}
 
 	return nil
@@ -890,16 +923,16 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	// 评分后不允许修改进度
-	if kr.Score > -1 {
-		return nil, e.New(constant.ErrOkrScoredNotUpdateProgress)
+	err = s.CheckObjectiveOperation(kr)
+	if err != nil {
+		return nil, err
 	}
 
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果传值更新进度有值，则更新进度
 		if param.Progress != 0 {
-			logContent := fmt.Sprintf("更新OKR: %s 进度：%d=>%d", kr.Title, kr.Progress, param.Progress)
+			logContent := fmt.Sprintf("修改KR进度: %s [%d%%=>%d%%]", kr.Title, kr.Progress, param.Progress)
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
@@ -908,7 +941,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 
 		// 如果传值更新状态有值，则更新状态
 		if param.Status != 0 {
-			logContent := fmt.Sprintf("更新OKR: %s 状态：%s=>%s", kr.Title, model.ProgressStatusMap[kr.ProgressStatus], model.ProgressStatusMap[param.Status])
+			logContent := fmt.Sprintf("修改KR状态: %s [%s=>%s]", kr.Title, model.ProgressStatusMap[kr.ProgressStatus], model.ProgressStatusMap[param.Status])
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", logContent); err != nil {
 				return err
 			}
@@ -1087,20 +1120,28 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 }
 
 // 取消/重启目标
-func (s *okrService) CancelObjective(okrId int) (*model.Okr, error) {
+func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 	kr, err := s.GetObjectiveById(okrId)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
 	// 更新取消状态
+	var logContent string
 	if kr.Canceled == 0 {
 		kr.Canceled = 1
+		logContent = fmt.Sprintf("修改O目标状态: [%s=>%s]", model.CanceledMap[0], model.CanceledMap[1])
 	} else if kr.Canceled == 1 {
 		kr.Canceled = 0
+		logContent = fmt.Sprintf("修改O目标状态: [%s=>%s]", model.CanceledMap[1], model.CanceledMap[0])
 	}
 
 	if err := core.DB.Save(kr).Error; err != nil {
+		return nil, err
+	}
+
+	// 日志
+	if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", logContent); err != nil {
 		return nil, err
 	}
 
@@ -1108,10 +1149,27 @@ func (s *okrService) CancelObjective(okrId int) (*model.Okr, error) {
 }
 
 // 更新参与人
-func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq) (*model.Okr, error) {
+func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param interfaces.OkrParticipantUpdateReq) (*model.Okr, error) {
 	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
+	}
+
+	err = s.CheckObjectiveOperation(kr)
+	if err != nil {
+		return nil, err
+	}
+
+	oldParticipant := common.ExplodeInt(",", kr.Participant, true)
+	newParticipant := common.ExplodeInt(",", param.Participant, true)
+	diffParticipant := common.ArrayDifferenceProcessing(newParticipant, oldParticipant)
+
+	// 为KR添加新参与人时，发送提示消息
+	if len(diffParticipant) > 0 {
+		if err := s.InsertOkrLogTx(core.DB, kr.ParentId, user.Userid, "update", "修改KR参与人"); err != nil {
+			return nil, err
+		}
+		go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
 	}
 
 	kr.Participant = param.Participant
@@ -1123,10 +1181,20 @@ func (s *okrService) UpdateParticipant(param interfaces.OkrParticipantUpdateReq)
 }
 
 // 更新信心指数
-func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) (*model.Okr, error) {
+func (s *okrService) UpdateConfidence(userid int, param interfaces.OkrConfidenceUpdateReq) (*model.Okr, error) {
 	kr, err := s.GetObjectiveByIdIsKeyResult(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
+	}
+
+	err = s.CheckObjectiveOperation(kr)
+	if err != nil {
+		return nil, err
+	}
+
+	logContent := fmt.Sprintf("修改KR信心指数: [%d%%=>%d%%]", kr.Confidence, param.Confidence)
+	if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", logContent); err != nil {
+		return nil, err
 	}
 
 	kr.Confidence = param.Confidence
@@ -1135,6 +1203,25 @@ func (s *okrService) UpdateConfidence(param interfaces.OkrConfidenceUpdateReq) (
 	}
 
 	return kr, nil
+}
+
+// 检查目标是否可以操作
+func (s *okrService) CheckObjectiveOperation(okr *model.Okr) error {
+	if okr.ParentId == 0 {
+		// O已取消
+		if okr.Canceled == 1 {
+			return e.New(constant.ErrOkrCanceled)
+		}
+		// O已完成
+		if okr.Completed == 1 {
+			return e.New(constant.ErrOkrCompleted)
+		}
+	} else {
+		if okr.Score > -1 || okr.SuperiorScore > -1 {
+			return e.New(constant.ErrOkrScored)
+		}
+	}
+	return nil
 }
 
 // 创建 OKR 复盘记录
@@ -1265,13 +1352,18 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 }
 
 // UpdateAlignObjective 更新对齐目标
-func (s *okrService) UpdateAlignObjective(okrId int, alignObjective string) (*model.Okr, error) {
+func (s *okrService) UpdateAlignObjective(userid, okrId int, alignObjective string) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(okrId)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := s.updateAlignment(obj.Id, alignObjective); err != nil {
+	err = s.CheckObjectiveOperation(obj)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.updateAlignment(obj, userid, alignObjective, false); err != nil {
 		return nil, err
 	}
 
@@ -1280,6 +1372,16 @@ func (s *okrService) UpdateAlignObjective(okrId int, alignObjective string) (*mo
 
 // 取消对齐目标
 func (s *okrService) CancelAlignObjective(okrId, alignOkrId int) error {
+	obj, err := s.GetObjectiveById(okrId)
+	if err != nil {
+		return err
+	}
+
+	err = s.CheckObjectiveOperation(obj)
+	if err != nil {
+		return err
+	}
+
 	var align model.OkrAlign
 	if err := core.DB.Where("okr_id = ? and align_okr_id = ?", okrId, alignOkrId).First(&align).Error; err != nil {
 		return err

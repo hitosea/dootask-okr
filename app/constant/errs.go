@@ -34,6 +34,9 @@ var (
 	ErrOkrScoredNotUpdateProgress = "ErrOkrScoredNotUpdateProgress" //评分后不允许修改进度
 	ErrOkrKeyResultTitleEmpty     = "ErrOkrKeyResultTitleEmpty"     //关键结果标题不能为空
 	ErrOkrTimeEmpty               = "ErrOkrTimeEmpty"               //时间不能为空
+	ErrOkrCanceled                = "ErrOkrCanceled"                //O目标已取消无法操作
+	ErrOkrCompleted               = "ErrOkrCompleted"               //O目标已完成无法操作
+	ErrOkrScored                  = "ErrOkrScored"                  //KR已评分无法操作
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

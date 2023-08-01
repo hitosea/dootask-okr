@@ -12,6 +12,8 @@ ErrMailNotConfig: 보내는 편지함이 설정되지 않았습니다
 ErrMailToInvalid: 정확한 수취인 주소를 입력해 주세요
 ErrNoPermission: 권한이 부족합니다.
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
+ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
+ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다
 ErrOkrConfidenceInvalid: 신뢰지수 범위 매개변수 오류
 ErrOkrInvalidKrScore: 잘못된 kr 점수
 ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: 진행 범위 인자 오류
 ErrOkrProgressNotEnough: 진행이 100% 미만입니다.
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrScoreInvalid: 채점 범위 인자 오류
+ErrOkrScored: 채점된 kr은 조작할 수 없습니다
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
 ErrOkrTimeEmpty: 시간을 비워 두면 안 된다

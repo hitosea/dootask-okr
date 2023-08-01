@@ -53,6 +53,10 @@ var (
 		2: "有风险",
 		3: "已延期",
 	}
+	CanceledMap = map[int]string{
+		0: "正常",
+		1: "已取消",
+	}
 )
 
 // 获取所有部门ids

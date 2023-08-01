@@ -12,6 +12,8 @@ ErrMailNotConfig: The sending mailbox is not configured
 ErrMailToInvalid: Please enter the correct recipient address
 ErrNoPermission: Insufficient authority
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
+ErrOkrCanceled: O The target has been cancelled and cannot be operated
+ErrOkrCompleted: O The target is complete and cannot be operated
 ErrOkrConfidenceInvalid: The confidence index range parameter is incorrect
 ErrOkrInvalidKrScore: Invalid KR score
 ErrOkrIsFinishNotScoreInvalid: Complete No score parameter is incorrect
@@ -27,6 +29,7 @@ ErrOkrProgressInvalid: The progress range parameter is incorrect
 ErrOkrProgressNotEnough: Less than 100% progress
 ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrScoreInvalid: The scoring range parameter is incorrect
+ErrOkrScored: The KR has been scored and cannot be operated
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
 ErrOkrSuperiorScored: Superior rated
 ErrOkrTimeEmpty: Time cannot be empty

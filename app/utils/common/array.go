@@ -1,6 +1,8 @@
 package common
 
 import (
+	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -152,4 +154,24 @@ func MergeArray(arr1 []string, arr2 []string) []string {
 	result := append([]string{}, arr1...)
 	result = append(result, arr2...)
 	return result
+}
+
+// IsEqual 判断两个切片是否相等
+func IsEqual(a, b interface{}) bool {
+	switch a.(type) {
+	case []string:
+		slice1 := a.([]string)
+		slice2 := b.([]string)
+		sort.Strings(slice1)
+		sort.Strings(slice2)
+		return fmt.Sprintf("%v", slice1) == fmt.Sprintf("%v", slice2)
+	case []int:
+		slice1 := a.([]int)
+		slice2 := b.([]int)
+		sort.Ints(slice1)
+		sort.Ints(slice2)
+		return fmt.Sprintf("%v", slice1) == fmt.Sprintf("%v", slice2)
+	default:
+		return false
+	}
 }
