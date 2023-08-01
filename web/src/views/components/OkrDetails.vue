@@ -571,8 +571,10 @@ const loadUserSelects = () => {
                         on: {
                             "on-show-change": (show: any, values: any) => {
                                 if (!show) {
-                                    item.participant = values.join(',');
-                                    participantChange(item,e.getAttribute('formkey'))
+                                    if(item.participant !=  values.join(',')){
+                                        item.participant = values.join(',');
+                                        participantChange(item,e.getAttribute('formkey'))
+                                    }
                                 }
                             }
                         }
