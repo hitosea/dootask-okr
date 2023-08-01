@@ -223,7 +223,10 @@ onMounted(() => {
     init()
     getList('search')
 })
-
+defineExpose({
+    upData,
+    getList
+})
 </script>
 <style lang="less" scoped>
 .okr-department-main {

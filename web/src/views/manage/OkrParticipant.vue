@@ -1,9 +1,9 @@
 <template >
-    <n-scrollbar :on-scroll="onScroll">
+    <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
         <div class="okr-participant-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrItems @upData="upData" @edit="handleEdit" v-else-if="list.length != 0" :list="list"></OkrItems>
-            <OkrNotDatas v-else></OkrNotDatas>
+            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
+            <OkrNotDatas v-if="!loadIng && list.length == 0"></OkrNotDatas>
         </div>
     </n-scrollbar>
 </template>
@@ -20,6 +20,7 @@ const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
+const scrollbarRef = ref(null)
 
 const searchTime = ref(null)
 const props = defineProps({
@@ -96,6 +97,11 @@ const onScroll = (e) => {
 
 onMounted(() => {
     getList('')
+})
+
+defineExpose({
+    upData,
+    getList
 })
 </script>
 <style lang="less" scoped>

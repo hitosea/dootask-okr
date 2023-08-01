@@ -37,7 +37,8 @@
                             </p>
                         </div>
                         <div class="flex items-center gap-6">
-                            <i class="taskfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
+                            <i v-if="detialData.completed == '0'" class="taskfont icon-title text-[#A7ACB6]"
+                                @click="handleEdit">&#xe779;</i>
 
                             <i class="taskfont text-[#FFD023]" v-if="detialData.is_follow"
                                 @click.stop="handleFollowOkr(detialData.id)">&#xe683;</i>
@@ -94,7 +95,7 @@
                                         <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
                                     </div>
                                     <div class="flex items-center justify-between mt-8">
-                                        <div class="flex items-center">
+                                        <div class="flex items-center mr-24">
                                             <div class="flex items-center gap-2">
                                                 <div v-if="showUserSelect">
                                                     <UserSelects :formkey="index" />
@@ -103,11 +104,11 @@
                                                     src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                             </div>
                                             <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                            <p class="flex-1 text-text-li text-14 min-w-[140px]">{{
+                                            <p class="flex-1 text-text-li text-14 min-w-[140px] shrink-0">{{
                                                 utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                             </p>
                                         </div>
-                                        <div class="flex items-center gap-6">
+                                        <div class="flex items-center gap-6 shrink-0">
                                             <div class="flex items-center cursor-pointer"
                                                 @click="handleSchedule(item.id, item.progress, item.progress_status)">
                                                 <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
@@ -146,7 +147,7 @@
 
                             <h4 class="text-text-li text-16 font-medium mb-12">
                                 {{ $t('对齐目标') }}
-                                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                                <i v-if="detialData.completed == '0'" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
                                     @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
@@ -177,7 +178,7 @@
                                 <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
                                 <DialogWrappers v-else />
                             </div>
-                            <n-scrollbar v-if="navActive == 1">
+                            <n-scrollbar v-if="navActive == 1" :on-scroll="onScrollLogList">
                                 <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
                                     <n-avatar round :size="28" class="mr-8" :src="item.user_avatar" />
                                     <div class="flex flex-col gap-3">
@@ -188,7 +189,7 @@
                                     </div>
                                 </div>
                             </n-scrollbar>
-                            <n-scrollbar v-if="navActive == 2">
+                            <n-scrollbar v-if="navActive == 2" :on-scroll="onScrollReplayList">
                                 <div class="pl-24 pr-[10px]">
                                     <p class="cursor-pointer" @click="handleAddMultiple"> <i
                                             class="taskfont mr-4 text-16 text-text-tips">&#xe6f2;</i><span
@@ -241,7 +242,7 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate } from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate } from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
@@ -262,9 +263,11 @@ const detialData = ref<any>({})
 const message = useMessage()
 
 const logListPage = ref(1)
+const logListLastPage = ref(99999)
 const logList = ref<any>([])
 
 const replayListPage = ref(1)
+const replayListLastPage = ref(99999)
 const replayList = ref([])
 const showDialogWrapper = computed(() => window.Vues?.components?.DialogWrapper ? 1 : 0)
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
@@ -358,40 +361,68 @@ const handleNav = (index) => {
     }
 }
 
+// 日志下一页
+const onScrollLogList = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            logListPage.value++
+            handleGetLogList()
+        }
+    }
+}
+
 // 日志列表
 const handleGetLogList = () => {
-    loadIngR.value = true
-    getLogList({
-        id: detialData.value.id,
-        page: logListPage.value,
-        page_size: 10,
-    }).then(({ data }) => {
-        data.data.map(item => {
-            logList.value.push(item)
+    if (logListLastPage.value >= logListPage.value) {
+        loadIngR.value = true
+        getLogList({
+            id: detialData.value.id,
+            page: logListPage.value,
+            page_size: 10,
+        }).then(({ data }) => {
+            data.data.map(item => {
+                logList.value.push(item)
+            })
+            logListLastPage.value = data.last_page
         })
-    })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIngR.value = false
-        })
+            .catch(ResultDialog)
+            .finally(() => {
+                loadIngR.value = false
+            })
+    }
+}
+
+//复盘下一页
+const onScrollReplayList = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            replayListPage.value++
+            handleGetLogList()
+        }
+    }
 }
 
 // 复盘列表
 const handleGetReplayList = () => {
-    loadIngR.value = true
-    getReplayList({
-        id: detialData.value.id,
-        page: replayListPage.value,
-        page_size: 10,
-    }).then(({ data }) => {
-        data.data.map(item => {
-            replayList.value.push(item)
+    if (replayListLastPage.value >= replayListPage.value) {
+        loadIngR.value = true
+        getReplayList({
+            id: detialData.value.id,
+            page: replayListPage.value,
+            page_size: 10,
+        }).then(({ data }) => {
+            data.data.map(item => {
+                replayList.value.push(item)
+            })
+            replayListLastPage.value = data.last_page
         })
-    })
-        .catch(ResultDialog)
-        .finally(() => {
-            loadIngR.value = false
-        })
+            .catch(ResultDialog)
+            .finally(() => {
+                loadIngR.value = false
+            })
+    }
 }
 
 
@@ -502,7 +533,7 @@ const handleAddMultiple = () => {
         state.addMultipleShow = true
     })
     console.log(globalStore.addMultipleShow);
-    
+
 }
 
 
@@ -535,12 +566,13 @@ const loadUserSelects = () => {
                             border: false,
                             avatarSize: 20,
                             addIcon: false,
-                            disable: true
+                            disable: false
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
                                 if (!show) {
                                     item.participant = values.join(',');
+                                    participantChange(item.id,item.participant)
                                 }
                             }
                         }
@@ -550,6 +582,26 @@ const loadUserSelects = () => {
             userSelectApps.value.push(app)
         })
     })
+}
+
+
+
+//更新参与人
+const participantChange = (id,participant) => {
+    const upData = {
+        participant: participant,
+        id: id,
+    }
+    loadIng.value = true
+    participantUpdate(upData)
+        .then(({ msg }) => {
+            message.success(msg)
+            getDetail('')
+        })
+        .catch(ResultDialog)
+        .finally(() => {
+            loadIng.value = false
+        })
 }
 
 //添加对齐目标

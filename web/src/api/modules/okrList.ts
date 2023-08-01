@@ -65,6 +65,11 @@ export const replayDetail = (data) => {
     return http.post<replayData>("okr/replay/detail",data)
 }
 
+//更新参与人
+export const participantUpdate = (data) => {
+    return http.post<PageReq>("okr/participant/update",data)
+}
+
 //取消重启目标
 export const okrCancel = (data) => {
     return http.get<PageReq>("okr/cancel",data)

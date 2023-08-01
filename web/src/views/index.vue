@@ -18,27 +18,27 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
                     <div class="okr-scrollbar">
-                        <Icreated :searchObject="searchObject" @edit="handleEdit"></Icreated>
+                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @handleAdd="handleAdd"></Icreated>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrParticipant :searchObject="searchObject"  @edit="handleEdit"></OkrParticipant>
+                        <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject"  @edit="handleEdit" ></OkrParticipant>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-                        <OkrDepartment :searchObject="searchObject" @edit="handleEdit"></OkrDepartment>
+                        <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"></OkrDepartment>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrFollow :searchObject="searchObject" @edit="handleEdit"></OkrFollow>
+                        <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"></OkrFollow>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
                     <div class="okr-scrollbar">
-                        <OkrReplay :searchObject="searchObject" @edit="handleEdit"></OkrReplay>
+                        <OkrReplay ref="OkrReplayRef" :searchObject="searchObject" @edit="handleEdit"></OkrReplay>
                     </div>
                 </n-tab-pane>
             </n-tabs>
@@ -56,6 +56,11 @@ import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
 
+const ICreatedRef = ref(null)
+const OkrParticipantRef = ref(null)
+const OkrDepartmentRef = ref(null)
+const OkrFollowRef = ref(null)
+const OkrReplayRef = ref(null)
 
 const addShow = ref(false)
 const edit = ref(false)
@@ -82,7 +87,35 @@ const handleAdd = () => {
     addShow.value = true
 }
 
-const handleClose = () => {
+const handleClose = (e,id) => {
+    //重新获取列表
+    if(tabsName.value == $t('我创建的OKR') && e == 1){
+        ICreatedRef.value.getList('')      
+    }
+    else if(tabsName.value == $t('参与的OKR') && e == 1){
+        OkrParticipantRef.value.getList('')
+    }
+    else if(tabsName.value == $t('部门OKR') && e == 1){
+        OkrDepartmentRef.value.getList('')
+    }
+    else if(tabsName.value == $t('关注的OKR') && e == 1){
+        OkrFollowRef.value.getList('')
+    }
+
+    //更新单条数据
+    if(tabsName.value == $t('我创建的OKR') && e == 2){
+        ICreatedRef.value.upData(id)      
+    }
+    else if(tabsName.value == $t('参与的OKR') && e == 2){
+        OkrParticipantRef.value.upData('')
+    }
+    else if(tabsName.value == $t('部门OKR') && e == 2){
+        OkrDepartmentRef.value.upData('')
+    }
+    else if(tabsName.value == $t('关注的OKR') && e == 2){
+        OkrFollowRef.value.upData('')
+    }
+
     edit.value = false
     editData = {}
     addShow.value = false

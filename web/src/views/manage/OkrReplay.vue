@@ -148,6 +148,7 @@ const openOkrDetail = (id) => {
 onMounted(() => {
     getData("")
 })
+
 </script>
 
 <style lang="less" scoped>

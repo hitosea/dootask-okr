@@ -1,15 +1,15 @@
 <template >
-    <n-scrollbar :on-scroll="onScroll">
+    <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
             <div>
                 <OkrLoading v-if="loadIng"></OkrLoading>
-                <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-else-if="list.length != 0"></OkrItems>
-                <OkrNotDatas v-else>
+                <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
+                <OkrNotDatas v-if="!loadIng && list.length == 0">
                     <template v-slot:content>
                         <div class="mt-5">
                             <div>
-                                <n-button type="primary" ghost>
+                                <n-button type="primary" ghost @click="handleAdd">
                                     <i class="taskfont mr-5">&#xe731;</i>
                                     {{ $t('创建OKR') }}
                                 </n-button>
@@ -32,6 +32,7 @@ const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
+const scrollbarRef = ref(null)
 
 const searchTime = ref(null)
 const props = defineProps({
@@ -50,7 +51,7 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit','add'])
 
 const getList = (type) => {
     if (last_page.value >= page.value || type == 'search') {
@@ -75,6 +76,10 @@ const getList = (type) => {
     }
 }
 
+//编辑
+const handleAdd = () => {
+    emit('add')
+}
 //编辑
 const handleEdit = (data) => {
     emit('edit', data)
@@ -111,8 +116,10 @@ const onScroll = (e) => {
 onMounted(() => {
     getList('')
 })
+
 defineExpose({
-    upData
+    upData,
+    getList
 })
 </script>
 <style lang="less" scoped>

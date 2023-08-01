@@ -2,8 +2,8 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-follow-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrItems @upData="upData" @edit="handleEdit" v-else-if="list.length != 0" :list="list"></OkrItems>
-            <OkrNotDatas v-else></OkrNotDatas>
+            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
+            <OkrNotDatas  v-if="!loadIng && list.length == 0"></OkrNotDatas>
         </div>
     </n-scrollbar>
 </template>
@@ -94,6 +94,10 @@ const onScroll = (e) => {
 }
 onMounted(() => {
     getList('')
+})
+defineExpose({
+    upData,
+    getList
 })
 </script>
 <style lang="less" scoped>

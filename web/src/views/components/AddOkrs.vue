@@ -111,7 +111,7 @@
 
                                             <n-form-item-gi :span="2" :label="$t('参与人')">
                                                 <div v-if="showUserSelect"
-                                                    class="w-full h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                                    class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
                                                     <UserSelects :formkey="index" />
                                                 </div>
                                                 <UserList :edit="props.edit" v-if="!showUserSelect"
@@ -312,7 +312,7 @@ const handleSubmit = () => {
             upDateOkr(upData)
                 .then(({ msg }) => {
                     message.success(msg)
-                    emit('close')
+                    emit('close',2,formValue.value.id)
                 })
                 .catch(ResultDialog)
                 .finally(() => {
@@ -322,7 +322,7 @@ const handleSubmit = () => {
             addOkr(upData)
                 .then(({ msg }) => {
                     message.success(msg)
-                    emit('close')
+                    emit('close',1)
                 })
                 .catch(ResultDialog)
                 .finally(() => {
