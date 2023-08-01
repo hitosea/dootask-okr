@@ -31,10 +31,12 @@
             {{$t('时间')}}
         </div>
         <n-date-picker class="custom-select" v-model:value="daterange"
-        value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" :placeholder="$t('请选择时间')"/>
+        value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium"/>
 
-        <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded" @click="handleClick()">
-            <i class="taskfont mr-5" v-if="!(isLoading)">&#xe72a;</i>
+        <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
+            <template #icon>
+                <i class="taskfont ml--100" v-if="!(isLoading)">&#xe72a;</i>
+              </template>
             {{ $t('搜索') }}
         </n-button>
 
