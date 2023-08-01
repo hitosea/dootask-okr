@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: 是否已完成未評分參數錯誤
 ErrOkrKeyResultAtLeastOne: 至少有一條關鍵結果
 ErrOkrKeyResultTitleEmpty: 關鍵結果標題不能爲空
 ErrOkrKrScoreNotComplete: KR評分未完成
-ErrOkrNoData: 暫無數據
+ErrOkrNoData: 沒有查詢到相關數據
 ErrOkrNoPermissionScore: 暫無權限評分
 ErrOkrOwnerNotScore: 負責人未評分
 ErrOkrOwnerScored: 負責人已評分

@@ -14,7 +14,7 @@ var (
 
 	// OKR
 	ErrOkrKeyResultAtLeastOne     = "ErrOkrKeyResultAtLeastOne"     //至少有一条关键结果
-	ErrOkrNoData                  = "ErrOkrNoData"                  //暂无数据
+	ErrOkrNoData                  = "ErrOkrNoData"                  //没有查询到相关数据
 	ErrOkrInvalidKrScore          = "ErrOkrInvalidKrScore"          //无效的KR分数
 	ErrOkrProgressNotEnough       = "ErrOkrProgressNotEnough"       //进度不足100%
 	ErrOkrNoPermissionScore       = "ErrOkrNoPermissionScore"       //暂无权限评分

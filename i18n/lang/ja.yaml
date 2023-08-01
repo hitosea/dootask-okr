@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: 未採点パラメータエラーが完了して�
 ErrOkrKeyResultAtLeastOne: 少なくとも1つの重要な結果があります
 ErrOkrKeyResultTitleEmpty: キー結果タイトルは空にしてはいけません。
 ErrOkrKrScoreNotComplete: KRレーティング未完了です
-ErrOkrNoData: 仮無数の根拠です
+ErrOkrNoData: データは検索できませんでした
 ErrOkrNoPermissionScore: 採点の権限はありません
 ErrOkrOwnerNotScore: 担当者採点なしです
 ErrOkrOwnerScored: 担当者が採点しました

@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
 ErrOkrKeyResultTitleEmpty: Le titre des résultats clés ne peut pas être vide
 ErrOkrKrScoreNotComplete: KR score non terminé
-ErrOkrNoData: Données non disponibles
+ErrOkrNoData: Aucune donnée n’a été consultée
 ErrOkrNoPermissionScore: Pas encore d’autorisation score
 ErrOkrOwnerNotScore: Responsable non évalué
 ErrOkrOwnerScored: Responsable a noté

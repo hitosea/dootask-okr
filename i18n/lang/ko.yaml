@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
 ErrOkrKeyResultAtLeastOne: 적어도 하나의 중요한 결과가 있습니다
 ErrOkrKeyResultTitleEmpty: 중요 결과 제목이 비어 있을 수 없습니다
 ErrOkrKrScoreNotComplete: kr 채점은 완료되지 않았다
-ErrOkrNoData: 불충분한 증거
+ErrOkrNoData: 관련 데이터를 조회하지 못했다
 ErrOkrNoPermissionScore: 현재 점수를 매길 권한이 없습니다
 ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다
 ErrOkrOwnerScored: 책임자가 이미 채점하였다.

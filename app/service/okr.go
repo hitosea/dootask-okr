@@ -404,6 +404,9 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	var obj model.Okr
 	if err := core.DB.Where("id = ?", id).First(&obj).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
 		return nil, err
 	}
 	return &obj, nil
@@ -876,6 +879,9 @@ func (s *okrService) FollowObjective(userid, objectiveId int) (*model.OkrFollow,
 	// 只要顶级目标才能被关注
 	var obj model.Okr
 	if err := core.DB.Where("id = ? and parent_id = 0", objectiveId).First(&obj).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
 		return nil, err
 	}
 
@@ -1300,6 +1306,9 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	var replay model.OkrReplay
 	if err := core.DB.Where("id = ?", id).First(&replay).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
 		return nil, err
 	}
 
@@ -1378,6 +1387,9 @@ func (s *okrService) CancelAlignObjective(okrId, alignOkrId int) error {
 
 	var align model.OkrAlign
 	if err := core.DB.Where("okr_id = ? and align_okr_id = ?", okrId, alignOkrId).First(&align).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return e.New(constant.ErrOkrNoData)
+		}
 		return err
 	}
 

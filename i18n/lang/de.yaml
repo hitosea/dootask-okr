@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
 ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis
 ErrOkrKeyResultTitleEmpty: Die prioritätsergebnisse stehen nicht Leer
 ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
-ErrOkrNoData: Eine vermutung nimmt man Von zeit zu zeit.
+ErrOkrNoData: Die verwandten daten wurden nicht entwendet
 ErrOkrNoPermissionScore: Nichtautorisierung durchführen
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.
 ErrOkrOwnerScored: Chefarzt hat sie bewertet.

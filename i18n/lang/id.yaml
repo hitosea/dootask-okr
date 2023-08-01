@@ -20,7 +20,7 @@ ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak di
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
 ErrOkrKeyResultTitleEmpty: Judul hasil kritis tidak bisa kosong
 ErrOkrKrScoreNotComplete: KR rating tidak lengkap
-ErrOkrNoData: Sudah tak terhitung jumlahnya
+ErrOkrNoData: Tak ada data relevan yang ditemukan
 ErrOkrNoPermissionScore: Tak ada tingkat izin sementara
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
 ErrOkrOwnerScored: Orang yang bertanggung jawab dinilai
