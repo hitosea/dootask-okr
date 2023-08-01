@@ -572,7 +572,7 @@ const loadUserSelects = () => {
                             "on-show-change": (show: any, values: any) => {
                                 if (!show) {
                                     item.participant = values.join(',');
-                                    participantChange(item.id,item.participant)
+                                    participantChange(item,e.getAttribute('formkey'))
                                 }
                             }
                         }
@@ -587,10 +587,13 @@ const loadUserSelects = () => {
 
 
 //更新参与人
-const participantChange = (id,participant) => {
+const participantChange = (item,index) => {
+    if (detialData.value.key_results[index].score > -1 || detialData.value.key_results[index].superior_score > -1) {
+        return
+    }
     const upData = {
-        participant: participant,
-        id: id,
+        participant: item.participant,
+        id: item.id,
     }
     loadIng.value = true
     participantUpdate(upData)
