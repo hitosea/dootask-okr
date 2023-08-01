@@ -3,10 +3,10 @@
         <div class="okr-title">
             <h2>{{ $t('OKR管理') }}</h2>
             <div class="okr-right">
-                <div class="search-button" @click="()=>{searchShow = true}" :class="searchShow ? 'search-active' : ''">
+                <div class="search-button"  :class="searchShow ? 'search-active' : ''">
                     <span class="search-button-span" v-if="searchShow" >{{ tabsName }}</span>
-                    <n-input v-if="searchShow" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
-                    <i class="taskfont" >&#xe6f8;</i>
+                    <n-input  v-if="searchShow" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
+                    <i class="taskfont" @click="()=>{searchShow = !searchShow}">&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
                     <i class="taskfont">&#xe6f2;</i>
@@ -18,27 +18,27 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
                     <div class="okr-scrollbar">
-                        <Icreated @edit="handleEdit"></Icreated>
+                        <Icreated :searchObject="searchObject" @edit="handleEdit"></Icreated>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrParticipant  @edit="handleEdit"></OkrParticipant>
+                        <OkrParticipant :searchObject="searchObject"  @edit="handleEdit"></OkrParticipant>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-                        <OkrDepartment @edit="handleEdit"></OkrDepartment>
+                        <OkrDepartment :searchObject="searchObject" @edit="handleEdit"></OkrDepartment>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
                     <div class="okr-scrollbar">
-                        <OkrFollow @edit="handleEdit"></OkrFollow>
+                        <OkrFollow :searchObject="searchObject" @edit="handleEdit"></OkrFollow>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('OKR复盘')" :name="$t('OKR复盘')">
                     <div class="okr-scrollbar">
-                        <OkrReplay @edit="handleEdit"></OkrReplay>
+                        <OkrReplay :searchObject="searchObject" @edit="handleEdit"></OkrReplay>
                     </div>
                 </n-tab-pane>
             </n-tabs>
@@ -127,7 +127,7 @@ const handleClose = () => {
                 }
             }
             .search-active{
-                @apply w-320 px-16;
+                @apply w-320 px-14;
                 i{
                     @apply pl-8;
                 }

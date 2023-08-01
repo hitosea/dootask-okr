@@ -69,6 +69,23 @@ const last_page = ref(99999)
 const okrDetailsShow = ref(false)
 const detailId = ref(0)
 
+const searchTime = ref(null)
+const props = defineProps({
+    searchObject: {
+        type: String,
+        default: "",
+    }
+})
+
+watch(() => props.searchObject, (newValue) => {
+    clearInterval(searchTime.value)
+    searchTime.value = setInterval(() => {
+        page.value = 1
+        getData('search')
+        clearInterval(searchTime.value)
+    }, 300)
+}, { deep: true })
+
 //封装复盘列表
 const loadResplayList = (data) => {
     items.value = data.map((itemData) => returnReplayItem(itemData))
@@ -93,6 +110,7 @@ const getData = (type) => {
     if (last_page.value >= page.value || type == "search") {
         // 获取复盘列表
         const data = {
+            objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }

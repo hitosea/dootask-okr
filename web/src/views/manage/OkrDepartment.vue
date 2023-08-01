@@ -96,6 +96,23 @@ const types = ref([
 const daterange = ref(null)
 const completednotrated = ref(false)
 
+const searchTime = ref(null)
+const props = defineProps({
+    searchObject: {
+        type: String,
+        default: "",
+    }
+})
+
+watch(() => props.searchObject, (newValue) => {
+    clearInterval(searchTime.value)
+    searchTime.value = setInterval(() => {
+        page.value = 1
+        getList('search')
+        clearInterval(searchTime.value)
+    }, 300)
+}, { deep: true })
+
 const emit = defineEmits(['edit'])
 
 const init = () => {
@@ -134,7 +151,7 @@ const getList = (type) => {
             completed: completednotrated.value ? 1 : 0,
             department_id : departmentsvalue.value,
             end_at : daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[1] / 1000) : null,
-            objective : null,
+            objective: props.searchObject,
             page: page.value,
             page_size: 10,
             start_at : daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000) : null,
@@ -159,8 +176,8 @@ const getList = (type) => {
             }
             last_page.value = data.last_page
             loadIng.value = false
-            isLoading.value = false   
-            loadIngBottom.value = false         
+            isLoading.value = false
+            loadIngBottom.value = false
 
         })
     }
@@ -231,7 +248,7 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; 
+    z-index: 9999;
   }
   .maskbottom {
     position: fixed;
@@ -242,7 +259,7 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    z-index: 9999; 
+    z-index: 9999;
   }
 
 </style>

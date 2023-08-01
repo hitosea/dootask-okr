@@ -33,12 +33,29 @@ const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
 
+const searchTime = ref(null)
+const props = defineProps({
+    searchObject: {
+        type: String,
+        default: "",
+    }
+})
+
+watch(() => props.searchObject, (newValue) => {
+    clearInterval(searchTime.value)
+    searchTime.value = setInterval(() => {
+        page.value = 1
+        getList('search')
+        clearInterval(searchTime.value)
+    }, 300)
+}, { deep: true })
 
 const emit = defineEmits(['edit'])
 
 const getList = (type) => {
     if (last_page.value >= page.value || type == 'search') {
         const data = {
+            objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }
