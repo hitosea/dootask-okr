@@ -1,7 +1,7 @@
 <template >
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
-            <n-progress :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
+            <n-progress class="" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
                 <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
                 <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
@@ -57,7 +57,7 @@
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
-        @submit="submitSelectAlignment"></SelectAlignment>
+        @submit="submitSelectAlignment" ></SelectAlignment>
 
     <!-- OKR详情 -->
     <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
@@ -146,6 +146,7 @@ const submitSelectAlignment = (e) => {
     alignUpdate(upData)
         .then(({ msg }) => {
             message.success(msg)
+            emit('upData',eidtId.value)
         })
         .catch(ResultDialog)
         .finally(() => {
