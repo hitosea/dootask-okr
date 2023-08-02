@@ -21,13 +21,13 @@ watch:
 	$(GOCGO) air
 
 release:
-	cd web && npm run build && cd ../
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
-	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.0.1 --platform linux/amd64,linux/arm64 .
+	cd web && npm run build && cd ../ && rm -f main
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
+	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.0.3 --platform linux/amd64,linux/arm64 .
 
 build:
 	cd web && npm run build && cd ../
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go main
 
 monitor:
 	$(shell ${HOME}/go/bin/fresh -c ./fresh.conf)
