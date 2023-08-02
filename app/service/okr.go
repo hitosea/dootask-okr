@@ -186,7 +186,8 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		// O目标变动时，发送提示消息
 		participantIds = common.ArrayUniqueInt(participantIds)
 		if obj.Title != param.Title {
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标标题"); err != nil {
+			logContent := fmt.Sprintf("修改O目标标题: %s=>%s", obj.Title, param.Title)
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
@@ -194,7 +195,8 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 		// O时间变动时，发送提示消息
 		if obj.StartAt != startAt || obj.EndAt != endAt {
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标周期"); err != nil {
+			logContent := fmt.Sprintf("修改O目标周期: %s=>%s", common.FormatDate2(obj.StartAt)+"~"+common.FormatDate2(obj.EndAt), common.FormatDate2(startAt)+"~"+common.FormatDate2(endAt))
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", logContent); err != nil {
 				return err
 			}
 			go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
@@ -318,7 +320,8 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	// KR变动时，发送提示消息
 	if keyResult.Title != kr.Title {
-		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR标题"); err != nil {
+		logContent := fmt.Sprintf("修改KR标题: %s=>%s", keyResult.Title, kr.Title)
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", logContent); err != nil {
 			return nil, err
 		}
 		go DootaskService.DialogOkrPush(keyResult, user.Token, 3, newParticipant)
@@ -326,7 +329,8 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	// KR时间变动时，发送提示消息
 	if keyResult.StartAt != startAt || keyResult.EndAt != endAt {
-		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR周期"); err != nil {
+		logContent := fmt.Sprintf("修改KR周期: %s %s=>%s", keyResult.Title, common.FormatDate2(keyResult.StartAt)+"~"+common.FormatDate2(keyResult.EndAt), common.FormatDate2(startAt)+"~"+common.FormatDate2(endAt))
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", logContent); err != nil {
 			return nil, err
 		}
 		go DootaskService.DialogOkrPush(keyResult, user.Token, 6, newParticipant)
@@ -997,7 +1001,10 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 				return err
 			}
 		} else {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Update("progress", progress).Error; err != nil {
+			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Updates(map[string]interface{}{
+				"Completed": 0,
+				"Progress":  progress,
+			}).Error; err != nil {
 				return err
 			}
 		}
