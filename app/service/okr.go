@@ -472,11 +472,19 @@ func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string, 
 func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *interfaces.UserInfoResp) ([]*interfaces.OkrResp, error) {
 	for _, obj := range objs {
 		krs := obj.KeyResults
-		// krs KR总评分
+
+		// KR总评分
 		for _, kr := range krs {
 			krScore := s.getKrScore(kr)
 			kr.KrScore = krScore
 		}
+
+		// 用户头像
+		users, err := DootaskService.GetUserBasic(user.Token, []int{obj.Userid})
+		if err != nil {
+			return nil, err
+		}
+		obj.UserAvatar = users[0].Userimg
 
 		s.GetObjectiveExt(obj, krs, user)
 	}
