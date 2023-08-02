@@ -977,12 +977,12 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 			// 进度全部完成 100%
 			if item.Progress < 100 {
 				allCompleted = false
-				break
 			}
+			// 计算总进度值
 			sumProgress += item.Progress
 		}
 
-		// 未完成，则更新总目标进度值，kr 进度值相加/kr 数量
+		// 更新总目标进度值，kr 进度值相加/kr 数量
 		progress := 0
 		if len(krs) > 0 {
 			progress = sumProgress / len(krs)
