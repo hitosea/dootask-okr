@@ -151,7 +151,8 @@
                                     @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
-                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id" @unalign="handleUnalign">
+                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id"
+                                @unalign="handleUnalign">
                             </AlignTarget>
                         </n-spin>
                     </n-scrollbar>
@@ -382,8 +383,61 @@ const handleGetLogList = () => {
             page_size: 10,
         }).then(({ data }) => {
             data.data.map(item => {
+                if (item.content.includes('创建OKR')) {
+                    item.content = $t('创建OKR') + item.content.replace('创建OKR', '')
+                }
+                if (item.content.includes('修改O目标标题')) {
+                    item.content = $t('修改O目标标题') + item.content.replace('修改O目标标题', '')
+                }
+                if (item.content.includes('修改O目标周期')) {
+                    item.content = $t('修改O目标周期') + item.content.replace('修改O目标周期', '')
+                }
+                if (item.content.includes('修改O目标状态')) {
+                    const regex = /\[([^[\]]+)]/;
+                    const match = item.content.match(regex);
+                    let result =[]
+                    if (match) {
+                     result = match[1].split('=>');
+                    }
+                    item.content = $t('修改O目标状态') + `[${$t(result[0])} => ${$t(result[1])}]`
+                }
+                if (item.content.includes('修改对齐目标')) {
+                    item.content = $t('修改对齐目标') + item.content.replace('修改对齐目标', '')
+                }
+                if (item.content.includes('修改KR标题')) {
+                    item.content = $t('修改KR标题') + item.content.replace('修改KR标题', '')
+                }
+                if (item.content.includes('修改KR周期')) {
+                    item.content = $t('修改KR周期') + item.content.replace('修改KR周期', '')
+                }
+                if (item.content.includes('修改KR参与人')) {
+                    item.content = $t('修改KR参与人') + item.content.replace('修改KR参与人', '')
+                }
+                if (item.content.includes('修改KR进度')) {
+                    item.content = $t('修改KR进度') + item.content.replace('修改KR进度', '')
+                }
+                if (item.content.includes('修改KR状态')) {
+                    const regex = /\[([^[\]]+)]/;
+                    const match = item.content.match(regex);
+                    let result =[]
+                    if (match) {
+                     result = match[1].split('=>');
+                    }
+                    item.content = $t('修改KR状态') + item.content.replace('修改KR状态', '').replace(match[0], '') + `[${$t(result[0])} => ${$t(result[1])}]`
+                }
+                if (item.content.includes('修改KR信心指数')) {
+                    item.content = $t('修改KR信心指数') + item.content.replace('修改KR信心指数', '')
+                }
+                if (item.content.includes('责任人打分')) {
+                    item.content = $t('责任人打分') + item.content.replace('责任人打分', '')
+                }
+                if (item.content.includes('上级打分')) {
+                    item.content = $t('上级打分') + item.content.replace('上级打分', '')
+                }
                 logList.value.push(item)
             })
+
+
             logListLastPage.value = data.last_page
         })
             .catch(ResultDialog)
@@ -508,8 +562,8 @@ const handleCancel = () => {
 
 // 取消
 const handleUnalign = () => {
-        emit('upData', detialData.value.id)
-        getDetail('')
+    emit('upData', detialData.value.id)
+    getDetail('')
 }
 
 // 加载聊天组件
@@ -577,9 +631,9 @@ const loadUserSelects = () => {
                         on: {
                             "on-show-change": (show: any, values: any) => {
                                 if (!show) {
-                                    if(item.participant !=  values.join(',')){
+                                    if (item.participant != values.join(',')) {
                                         item.participant = values.join(',');
-                                        participantChange(item,e.getAttribute('formkey'))
+                                        participantChange(item, e.getAttribute('formkey'))
                                     }
                                 }
                             }
@@ -595,7 +649,7 @@ const loadUserSelects = () => {
 
 
 //更新参与人
-const participantChange = (item,index) => {
+const participantChange = (item, index) => {
     if (detialData.value.key_results[index].score > -1 || detialData.value.key_results[index].superior_score > -1) {
         return
     }

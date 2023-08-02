@@ -67,7 +67,7 @@ const edit = ref(false)
 let editData = {}
 const searchObject = ref('')
 const searchShow = ref(false)
-const tabsName = ref('我创建的OKR')
+const tabsName = ref($t('我创建的OKR'))
 
 
 const changeTabs = (e)=>{

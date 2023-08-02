@@ -1,16 +1,19 @@
 <template >
-    <n-modal v-model:show="show" transform-origin="center"  @after-leave="closeModal" >
+    <n-modal v-model:show="show" transform-origin="center" @after-leave="closeModal">
         <n-card class="w-[480px]" :title="$t('评分')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
             <div>
                 <div class="flex items-center">
-                    <p v-if="Mark > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{ Mark }}</span></p>
-                <p v-if="superiorScore > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('上级评分分数：') }}<span class=" text-primary-color">{{ superiorScore }}</span></p>
+                    <p v-if="Mark > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('负责人自评分数：') }}<span
+                            class=" text-primary-color">{{ Mark }}</span></p>
+                    <p v-if="superiorScore > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('上级评分分数：') }}<span
+                            class=" text-primary-color">{{ superiorScore }}</span></p>
                 </div>
 
-                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
+                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :model="formValue" size="medium"
+                    label-placement="left" label-width="auto">
                     <n-form-item>
                         <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')" :options="markOptions" />
                     </n-form-item>
@@ -21,9 +24,10 @@
                 <div class="button-box flex justify-end mt-0">
                     <div class="flex items-center gap-4">
                         <n-button :loading="loadIng" type="default" @click="handleClose">
-                            {{ $t('取消') }}
+                            {{ Mark > -1 && superiorScore > -1 ? $t('关闭') : $t('取消') }}
                         </n-button>
-                        <n-button :loading="loadIng" type="primary" @click="handleSubmit">
+                        <n-button v-if="Mark <= 0 || superiorScore <= 0" :loading="loadIng" type="primary"
+                            @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
                     </div>
@@ -151,5 +155,4 @@ const closeModal = () => {
 <style lang="less" scoped>
 :deep(.n-card__content) {
     @apply pb-0 !important;
-}
-</style>
+}</style>
