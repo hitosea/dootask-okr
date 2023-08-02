@@ -3,7 +3,7 @@
         @after-leave="closeDrawer" :z-index="13">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div class="flex max-h-[640px] min-h-[640px]">
-                <div class="flex-1 flex flex-col  relative">
+                <div class="flex-1 flex flex-col overflow-hidden relative">
                     <div
                         class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
                         <div class="flex items-center gap-4">
@@ -47,8 +47,8 @@
                         </div>
                     </div>
 
-                    <n-scrollbar class="pr-[10px]">
-                        <n-spin :show="false">
+                    <n-scrollbar class="pr-[10px] ">
+                        <n-spin :show="false" >
                             <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 min-h-[40px]">
                                 {{ detialData.title }}
                             </h3>
@@ -151,15 +151,18 @@
                                     @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
-                            <AlignTarget ref="AlignTargetRef" class="pb-[28px]" :value="props.show" :id="props.id"
-                                @unalign="handleUnalign">
-                            </AlignTarget>
+                            <div  class="pb-[28px] w-full overflow-hidden">
+                                <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id"
+                                    @unalign="handleUnalign">
+                                </AlignTarget>
+                            </div>
+
                         </n-spin>
                     </n-scrollbar>
                 </div>
 
                 <div
-                    class="w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
+                    class="min-w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
                     <div
                         class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] ml-24 h-[28px]">
                         <ul class="flex items-center gap-8">
@@ -395,9 +398,9 @@ const handleGetLogList = () => {
                 if (item.content.includes('修改O目标状态')) {
                     const regex = /\[([^[\]]+)]/;
                     const match = item.content.match(regex);
-                    let result =[]
+                    let result = []
                     if (match) {
-                     result = match[1].split('=>');
+                        result = match[1].split('=>');
                     }
                     item.content = $t('修改O目标状态') + `[${$t(result[0])} => ${$t(result[1])}]`
                 }
@@ -419,9 +422,9 @@ const handleGetLogList = () => {
                 if (item.content.includes('修改KR状态')) {
                     const regex = /\[([^[\]]+)]/;
                     const match = item.content.match(regex);
-                    let result =[]
+                    let result = []
                     if (match) {
-                     result = match[1].split('=>');
+                        result = match[1].split('=>');
                     }
                     item.content = $t('修改KR状态') + item.content.replace('修改KR状态', '').replace(match[0], '') + `[${$t(result[0])} => ${$t(result[1])}]`
                 }
@@ -742,33 +745,6 @@ defineExpose({
     @apply bg-[#72A1F7];
 }
 
-.align-target {
-    @apply flex flex-col gap-6 mt-8;
-
-    .a-t-list {
-        @apply flex items-center;
-
-        .a-t-tab {
-            @apply flex items-center flex-initial flex-shrink-0 relative;
-
-            .a-t-tabs {
-                @apply rounded-full flex items-center justify-center text-12 origin-center leading-3 flex-shrink-0;
-            }
-
-            .a-t-tab-b {
-                @apply bg-[#F3F0FF] ml-4 text-12 text-[#4D3EF5] py-2 px-4 flex items-center justify-center leading-3 rounded flex-shrink-0;
-            }
-        }
-
-        .a-t-title {
-            @apply text-title-color text-14 truncate flex-auto ml-4;
-        }
-
-        .a-t-title-s {
-            @apply text-text-tips text-12 truncate flex-auto ml-4 font-normal;
-        }
-    }
-}
 
 .li-nav {
     @apply list-none cursor-pointer text-text-li opacity-50 text-14;

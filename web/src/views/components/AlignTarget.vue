@@ -121,7 +121,7 @@ defineExpose({
 <style lang="less" scoped>
 .align-target {
 
-    @apply flex flex-col gap-6;
+    @apply flex flex-col gap-6 w-full;
 
     .a-t-list {
         @apply flex items-center;

@@ -6,17 +6,17 @@
                     <h3>{{ $t('待完成数') }}</h3>
                     <p>{{analyzeDatas.okrCompletedAndUncompleted.uncompleted}}</p>
                 </div>
-                <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)] shrink-0   ">
+                <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)] shrink-0  hidden xl:flex">
                     <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
                 </div>
             </div>
-            <div class="mx-24 h-full w-1 bg-[#F2F3F5]" />
+            <div class=" mx-24 h-full w-1 bg-[#F2F3F5]" />
             <div class="p-s-one-box">
                 <div class="p-s-one-title">
                     <h3>{{ $t('已完成/已取消数') }}</h3>
                     <p>{{analyzeDatas.okrCompletedAndUncompleted.completed}}</p>
                 </div>
-                <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)] shrink-0">
+                <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)] shrink-0 hidden xl:flex">
                     <i class="taskfont text-[#87D068]">&#xe707;</i>
                 </div>
             </div>
@@ -183,13 +183,14 @@ nextTick(() => {
 </script>
 <style lang="less" scoped>
 .personal-statistics {
-    @apply flex gap-6;
+    @apply flex-col xl:flex-row flex gap-3 xl:gap-6;
 
     .p-s-box {
         @apply flex-1 bg-white rounded-lg px-24 py-30 flex;
     }
 
     .p-s-one {
+        @apply items-center;
         .p-s-one-box {
             @apply flex-1 flex justify-between items-center;
 
@@ -206,7 +207,7 @@ nextTick(() => {
             }
 
             .p-s-one-icon {
-                @apply w-56 h-56 rounded-full flex items-center justify-center;
+                @apply w-56 h-56 rounded-full items-center justify-center;
 
                 i {
                     @apply text-30;

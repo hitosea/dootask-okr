@@ -18,7 +18,7 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
                     <div class="okr-scrollbar">
-                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @handleAdd="handleAdd"></Icreated>
+                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"></Icreated>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
