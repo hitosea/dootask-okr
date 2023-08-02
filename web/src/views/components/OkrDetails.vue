@@ -189,7 +189,7 @@
                                         <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
                                                 class="opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
                                         <h4 class="text-14 leading-[14px] text-title-color font-normal"> <span
-                                                class=" font-medium">{{ item.content }}</span></h4>
+                                                class=" font-normal">{{ item.content }}</span></h4>
                                     </div>
                                 </div>
                             </n-scrollbar>

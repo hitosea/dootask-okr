@@ -18,8 +18,12 @@
                                 <div class="object-field ">
                                     <n-checkbox :value="item.id" />
                                     <i class="taskfont"
-                                        :class="item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer'"
-                                        @click="handleOpen(index, $event.target, item.key_results)">&#xe745;</i>
+                                        :class="
+                                        [item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer',
+                                        openList.indexOf(index) != -1 ? 'active' : ''
+                                        ]
+                                        "
+                                        @click="handleOpen(index, item.key_results)">&#xe745;</i>
                                     <span class="span scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority
                                     }}</span>
                                     <h3 class="text-14 text-title-color font-normal line-clamp-1 ml-4 pr-16">
@@ -169,14 +173,12 @@ const getList = (type) => {
     }
 }
 
-const handleOpen = (index, event, keyResults) => {
+const handleOpen = (index, keyResults) => {
     if (keyResults == null) return;
     if (openList.value.indexOf(index) == -1) {
         openList.value.push(index)
-        event.classList.add('active')
     } else {
         openList.value.splice(openList.value.indexOf(index), 1)
-        event.classList.remove('active')
     }
 }
 

@@ -3,8 +3,9 @@
         <div class="i-created-main">
             <PersonalStatistics></PersonalStatistics>
             <div>
-                <OkrLoading v-if="loadIng"></OkrLoading>
-                <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
+                <n-spin size="small" :show="loadIng">
+                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
+                </n-spin>
                 <OkrNotDatas v-if="!loadIng && list.length == 0">
                     <template v-slot:content>
                         <div class="mt-5">
