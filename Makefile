@@ -1,7 +1,7 @@
 export PATH := $(GOPATH)/bin:$(PATH)
 export GO111MODULE=on
 
-MODULE = dootask
+MODULE = dootask-okr
 
 PORT 			:= 5566
 VERSION			:= $(shell git describe --tags --always --match="v*" 2> /dev/null || echo v0.0.0)
@@ -21,16 +21,13 @@ watch:
 	$(GOCGO) air
 
 release:
-	$(GOCGO) GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$(LDFLAGS)" -o ./$(MODULE)-$(VERSION)-linux-amd64/$(MODULE)
-	$(GOCGO) GOOS=linux GOARCH=arm64 CC=aarch64-linux-gnu-gcc-10 go build -trimpath -ldflags "$(LDFLAGS)" -o ./$(MODULE)-$(VERSION)-linux-arm64/$(MODULE)
-	@for arch in amd64 arm64; \
-	do \
-		cp install/* $(MODULE)-$(VERSION)-linux-$$arch; \
-		tar zcf $(MODULE)-$(VERSION)-linux-$$arch.tar.gz $(MODULE)-$(VERSION)-linux-$$arch; \
-	done
+	cd web && npm run build && cd ../
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.0.1 --platform linux/amd64,linux/arm64 .
 
 build:
-	$(GOCGO) go build -trimpath -ldflags "$(LDFLAGS)" -o main
+	cd web && npm run build && cd ../
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
 monitor:
 	$(shell ${HOME}/go/bin/fresh -c ./fresh.conf)
