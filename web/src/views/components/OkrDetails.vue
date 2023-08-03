@@ -162,7 +162,7 @@
                 </div>
 
                 <div
-                    class="min-w-[414px] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
+                    class="min-w-[35.8%] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
                     <div
                         class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] ml-24 h-[28px]">
                         <ul class="flex items-center gap-8">
@@ -184,7 +184,7 @@
                             </div>
                             <n-scrollbar v-if="navActive == 1" :on-scroll="onScrollLogList">
                                 <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
-                                    <n-avatar round :size="28" class="mr-8" :src="item.user_avatar" />
+                                    <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                                     <div class="flex flex-col gap-3">
                                         <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
                                                 class="opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>

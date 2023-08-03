@@ -1,7 +1,7 @@
 <template >
     <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
         <div class="i-created-main">
-            <PersonalStatistics></PersonalStatistics>
+            <PersonalStatistics ref="PersonalStatisticsRef" v-if="list.length != 0"></PersonalStatistics>
             <div>
                 <n-spin size="small" :show="loadIng">
                     <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
@@ -27,13 +27,14 @@ import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-import OkrLoading from "@/views/components/OkrLoading.vue"
+
 
 const loadIng = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
 const scrollbarRef = ref(null)
+const PersonalStatisticsRef = ref(null)
 
 const searchTime = ref(null)
 const props = defineProps({
@@ -96,9 +97,11 @@ const upData = (id) => {
             getOkrDetail(upData)
                 .then(({ data }) => {
                     list.value[index] = data
+                    PersonalStatisticsRef.value.getData()
                 })
                 .catch()
                 .finally(() => {
+                    
                 })
         }
     })

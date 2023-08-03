@@ -1,7 +1,7 @@
 <template >
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
-            <n-progress class="" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
+            <n-progress class=" hidden md:block" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
                 type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
                 <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
                 <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
@@ -15,7 +15,7 @@
                     <div class="okr-title-r">
                         <i class="taskfont okr-title-star" v-if="item.is_follow"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont pr-16" v-else @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="taskfont md:pr-16" v-else @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="taskfont okr-title-icon">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                     </div>
@@ -27,12 +27,26 @@
                     <i class="taskfont"> &#xe71d;</i>
                     <p>{{ expiresFormat(item.end_at) }}</p>
                 </div>
+
+                <div class="okr-time-web">
+                    <n-avatar round :size="24" :src="item.user_avatar" />
+                    <div class="flex items-center">
+                        <i class="taskfont mr-6">&#xe671;</i>
+                        <p class="mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
+                        <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                                :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
+                                :percentage="item.progress" />
+                            {{ item.progress }}%
+                    </div>
+   
+                </div>
+
                 <div class="kr-list">
                     <div class="kr-list-item" v-for="(childItem, index) in item.key_results">
                         <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
                         <p>{{ childItem.title }}</p>
                         <div class="kr-list-schedule">
-                            <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                            <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                                 :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                                 :percentage="childItem.progress" />
                             {{ childItem.progress }}%
@@ -183,19 +197,19 @@ onMounted(() => {
     @apply flex flex-col gap-6;
 
     .okr-item-box {
-        @apply px-24 py-32 bg-white rounded-lg flex gap-4 cursor-pointer;
+        @apply p-16 md:px-24 md:py-32 bg-white rounded-lg flex gap-4 cursor-pointer;
 
         .okr-list {
             @apply flex flex-col flex-1;
 
             .okr-title {
-                @apply flex justify-between items-center;
+                @apply flex justify-between items-start md:items-center;
 
                 .okr-title-l {
-                    @apply flex items-center gap-2;
+                    @apply flex items-start md:items-center gap-2;
 
                     span {
-                        @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3;
+                        @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {
@@ -216,32 +230,36 @@ onMounted(() => {
                 }
 
                 .okr-title-r {
-                    @apply flex items-center;
+                    @apply flex items-center ml-24;
 
                     .okr-title-star {
-                        @apply text-[#FFD023] pr-16;
+                        @apply text-[#FFD023]  md:pr-16;
                     }
 
                     .okr-title-icon {
-                        @apply text-text-tips mr-4;
+                        @apply text-text-tips mr-4 hidden md:block;
                     }
 
                     p {
-                        @apply text-text-tips;
+                        @apply text-text-tips hidden md:block;
                     }
                 }
             }
 
             .okr-time {
-                @apply flex items-center mt-12 text-text-tips;
+                @apply hidden md:flex items-center mt-12 text-text-tips ;
 
                 i {
                     @apply mr-4;
                 }
             }
 
+            .okr-time-web{
+                @apply flex md:hidden items-center mt-12 text-text-tips justify-between;
+            }
+
             .kr-list {
-                @apply mt-16 flex flex-col gap-5;
+                @apply mt-16 hidden md:flex flex-col gap-5;
 
                 .kr-list-item {
                     @apply flex items-center;
@@ -261,7 +279,7 @@ onMounted(() => {
             }
 
             .align-target {
-                @apply flex items-start mt-20 text-text-tips text-12;
+                @apply  items-start mt-20 text-text-tips text-12 hidden md:flex;
             }
         }
     }

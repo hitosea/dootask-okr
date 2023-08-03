@@ -192,6 +192,9 @@ nextTick(() => {
     getData()
 })
 
+defineExpose({
+    getData
+})
 
 </script>
 <style lang="less" scoped>
@@ -199,7 +202,7 @@ nextTick(() => {
     @apply flex-col xl:flex-row flex gap-3 xl:gap-6;
 
     .p-s-box {
-        @apply flex-1 bg-white rounded-lg px-24 py-30 flex;
+        @apply flex-1 bg-white rounded-lg p-16 md:px-24 md:py-30 flex;
     }
 
     .p-s-one {
