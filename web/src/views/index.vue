@@ -1,7 +1,8 @@
 <template >
     <div class="page-okr">
         <div class="okr-title">
-            <h2>{{ $t('OKR管理') }}</h2>
+            <i class="taskfont icon-return">&#xe704;</i>
+            <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
             <div class="okr-right">
                 <div class="search-button"  :class="searchShow ? 'search-active' : ''">
                     <span class="search-button-span" v-if="searchShow" >{{ tabsName }}</span>
@@ -83,7 +84,10 @@ const handleEdit = (data) => {
     editData = data
 }
 
+//添加OKR
 const handleAdd = () => {
+    console.log(window.innerWidth);
+    
     addShow.value = true
 }
 
@@ -125,22 +129,30 @@ const handleClose = (e,id) => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col p-24 bg-page-bg;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col p-16 md:p-24 bg-page-bg;
 
     .okr-title {
-        @apply flex justify-between items-center;
+        @apply flex justify-between items-center mb-8 md:mb-14 relative;
+
+        .icon-return{
+            @apply block md:hidden mr-16 text-20 z-[2];
+        }
 
         h2 {
-            @apply text-title-color text-28 font-normal;
+            @apply text-title-color text-17 md:text-28 font-normal absolute left-0 right-0 text-center md:relative;
         }
+        .title-active{
+            @apply hidden md:block;
+        }
+
         .okr-right{
-            @apply flex items-center gap-6;
+            @apply flex items-center gap-4 md:gap-6 z-[2];
             .add-button,
             .search-button {
-                @apply bg-bg-manage-menu w-12 h-12 rounded-full flex items-center justify-center cursor-pointer;
+                @apply bg-bg-manage-menu w-36 h-36 md:w-12 md:h-12 rounded-full flex items-center justify-center cursor-pointer;
 
                 i {
-                    @apply text-20 text-emoji-users-color;
+                    @apply text-15 md:text-20 text-emoji-users-color;
                 }
             }
             .search-button{
@@ -160,7 +172,7 @@ const handleClose = (e,id) => {
                 }
             }
             .search-active{
-                @apply w-320 px-14;
+                @apply w-auto flex-1 md:w-320 px-14;
                 i{
                     @apply pl-8;
                 }

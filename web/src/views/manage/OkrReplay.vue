@@ -1,8 +1,8 @@
 <template>
     <n-scrollbar>
         <div class="py-24">
-            <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrNotDatas v-else-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>
+            <n-spin size="small" :show="loadIng" :class="loadIng && items.length == 0 ? 'mt-[10%]':''">
+            <OkrNotDatas v-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>
             <div v-else class="replay">
                 <div
                     v-for="(item, index) in items"
@@ -37,6 +37,7 @@
 
                 </div>
             </div>
+            </n-spin>
             <!-- OKR详情 -->
             <OkrDetails
                 ref="RefOkrDetails"
@@ -56,7 +57,6 @@
 import { ref } from "vue"
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-import OkrLoading from "@/views/components/OkrLoading.vue"
 import * as http from "../../api/modules/replay"
 import OkrDetails from "@/views/components/OkrDetails.vue"
 

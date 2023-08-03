@@ -1,8 +1,9 @@
 <template >
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-follow-main">
-            <OkrLoading v-if="loadIng"></OkrLoading>
+            <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
             <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
+            </n-spin>
             <OkrNotDatas  v-if="!loadIng && list.length == 0"></OkrNotDatas>
         </div>
     </n-scrollbar>
@@ -12,7 +13,6 @@ import OkrItems from '@/views/components/OkrItems.vue'
 import { getFollowList } from '@/api/modules/follow'
 import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-import OkrLoading from "@/views/components/OkrLoading.vue"
 
 const emit = defineEmits(['edit'])
 

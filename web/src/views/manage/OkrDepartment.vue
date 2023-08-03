@@ -60,8 +60,9 @@
             <div class="absolute top-0 left-0 bottom-0 right-0">
                 <n-scrollbar :on-scroll="onScroll">
                     <div class="okr-department-main">
-                        <OkrLoading v-if="loadIng"></OkrLoading>
+                        <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
                         <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
+                        </n-spin>
                         <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')"></OkrNotDatas>
                     </div>
                 </n-scrollbar>
@@ -74,7 +75,6 @@
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getDepartmentOkrList } from '@/api/modules/department'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-import OkrLoading from "@/views/components/OkrLoading.vue"
 import { getDepartmentList } from '@/api/modules/department'
 import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'

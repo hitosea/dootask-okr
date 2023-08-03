@@ -194,7 +194,7 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .okr-item-main {
-    @apply flex flex-col gap-6;
+    @apply flex flex-col gap-3 md:gap-6;
 
     .okr-item-box {
         @apply p-16 md:px-24 md:py-32 bg-white rounded-lg flex gap-4 cursor-pointer;

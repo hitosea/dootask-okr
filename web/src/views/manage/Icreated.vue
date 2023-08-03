@@ -3,7 +3,7 @@
         <div class="i-created-main">
             <PersonalStatistics ref="PersonalStatisticsRef" v-if="list.length != 0"></PersonalStatistics>
             <div>
-                <n-spin size="small" :show="loadIng">
+                <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
                     <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
                 </n-spin>
                 <OkrNotDatas v-if="!loadIng && list.length == 0">
@@ -101,7 +101,7 @@ const upData = (id) => {
                 })
                 .catch()
                 .finally(() => {
-                    
+
                 })
         }
     })
