@@ -6,7 +6,7 @@
                 <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
                     <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
                 </n-spin>
-                <OkrNotDatas v-if="!loadIng && list.length == 0">
+                <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject">
                     <template v-slot:content>
                         <div class="mt-5">
                             <div>
@@ -128,6 +128,6 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .i-created-main {
-    @apply relative py-24 flex flex-col gap-6;
+    @apply relative pt-24 flex flex-col gap-6;
 }
 </style>

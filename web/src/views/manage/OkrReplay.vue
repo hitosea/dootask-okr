@@ -1,42 +1,43 @@
 <template>
     <n-scrollbar>
-        <div class="py-24">
-            <n-spin size="small" :show="loadIng" :class="loadIng && items.length == 0 ? 'mt-[10%]':''">
-            <OkrNotDatas v-if="items.length == 0" :msg="$t('暂无复盘')"></OkrNotDatas>
-            <div v-else class="replay">
-                <div
-                    v-for="(item, index) in items"
-                    :key="index"
-                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
-                    @click="openMultiple"
-                >
-                    <div class="replay-item-head">
-                        <div>
-                            <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
-                                item.priority
-                            }}</span>
-                            <span class="text-[14px] m-[5px] text-[#333333]"
-                                ><b>{{ item.replayName }}</b></span
-                            >
-                            <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
-                        </div>
-                        <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
-                            <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
-                            <i class="replay-item-head-icon taskfont">&#xe705;</i>
-                        </div>
-                    </div>
-                    <div class="flex">
-                        <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
-                            <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
-                            <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
-                        </div>
-                    </div>
-                    <div class="replay-item-body" v-if="item.isActive">
-                        <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
-                    </div>
-
+        <div class="okr-replay-main">
+            <n-spin size="small" :show="loadIng"  :class="loadIng && items.length == 0 ? 'mt-[10%]':''">
+                <div :class="items.length == 0 ? 'okr-replay-main':''">
+                    <OkrNotDatas v-if="items.length == 0" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
                 </div>
-            </div>
+                <div v-if="items.length != 0" class="replay">
+                    <div
+                        v-for="(item, index) in items"
+                        :key="index"
+                        :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
+                        @click="openMultiple"
+                    >
+                        <div class="replay-item-head">
+                            <div>   
+                                <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
+                                    item.priority
+                                }}</span>
+                                <span class="text-[14px] m-[5px] text-[#333333]"
+                                    ><b>{{ item.replayName }}</b></span
+                                >
+                                <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
+                            </div>
+                            <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                                <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
+                                <i class="replay-item-head-icon taskfont">&#xe705;</i>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
+                                <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
+                                <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
+                            </div>
+                        </div>
+                        <div class="replay-item-body" v-if="item.isActive">
+                            <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
+                        </div>
+                    </div>
+                </div>
             </n-spin>
             <!-- OKR详情 -->
             <OkrDetails
@@ -152,6 +153,9 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.okr-replay-main {
+    @apply pt-24 flex flex-col gap-6;
+}
 .replay {
     width: 100%;
     height: 100%;

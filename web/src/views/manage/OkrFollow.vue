@@ -4,7 +4,7 @@
             <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
             <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
             </n-spin>
-            <OkrNotDatas  v-if="!loadIng && list.length == 0"></OkrNotDatas>
+            <OkrNotDatas  v-if="!loadIng && list.length == 0" :types="searchObject"></OkrNotDatas>
         </div>
     </n-scrollbar>
 </template>
@@ -102,6 +102,6 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .okr-follow-main {
-    @apply py-24 flex flex-col gap-6;
+    @apply pt-24 flex flex-col gap-6;
 }
 </style>

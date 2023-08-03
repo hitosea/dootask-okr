@@ -63,7 +63,7 @@
                         <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
                         <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
                         </n-spin>
-                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')"></OkrNotDatas>
+                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject"></OkrNotDatas>
                     </div>
                 </n-scrollbar>
             </div>
@@ -237,7 +237,7 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .okr-department-main {
-    @apply py-24 flex flex-col gap-6 pt-0;
+    @apply pt-24 flex flex-col gap-6 pt-0;
 }
 
 </style>

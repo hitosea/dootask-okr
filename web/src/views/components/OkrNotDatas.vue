@@ -1,6 +1,9 @@
 <template>
     <div class=" w-full h-full flex mt-[10%] items-center flex-col">
-        <div>
+        <div v-if="props.types!=''">
+            <img class="mr-6 -mt-2 w-80" src="@/assets/images/icon/notSearch.svg" />
+        </div>
+        <div v-else>
             <img class="mr-6 -mt-2 w-80" src="@/assets/images/icon/notData.svg" />
         </div>
         <div class="text-[#515A6E] text-14 text-opacity-50 text-center"> 
@@ -15,6 +18,11 @@
         msg: {
             type: String,
             default: ()=> $t('暂无OKR'),
+        },
+        types: {
+            type: String,
+            default: ()=> $t(''),
         }
     });
+    console.log(props);
 </script>
