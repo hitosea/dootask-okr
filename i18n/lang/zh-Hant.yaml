@@ -26,7 +26,7 @@ ErrOkrOwnerNotScore: 負責人未評分
 ErrOkrOwnerScored: 負責人已評分
 ErrOkrPriorityInvalid: 目標優先級參數錯誤
 ErrOkrProgressInvalid: 進度範圍參數錯誤
-ErrOkrProgressNotEnough: 進度不足100%
+ErrOkrProgressNotEnough: KR進度尚未達到100%
 ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrScoreInvalid: 評分範圍參數錯誤
 ErrOkrScored: KR已評分無法操作

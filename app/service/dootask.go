@@ -46,6 +46,7 @@ func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, err
 
 // 获取指定会员基础信息
 func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.UserBasicResp, error) {
+	domain := common.GetRequestOrigin()
 	url := fmt.Sprintf("%s%s?userid=%v&token=%s", config.DooTaskUrl, "/api/users/basic", common.StructToJson(userid), token)
 	result, err := s.client.Get(url)
 	if err != nil {
@@ -68,6 +69,8 @@ func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.
 			if err := common.MapToStruct(v.(map[string]interface{}), &userBasic); err != nil {
 				return nil, err
 			}
+			// 替换成当前请求源域名
+			userBasic.Userimg = common.ReplaceDomainPath(domain, userBasic.Userimg)
 			userBasicArr = append(userBasicArr, &userBasic)
 		}
 	}

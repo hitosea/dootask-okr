@@ -26,7 +26,7 @@ ErrOkrOwnerNotScore: Leiter der mission unbenotet.
 ErrOkrOwnerScored: Chefarzt hat sie bewertet.
 ErrOkrPriorityInvalid: Fehler der zielprioritäten
 ErrOkrProgressInvalid: Fehlerhafter zeitplan
-ErrOkrProgressNotEnough: Wir haben nicht 100%.
+ErrOkrProgressNotEnough: Die KR liegt noch nicht bei 100%
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrScoreInvalid: Fehlerwerte werte putiert
 ErrOkrScored: Die infrarot-anlage ist nicht mehr fehleranfällig

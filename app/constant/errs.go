@@ -16,7 +16,7 @@ var (
 	ErrOkrKeyResultAtLeastOne     = "ErrOkrKeyResultAtLeastOne"     //至少有一条关键结果
 	ErrOkrNoData                  = "ErrOkrNoData"                  //没有查询到相关数据
 	ErrOkrInvalidKrScore          = "ErrOkrInvalidKrScore"          //无效的KR分数
-	ErrOkrProgressNotEnough       = "ErrOkrProgressNotEnough"       //进度不足100%
+	ErrOkrProgressNotEnough       = "ErrOkrProgressNotEnough"       //KR进度尚未达到100%
 	ErrOkrNoPermissionScore       = "ErrOkrNoPermissionScore"       //暂无权限评分
 	ErrOkrOwnerNotScore           = "ErrOkrOwnerNotScore"           //负责人未评分
 	ErrOkrKrScoreNotComplete      = "ErrOkrKrScoreNotComplete"      //KR评分未完成

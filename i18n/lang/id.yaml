@@ -26,7 +26,7 @@ ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
 ErrOkrOwnerScored: Orang yang bertanggung jawab dinilai
 ErrOkrPriorityInvalid: Target prioritas parameter salah
 ErrOkrProgressInvalid: Parameter jangkauan progres salah
-ErrOkrProgressNotEnough: Kurang dari 100%
+ErrOkrProgressNotEnough: KR apos; s kemajuan adalah tidak 100%
 ErrOkrProgressStatusInvalid: Parameter status progres salah
 ErrOkrScoreInvalid: Parameternya salah
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi

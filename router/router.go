@@ -4,6 +4,7 @@ import (
 	v1 "dootask-okr/app/api/v1"
 	"dootask-okr/app/api/v1/helper"
 	"dootask-okr/app/service"
+	"dootask-okr/app/utils/common"
 	"dootask-okr/web"
 	"net/http"
 	"reflect"
@@ -15,6 +16,7 @@ import (
 )
 
 func Init(c *gin.Context) {
+	common.SetGlobalContext(c)
 	urlPath := strings.Replace(c.Request.URL.Path, "/microapp/okr/api/v1/", "/api/v1/", -1)
 	urlPath = strings.Replace(c.Request.URL.Path, "/manage/apps/okr/api/v1/", "/api/v1/", -1)
 	urlPath = strings.Replace(c.Request.URL.Path, "/apps/okr/api/v1/", "/api/v1/", -1)

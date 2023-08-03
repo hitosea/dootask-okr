@@ -26,7 +26,7 @@ ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다
 ErrOkrOwnerScored: 책임자가 이미 채점하였다.
 ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 진행 범위 인자 오류
-ErrOkrProgressNotEnough: 진행이 100% 미만입니다.
+ErrOkrProgressNotEnough: kr는 아직 100% 가 되지 않았다
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrScoreInvalid: 채점 범위 인자 오류
 ErrOkrScored: 채점된 kr은 조작할 수 없습니다

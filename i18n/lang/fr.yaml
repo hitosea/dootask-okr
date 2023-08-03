@@ -26,7 +26,7 @@ ErrOkrOwnerNotScore: Responsable non évalué
 ErrOkrOwnerScored: Responsable a noté
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
 ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
-ErrOkrProgressNotEnough: Progrès insuffisants 100%
+ErrOkrProgressNotEnough: Progrès KR pas encore atteint 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
 ErrOkrScored: KR a été évalué non opérationnel
