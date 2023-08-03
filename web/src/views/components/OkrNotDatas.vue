@@ -24,5 +24,4 @@
             default: ()=> $t(''),
         }
     });
-    console.log(props);
 </script>
