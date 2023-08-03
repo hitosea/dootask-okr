@@ -14,7 +14,7 @@ ErrNoPermission: Insufficient authority
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
 ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated
-ErrOkrConfidenceInvalid: The confidence index range parameter is incorrect
+ErrOkrConfidenceInvalid: Confidence Index Please enter an integer between 0 and 100
 ErrOkrInvalidKrScore: Invalid KR score
 ErrOkrIsFinishNotScoreInvalid: Complete No score parameter is incorrect
 ErrOkrKeyResultAtLeastOne: There was at least one key result
@@ -25,14 +25,17 @@ ErrOkrNoPermissionScore: No permission rating is available
 ErrOkrOwnerNotScore: Person in charge not rated
 ErrOkrOwnerScored: Person in charge has scored
 ErrOkrPriorityInvalid: The target priority parameter is incorrect
-ErrOkrProgressInvalid: The progress range parameter is incorrect
+ErrOkrProgressInvalid: Progress Please enter an integer ranging from 0 to 100
 ErrOkrProgressNotEnough: The KR progress has not reached 100%
 ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
-ErrOkrScoreInvalid: The scoring range parameter is incorrect
+ErrOkrScoreInvalid: Please enter an integer ranging from 0 to 10
 ErrOkrScored: The KR has been scored and cannot be operated
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
 ErrOkrSuperiorScored: Superior rated
 ErrOkrTimeEmpty: Time cannot be empty
+ErrOkrTimeFormat: Time format error
+ErrOkrTimeInvalid: The start time cannot be later than the end time. Select a new time range
+ErrOkrTitleLengthInvalid: The title is too long. Please limit it to 255 characters
 ErrOkrTypeInvalid: The target type parameter is incorrect
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
 ErrRequestTimeout: Request timeout

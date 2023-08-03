@@ -14,7 +14,7 @@ ErrNoPermission: Tidak cukup izin
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
 ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai
-ErrOkrConfidenceInvalid: Parameter keyakinan eksponensial salah
+ErrOkrConfidenceInvalid: Indeks kepercayaan diri silahkan masukkan bilangan bulat 0-100
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
 ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
@@ -25,14 +25,17 @@ ErrOkrNoPermissionScore: Tak ada tingkat izin sementara
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
 ErrOkrOwnerScored: Orang yang bertanggung jawab dinilai
 ErrOkrPriorityInvalid: Target prioritas parameter salah
-ErrOkrProgressInvalid: Parameter jangkauan progres salah
+ErrOkrProgressInvalid: Masukkan bilangan bulat 0-100
 ErrOkrProgressNotEnough: KR apos; s kemajuan adalah tidak 100%
 ErrOkrProgressStatusInvalid: Parameter status progres salah
-ErrOkrScoreInvalid: Parameternya salah
+ErrOkrScoreInvalid: Untuk kelas silahkan masukkan bilangan bulat 0-10
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTimeEmpty: Waktu tidak boleh kosong
+ErrOkrTimeFormat: Galat format waktu
+ErrOkrTimeInvalid: Waktu untuk memulai tidak lebih dari waktu untuk mengakhiri. Silahkan pilih kembali periode yang sesuai
+ErrOkrTitleLengthInvalid: Judul konten terlalu panjang, tolong batasi sampai di bawah 255 karakter
 ErrOkrTypeInvalid: Parameter jenis target salah
 ErrOkrVisibleRangeInvalid: Target terlihat parameter salah
 ErrRequestTimeout: Waktu permintaan

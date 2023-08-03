@@ -43,12 +43,17 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	// 时间格式化
 	startAt, err := common.ParseTime(param.StartAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
 	}
 
 	endAt, err := common.ParseTime(param.EndAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
+	}
+
+	// 开始时间不能大于结束时间，请重新选择合适的时间段
+	if startAt.After(endAt) {
+		return nil, e.New(constant.ErrOkrTimeInvalid)
 	}
 
 	// 创建目标
@@ -132,12 +137,17 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 	startAt, err := common.ParseTime(param.StartAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
 	}
 
 	endAt, err := common.ParseTime(param.EndAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
+	}
+
+	// 开始时间不能大于结束时间，请重新选择合适的时间段
+	if startAt.After(endAt) {
+		return nil, e.New(constant.ErrOkrTimeInvalid)
 	}
 
 	// 至少有一条关键结果
@@ -238,6 +248,11 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		return nil, e.New(constant.ErrOkrKeyResultTitleEmpty)
 	}
 
+	// 标题长度 255
+	if len(kr.Title) > 255 {
+		return nil, e.New(constant.ErrOkrTitleLengthInvalid)
+	}
+
 	// 信心指数 范围0-100
 	if kr.Confidence < 0 || kr.Confidence > 100 {
 		return nil, e.New(constant.ErrOkrConfidenceInvalid)
@@ -250,12 +265,17 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
 	}
 
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
+	}
+
+	// 开始时间不能大于结束时间，请重新选择合适的时间段
+	if startAt.After(endAt) {
+		return nil, e.New(constant.ErrOkrTimeInvalid)
 	}
 
 	keyResult := &model.Okr{
@@ -286,6 +306,11 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 		return nil, e.New(constant.ErrOkrKeyResultTitleEmpty)
 	}
 
+	// 标题长度 255
+	if len(kr.Title) > 255 {
+		return nil, e.New(constant.ErrOkrTitleLengthInvalid)
+	}
+
 	// 信心指数 范围0-100
 	if kr.Confidence < 0 || kr.Confidence > 100 {
 		return nil, e.New(constant.ErrOkrConfidenceInvalid)
@@ -298,12 +323,17 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	startAt, err := common.ParseTime(kr.StartAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
 	}
 
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
-		return nil, err
+		return nil, e.New(constant.ErrOkrTimeFormat)
+	}
+
+	// 开始时间不能大于结束时间，请重新选择合适的时间段
+	if startAt.After(endAt) {
+		return nil, e.New(constant.ErrOkrTimeInvalid)
 	}
 
 	keyResult, err := s.GetObjectiveById(kr.Id)
@@ -727,11 +757,11 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	if startAtStr != "" && endAtStr != "" {
 		startAt, err := common.ParseTime(startAtStr)
 		if err != nil {
-			return nil, err
+			return nil, e.New(constant.ErrOkrTimeFormat)
 		}
 		endAt, err := common.ParseTime(endAtStr)
 		if err != nil {
-			return nil, err
+			return nil, e.New(constant.ErrOkrTimeFormat)
 		}
 		db = db.Where("(start_at >= ? AND start_at <= ?) OR (end_at >= ? AND end_at <= ?) OR (start_at <= ? AND end_at >= ?)", startAt, endAt, startAt, endAt, startAt, endAt)
 	}

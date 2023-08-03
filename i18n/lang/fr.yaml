@@ -14,7 +14,7 @@ ErrNoPermission: Manque de pouvoirs
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
 ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel
-ErrOkrConfidenceInvalid: Indice de confiance gamme paramètres erreur
+ErrOkrConfidenceInvalid: Indice de confiance veuillez entrer un nombre entier de 0 à 100
 ErrOkrInvalidKrScore: Score KR non valide
 ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
@@ -25,14 +25,17 @@ ErrOkrNoPermissionScore: Pas encore d’autorisation score
 ErrOkrOwnerNotScore: Responsable non évalué
 ErrOkrOwnerScored: Responsable a noté
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
-ErrOkrProgressInvalid: Paramètres de la gamme de progrès erronés
+ErrOkrProgressInvalid: Progrès veuillez entrer un nombre entier de 0 à 100
 ErrOkrProgressNotEnough: Progrès KR pas encore atteint 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
-ErrOkrScoreInvalid: Échelle de notation paramètres incorrects
+ErrOkrScoreInvalid: Évaluation veuillez entrer un nombre entier de 0 à 10
 ErrOkrScored: KR a été évalué non opérationnel
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTimeEmpty: Le temps ne peut pas être vide
+ErrOkrTimeFormat: Format de l’heure incorrect
+ErrOkrTimeInvalid: L’heure de début ne peut pas être plus grande que l’heure de fin, veuillez sélectionner une nouvelle période appropriée
+ErrOkrTitleLengthInvalid: Le contenu du titre est trop long, veuillez le limiter à 255 caractères
 ErrOkrTypeInvalid: Type de cible paramètre erreur
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré

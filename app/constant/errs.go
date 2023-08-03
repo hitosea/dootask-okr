@@ -24,11 +24,11 @@ var (
 	ErrOkrPriorityInvalid         = "ErrOkrPriorityInvalid"         //目标优先级参数错误
 	ErrOkrAscriptionInvalid       = "ErrOkrAscriptionInvalid"       //目标归属参数错误
 	ErrOkrVisibleRangeInvalid     = "ErrOkrVisibleRangeInvalid"     //目标可见范围参数错误
-	ErrOkrConfidenceInvalid       = "ErrOkrConfidenceInvalid"       //信心指数范围参数错误
+	ErrOkrConfidenceInvalid       = "ErrOkrConfidenceInvalid"       //信心指数请输入0-100的整数
 	ErrOkrIsFinishNotScoreInvalid = "ErrOkrIsFinishNotScoreInvalid" //是否已完成未评分参数错误
-	ErrOkrProgressInvalid         = "ErrOkrProgressInvalid"         //进度范围参数错误
+	ErrOkrProgressInvalid         = "ErrOkrProgressInvalid"         //进度请输入0-100的整数
 	ErrOkrProgressStatusInvalid   = "ErrOkrProgressStatusInvalid"   //进度状态参数错误
-	ErrOkrScoreInvalid            = "ErrOkrScoreInvalid"            //评分范围参数错误
+	ErrOkrScoreInvalid            = "ErrOkrScoreInvalid"            //评分请输入0-10的整数
 	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //负责人已评分
 	ErrOkrSuperiorScored          = "ErrOkrSuperiorScored"          //上级已评分
 	ErrOkrScoredNotUpdateProgress = "ErrOkrScoredNotUpdateProgress" //评分后不允许修改进度
@@ -37,6 +37,9 @@ var (
 	ErrOkrCanceled                = "ErrOkrCanceled"                //O目标已取消无法操作
 	ErrOkrCompleted               = "ErrOkrCompleted"               //O目标已完成无法操作
 	ErrOkrScored                  = "ErrOkrScored"                  //KR已评分无法操作
+	ErrOkrTimeFormat              = "ErrOkrTimeFormat"              //时间格式错误
+	ErrOkrTitleLengthInvalid      = "ErrOkrTitleLengthInvalid"      //标题内容过长，请限制在255个字符以内
+	ErrOkrTimeInvalid             = "ErrOkrTimeInvalid"             //开始时间不能大于结束时间，请重新选择合适的时间段
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误
