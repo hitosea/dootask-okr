@@ -28,7 +28,8 @@
                                 <n-divider class="py-20"/>
                                 <div class="list-progress">
                                     <div class="text-16">{{ $t('各部门OKR平均完成度') }}</div>
-                                    <div class="mt-20" v-for="item in analyzeDatas.deptCompletes">
+                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
+                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
                                         <p class="progress-name">{{item.department_name}}</p>
                                         <n-progress type="line" color="#8BCF70" :percentage="calculatingProgress(item.complete,item.total)">
                                             <span class="text-[#8BCF70]">{{calculatingProgress(item.complete,item.total)}}%</span>
@@ -77,7 +78,8 @@
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
                                     <div class="text-16">{{ $t('各部门OKR评分分布') }}</div>
-                                    <div class="mt-20" v-for="item in analyzeDatas.deptScores">
+                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">{{ $t('暂无数据') }}</div>
+                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptScores">
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
@@ -117,7 +119,8 @@
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
                                     <div class="text-16">{{ $t('OKR部门评分占比') }}</div>
-                                    <div class="mt-20" v-for="item in analyzeDatas.deptScoreProportion">
+                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
+                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptScoreProportion">
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">

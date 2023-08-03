@@ -30,28 +30,30 @@
                 </div>
             </div>
         </div>
-        <div class="p-s-box p-s-two">
-            <div class="percent-box">
-                <h3>{{ $t('整体完成度') }}</h3>
-                <p>{{ $t('这是你的目标整体完成度。') }}</p>
+        <div class="sm:flex  gap-3 xl:gap-6">
+            <div class="p-s-box p-s-two mb-12 sm:mb-0">
+                <div class="percent-box">
+                    <h3>{{ $t('整体完成度') }}</h3>
+                    <p>{{ $t('这是你的目标整体完成度。') }}</p>
+                </div>
+                <div class="relative w-[150px] h-[67px]">
+                    <div class="h-full w-[150px]" id="okrCompletedAndUncompleted"></div>
+                    <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
+                        {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.completion_sum,
+                            analyzeDatas.okrDegreeOfCompletionAndScore.total) }}%</h3>
+                </div>
             </div>
-            <div class="relative w-[150px] h-[67px]">
-                <div class="h-full w-[150px]" id="okrCompletedAndUncompleted"></div>
-                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
-                    {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.completion_sum,
-                        analyzeDatas.okrDegreeOfCompletionAndScore.total) }}%</h3>
-            </div>
-        </div>
-        <div class="p-s-box p-s-two">
-            <div class="percent-box">
-                <h3>{{ $t('整体评分') }}</h3>
-                <p>{{ $t('这是你的目标整体获得评分。') }}</p>
-            </div>
-            <div class="relative w-[150px] h-[67px]">
-                <div class="h-full w-[150px]" id="okrDegreeOfCompletionAndScore"></div>
-                <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
-                    {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.score_sum,
-                        analyzeDatas.okrDegreeOfCompletionAndScore.total, 1) }}</h3>
+            <div class="p-s-box p-s-two">
+                <div class="percent-box">
+                    <h3>{{ $t('整体评分') }}</h3>
+                    <p>{{ $t('这是你的目标整体获得评分。') }}</p>
+                </div>
+                <div class="relative w-[150px] h-[67px]">
+                    <div class="h-full w-[150px]" id="okrDegreeOfCompletionAndScore"></div>
+                    <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
+                        {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.score_sum,
+                            analyzeDatas.okrDegreeOfCompletionAndScore.total, 1) }}</h3>
+                </div>
             </div>
         </div>
     </div>

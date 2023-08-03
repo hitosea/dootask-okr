@@ -9,7 +9,7 @@ type OkrReplay struct {
 	Userid          int                 `gorm:"default:0;comment:'复盘用户id'" json:"userid"`
 	OkrId           int                 `gorm:"default:0;comment:'目标id'" json:"okr_id"`
 	OkrAscription   int                 `gorm:"default:0;comment:'目标归属'" json:"okr_ascription"`
-	OkrUserid       int                 `gorm:"default:0;comment:'目标所属用户id'" json:"okr_userid"`
+	OkrUserid       int                 `gorm:"default:0;comment:目标所属用户id" json:"okr_userid"`
 	OkrDepartmentId string              `gorm:"type:varchar(100);default:'';comment:'目标部门id'" json:"okr_department_id"`
 	OkrTitle        string              `gorm:"type:varchar(255);comment:'目标标题'" json:"okr_title"`
 	OkrProgress     int                 `gorm:"default:0;comment:'目标完成度'" json:"okr_progress"`

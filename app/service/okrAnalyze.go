@@ -83,10 +83,10 @@ func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp) (*interfaces
 	if err := db.Session(&core.Session).Count(&data.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score = 0").Count(&data.Unscored).Error; err != nil {
+	if err := db.Session(&core.Session).Where("score < 0").Count(&data.Unscored).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score > 0 and score <= 3").Count(&data.ZeroToThree).Error; err != nil {
+	if err := db.Session(&core.Session).Where("score >= 0 and score <= 3").Count(&data.ZeroToThree).Error; err != nil {
 		return nil, err
 	}
 	if err := db.Session(&core.Session).Where("score > 3 and score <= 7").Count(&data.ThreeToSeven).Error; err != nil {
@@ -114,8 +114,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
-						SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as unscored, 
-						SUM(CASE WHEN score > 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three, 
+						SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
+						SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three, 
 						SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven, 
 						SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
 					FROM %s okr
@@ -158,7 +158,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 }
 
 /**
-* 获取OKR人员评分分布
+* 获取OKR人员评分率
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzePersonnelScoreRate, error) {
@@ -227,8 +227,8 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
-						SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as unscored, 
-						SUM(CASE WHEN score > 0 THEN 1 ELSE 0 END) as already_reviewed
+						SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
+						SUM(CASE WHEN score >= 0 THEN 1 ELSE 0 END) as already_reviewed
 					FROM %s okr
 					LEFT JOIN %s u on okr.userid = u.userid
 					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
