@@ -3,7 +3,7 @@
         <div class="okr-replay-main">
             <n-spin size="small" :show="loadIng"  :class="loadIng && items.length == 0 ? 'mt-[10%]':''">
                 <div :class="items.length == 0 ? 'okr-replay-main':''">
-                    <OkrNotDatas v-if="items.length == 0" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
+                    <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
                 </div>
                 <div v-if="items.length != 0" class="replay">
                     <div
