@@ -1,6 +1,6 @@
 <template >
     <div class="personal-statistics">
-        <div class="p-s-box p-s-one">
+        <div class="p-s-box p-s-one min-w-[350px]">
             <div class="p-s-one-box mr-24 pr-24 border-solid border-0 border-r border-[#F2F3F5]">
                 <div class="p-s-one-title">
                     <h3>{{ $t('待完成数') }}</h3>
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="sm:flex  gap-3 xl:gap-6">
+        <div class="sm:flex gap-3 xl:gap-6">
             <div class="p-s-box p-s-two mb-12 sm:mb-0">
                 <div class="percent-box">
                     <h3>{{ $t('整体完成度') }}</h3>
