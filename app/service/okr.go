@@ -583,7 +583,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		Where("id IN (?)", core.DB.Model(&model.Okr{}).
 			Select("DISTINCT parent_id").
 			Where("FIND_IN_SET(?, participant) > 0", user.Userid),
-		)
+		).Order("created_at desc")
 
 	if objective != "" {
 		db = db.Where("title LIKE ?", "%"+objective+"%")
