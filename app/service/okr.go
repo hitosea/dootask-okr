@@ -700,7 +700,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		db = db.Where(strings.Join(sql, " OR "))
 
 		// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-		db = db.Where("visible_range = 3")
+		db = db.Where("visible_range = 1 OR visible_range = 3")
 	}
 
 	// 超级管理员可以通过部门筛选
