@@ -1,61 +1,73 @@
-<template >
-    <div class=" flex items-center my-16 nowrap">
-        <div class=" mb-2 mr-8  custom-div">
-            {{$t('部门')}}
+<template>
+    <div class="flex flex-col h-full">
+        <div class="flex justify-between flex-col 2xl:flex-row" >
+            <div class="flex-[2] flex items-center mb-16 mt-24 ">
+                <div v-if="userInfo == 'admin'" class=" mb-2 mr-8 whitespace-nowrap">
+                    {{$t('部门')}}
+                </div>
+                <n-select
+                    v-if="userInfo == 'admin'"
+                    v-model:value="departmentsvalue"
+                    :options="departments"
+                    class="w-[33%] h-[36px] mr-24"
+                    :placeholder="$t('全部')"/>      
+                <div class=" mb-2 mr-8 whitespace-nowrap">
+                    {{$t('负责人')}}
+                </div>
+                <n-select
+                    v-model:value="principalvalue"
+                    :options="principal"
+                    class="w-[33%] h-[36px] "
+                    :placeholder="$t('全部')"/>
+        
+                <div class=" mb-2 mr-8 ml-24 whitespace-nowrap">
+                    {{$t('时间')}}
+                </div>
+                <n-date-picker class="w-[33%] h-[36px] " v-model:value="daterange"
+                value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium"/>
+        
+                <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
+                    <template #icon>
+                        <i class="taskfont" v-if="!(isLoading)">&#xe72a;</i>
+                    </template>
+                    {{ $t('搜索') }}
+                </n-button>
+            </div>
+            <div class="flex-1 flex items-center mb-16 2xl:justify-end 2xl:mb-0">
+                <div class=" mb-4 mr-12 whitespace-nowrap 2xl:ml-24">
+                    {{$t('类型')}}
+                </div>
+                    <n-button-group size="medium" class="mb-4">
+                        <n-button  @click="handleClick2('0')" class=" rounded px-16 bg-white whitespace-nowrap">
+                            {{$t('全部')}}
+                        </n-button>
+                        <div class="w-[4px]"></div>
+                        <n-button  @click="handleClick2('1')" class=" rounded px-16 bg-white whitespace-nowrap">
+                            {{$t('承诺型')}}
+                        </n-button>
+                        <n-button  @click="handleClick2('2')" class=" rounded px-16 bg-white whitespace-nowrap">
+                            {{$t('挑战型')}}
+                        </n-button>
+                    </n-button-group>
+    
+        
+                <n-checkbox v-model:checked="completednotrated" class="ml-36 rounded whitespace-nowrap mb-2 " @click="getList('search')">
+                    {{ $t('已完成未评分') }}
+                </n-checkbox>
+            </div>
         </div>
-        <n-select
-            v-model:value="departmentsvalue"
-            :options="departments"
-            class="custom-select"
-            :placeholder="$t('全部')"/>
-
-        <div class=" mb-2 mr-8 ml-24 custom-div">
-            {{$t('负责人')}}
+        <div class="relative h-full" >
+            <div class="absolute top-0 left-0 bottom-0 right-0">
+                <n-scrollbar :on-scroll="onScroll">
+                    <div class="okr-department-main">
+                        <OkrLoading v-if="loadIng"></OkrLoading>
+                        <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
+                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')"></OkrNotDatas>
+                    </div>
+                </n-scrollbar>
+            </div>
         </div>
-        <n-select
-            v-model:value="principalvalue"
-            :options="principal"
-            class="custom-select"
-            :placeholder="$t('全部')"/>
-
-        <div class=" mb-2 mr-8 ml-24 custom-div">
-            {{$t('类型')}}
-        </div>
-        <n-select
-            v-model:value="typevalue"
-            :options="types"
-            class="custom-select"
-            :placeholder="$t('全部')"/>
-
-        <div class=" mb-2 mr-8 ml-24 custom-div">
-            {{$t('时间')}}
-        </div>
-        <n-date-picker class="custom-select" v-model:value="daterange"
-        value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium"/>
-
-        <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
-            <template #icon>
-                <i class="taskfont ml--100" v-if="!(isLoading)">&#xe72a;</i>
-              </template>
-            {{ $t('搜索') }}
-        </n-button>
-
-        <n-checkbox v-model:checked="completednotrated" class="ml-auto rounded custom-div" @click="getList('search')">
-            {{ $t('已完成未评分') }}
-        </n-checkbox>
-    </div>
-    <n-scrollbar :on-scroll="onScroll">
-        <div class="okr-department-main">
-            <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
-            <OkrNotDatas v-else :msg="$t('暂无OKR')"></OkrNotDatas>
-        </div>
-    </n-scrollbar>
-    <div class="mask" v-if="loadIng">
-        <OkrLoading></OkrLoading>
-    </div>
-    <div class="maskbottom" v-if="loadIngBottom">
-        <OkrLoading></OkrLoading>
-    </div>
+    </div>  
 </template>
 
 <script lang="ts" setup>
@@ -67,32 +79,33 @@ import { getDepartmentList } from '@/api/modules/department'
 import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'
 import utils from '@/utils/utils'
+import { UserStore } from '@/store/user'
 
 function handleClick() {
     isLoading.value = true
     getList('search');
 }
 
+function handleClick2(type) {
+    types.value = type
+    getList('search');
+}
+
 const loadIng = ref(false)
-const loadIngBottom = ref(false)
 const isLoading = ref(false)
+const userInfo = UserStore().info.identity[0]
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
 const departmentsvalue = ref(null)
 const principalvalue = ref(null)
-const typevalue = ref(null)
 const departments = ref([
     { label: $t('全部'), value: null },
 ])
 const principal = ref([
     { label: $t('全部'), value: null },
 ])
-const types = ref([
-    { label: $t('全部'), value: null },
-    { label: $t('承诺型'), value: "1" },
-    { label: $t('挑战型'), value: "2" },
-]);
+const types  = ref('0');
 const daterange = ref(null)
 const completednotrated = ref(false)
 
@@ -142,7 +155,6 @@ const init = () => {
 }
 
 const getList = (type) => {
-
     if (type == 'search'){
         page.value = 1
     }
@@ -155,12 +167,10 @@ const getList = (type) => {
             page: page.value,
             page_size: 10,
             start_at : daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000) : null,
-            type: typevalue.value,
+            type: types.value=="0" ? null: types.value,  
             userid: principalvalue.value,
         }
         if (type != 'search'){
-            loadIngBottom.value = true
-        }else{
             loadIng.value = true
         }
         getDepartmentOkrList(sendata).then(({ data }) => {
@@ -177,8 +187,6 @@ const getList = (type) => {
             last_page.value = data.last_page
             loadIng.value = false
             isLoading.value = false
-            loadIngBottom.value = false
-
         })
     }
 }
@@ -218,10 +226,9 @@ const onScroll = (e) => {
 }
 
 
-
 onMounted(() => {
     init()
-    getList('search')
+    getList('')
 })
 defineExpose({
     upData,
@@ -232,37 +239,5 @@ defineExpose({
 .okr-department-main {
     @apply py-24 flex flex-col gap-6 pt-0;
 }
-
-.custom-select {
-    width: 160px;
-    height: 36px;
-}
-.custom-div{
-    white-space: nowrap;
-
-}
-
-.mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  .maskbottom {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    z-index: 9999;
-  }
 
 </style>

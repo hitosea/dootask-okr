@@ -10,6 +10,7 @@ export namespace User {
         created_at: string
         updated_at: string
         userIsAdmin: boolean
+        identity: any
     }
 
     // 登录请求
