@@ -624,7 +624,9 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		return nil, err
 	}
 
-	if err := db.Preload("KeyResults", "FIND_IN_SET(?, participant) > 0", user.Userid).Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
+	// db = db.Preload("KeyResults", "FIND_IN_SET(?, participant) > 0", user.Userid) // 只显示我参与的KR
+	db = db.Preload("KeyResults") // 显示全部KR
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
@@ -776,7 +778,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	completed := param.Completed
 	if completed != 0 {
 		if completed == 1 {
-			db = db.Where("progress >= 100 and score = 0")
+			db = db.Where("progress >= 100 and score = -1")
 		} else {
 			db = db.Where("progress < 100")
 		}
