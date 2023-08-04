@@ -21,7 +21,7 @@ ErrOkrKeyResultAtLeastOne: There was at least one key result
 ErrOkrKeyResultTitleEmpty: The key result header cannot be empty
 ErrOkrKrScoreNotComplete: KR score is not complete
 ErrOkrNoData: No data is queried
-ErrOkrNoPermissionScore: No permission rating is available
+ErrOkrOwnerNotCancel: Responsible person only
 ErrOkrOwnerNotScore: Person in charge not rated
 ErrOkrOwnerScored: Person in charge has scored
 ErrOkrPriorityInvalid: The target priority parameter is incorrect

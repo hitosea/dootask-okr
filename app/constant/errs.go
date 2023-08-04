@@ -17,7 +17,6 @@ var (
 	ErrOkrNoData                  = "ErrOkrNoData"                  //没有查询到相关数据
 	ErrOkrInvalidKrScore          = "ErrOkrInvalidKrScore"          //无效的KR分数
 	ErrOkrProgressNotEnough       = "ErrOkrProgressNotEnough"       //KR进度尚未达到100%
-	ErrOkrNoPermissionScore       = "ErrOkrNoPermissionScore"       //暂无权限评分
 	ErrOkrOwnerNotScore           = "ErrOkrOwnerNotScore"           //负责人未评分
 	ErrOkrKrScoreNotComplete      = "ErrOkrKrScoreNotComplete"      //KR评分未完成
 	ErrOkrTypeInvalid             = "ErrOkrTypeInvalid"             //目标类型参数错误
@@ -40,6 +39,7 @@ var (
 	ErrOkrTimeFormat              = "ErrOkrTimeFormat"              //时间格式错误
 	ErrOkrTitleLengthInvalid      = "ErrOkrTitleLengthInvalid"      //标题内容过长，请限制在255个字符以内
 	ErrOkrTimeInvalid             = "ErrOkrTimeInvalid"             //开始时间不能大于结束时间，请重新选择合适的时间段
+	ErrOkrOwnerNotCancel          = "ErrOkrOwnerNotCancel"          //仅限负责人操作
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

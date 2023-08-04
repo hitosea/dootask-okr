@@ -408,7 +408,7 @@ func (api *BaseApi) OkrReplayDetail() {
 func (api *BaseApi) OkrAlignCancel() {
 	var param = interfaces.OkrAlignCancelReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.CancelAlignObjective(param.OkrId, param.AlignOkrId)
+	err := service.OkrService.CancelAlignObjective(api.Userinfo.Userid, param.OkrId, param.AlignOkrId)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

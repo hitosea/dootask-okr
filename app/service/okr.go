@@ -130,7 +130,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	err = s.CheckObjectiveOperation(obj)
+	err = s.CheckObjectiveOperation(obj, user.Userid)
 	if err != nil {
 		return nil, err
 	}
@@ -966,7 +966,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	err = s.CheckObjectiveOperation(kr)
+	err = s.CheckObjectiveOperation(kr, user.Userid)
 	if err != nil {
 		return nil, err
 	}
@@ -1067,7 +1067,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	if !superior {
 		// 检查用户是否为目标负责人
 		if kr.Userid != user.Userid {
-			return nil, e.New(constant.ErrOkrNoPermissionScore)
+			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
 		// 检查是否已评分
 		if kr.Score > -1 {
@@ -1173,6 +1173,11 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
+	err = s.CheckObjectiveOperation(kr, userid)
+	if err != nil {
+		return nil, err
+	}
+
 	// 更新取消状态
 	var logContent string
 	if kr.Canceled == 0 {
@@ -1202,7 +1207,7 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	err = s.CheckObjectiveOperation(kr)
+	err = s.CheckObjectiveOperation(kr, user.Userid)
 	if err != nil {
 		return nil, err
 	}
@@ -1234,7 +1239,7 @@ func (s *okrService) UpdateConfidence(userid int, param interfaces.OkrConfidence
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	err = s.CheckObjectiveOperation(kr)
+	err = s.CheckObjectiveOperation(kr, userid)
 	if err != nil {
 		return nil, err
 	}
@@ -1253,7 +1258,12 @@ func (s *okrService) UpdateConfidence(userid int, param interfaces.OkrConfidence
 }
 
 // 检查目标是否可以操作
-func (s *okrService) CheckObjectiveOperation(okr *model.Okr) error {
+func (s *okrService) CheckObjectiveOperation(okr *model.Okr, userid int) error {
+	// 以下只能O的负责人可操作（其他人仅能查看）
+	// 详情：编辑OKR、修改参与人、取消目标、重启目标、修改进度、信心、对齐目标、添加复盘
+	if okr.Userid != userid {
+		return e.New(constant.ErrOkrOwnerNotCancel)
+	}
 	if okr.ParentId == 0 {
 		// O已取消
 		if okr.Canceled == 1 {
@@ -1277,6 +1287,10 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	obj, err := s.GetObjectiveByIdWithKeyResults(req.OkrId)
 	if err != nil {
 		return nil, err
+	}
+
+	if obj.Userid != userid {
+		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
 	// 检查关键结果是否已评分
@@ -1408,7 +1422,7 @@ func (s *okrService) UpdateAlignObjective(userid, okrId int, alignObjective stri
 		return nil, err
 	}
 
-	err = s.CheckObjectiveOperation(obj)
+	err = s.CheckObjectiveOperation(obj, userid)
 	if err != nil {
 		return nil, err
 	}
@@ -1421,13 +1435,13 @@ func (s *okrService) UpdateAlignObjective(userid, okrId int, alignObjective stri
 }
 
 // 取消对齐目标
-func (s *okrService) CancelAlignObjective(okrId, alignOkrId int) error {
+func (s *okrService) CancelAlignObjective(userid, okrId, alignOkrId int) error {
 	obj, err := s.GetObjectiveById(okrId)
 	if err != nil {
 		return err
 	}
 
-	err = s.CheckObjectiveOperation(obj)
+	err = s.CheckObjectiveOperation(obj, userid)
 	if err != nil {
 		return err
 	}

@@ -21,7 +21,7 @@ ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis
 ErrOkrKeyResultTitleEmpty: Die prioritätsergebnisse stehen nicht Leer
 ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
 ErrOkrNoData: Die verwandten daten wurden nicht entwendet
-ErrOkrNoPermissionScore: Nichtautorisierung durchführen
+ErrOkrOwnerNotCancel: Nur mitarbeiter
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.
 ErrOkrOwnerScored: Chefarzt hat sie bewertet.
 ErrOkrPriorityInvalid: Fehler der zielprioritäten

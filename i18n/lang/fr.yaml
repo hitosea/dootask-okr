@@ -21,7 +21,7 @@ ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
 ErrOkrKeyResultTitleEmpty: Le titre des résultats clés ne peut pas être vide
 ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Aucune donnée n’a été consultée
-ErrOkrNoPermissionScore: Pas encore d’autorisation score
+ErrOkrOwnerNotCancel: Opération réservée aux personnes responsables
 ErrOkrOwnerNotScore: Responsable non évalué
 ErrOkrOwnerScored: Responsable a noté
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
