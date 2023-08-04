@@ -1321,6 +1321,10 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	var histories []*model.OkrReplayHistory
 	commentsMap := make(map[int]interfaces.OkrReplayComment)
 	for _, comment := range req.Comments {
+		// 复盘评论判断
+		if !common.InArrayInt(comment.Comment, []int{1, 2}) {
+			return nil, e.New(constant.ErrOkrReplayCommentInvalid)
+		}
 		commentsMap[comment.OkrId] = *comment
 	}
 	for _, kr := range obj.KeyResults {

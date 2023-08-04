@@ -28,6 +28,7 @@ ErrOkrPriorityInvalid: 目標優先度パラメーターエラーです
 ErrOkrProgressInvalid: 進捗は,0-100の整数で入力します。
 ErrOkrProgressNotEnough: KRの進捗はまだ100%です
 ErrOkrProgressStatusInvalid: 進捗状態パラメータエラーです
+ErrOkrReplayCommentInvalid: 正しいレビューを選んでくださいKRレビューです
 ErrOkrScoreInvalid: 採点は0-10の整数でお願いします。
 ErrOkrScored: KRスコアは操作できません
 ErrOkrScoredNotUpdateProgress: 採点後の進捗修正は認められません。

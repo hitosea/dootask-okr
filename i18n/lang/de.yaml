@@ -28,6 +28,7 @@ ErrOkrPriorityInvalid: Fehler der zielprioritäten
 ErrOkrProgressInvalid: Fortschritt gibt einen ganzzahligen wert Von 0-100 ein
 ErrOkrProgressNotEnough: Die KR liegt noch nicht bei 100%
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
+ErrOkrReplayCommentInvalid: Wählen sie die richtige infrarot-analyse
 ErrOkrScoreInvalid: Bitte geben sie einen ganzzahligen wert Von 0 bis 10 ein
 ErrOkrScored: Die infrarot-anlage ist nicht mehr fehleranfällig
 ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl

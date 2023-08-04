@@ -28,6 +28,7 @@ ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 0-100의 정수를 입력하십시오
 ErrOkrProgressNotEnough: kr는 아직 100% 가 되지 않았다
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
+ErrOkrReplayCommentInvalid: 올바른 복수 kr 평가를 선택하세요
 ErrOkrScoreInvalid: 별점은 0-10의 정수를 입력하십시오
 ErrOkrScored: 채점된 kr은 조작할 수 없습니다
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다

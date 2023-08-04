@@ -28,6 +28,7 @@ ErrOkrPriorityInvalid: 目标优先级参数错误
 ErrOkrProgressInvalid: 进度请输入0-100的整数
 ErrOkrProgressNotEnough: KR进度尚未达到100%
 ErrOkrProgressStatusInvalid: 进度状态参数错误
+ErrOkrReplayCommentInvalid: 请选择正确的复盘KR评价
 ErrOkrScoreInvalid: 评分请输入0-10的整数
 ErrOkrScored: KR已评分无法操作
 ErrOkrScoredNotUpdateProgress: 评分后不允许修改进度

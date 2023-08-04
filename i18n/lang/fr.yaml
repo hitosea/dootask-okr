@@ -28,6 +28,7 @@ ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
 ErrOkrProgressInvalid: Progrès veuillez entrer un nombre entier de 0 à 100
 ErrOkrProgressNotEnough: Progrès KR pas encore atteint 100%
 ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
+ErrOkrReplayCommentInvalid: S’il vous plaît choisir le bon double KR évaluation
 ErrOkrScoreInvalid: Évaluation veuillez entrer un nombre entier de 0 à 10
 ErrOkrScored: KR a été évalué non opérationnel
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
