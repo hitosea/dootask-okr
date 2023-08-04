@@ -117,7 +117,7 @@ type OkrConfidenceUpdateReq struct {
 type OkrReplayCreateReq struct {
 	OkrId    int                 `json:"okr_id" binding:"required"`   // okr id
 	Comments []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
-	Review   string              `json:"review" binding:"required"`   // 回顾
+	Review   string              `json:"review"`                      // 回顾
 }
 
 // 复盘评价
