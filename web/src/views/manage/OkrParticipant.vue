@@ -1,10 +1,10 @@
 <template >
     <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
         <div class="okr-participant-main">
-            <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
-            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
-            </n-spin>
+            <OkrLoading v-if="loadIng"></OkrLoading>
+            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
             <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject"></OkrNotDatas>
+            <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
         </div>
     </n-scrollbar>
 </template>
@@ -13,10 +13,12 @@ import OkrItems from '@/views/components/OkrItems.vue'
 import { getParticipantList  } from '@/api/modules/participant'
 import {  getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
+import OkrLoading from '../components/OkrLoading.vue'
 
 const emit = defineEmits(['edit'])
 
 const loadIng = ref(false)
+const onscrolloading = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
@@ -40,16 +42,21 @@ watch(() => props.searchObject, (newValue) => {
 }, { deep: true })
 
 const getList = (type) => {
-    if (last_page.value >= page.value || type == 'search') {
+    let serstatic =  type == 'search' ? true : false
+    if (last_page.value >= page.value || serstatic) {
         const data = {
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }
-        loadIng.value = true
+        if (serstatic){
+            loadIng.value = true
+        }else if ( type == 'onscrollsearch' ){
+            onscrolloading.value = true
+        }
         getParticipantList(data).then(({ data }) => {
             loadIng.value = false
-            if (type == 'search') {
+            if ( serstatic ) {
                 list.value = data.data || []
             } else {
                 (data.data || []).map(item => {
@@ -89,14 +96,14 @@ const onScroll = (e) => {
         // 重新请求数据
         if (!loadIng.value) {
             page.value++
-            getList('')
+            getList('onscrollsearch')
         }
     }
 }
 
 
 onMounted(() => {
-    getList('')
+    getList('search')
 })
 
 defineExpose({

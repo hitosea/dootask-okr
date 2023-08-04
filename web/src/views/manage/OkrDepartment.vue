@@ -26,9 +26,9 @@
                 <n-date-picker class="w-[33%] h-[36px] " v-model:value="daterange"
                 value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium"/>
         
-                <n-button :loading="isLoading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
+                <n-button :loading="isloading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
                     <template #icon>
-                        <i class="taskfont" v-if="!(isLoading)">&#xe72a;</i>
+                        <i class="taskfont" v-if="!(isloading)">&#xe72a;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -49,7 +49,6 @@
                             {{$t('挑战型')}}
                         </n-button>
                     </n-button-group>
-    
         
                 <n-checkbox v-model:checked="completednotrated" class="ml-36 rounded whitespace-nowrap mb-2 " @click="getList('search')">
                     {{ $t('已完成未评分') }}
@@ -60,10 +59,10 @@
             <div class="absolute top-0 left-0 bottom-0 right-0">
                 <n-scrollbar :on-scroll="onScroll">
                     <div class="okr-department-main">
-                        <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
-                        <OkrItems v-if="list.length != 0" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
-                        </n-spin>
+                        <OkrLoading v-if="loadIng"></OkrLoading>
+                        <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" :list="list"></OkrItems>
                         <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject"></OkrNotDatas>
+                        <OkrLoading v-if="onscrolloading" position="onscroll"></OkrLoading>
                     </div>
                 </n-scrollbar>
             </div>
@@ -80,9 +79,11 @@ import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'
 import utils from '@/utils/utils'
 import { UserStore } from '@/store/user'
+import OkrLoading from '../components/OkrLoading.vue'
+
 
 function handleClick() {
-    isLoading.value = true
+    isloading.value = true
     getList('search');
 }
 
@@ -92,7 +93,8 @@ function handleClick2(type) {
 }
 
 const loadIng = ref(false)
-const isLoading = ref(false)
+const isloading = ref(false)
+const onscrolloading = ref(false)
 const userInfo = UserStore().info.identity[0]
 const page = ref(1)
 const last_page = ref(99999)
@@ -155,10 +157,8 @@ const init = () => {
 }
 
 const getList = (type) => {
-    if (type == 'search'){
-        page.value = 1
-    }
-    if (last_page.value >= page.value || type == 'search') {
+    let serstatic =  type == 'search' ? true : false
+    if (last_page.value >= page.value || serstatic ) {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id : departmentsvalue.value,
@@ -170,11 +170,16 @@ const getList = (type) => {
             type: types.value=="0" ? null: types.value,  
             userid: principalvalue.value,
         }
-        if (type != 'search'){
+        if ( serstatic ){
             loadIng.value = true
+        }else if ( type == 'onscrollsearch' ){
+            onscrolloading.value = true            
         }
         getDepartmentOkrList(sendata).then(({ data }) => {
-            if (type == 'search') {
+            loadIng.value = false
+            isloading.value = false
+            onscrolloading.value = false
+            if (serstatic) {
                 data.data ?  list.value = data.data : list.value = []
             }
             else {
@@ -185,8 +190,6 @@ const getList = (type) => {
                 }
             }
             last_page.value = data.last_page
-            loadIng.value = false
-            isLoading.value = false
         })
     }
 }
@@ -220,7 +223,7 @@ const onScroll = (e) => {
         // 重新请求数据
         if (!loadIng.value) {
             page.value++
-            getList('')
+            getList('onscrollsearch')
         }
     }
 }
@@ -228,7 +231,7 @@ const onScroll = (e) => {
 
 onMounted(() => {
     init()
-    getList('')
+    getList('search')
 })
 defineExpose({
     upData,

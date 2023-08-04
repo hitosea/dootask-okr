@@ -1,35 +1,38 @@
 <template >
-    <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
-        <div class="i-created-main">
-            <PersonalStatistics ref="PersonalStatisticsRef" v-if="list.length != 0"></PersonalStatistics>
-            <div>
-                <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
-                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0"></OkrItems>
-                </n-spin>
-                <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject">
-                    <template v-slot:content>
-                        <div class="mt-5">
-                            <div>
-                                <n-button type="primary" ghost @click="handleAdd">
-                                    <i class="taskfont mr-5">&#xe731;</i>
-                                    {{ $t('创建OKR') }}
-                                </n-button>
+        <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
+            <div class="i-created-main">
+                <PersonalStatistics ref="PersonalStatisticsRef" v-if="list.length != 0"></PersonalStatistics>
+                <div>
+                    <OkrLoading v-if="loadIng"></OkrLoading>
+                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0 && !loadIng"></OkrItems>
+                    <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject">
+                        <template v-slot:content>
+                            <div class="mt-5"><s></s>
+                                <div>
+                                    <n-button type="primary" ghost @click="handleAdd">
+                                        <i class="taskfont mr-5">&#xe731;</i>
+                                        {{ $t('创建OKR') }}
+                                    </n-button>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                </OkrNotDatas>
+                        </template>
+                    </OkrNotDatas>
+                    <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
+                </div>
             </div>
-        </div>
-    </n-scrollbar>
+        </n-scrollbar>
+
+
 </template>
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-
+import OkrLoading from '../components/OkrLoading.vue'
 
 const loadIng = ref(false)
+const onscrolloading = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 const list = ref([])
@@ -56,16 +59,23 @@ watch(() => props.searchObject, (newValue) => {
 const emit = defineEmits(['edit','add'])
 
 const getList = (type) => {
-    if (last_page.value >= page.value || type == 'search') {
+    let serstatic =  type == 'search' ? true : false
+    if (last_page.value >= page.value || serstatic) {
         const data = {
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }
-        loadIng.value = true
+        if (serstatic){
+            loadIng.value = true
+        }else if ( type == 'onscrollsearch' ){
+            onscrolloading.value = true
+            console.log(onscrolloading)
+        }
         getMyList(data).then(({ data }) => {
+            onscrolloading.value = false
             loadIng.value = false
-            if (type == 'search') {
+            if (serstatic) {
                 list.value = data.data || []
             }
             else {
@@ -112,13 +122,13 @@ const onScroll = (e) => {
         // 重新请求数据
         if (!loadIng.value) {
             page.value++
-            getList('')
+            getList('onscrollsearch')
         }
     }
 }
 
 onMounted(() => {
-    getList('')
+    getList('search')
 })
 
 defineExpose({

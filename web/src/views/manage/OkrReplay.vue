@@ -1,48 +1,48 @@
 <template>
-    <n-scrollbar>
+    <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
-            <n-spin size="small" :show="loadIng"  :class="loadIng && items.length == 0 ? 'mt-[10%]':''">
-                <div :class="items.length == 0 ? 'okr-replay-main':''">
-                    <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
-                </div>
-                <div v-if="items.length != 0" class="replay">
-                    <div
-                        v-for="(item, index) in items"
-                        :key="index"
-                        :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
-                        @click="openMultiple"
-                    >
-                        <div class="replay-item-head">
-                            <div>   
-                                <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
-                                    item.priority
-                                }}</span>
-                                <span class="text-[14px] m-[5px] text-[#333333]"
-                                    ><b>{{ item.replayName }}</b></span>
-                                <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
-                            </div>
-                            <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
-                                <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
-                                <i class="replay-item-head-icon taskfont">&#xe705;</i>
-                            </div>
+            <OkrLoading v-if="loadIng"></OkrLoading>
+            <div :class="items.length == 0 ? 'okr-replay-main':''">
+                <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
+            </div>
+            <div v-if="items.length != 0" class="replay">
+                <div
+                    v-for="(item, index) in items"
+                    :key="index"
+                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
+                    @click="openMultiple"
+                >
+                    <div class="replay-item-head">
+                        <div>   
+                            <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
+                                item.priority
+                            }}</span>
+                            <span class="text-[14px] m-[5px] text-[#333333]"
+                                ><b>{{ item.replayName }}</b></span>
+                            <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
                         </div>
-                        <div class="flex">
-                            <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
-                                <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
-                                <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
-                            </div>
-                        </div>
-                        <div class="replay-item-body" v-if="item.isActive">
-                            <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
+                        <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                            <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
+                            <i class="replay-item-head-icon taskfont">&#xe705;</i>
                         </div>
                     </div>
+                    <div class="flex">
+                        <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
+                            <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
+                            <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
+                        </div>
+                    </div>
+                    <div class="replay-item-body" v-if="item.isActive">
+                        <OkrReplayDetail :okrReplayList="item"></OkrReplayDetail>
+                    </div>
                 </div>
-            </n-spin>
+            </div>
+            <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
             <OkrDetails
                 ref="RefOkrDetails"
                 :id="detailId"
-                :show="okrDetailsShow"
+                v-if="okrDetailsShow"
                 @close="
                     () => {
                         okrDetailsShow = false
@@ -59,10 +59,13 @@ import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import * as http from "../../api/modules/replay"
 import OkrDetails from "@/views/components/OkrDetails.vue"
+import OkrLoading from '../components/OkrLoading.vue'
+
 
 const addMultipleShow = ref(false)
 const items = ref([])
 const loadIng = ref(false)
+const onscrolloading = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 
@@ -107,17 +110,23 @@ const returnReplayItem = (replay) => {
 
 // 获取数据
 const getData = (type) => {
-    if (last_page.value >= page.value || type == "search") {
+    let serstatic =  type == 'search' ? true  : false
+    if (last_page.value >= page.value || serstatic) {
         // 获取复盘列表
         const data = {
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }
-        loadIng.value = true
+        if ( serstatic ){
+            loadIng.value = true
+        }else if ( type == 'onscrollsearch' ){
+            onscrolloading.value = true            
+        }
         http.getReplayList(data).then(({ data }) => {
+            onscrolloading.value = false
             loadIng.value = false
-            if (type == "search") {
+            if (serstatic) {
                 data.data ? loadResplayList(data.data) : []
             } else {
                 ;(data.data || []).map((item) => {
@@ -126,6 +135,16 @@ const getData = (type) => {
             }
             last_page.value = data.last_page
         })
+    }
+}
+
+const onScroll = (e) => {
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+        // 重新请求数据
+        if (!loadIng.value) {
+            page.value++
+            getData("onscrollsearch")
+        }
     }
 }
 
@@ -146,7 +165,7 @@ const openOkrDetail = (id) => {
 }
 
 onMounted(() => {
-    getData("")
+    getData("search")
 })
 
 </script>
