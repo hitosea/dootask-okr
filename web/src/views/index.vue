@@ -1,7 +1,7 @@
 <template >
     <div class="page-okr">
         <div class="okr-title">
-            <i class="taskfont icon-return">&#xe704;</i>
+            <i @click="handleReturn" class="taskfont icon-return">&#xe704;</i>
             <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
             <div class="okr-right">
                 <div class="search-button"  :class="searchShow ? 'search-active' : ''">
@@ -13,7 +13,6 @@
                     <i class="taskfont">&#xe6f2;</i>
                 </div>
             </div>
-
         </div>
         <div class="okr-tabs">
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
@@ -45,18 +44,20 @@
             </n-tabs>
         </div>
     </div>
-    <AddOkr v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkr>
+    <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import AddOkr from '@/views/components/AddOkrs.vue';
+import AddOkrsDrawer from './components/AddOkrsDrawer.vue'
 import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
 const OkrDepartmentRef = ref(null)
@@ -86,9 +87,12 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
-    console.log(window.innerWidth);
-    
-    addShow.value = true
+    if (window.innerWidth < 768) {
+        router.push('/addOkr')
+    }
+    else{
+        addShow.value = true
+    }
 }
 
 const handleClose = (e,id) => {
@@ -111,18 +115,22 @@ const handleClose = (e,id) => {
         ICreatedRef.value.upData(id)      
     }
     else if(tabsName.value == $t('参与的OKR') && e == 2){
-        OkrParticipantRef.value.upData('')
+        OkrParticipantRef.value.upData(id)
     }
     else if(tabsName.value == $t('部门OKR') && e == 2){
-        OkrDepartmentRef.value.upData('')
+        OkrDepartmentRef.value.upData(id)
     }
     else if(tabsName.value == $t('关注的OKR') && e == 2){
-        OkrFollowRef.value.upData('')
+        OkrFollowRef.value.upData(id)
     }
 
     edit.value = false
     editData = {}
     addShow.value = false
+}
+
+const handleReturn = () => {
+    router.back()
 }
 
 </script>

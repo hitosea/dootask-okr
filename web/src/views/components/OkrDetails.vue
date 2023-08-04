@@ -256,7 +256,9 @@ import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 import Confidences from '@/views/components/Confidences.vue';
 import MarkVue from '@/views/components/Marks.vue';
 import { GlobalStore } from '@/store';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const globalStore = GlobalStore()
 const userSelectApps = ref([]);
 const navActive = ref(0)
@@ -484,7 +486,15 @@ const handleGetReplayList = () => {
 
 
 const handleEdit = () => {
-    emit('edit', utils.cloneJSON(detialData.value))
+    if (window.innerWidth < 768) {
+        router.push({
+            path:'/addOkr',
+            query: {data: JSON.stringify(detialData.value)},
+        })
+    }
+    else{
+        emit('edit', utils.cloneJSON(detialData.value))
+    }
 }
 
 const closeModal = () => {

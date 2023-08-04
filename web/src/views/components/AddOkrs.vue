@@ -1,145 +1,144 @@
 <template >
-    <n-drawer v-model:show="show"  @after-enter="showDrawer"  :on-after-leave="closeDrawer"
-        :mask-closable="false" :z-index="13" class="okr" style="--n-body-padding:16px 20px 16px 34px;max-width: 600px;width: 90%;">
-        <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
-            <div class="flex flex-col h-full">
-                <n-scrollbar>
-                    <div class="add-main-box pr-14">
+    <n-scrollbar>
+        <div class="add-main-box pr-14">
 
-                        <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" label-align="left"
-                            label-placement="left" label-width="auto" require-mark-placement="left">
+            <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" :label-align="props.labelAlign"
+                :label-placement="props.labelPlacement" label-width="auto" require-mark-placement="left">
 
-                            <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
-                                <n-input v-model:value="formValue.title" :placeholder="$t('请输入目标')" />
-                            </n-form-item>
+                <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
+                    <n-input v-model:value="formValue.title" :placeholder="$t('请输入目标')" />
+                </n-form-item>
 
-                            <n-form-item :label="$t('类型')" path="type">
-                                <n-radio-group v-model:value="formValue.type" name="radiogroup1">
-                                    <n-space>
-                                        <n-radio :value="1">{{ $t('承诺型') }}</n-radio>
-                                        <n-radio :value="2">{{ $t('挑战性') }}</n-radio>
-                                    </n-space>
-                                </n-radio-group>
-                            </n-form-item>
+                <n-form-item :label="$t('类型')" path="type">
+                    <n-radio-group v-model:value="formValue.type" name="radiogroup1">
+                        <n-space>
+                            <n-radio :value="1">{{ $t('承诺型') }}</n-radio>
+                            <n-radio :value="2">{{ $t('挑战性') }}</n-radio>
+                        </n-space>
+                    </n-radio-group>
+                </n-form-item>
 
-                            <n-form-item :label="$t('优先级')" path="priority">
-                                <n-radio-group v-model:value="formValue.priority" name="radiogroup2" :disabled="edit">
-                                    <n-space>
-                                        <template v-if="formValue.type == 1">
-                                            <n-radio value="P0">
-                                                <span class="span span-1">P0</span>
-                                            </n-radio>
-                                            <n-radio value="P1">
-                                                <span class="span span-2">P1</span>
-                                            </n-radio>
-                                        </template>
-                                        <template v-else>
-                                            <n-radio value="P2">
-                                                <span class="span span-3">P2</span>
-                                            </n-radio>
-                                        </template>
-                                    </n-space>
-                                </n-radio-group>
-                            </n-form-item>
+                <n-form-item :label="$t('优先级')" path="priority">
+                    <n-radio-group v-model:value="formValue.priority" name="radiogroup2" :disabled="edit">
+                        <n-space>
+                            <template v-if="formValue.type == 1">
+                                <n-radio value="P0">
+                                    <span class="span span-1">P0</span>
+                                </n-radio>
+                                <n-radio value="P1">
+                                    <span class="span span-2">P1</span>
+                                </n-radio>
+                            </template>
+                            <template v-else>
+                                <n-radio value="P2">
+                                    <span class="span span-3">P2</span>
+                                </n-radio>
+                            </template>
+                        </n-space>
+                    </n-radio-group>
+                </n-form-item>
 
-                            <n-form-item :label="$t('归属')" path="ascription">
-                                <n-radio-group v-model:value="formValue.ascription" name="radiogroup3" :disabled="edit">
-                                    <n-space>
-                                        <n-radio :value="2">{{ $t('个人') }}</n-radio>
-                                        <n-radio :value="1">{{ $t('部门') }}</n-radio>
-                                    </n-space>
-                                </n-radio-group>
-                            </n-form-item>
+                <n-form-item :label="$t('归属')" path="ascription">
+                    <n-radio-group v-model:value="formValue.ascription" name="radiogroup3" :disabled="edit">
+                        <n-space>
+                            <n-radio :value="2">{{ $t('个人') }}</n-radio>
+                            <n-radio :value="1">{{ $t('部门') }}</n-radio>
+                        </n-space>
+                    </n-radio-group>
+                </n-form-item>
 
-                            <n-form-item :label="$t('可见范围')">
-                                <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
-                                    :options="generalOptions" />
-                            </n-form-item>
+                <n-form-item :label="$t('可见范围')">
+                    <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
+                        :options="generalOptions" />
+                </n-form-item>
 
-                            <n-form-item :label="$t('周期')" path="time">
-                                <n-date-picker class="w-full" v-model:value="formValue.time"
-                                    value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
-                            </n-form-item>
+                <n-form-item :label="$t('周期')" path="time">
+                    <n-date-picker class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
+                        type="daterange" clearable size="medium" />
+                </n-form-item>
 
-                            <n-form-item :label="$t('对齐目标')">
-                                <div @click="handleGoal"
-                                    class="w-full h-[30px] bg-[#F4F5F7] border-[1px] border-[#F4F5F7] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
-                                    <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'"
-                                        class=" text-14">{{ formValue.align_objective?.length > 0
-                                            ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
-                                    <i class="taskfont text-[rgba(194,194,194,1)] ml-auto">&#xe72b;</i>
-                                </div>
-
-
-                            </n-form-item>
-
-                            <n-form-item :label="$t('关联项目')">
-                                <ItemList :edit="props.edit" v-model:value="formValue.project_id" />
-                            </n-form-item>
-                        </n-form>
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-14 text-text-li font-medium">{{ $t('关键KR') }}</h3>
-                                <div class="flex items-center cursor-pointer" @click="handleAddKr">
-                                    <i class="taskfont text-14 text-primary-color">&#xe731;</i>
-                                    <p class="text-14 text-primary-color ml-4">{{ $t('添加KR') }}</p>
-                                </div>
-                            </div>
-
-                            <div v-for="(item, index) in formKRValue"
-                                class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
-                                <div
-                                    class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
-                                    <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
-                                    <div class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
-                                        <i class="taskfont text-14 text-text-tips">&#xe787;</i>
-                                    </div>
-                                </div>
-
-                                <div class="p-24 py-20 pb-8">
-                                    <n-form ref="formRefs" :model="formKRValue[index]" size="medium" :rules="timeRule"
-                                        label-placement="left" label-width="auto" require-mark-placement="left">
-                                        <n-grid :cols="4" :x-gap="16">
-                                            <n-form-item-gi :span="4" class="w-full" label="KR" path="title">
-                                                <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
-                                            </n-form-item-gi>
-
-                                            <n-form-item-gi :span="4" :label="$t('周期')" path="time">
-                                                <n-date-picker class="w-full" v-model:value="item.time" type="daterange"
-                                                    clearable size="medium" />
-                                            </n-form-item-gi>
-
-                                            <n-form-item-gi :span="2" :label="$t('参与人')">
-                                                <div v-if="showUserSelect"
-                                                    class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
-                                                    <UserSelects :formkey="index" />
-                                                </div>
-                                                <UserList :edit="props.edit" v-if="!showUserSelect"
-                                                    v-model:value="item.participant"></UserList>
-                                            </n-form-item-gi>
-
-                                            <n-form-item-gi :span="2" :label="$t('信心')">
-                                                <n-input-number class="w-full" :max="100" v-model:value="item.confidence"
-                                                    placeholder="0-100" :show-button="false" />
-                                            </n-form-item-gi>
-                                        </n-grid>
-                                    </n-form>
-                                </div>
-                            </div>
-                        </div>
-
+                <n-form-item :label="$t('对齐目标')">
+                    <div @click="handleGoal"
+                        class="w-full h-[30px] bg-[#F4F5F7] border-[1px] border-[#F4F5F7] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
+                        <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'"
+                            class=" text-14">{{ formValue.align_objective?.length > 0
+                                ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
+                        <i class="taskfont text-[rgba(194,194,194,1)] ml-auto">&#xe72b;</i>
                     </div>
-                </n-scrollbar>
-                <div class="button-box">
-                    <n-button :loading="loadIng" type="primary" @click="handleSubmit">
-                        {{ $t('提交') }}
-                    </n-button>
+
+
+                </n-form-item>
+
+                <n-form-item :label="$t('关联项目')">
+                    <ItemList :edit="props.edit" v-model:value="formValue.project_id" />
+                </n-form-item>
+            </n-form>
+            <div>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-14 text-text-li font-medium">{{ $t('关键KR') }}</h3>
+                    <div class="flex items-center cursor-pointer" @click="handleAddKr">
+                        <i class="taskfont text-14 text-primary-color">&#xe731;</i>
+                        <p class="text-14 text-primary-color ml-4">{{ $t('添加KR') }}</p>
+                    </div>
+                </div>
+
+                <div v-for="(item, index) in formKRValue" class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
+                    <div
+                        class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
+                        <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
+                        <div class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
+                            <i class="taskfont text-14 text-text-tips">&#xe787;</i>
+                        </div>
+                    </div>
+
+                    <div class="p-24 py-20 pb-8">
+                        <n-form ref="formRefs" :model="formKRValue[index]" size="medium" :rules="timeRule"
+                            :label-align="props.labelAlign" :label-placement="props.labelPlacement" label-width="auto"
+                            require-mark-placement="left">
+                            <n-grid :cols="4" :x-gap="16">
+                                <n-form-item-gi :span="4" class="w-full" label="KR" path="title">
+                                    <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
+                                </n-form-item-gi>
+
+                                <n-form-item-gi :span="4" :label="$t('周期')" path="time">
+                                    <n-date-picker class="w-full" v-model:value="item.time" type="daterange" clearable
+                                        size="medium" />
+                                </n-form-item-gi>
+
+                                <n-form-item-gi class="hidden md:block" :span="2" :label="$t('参与人')">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                        <UserSelects :formkey="index" />
+                                    </div>
+                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
+                                    </UserList>
+                                </n-form-item-gi>
+                                <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                        <UserSelects :formkey="index" />
+                                    </div>
+                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
+                                    </UserList>
+                                </n-form-item-gi>
+
+
+                                <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence"
+                                        placeholder="0-100" :show-button="false" />
+                                </n-form-item-gi>
+                                <n-form-item-gi class="block md:hidden" :span="4" :label="$t('信心')">
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence"
+                                        placeholder="0-100" :show-button="false" />
+                                </n-form-item-gi>
+                            </n-grid>
+                        </n-form>
+                    </div>
                 </div>
             </div>
-        </n-drawer-content>
-        <SelectAlignment :value="selectAlignmentShow" :editData="formValue.align_objective"
-            @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
-    </n-drawer>
+
+        </div>
+    </n-scrollbar>
+    <SelectAlignment :value="selectAlignmentShow" :editData="formValue.align_objective"
+        @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 </template>
 <script setup lang="ts">
 import { watch } from "vue";
@@ -152,10 +151,9 @@ import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
 import { ResultDialog } from "@/api"
 
-const emit = defineEmits(['close', 'upData'])
+const emit = defineEmits(['close', 'loadIng'])
 
 const message = useMessage()
-const show = ref(false)
 const loadIng = ref(false)
 const formRef = ref()
 const formRefs = ref()
@@ -172,7 +170,17 @@ const props = defineProps({
         type: Object,
         default: {},
     },
+    labelPlacement: {
+        type: undefined,
+        default: 'left',
+    },
+    labelAlign: {
+        type: undefined,
+        default: 'right',
+    },
 })
+
+
 
 const formValue = ref<any>({
     title: "",
@@ -195,6 +203,7 @@ const formKRValue = ref<any>([
     },
 
 ])
+
 
 //编辑
 watch(() => props.edit, (newValue) => {
@@ -307,32 +316,34 @@ const handleSubmit = () => {
             key_results: keyResults,
         }
         loadIng.value = true
+        emit('loadIng', loadIng.value)
         if (props.edit) {
             upData.id = formValue.value.id
             upDateOkr(upData)
                 .then(({ msg }) => {
                     message.success(msg)
-                    emit('close',2,formValue.value.id)
+                    emit('close', 2, formValue.value.id)
                 })
                 .catch(ResultDialog)
                 .finally(() => {
                     loadIng.value = false
+                    emit('loadIng', loadIng.value)
                 })
         } else {
             addOkr(upData)
                 .then(({ msg }) => {
                     message.success(msg)
-                    emit('close',1)
+                    emit('close', 1)
                 })
                 .catch(ResultDialog)
                 .finally(() => {
                     loadIng.value = false
+                    emit('loadIng', loadIng.value)
                 })
         }
 
     })
 }
-
 
 // 加载选择用户组件
 const loadUserSelects = () => {
@@ -416,9 +427,7 @@ const handleGoal = () => {
 
 // 关闭Drawer
 const closeDrawer = () => {
-    if (formValue.value.id) {
-        emit('upData', formValue.value.id)
-    }
+
     handleClear()
     userSelectApps.value.forEach(app => app.$destroy())
     emit('close')
@@ -432,6 +441,12 @@ const showDrawer = () => {
 // 卸载
 window.addEventListener('apps-unmount', function () {
     userSelectApps.value.forEach(app => app.$destroy())
+})
+
+defineExpose({
+    handleSubmit,
+    closeDrawer,
+    showDrawer,
 })
 </script>
 <style lang="less" scoped>
@@ -481,4 +496,5 @@ window.addEventListener('apps-unmount', function () {
 
 .okr-user-selects {
     @apply w-full bg-none border-none !important;
-}</style>
+}
+</style>

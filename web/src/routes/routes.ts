@@ -1,6 +1,7 @@
 import Index from '../views/index.vue'
 import Analysis from '../views/analysis.vue'
 import Main from '../views/main.vue'
+import addOkr from '../views/addOkr.vue'
 
 export const routes = [
     {
@@ -17,5 +18,10 @@ export const routes = [
         name: "Analysis",
         path: "/analysis",
         component: Analysis
+    },
+    {
+        name: "addOkr",
+        path: "/addOkr",
+        component: addOkr
     }
 ];

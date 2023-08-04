@@ -206,7 +206,7 @@ onMounted(() => {
                 @apply flex justify-between items-start md:items-center;
 
                 .okr-title-l {
-                    @apply flex items-start md:items-center gap-2;
+                    @apply flex items-start md:items-center gap-2 md:max-w-75p;
 
                     span {
                         @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
@@ -225,7 +225,7 @@ onMounted(() => {
                     }
 
                     h3 {
-                        @apply text-title-color text-14 font-normal;
+                        @apply text-title-color text-14 font-normal md:line-clamp-1;
                     }
                 }
 

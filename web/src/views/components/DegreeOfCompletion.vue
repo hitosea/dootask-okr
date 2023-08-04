@@ -7,7 +7,7 @@
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item :label="$t('完成度')">
-                        <n-input-number v-model:value="formValue.progress" :max="100" :show-button="false">
+                        <n-input-number v-model:value="formValue.progress" :max="100" :min="0" :precision="0" :show-button="false">
                             <template #suffix> %</template>
                         </n-input-number>
                     </n-form-item>
