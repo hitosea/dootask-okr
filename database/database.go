@@ -16,7 +16,11 @@ func Init() error {
 		ValidateUnknownMigrations: true,
 	}
 
-	db := core.DB.Set("gorm:table_options", "CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+	db := core.DB
+	// 判断是否是mysql
+	if db.Dialector.Name() == "mysql" {
+		db = db.Set("gorm:table_options", "CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+	}
 
 	m := gormigrate.New(db, options, []*gormigrate.Migration{
 		migrations.AddTableOkr,
