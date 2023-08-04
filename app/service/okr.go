@@ -474,7 +474,7 @@ func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) 
 // 1.可通过目标（O）搜索 2.仅显示我发起的OKR（个人仅能看到个人的）3.按创建时间倒序显示
 func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
-	db := core.DB.Preload("KeyResults").Where("userid = ?", user.Userid).Where("parent_id = 0").Order("created_at desc")
+	db := core.DB.Preload("KeyResults").Where("userid = ?", user.Userid).Where("parent_id = 0").Order("canceled,completed asc, created_at desc")
 	if objective != "" {
 		db = db.Where("title LIKE ?", "%"+objective+"%")
 	}
@@ -613,7 +613,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		Where("id IN (?)", core.DB.Model(&model.Okr{}).
 			Select("DISTINCT parent_id").
 			Where("FIND_IN_SET(?, participant) > 0", user.Userid),
-		).Order("created_at desc")
+		).Order("canceled,completed asc, created_at desc")
 
 	if objective != "" {
 		db = db.Where("title LIKE ?", "%"+objective+"%")
@@ -721,7 +721,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 // 1.高级搜索 2.仅包含部门/及部门其他人员的OKR（通过可见范围控制是否看到部门其他同级人员的）3.按创建时间倒序显示 4.部门的OKR置顶（多个的时候多个都置顶，按创建时间倒序）
 func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
-	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Order("ascription asc, created_at desc")
+	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Order("canceled,completed asc, ascription asc, created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	if !common.InArray("admin", user.Identity) {
@@ -819,7 +819,7 @@ func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective stri
 	db := core.DB.Table(okrTable+" AS o").
 		Joins(fmt.Sprintf("LEFT JOIN %s AS f ON f.okr_id = o.id", okrFollowTable)).
 		Where("f.userid = ?", user.Userid).
-		Order("f.created_at desc")
+		Order("o.canceled,o.completed asc, f.created_at desc")
 
 	if objective != "" {
 		db = db.Where("o.title LIKE ?", "%"+objective+"%")
