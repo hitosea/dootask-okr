@@ -36,7 +36,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	}
 
 	// 创建部门OKR权限
-	if core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", user.Userid).First(&model.UserDepartment{}).Error != nil && param.Ascription == 1 {
+	if core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&model.UserDepartment{}).Error != nil && param.Ascription == 1 {
 		return nil, e.New(constant.ErrNoPermission)
 	}
 
