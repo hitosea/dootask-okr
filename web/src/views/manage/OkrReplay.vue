@@ -18,8 +18,7 @@
                                     item.priority
                                 }}</span>
                                 <span class="text-[14px] m-[5px] text-[#333333]"
-                                    ><b>{{ item.replayName }}</b></span
-                                >
+                                    ><b>{{ item.replayName }}</b></span>
                                 <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
                             </div>
                             <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
