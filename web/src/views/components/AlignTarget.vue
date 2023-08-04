@@ -90,7 +90,7 @@ const alignCancel = (itemID) => {
             loadIng.value = true
             getAlignCancel(upData)
                 .then(({ msg }) => {
-                    message.success(msg)
+                    message.success($t('修改成功'))
                     getList();
                     emit('unalign',props.id)
                 })

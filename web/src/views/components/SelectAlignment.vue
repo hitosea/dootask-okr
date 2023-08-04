@@ -1,6 +1,6 @@
 <template >
     <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear">
-        <n-card class="w-[640px]" :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="max-w-[640px] w-full h-[calc(100vh-44px)] md:h-auto top-22 md:top-0 rounded-none rounded-t-xl md:rounded-xl" :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer" size="24" :component="Close" @click="handleClose" />
             </template>
@@ -58,7 +58,7 @@
                         {{ $t('项') }}
                     </p>
                     <div class="flex items-center gap-4">
-                        <n-button :loading="loadIng" type="default" @click="handleClose">
+                        <n-button class="hidden md:block" :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
                         <n-button :loading="loadIng" type="primary" @click="handleSubmit">

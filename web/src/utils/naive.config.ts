@@ -20,6 +20,8 @@ const themeOverrides = {
             borderRadius: "4px",
             color:"rgba(167, 171, 181, 0.1)",
             textColor:"#A7ABB5",
+            fontSizeMedium:"12px",
+            heightMedium:'20px',
         },
         Card:{
             paddingHuge:"24px 24px 24px",
@@ -44,8 +46,10 @@ const themeOverrides = {
         },
         Tag:{
             borderRadius: "4px",
-            color:"rgba(167, 171, 181, 0.1)",
-            textColor:"#A7ABB5",
+            color:"rgba(139, 207, 112, 0.1);",
+            textColor:"#8BCF70",
+            fontSizeMedium:"12px",
+            heightMedium:'20px',
         },
         Card:{
             paddingHuge:"24px 24px 24px",

@@ -73,7 +73,7 @@ const handleSubmit = () => {
     loadIng.value = true
     confidenceUpdate(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('操作成功'))
         })
         .catch(ResultDialog)
         .finally(() => {

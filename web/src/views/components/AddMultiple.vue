@@ -128,7 +128,7 @@ const handleSubmit = () => {
     loadIng.value = true
     replayCreate(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('添加成功'))
             emit('close')
         })
         .catch(ResultDialog)

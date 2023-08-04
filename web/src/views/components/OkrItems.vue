@@ -142,8 +142,8 @@ const handleFollowOkr = (id) => {
     loadIng.value = true
     okrFollow(upData)
         .then(({ msg }) => {
-            message.success(msg)
-            emit('upData',id)
+            message.success($t('操作成功'))
+            emit('upData',id,'FollowOkr')
         })
         .catch(ResultDialog)
         .finally(() => {

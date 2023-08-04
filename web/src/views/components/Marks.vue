@@ -11,10 +11,9 @@
                     <p v-if="superiorScore > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('上级评分分数：') }}<span
                             class=" text-primary-color">{{ superiorScore }}</span></p>
                 </div>
-
-                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :model="formValue" size="medium"
+                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :rules="rules" :model="formValue" size="medium"
                     label-placement="left" label-width="auto">
-                    <n-form-item>
+                    <n-form-item path="score">
                         <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')" :options="markOptions" />
                     </n-form-item>
                 </n-form>
@@ -46,12 +45,22 @@ import { ResultDialog } from "@/api"
 const message = useMessage()
 const show = ref(false)
 const loadIng = ref(false)
+const formRef = ref(null)
 const formValue = ref({
     score: null,
 })
 
 const Mark = ref(-1);
 const superiorScore = ref(-1);
+
+const rules = <any>{
+    score: {
+        type: 'number',
+        required: true,
+        message: $t('请选择评分'),
+        trigger: ['blur', 'change'],
+    },
+}
 
 const markOptions = ref([
     {
@@ -129,6 +138,9 @@ watch(() => props.id, (newValue) => {
 const emit = defineEmits(['close'])
 
 const handleSubmit = () => {
+    formRef.value?.validate((errors) => {
+        if (errors) return false;
+
     const upData = {
         id: props.id,
         score: formValue.value.score,
@@ -136,13 +148,14 @@ const handleSubmit = () => {
     loadIng.value = true
     okrScore(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('操作成功'))
         })
         .catch(ResultDialog)
         .finally(() => {
             emit('close', 1)
             loadIng.value = false
         })
+    })
 }
 
 const handleClose = () => {

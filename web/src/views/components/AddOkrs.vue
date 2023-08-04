@@ -38,7 +38,7 @@
                     </n-radio-group>
                 </n-form-item>
 
-                <n-form-item :label="$t('归属')" path="ascription">
+                <n-form-item v-if="departmentOwner" :label="$t('归属')" path="ascription">
                     <n-radio-group v-model:value="formValue.ascription" name="radiogroup3" :disabled="edit">
                         <n-space>
                             <n-radio :value="2">{{ $t('个人') }}</n-radio>
@@ -150,8 +150,12 @@ import { addOkr, upDateOkr } from '@/api/modules/created'
 import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
 import { ResultDialog } from "@/api"
+import { UserStore } from '@/store/user'
 
 const emit = defineEmits(['close', 'loadIng'])
+
+const departmentOwner = UserStore().info.department_owner
+
 
 const message = useMessage()
 const loadIng = ref(false)
@@ -321,7 +325,7 @@ const handleSubmit = () => {
             upData.id = formValue.value.id
             upDateOkr(upData)
                 .then(({ msg }) => {
-                    message.success(msg)
+                    message.success($t('修改成功'))
                     emit('close', 2, formValue.value.id)
                 })
                 .catch(ResultDialog)
@@ -332,7 +336,7 @@ const handleSubmit = () => {
         } else {
             addOkr(upData)
                 .then(({ msg }) => {
-                    message.success(msg)
+                    message.success($t('添加成功'))
                     emit('close', 1)
                 })
                 .catch(ResultDialog)

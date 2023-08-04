@@ -5,7 +5,7 @@
             <div class="flex max-h-[640px] min-h-[640px]">
                 <div class="flex-1 flex flex-col overflow-hidden relative">
                     <div
-                        class="flex h-[28px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
+                        class="flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
                         <div class="flex items-center gap-4">
                             <n-popover v-if="detialData.completed == '0'" placement="bottom" trigger="click">
                                 <template #trigger>
@@ -48,15 +48,17 @@
                     </div>
 
                     <n-scrollbar class="pr-[10px] ">
-                        <n-spin :show="false" >
+                        <n-spin :show="false">
                             <h3 class=" text-title-color mt-[28px] text-24 font-normal line-clamp-1 min-h-[40px]">
                                 {{ detialData.title }}
                             </h3>
                             <div class="mt-24 flex flex-col gap-4">
                                 <div class="flex items-center">
                                     <p class="flex items-center w-[115px]">
-                                        <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
-                                        <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('负责人') }}</span>
+                                        <i v-if="detialData.ascription == '2'" class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
+                                        <i v-else class="taskfont icon-item text-[#A7ABB5]">&#xe682;</i>
+
+                                        <span class="text-[#515A6E] text-[14px] opacity-50">    {{ detialData.ascription == "2" ? $t('负责人') : $t('部门') }}</span>
                                     </p>
                                     <p class="flex-1 text-text-li text-14">
                                         {{ detialData.alias && detialData.alias[0] }}
@@ -128,7 +130,7 @@
                                                 <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                             </div>
                                             <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
-                                                @click="handleMark(item.id, item.score, item.superior_score)">
+                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
                                                 <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                                 <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                             </div>
@@ -151,7 +153,7 @@
                                     @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                             </h4>
 
-                            <div  class="pb-[28px] w-full overflow-hidden">
+                            <div class="pb-[28px] w-full overflow-hidden">
                                 <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id"
                                     @unalign="handleUnalign">
                                 </AlignTarget>
@@ -164,7 +166,7 @@
                 <div
                     class="min-w-[35.8%] relative flex flex-col flex-initial border-solid border-0 border-l-[2px] border-[#F2F3F5]  ml-24">
                     <div
-                        class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] ml-24 h-[28px]">
+                        class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[15px] ml-24 min-h-[36px]">
                         <ul class="flex items-center gap-8">
                             <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
                             </li>
@@ -488,11 +490,11 @@ const handleGetReplayList = () => {
 const handleEdit = () => {
     if (window.innerWidth < 768) {
         router.push({
-            path:'/addOkr',
-            query: {data: JSON.stringify(detialData.value)},
+            path: '/addOkr',
+            query: { data: JSON.stringify(detialData.value) },
         })
     }
-    else{
+    else {
         emit('edit', utils.cloneJSON(detialData.value))
     }
 }
@@ -540,7 +542,8 @@ const handleCloseConfidenes = (type) => {
 }
 
 //打开评分
-const handleMark = (id, scores, superior_score) => {
+const handleMark = (id, scores, superior_score, progress) => {
+    if (progress < 100) return message.warning($t('KR进度尚未达到100%'))
     markId.value = id
     score.value = scores
     superiorScore.value = superior_score
@@ -563,7 +566,7 @@ const handleCancel = () => {
     okrCancel({
         id: detialData.value.id,
     }).then(({ msg }) => {
-        message.success(msg)
+        message.success($t('修改成功'))
         emit('upData', detialData.value.id)
         getDetail('')
     })
@@ -691,7 +694,7 @@ const submitSelectAlignment = (e) => {
     loadIng.value = true
     alignUpdate(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('修改成功'))
             emit('upData', detialData.value.id)
             getDetail('')
             AlignTargetRef.value.getList()

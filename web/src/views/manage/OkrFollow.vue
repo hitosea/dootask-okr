@@ -1,10 +1,10 @@
 <template >
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-follow-main">
-            <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]':''">
-            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
+            <n-spin size="small" :show="loadIng" :class="loadIng && list.length == 0 ? 'mt-[10%]' : ''">
+                <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0" :list="list"></OkrItems>
             </n-spin>
-            <OkrNotDatas  v-if="!loadIng && list.length == 0" :types="searchObject"></OkrNotDatas>
+            <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject"></OkrNotDatas>
         </div>
     </n-scrollbar>
 </template>
@@ -66,7 +66,7 @@ const handleEdit = (data) => {
 }
 
 //更新数据
-const upData = (id) => {
+const upData = (id, type) => {
     list.value.map((item, index) => {
         if (item.id == id) {
             const upData = {
@@ -75,6 +75,13 @@ const upData = (id) => {
             getOkrDetail(upData)
                 .then(({ data }) => {
                     list.value[index] = data
+                    if (type == 'FollowOkr') {
+                        list.value.map((item, index) => {
+                            if (item.id == id) {
+                                list.value.splice(index, 1)
+                            }
+                        })
+                    }
                 })
                 .catch()
                 .finally(() => {
