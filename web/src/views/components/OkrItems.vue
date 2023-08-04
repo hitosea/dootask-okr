@@ -1,9 +1,12 @@
 <template >
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
-            <n-progress class=" hidden md:block" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;" :color="item.canceled == '1' ? '#A7ABB5' :'var(--primary-color)' " indicator-text-color="var(--primary-color)"
-                type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
-                <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
+            <n-progress class=" hidden md:block" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;"
+                :color="item.canceled == '1' ? '#A7ABB5' : 'var(--primary-color)'"
+                indicator-text-color="var(--primary-color)" type="circle" :percentage="item.progress" :offset-degree="180"
+                :stroke-width="8">
+                <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span
+                        class="text-12">%</span></p>
                 <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
             </n-progress>
             <div class="okr-list" :class="item.progress == 100 ? 'opacity-60' : ''">
@@ -34,11 +37,11 @@
                         <i class="taskfont mr-6">&#xe671;</i>
                         <p class="mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
-                                :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
-                                :percentage="item.progress" />
-                            {{ item.progress }}%
+                            :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
+                            :percentage="item.progress" />
+                        {{ item.progress }}%
                     </div>
-   
+
                 </div>
 
                 <div class="kr-list">
@@ -67,21 +70,21 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"  @upData="(id)=>{emit('upData',id)}"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"
+        @upData="(id) => { emit('upData', id) }"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
-        @submit="submitSelectAlignment" ></SelectAlignment>
+        @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->
-    <OkrDetails ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-         @edit="handleEdit" @upData="(id)=>{emit('upData',id)}"></OkrDetails>
-
+    <OkrDetailsModal ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
+        @edit="handleEdit" @upData="(id) => { emit('upData', id) }"></OkrDetailsModal>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
-import OkrDetails from './OkrDetails.vue';
+import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 
 
 
@@ -90,7 +93,9 @@ import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
@@ -107,11 +112,11 @@ const RefOkrDetails = ref(null)
 const props = defineProps({
     list: {
         type: undefined,
-        default:() => []
+        default: () => []
     }
 });
 
-const emit = defineEmits(['upData','edit'])
+const emit = defineEmits(['upData', 'edit'])
 
 const handleTarget = (e, id) => {
     eidtId.value = id
@@ -129,8 +134,17 @@ const pStatus = (p) => {
 
 //打开详情
 const handleOpenDetail = (id) => {
-    eidtId.value = id
-    okrDetailsShow.value = true
+    if (window.innerWidth < 768) {
+         router.push({
+           path:'/okrDetails',
+           query: { data: id},
+        })
+    }
+    else {
+        eidtId.value = id
+        okrDetailsShow.value = true
+    }
+
 }
 
 
@@ -143,7 +157,7 @@ const handleFollowOkr = (id) => {
     okrFollow(upData)
         .then(({ msg }) => {
             message.success($t('操作成功'))
-            emit('upData',id,'FollowOkr')
+            emit('upData', id, 'FollowOkr')
         })
         .catch(ResultDialog)
         .finally(() => {
@@ -160,7 +174,7 @@ const submitSelectAlignment = (e) => {
     alignUpdate(upData)
         .then(({ msg }) => {
             message.success(msg)
-            emit('upData',eidtId.value)
+            emit('upData', eidtId.value)
         })
         .catch(ResultDialog)
         .finally(() => {
@@ -174,7 +188,7 @@ const submitSelectAlignment = (e) => {
 
 //编辑
 const handleEdit = (data) => {
-    emit('edit',data)
+    emit('edit', data)
     okrDetailsShow.value = false
 }
 
@@ -233,7 +247,7 @@ onMounted(() => {
                     @apply flex items-center ml-24;
 
                     .okr-title-star {
-                        @apply text-[#FFD023]  md:pr-16;
+                        @apply text-[#FFD023] md:pr-16;
                     }
 
                     .okr-title-icon {
@@ -247,14 +261,14 @@ onMounted(() => {
             }
 
             .okr-time {
-                @apply hidden md:flex items-center mt-12 text-text-tips ;
+                @apply hidden md:flex items-center mt-12 text-text-tips;
 
                 i {
                     @apply mr-4;
                 }
             }
 
-            .okr-time-web{
+            .okr-time-web {
                 @apply flex md:hidden items-center mt-12 text-text-tips justify-between;
             }
 
@@ -279,10 +293,9 @@ onMounted(() => {
             }
 
             .align-target {
-                @apply  items-start mt-20 text-text-tips text-12 hidden md:flex;
+                @apply items-start mt-20 text-text-tips text-12 hidden md:flex;
             }
         }
     }
 }
-
 </style>

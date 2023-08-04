@@ -13,7 +13,7 @@
                     @click="openMultiple"
                 >
                     <div class="replay-item-head">
-                        <div>   
+                        <div>
                             <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
@@ -39,7 +39,7 @@
             </div>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
-            <OkrDetails
+            <OkrDetailsModal
                 ref="RefOkrDetails"
                 :id="detailId"
                 v-if="okrDetailsShow"
@@ -48,7 +48,7 @@
                         okrDetailsShow = false
                     }
                 "
-            ></OkrDetails>
+            ></OkrDetailsModal>
         </div>
     </n-scrollbar>
 </template>
@@ -58,7 +58,7 @@ import { ref } from "vue"
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import * as http from "../../api/modules/replay"
-import OkrDetails from "@/views/components/OkrDetails.vue"
+import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import OkrLoading from '../components/OkrLoading.vue'
 
 
@@ -121,7 +121,7 @@ const getData = (type) => {
         if ( serstatic ){
             loadIng.value = true
         }else if ( type == 'onscrollsearch' ){
-            onscrolloading.value = true            
+            onscrolloading.value = true
         }
         http.getReplayList(data).then(({ data }) => {
             onscrolloading.value = false

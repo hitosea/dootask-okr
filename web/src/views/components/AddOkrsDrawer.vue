@@ -3,8 +3,8 @@
         :z-index="13" class="okr" style="--n-body-padding:16px 20px 16px 34px;max-width: 600px;width: 90%;">
         <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
             <div class="flex flex-col h-full">
-                <AddOkrs ref="AddOkrsRef" :edit="props.edit" :editData="props.editData"
-                    @close="(e, id) => { emit('close', e, id) }" @loadIng="(e) => { loadIng = e }"></AddOkrs>
+                <AddOkrsMain ref="AddOkrsRef" :edit="props.edit" :editData="props.editData"
+                    @close="(e, id) => { emit('close', e, id) }" @loadIng="(e) => { loadIng = e }"></AddOkrsMain>
                 <div class="button-box">
                     <n-button :loading="loadIng" type="primary" @click="handleSubmit">
                         {{ $t('提交') }}
@@ -15,7 +15,7 @@
     </n-drawer>
 </template>
 <script setup lang="ts">
-import AddOkrs from '@/views/components/AddOkrs.vue';
+import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
 
 const loadIng = ref(false)
 const show = ref(false)

@@ -2,6 +2,7 @@ import Index from '../views/index.vue'
 import Analysis from '../views/analysis.vue'
 import Main from '../views/main.vue'
 import addOkr from '../views/addOkr.vue'
+import okrDetails from '../views/okrDetails.vue'
 
 export const routes = [
     {
@@ -23,5 +24,10 @@ export const routes = [
         name: "addOkr",
         path: "/addOkr",
         component: addOkr
+    },
+    {
+        name: "okrDetails",
+        path: "/okrDetails",
+        component: okrDetails
     }
 ];

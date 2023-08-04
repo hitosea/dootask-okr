@@ -5,12 +5,12 @@
         <n-icon @click="handleSubmit" class="text-primary-color z-[2]" size="20" :component="Checkmark" />
     </div>
     <div class="pt-[68px] pb-16 pl-16 pr-2">
-        <AddOkrs ref="AddOkrsRef" :edit="edit" :editData="editData" :labelPlacement="'top'" :labelAlign="'left'" @close="handleReturn" @loadIng="(e) => { loadIng = e }">
-        </AddOkrs>
+        <AddOkrsMain ref="AddOkrsRef" :edit="edit" :editData="editData" :labelPlacement="'top'" :labelAlign="'left'" @close="handleReturn" @loadIng="(e) => { loadIng = e }">
+        </AddOkrsMain>
     </div>
 </template>
 <script lang="ts" setup>
-import AddOkrs from '@/views/components/AddOkrs.vue';
+import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
 import { Checkmark } from '@vicons/ionicons5'
 import { useRoute, useRouter } from 'vue-router';
 
@@ -29,6 +29,7 @@ if (route.query.data != undefined) {
 
 //提交
 const handleSubmit = () => {
+    if (loadIng) return
     AddOkrsRef.value.handleSubmit()
 }
 

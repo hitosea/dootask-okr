@@ -4,16 +4,16 @@
         <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
         <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
     </div>
-    <OkrDetails ref="RefOkrDetails" 
-        :id="globalStore.okrDetail.id" 
-        :show="okrDetailsShow" 
-        @close="close" 
-    ></OkrDetails>
+    <OkrDetailsModal ref="RefOkrDetails"
+        :id="globalStore.okrDetail.id"
+        :show="okrDetailsShow"
+        @close="close"
+    ></OkrDetailsModal>
 </template>
 
 <script lang="ts" setup>
 import {watch} from 'vue';
-import OkrDetails from './components/OkrDetails.vue';
+import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { GlobalStore } from "@/store"
 
 const okrDetailsShow = ref(false)
