@@ -182,7 +182,7 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.Id, okr.Title)
 	} else {
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.ParentTitle)
-		krHtml = fmt.Sprintf("<span data-id=\"%v\">#%v</span>", okr.Id, okr.Title)
+		krHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.Title)
 	}
 	text := ""
 	switch mold {
