@@ -702,17 +702,17 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	}
 
 	// 参与的O中，只显示我参与的KR
-	for _, obj := range okrs {
-		if common.InArrayInt(obj.Id, participantIds) {
-			krs := make([]*model.Okr, 0, len(obj.KeyResults))
-			for _, kr := range obj.KeyResults {
-				if strings.Contains(kr.Participant, fmt.Sprintf("%d", user.Userid)) {
-					krs = append(krs, kr)
-				}
-			}
-			obj.KeyResults = krs
-		}
-	}
+	// for _, obj := range okrs {
+	// 	if common.InArrayInt(obj.Id, participantIds) {
+	// 		krs := make([]*model.Okr, 0, len(obj.KeyResults))
+	// 		for _, kr := range obj.KeyResults {
+	// 			if strings.Contains(kr.Participant, fmt.Sprintf("%d", user.Userid)) {
+	// 				krs = append(krs, kr)
+	// 			}
+	// 		}
+	// 		obj.KeyResults = krs
+	// 	}
+	// }
 
 	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
