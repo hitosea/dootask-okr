@@ -1295,7 +1295,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 
 	// 检查关键结果是否已评分
 	for _, kr := range obj.KeyResults {
-		if kr.Score == 0 || kr.SuperiorScore == 0 {
+		if kr.Score == -1 || kr.SuperiorScore == -1 {
 			return nil, e.New(constant.ErrOkrKrScoreNotComplete)
 		} else {
 			// 计算关键结果总评分
