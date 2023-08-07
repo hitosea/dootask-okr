@@ -1159,7 +1159,13 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 		return false
 	}
 
-	if count > 0 {
+	// 负责人评分 1.不是超管 2.kr负责人不是当前用户 3.当前用户是部门负责人
+	if count > 0 && !user.IsAdmin() && kr.Userid != user.Userid {
+		return true
+	}
+
+	// 是否超管评分 1.部门负责人已评分 3.部门负责人评分后，超管可评分
+	if user.IsAdmin() && kr.Score > -1 {
 		return true
 	}
 
