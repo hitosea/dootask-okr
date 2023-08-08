@@ -266,5 +266,11 @@
     "上级打分": "Notation supérieure",
     "修改O目标状态": "Modifier l'état cible O",
     "未开始": "n'a pas commencé",
-    "暂无数据": "Pas de données"
+    "暂无数据": "Pas de données",
+    "人": "personnes",
+    "添加成功": "Ajouté avec succès",
+    "修改成功": "Modifié avec succès",
+    "操作成功": "Opération réussie",
+    "KR进度尚未达到100%": "La progression de KR n'a pas encore atteint 100 %",
+    "OKR详情": "Détails de l'OKR"
 }

@@ -266,5 +266,11 @@
     "上级打分": "Superior scoring",
     "修改O目标状态": "Modify the O target state",
     "未开始": "has not started",
-    "暂无数据": "No data"
+    "暂无数据": "No data",
+    "人": "people",
+    "添加成功": "Added successfully",
+    "修改成功": "Successfully modified",
+    "操作成功": "Successful operation",
+    "KR进度尚未达到100%": "KR progress has not yet reached 100%",
+    "OKR详情": "OKR Details"
 }

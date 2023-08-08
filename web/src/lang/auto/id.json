@@ -266,5 +266,11 @@
     "上级打分": "Skor unggul",
     "修改O目标状态": "Ubah status target O",
     "未开始": "belum dimulai",
-    "暂无数据": "Tidak ada data"
+    "暂无数据": "Tidak ada data",
+    "人": "rakyat",
+    "添加成功": "Berhasil ditambahkan",
+    "修改成功": "Berhasil dimodifikasi",
+    "操作成功": "Operasi sukses",
+    "KR进度尚未达到100%": "Progres KR belum mencapai 100%",
+    "OKR详情": "Detail OKR"
 }

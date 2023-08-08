@@ -54,7 +54,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 			`, okrTable, userTable)).
 			Select("dept.id as department_id, dept.name as department_name, SUM(ifnull(b.total,0)) total, SUM(ifnull(b.completed,0)) completed").
 			Group("department_id").
-			Order("b.total desc")
+			Order("b.completed desc,b.total desc")
 			// Where("b.total > ?", 0)
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
@@ -180,10 +180,10 @@ func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp)
 				select 
 					okr.userid,
 					COUNT(*) as total, 
-					SUM(CASE WHEN okr.completed > 0 and (dept.owner_userid is null OR  uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed
+					SUM(CASE WHEN okr.score > 0 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed
 				from %s okr
 				LEFT JOIN %s users on okr.userid = users.userid
-				LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid != okr.userid
+				LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid = okr.userid
 				LEFT JOIN (
 					SELECT dept.id, 
 						COUNT(*) as total, 
@@ -234,11 +234,16 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
 					GROUP BY u.department
 				) b on find_in_set(dept.id,b.department)
-			`, okrTable, userTable)).
+				LEFT JOIN (
+					SELECT department, COUNT(*) as total 
+					FROM %s 
+					GROUP BY department
+				) c on find_in_set(dept.id,c.department)
+			`, okrTable, userTable, userTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
-				SUM(ifnull(b.total,0)) total,
+				SUM(ifnull(c.total,0)) total,
 				SUM(ifnull(b.unscored,0)) unscored,
 				SUM(ifnull(b.already_reviewed,0)) already_reviewed
 			`).

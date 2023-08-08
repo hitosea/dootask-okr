@@ -124,10 +124,10 @@
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
-                                                <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}{{$t('个')}}</p>
-                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
+                                                <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}{{$t('人')}}</p>
+                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('人')}}</p>
                                             </div>
-                                            <div class="collect">{{ item.total }}{{$t('个')}}</div>
+                                            <div class="collect">{{ item.total }}{{$t('人')}}</div>
                                         </div>
                                     </div>
                                 </div>
