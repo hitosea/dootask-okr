@@ -13,7 +13,6 @@ declare module '@vue/runtime-core' {
     ImgUpLoad: typeof import('./src/components/ImgUpLoad.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
-    NAlert: typeof import('naive-ui')['NAlert']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NButtonGroup: typeof import('naive-ui')['NButtonGroup']
