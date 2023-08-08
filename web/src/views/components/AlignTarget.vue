@@ -28,10 +28,17 @@
             </div>
             <n-tooltip trigger="hover">
                 <template #trigger>
-                    <i class="taskfont cursor-pointer text-text-tips ml-auto" @click="alignCancel(item.id)"> &#xe680;</i>
+                    <i class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
+                        &#xe680;</i>
                 </template>
                 {{ $t('取消对齐') }}
             </n-tooltip>
+            <div class="flex md:hidden ml-auto min-w-[55px] items-center cursor-pointer">
+                <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                    :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
+                    :percentage="item.progress" />
+                <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+            </div>
         </div>
 
     </div>
@@ -92,7 +99,7 @@ const alignCancel = (itemID) => {
                 .then(({ msg }) => {
                     message.success($t('修改成功'))
                     getList();
-                    emit('unalign',props.id)
+                    emit('unalign', props.id)
                 })
                 .catch(ResultDialog)
                 .finally(() => {

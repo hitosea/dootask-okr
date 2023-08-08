@@ -47,7 +47,7 @@
                 <div class="kr-list">
                     <div class="kr-list-item" v-for="(childItem, index) in item.key_results">
                         <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
-                        <p>{{ childItem.title }}</p>
+                        <p class="max-w-[70%]">{{ childItem.title }}</p>
                         <div class="kr-list-schedule">
                             <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                                 :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
@@ -214,7 +214,7 @@ onMounted(() => {
         @apply p-16 md:px-24 md:py-32 bg-white rounded-lg flex gap-4 cursor-pointer;
 
         .okr-list {
-            @apply flex flex-col flex-1;
+            @apply flex flex-col flex-1 overflow-hidden;
 
             .okr-title {
                 @apply flex justify-between items-start md:items-center;

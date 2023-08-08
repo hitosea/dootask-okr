@@ -21,7 +21,7 @@
                                 ><b>{{ item.replayName }}</b></span>
                             <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
                         </div>
-                        <div class="cursor-pointer" @click="() => (item.isActive = !item.isActive)">
+                        <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
                             <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
                             <i class="replay-item-head-icon taskfont">&#xe705;</i>
                         </div>
@@ -42,7 +42,7 @@
             <OkrDetailsModal
                 ref="RefOkrDetails"
                 :id="detailId"
-                v-if="okrDetailsShow"
+                :show="okrDetailsShow"
                 @close="
                     () => {
                         okrDetailsShow = false
@@ -160,7 +160,7 @@ const openMultiple = () => {
 
 //查看okr详情
 const openOkrDetail = (id) => {
-    okrDetailsShow.value = !okrDetailsShow.value
+    okrDetailsShow.value = true
     detailId.value = id
 }
 
@@ -177,7 +177,7 @@ onMounted(() => {
 .replay {
     width: 100%;
     height: 100%;
-    @apply flex flex-col gap-5;
+    @apply flex flex-col gap-3 md:gap-5;
 
     &-item {
         @apply bg-white rounded-lg h-auto p-24;

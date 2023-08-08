@@ -2,7 +2,7 @@
     <n-layout class="root-layout">
         <router-view />
     <!-- 新增复盘 -->
-    <AddMultiple v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultiple>
+    <AddMultipleDrawer v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultipleDrawer>
     </n-layout>
 </template>
 
@@ -12,7 +12,7 @@ import { useLoadingBar } from 'naive-ui'
 import { loadingBarApiRef } from "../routes";
 import { UserStore } from "../store/user";
 import { GlobalStore } from '@/store';
-import AddMultiple from '@/views/components/AddMultiple.vue';
+import AddMultipleDrawer from '@/views/components/AddMultipleDrawer.vue';
 
 const userStore = UserStore()
 const loadingBar = useLoadingBar()

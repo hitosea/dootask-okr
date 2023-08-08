@@ -70,7 +70,6 @@ const getList = (type) => {
             loadIng.value = true
         }else if ( type == 'onscrollsearch' ){
             onscrolloading.value = true
-            console.log(onscrolloading)
         }
         getMyList(data).then(({ data }) => {
             onscrolloading.value = false
@@ -138,6 +137,6 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .i-created-main {
-    @apply relative pt-24 flex flex-col gap-6;
+    @apply relative pt-24 flex flex-col gap-3 md:gap-6;
 }
 </style>

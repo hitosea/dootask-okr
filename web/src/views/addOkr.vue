@@ -2,7 +2,7 @@
     <div class="nav-top  h-[44px] bg-[#FAFAFA] z-[5]">
         <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
         <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR管理') }}</h2>
-        <n-icon @click="handleSubmit" class="text-primary-color z-[2]" size="20" :component="Checkmark" />
+        <n-icon @click="handleSubmit" class="text-primary-color z-[3]" size="20" :component="Checkmark" />
     </div>
     <div class="pt-[68px] pb-16 pl-16 pr-2">
         <AddOkrsMain ref="AddOkrsRef" :edit="edit" :editData="editData" :labelPlacement="'top'" :labelAlign="'left'" @close="handleReturn" @loadIng="(e) => { loadIng = e }">
@@ -29,7 +29,6 @@ if (route.query.data != undefined) {
 
 //提交
 const handleSubmit = () => {
-    if (loadIng) return
     AddOkrsRef.value.handleSubmit()
 }
 

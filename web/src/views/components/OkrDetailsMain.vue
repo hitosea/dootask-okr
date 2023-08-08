@@ -2,12 +2,12 @@
     <div class="flex flex-col md:flex-row md:max-h-[640px] md:min-h-[640px]">
         <div class="flex-1 flex flex-col md:overflow-hidden relative">
             <div
-                class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] cursor-pointer">
+                class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5]">
                 <div class="flex items-center gap-4">
                     <n-popover v-if="detialData.completed == '0'" placement="bottom" trigger="click">
                         <template #trigger>
                             <div v-if="detialData.completed == '0'"
-                                class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid "
+                                class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                 :class="detialData.completed == '0' || detialData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                                 <n-icon v-if="detialData.completed == '1'"
                                     :class="detialData.completed == '0' || detialData.canceled == '0' ? '' : 'text-primary-color'"
@@ -37,15 +37,15 @@
                     <i v-if="detialData.completed == '0'" class="taskfont icon-title text-[#A7ACB6]"
                         @click="handleEdit">&#xe779;</i>
 
-                    <i class="taskfont text-[#FFD023]" v-if="detialData.is_follow"
-                        @click.stop="handleFollowOkr(detialData.id)">&#xe683;</i>
-                    <i class="taskfont text-[#A7ACB6]" v-else @click.stop="handleFollowOkr(detialData.id)">&#xe679;</i>
+                    <i class="taskfont text-[#FFD023] cursor-pointer" v-if="detialData.is_follow"
+                        @click.stop="handleFollowOkr">&#xe683;</i>
+                    <i class="taskfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
                 </div>
             </div>
 
             <n-scrollbar class="pr-[10px] ">
                 <n-spin :show="false">
-                    <h3 class=" text-title-color md:mt-[28px] text-18 md:text-24 font-normal md:line-clamp-1 min-h-[40px]">
+                    <h3 class=" text-title-color md:mt-[28px] text-18 md:text-24 font-normal md:line-clamp-1 md:min-h-[40px]">
                         {{ detialData.title }}
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
@@ -84,6 +84,16 @@
                             }}</span>
                         </div>
 
+
+                        <div class="flex items-center" v-if="detialData.score > -1">
+                            <p class="flex items-center w-[115px]">
+                                <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('评分') }}</span>
+                            </p>
+                            <p class="flex-1 text-text-li text-14">
+                                {{ detialData.score }}{{ $t('分') }}
+                            </p>
+                        </div>
                     </div>
 
                     <h4 class="hidden md:block text-text-li text-16 font-medium mt-36">KR</h4>
@@ -164,6 +174,12 @@
             <div
                 class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[5px] md:pb-[15px] md:ml-24 min-h-[36px]">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start">
+                    <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">{{
+                        $t('KR') }}
+                    </li>
+                    <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
+                        $t('对齐') }}
+                    </li>
                     <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
                     </li>
                     <li class="li-nav" :class="navActive == 1 ? 'active' : ''" @click="handleNav(1)">{{ $t('动态') }}
@@ -173,15 +189,74 @@
                 </ul>
                 <i class="taskfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block" @click="closeModal">&#xe6e5;</i>
             </div>
-            <div class="flex-auto relative">
+            <div class="flex-auto relative mt-16 md:mt-0">
                 <div class="md:absolute top-[24px] bottom-0 left-0 right-0">
+                    <div class="text-center" v-if="navActive == 3">
+                        <div class="flex md:hidden flex-col gap-3 min-h-[60px]">
+                        <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg" v-for="(item, index) in detialData.key_results">
+                            <div class="flex items-center">
+                                <h4 class=" text-title-color text-15 md:text-14 font-normal line-clamp-1">{{ item.title }}</h4>
+                            </div>
+                            <div class="flex flex-col justify-between mt-12">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div v-if="showUserSelect">
+                                            <UserSelects :formkey="index" />
+                                        </div>
+                                        <n-avatar v-if="!showUserSelect" round :size="20"
+                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="taskfont text-14 mr-6 text-[#A7ABB5]">&#xe6e8;</i>
+                                        <p class="flex-1 text-text-tips text-14  shrink-0">{{ utils.GoDate(item.end_at || 0) }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex mt-16 py-8 shrink-0 border-solid border-0 border-t-[1px] border-[#F2F3F5]">
+                                    <div class="flex items-center justify-center cursor-pointer flex-1 border-solid border-0 border-r-[1px] border-[#F2F3F5]"
+                                        @click="handleSchedule(item.id, item.progress, item.progress_status)">
+                                        <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                            :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                                            color="var(--primary-color)" status="success" :percentage="item.progress" />
+                                        <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+                                    </div>
+                                    <div v-if="item.confidence == '0'" class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
+                                        @click="handleConfidence(item.id, item.confidence)">
+                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                        <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
+                                    </div>
+                                    <div v-else class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
+                                        @click="handleConfidence(item.id, item.confidence)">
+                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                        <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
+                                    </div>
+                                    <div v-if="item.kr_score == '0'" class="flex flex-1 items-center justify-center cursor-pointer"
+                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
+                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                        <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
+                                    </div>
+                                    <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
+                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
+                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                        <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="text-center" v-if="navActive == 4">
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" @unalign="handleUnalign">
+                        </AlignTarget>
+                    </div>
                     <div class="text-center" v-show="navActive == 0">
                         <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
                         <DialogWrappers v-else />
                     </div>
                     <n-scrollbar v-if="navActive == 1" :on-scroll="onScrollLogList">
-                        <div class="flex text-start mb-[24px] pl-24 pr-[10px] " v-for="item in logList">
+                        <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
                                 <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
@@ -287,7 +362,7 @@ const score = ref(0)
 const superiorScore = ref(0)
 
 
-const emit = defineEmits(['close', 'edit', 'upData'])
+const emit = defineEmits(['close', 'edit', 'upData','isFollow','canceled'])
 
 const props = defineProps({
     show: {
@@ -308,6 +383,8 @@ const getDetail = (type) => {
         id: props.id,
     }).then(({ data }) => {
         detialData.value = data
+        emit('isFollow',detialData.value.is_follow)
+        emit('canceled', detialData.value.canceled)
     })
         .catch(ResultDialog)
         .finally(() => {
@@ -316,13 +393,13 @@ const getDetail = (type) => {
 }
 
 // 关注
-const handleFollowOkr = (id) => {
+const handleFollowOkr = () => {
     loadIng.value = true
     okrFollow({
-        id: id,
+        id: detialData.value.id,
     }).then(({ msg }) => {
         message.success($t('操作成功'))
-        emit('upData', id)
+        emit('upData',  detialData.value.id)
         getDetail('')
     })
         .catch(ResultDialog)
@@ -463,7 +540,7 @@ const handleGetReplayList = () => {
     }
 }
 
-
+//编辑
 const handleEdit = () => {
     if (window.innerWidth < 768) {
         router.push({
@@ -580,25 +657,41 @@ const loadDialogWrappers = () => {
 
 //添加复盘
 const handleAddMultiple = () => {
-    closeModal()
-    globalStore.$patch((state) => {
-        state.addMultipleData = detialData.value
-        state.addMultipleShow = true
-    })
-    console.log(globalStore.addMultipleShow);
-
+    if (window.innerWidth < 768) {
+        router.push({
+            path: '/addMultiple',
+            query: { data: JSON.stringify(detialData.value) },
+        })
+    }
+     else {
+        closeModal()
+        globalStore.$patch((state) => {
+            state.addMultipleData = detialData.value
+            state.addMultipleShow = true
+        })
+    }
 }
 
 
 //查看复盘
 const handleCheckMultiple = (id) => {
-    closeModal()
-    globalStore.$patch((state) => {
-        state.multipleId = id
-        state.addMultipleShow = true
-    })
+    if (window.innerWidth < 768) {
+        router.push({
+            path: '/addMultiple',
+            query: { 
+                data: JSON.stringify(detialData.value),
+                id: id || 0,
+             },
+        })
+    }
+    else {
+        closeModal()
+        globalStore.$patch((state) => {
+            state.multipleId = id
+            state.addMultipleShow = true
+        })
+    }
 }
-
 
 
 // 加载选择用户组件
@@ -715,9 +808,18 @@ watch(() => detialData.value.dialog_id, (newValue) => {
     }
 }, { immediate: true })
 
+nextTick(() => {
+    if (window.innerWidth < 768) {
+        navActive.value = 3
+    }
+})
+
 defineExpose({
     getDetail,
-    closeDrawer
+    closeDrawer,
+    handleEdit,
+    handleCancel,
+    handleFollowOkr
 })
 </script>
 <style lang="less" scoped>
@@ -747,14 +849,15 @@ defineExpose({
 
 
 .li-nav {
-    @apply list-none cursor-pointer text-text-li opacity-50 text-14;
+    @apply list-none cursor-pointer text-text-li opacity-50 text-14 px-4 relative;
 }
 
 .li-nav.active {
     @apply text-primary-color md:text-title-color md:text-16 opacity-100 relative;
 }
+
 .li-nav.active::before {
-    @apply w-full bg-primary-color;
+    @apply w-full bg-primary-color absolute left-0 right-0 -bottom-14;
     height: 2px;
     content: ' ';
 }
