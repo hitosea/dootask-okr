@@ -1,5 +1,12 @@
 <template>
     <div class="tinymce-box">
+        <div v-if="spinShow" class="text-center">
+            <n-spin :show="spinShow" size="small">
+                <template #description>
+                    {{ $t('加载中...') }}
+                </template>
+            </n-spin>
+        </div>
         <div ref="myTextarea" :id="tinymceId">{{ props.value }}</div>
     </div>
 </template>
@@ -13,7 +20,7 @@ const { themeName } = globalStore.appSetup()
 
 const tinymceId = ref("apps_tinymce_" + Math.round(Math.random() * 10000))
 const editorVue = ref()
-const spinShow = ref(false)
+const spinShow = ref(true)
 
 const emit = defineEmits(['update:value','editorInit','keyup','change','focus','blur'])
 const props = defineProps({

@@ -99,7 +99,14 @@
                         <n-gi class="bg-white mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
-                                    <div class="text-16">{{ $t('OKR人员评分率') }}</div>
+                                    <div class="text-16 flex">{{ $t('OKR人员评分率') }}
+                                        <n-tooltip trigger="hover">
+                                            <template #trigger>
+                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
+                                            </template>
+                                            <p class="max-w-[300px]">{{$t('完成全部OKR评分的人员所占比例，一个人如果负责多个OKR，必须全部OKR都完成评分，才计为已完成评分人员')}}</p>
+                                        </n-tooltip>
+                                    </div>
                                     <div class="pie">
                                         <div id="scoreRatingRate"></div>
                                     </div>
@@ -118,7 +125,14 @@
                                 </div>
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
-                                    <div class="text-16">{{ $t('OKR部门评分占比') }}</div>
+                                    <div class="text-16 flex">{{ $t('OKR部门评分占比') }} 
+                                        <n-tooltip trigger="hover">
+                                            <template #trigger>
+                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
+                                            </template>
+                                            {{$t('各个部门下完成OKR评分的人员所占比例')}}
+                                        </n-tooltip>
+                                    </div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
                                     <div class="mt-20" v-else v-for="item in analyzeDatas.deptScoreProportion">
                                         <p class="text-[#515A6E]">{{item.department_name}}</p>

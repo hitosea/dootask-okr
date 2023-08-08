@@ -272,5 +272,15 @@
     "修改成功": "Berhasil dimodifikasi",
     "操作成功": "Operasi sukses",
     "KR进度尚未达到100%": "Progres KR belum mencapai 100%",
-    "OKR详情": "Detail OKR"
+    "OKR详情": "Detail OKR",
+    "复盘详情": "Detail ulasan",
+    "完成全部OKR评分的人员所占比例，一个人如果负责多个OKR，必须全部OKR都完成评分，才计为已完成评分人员": "Proporsi orang yang telah menyelesaikan semua penilaian OKR. Jika satu orang bertanggung jawab atas beberapa OKR, semua OKR harus diberi skor sebelum dihitung sebagai orang yang telah menyelesaikan penilaian.",
+    "各个部门下完成OKR评分的人员所占比例": "Proporsi personel yang menyelesaikan skor OKR di bawah masing-masing departemen",
+    "KR完成度:": "Gelar Penyelesaian KR:",
+    "KR评分:": "Peringkat KR:",
+    "对齐": "meluruskan",
+    "筛选": "Saring",
+    "取消收藏": "batalkan favorit",
+    "添加收藏": "Tambahkan ke Favorit",
+    "加载中...": "Memuat..."
 }

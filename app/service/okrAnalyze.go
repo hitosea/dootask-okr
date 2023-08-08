@@ -42,6 +42,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+				LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
@@ -50,10 +51,16 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 					LEFT JOIN %s u on okr.userid = u.userid
 					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
 					GROUP BY u.department
-				) b on find_in_set(dept.id,b.department)
-			`, okrTable, userTable)).
-			Select("dept.id as department_id, dept.name as department_name, SUM(ifnull(b.total,0)) total, SUM(ifnull(b.completed,0)) completed").
-			Group("department_id").
+				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
+			`, departmentTable, okrTable, userTable)).
+			Select(`
+				dept.id as department_id, 
+				dept.name as department_name, 
+				SUM(ifnull(b.total,0)) total, 
+				SUM(ifnull(b.completed,0)) completed
+			`).
+			Where("dept.parent_id = 0").
+			Group("dept.id").
 			Order("b.completed desc,b.total desc")
 			// Where("b.total > ?", 0)
 		if err := db.Find(&data).Error; err != nil {
@@ -111,6 +118,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+				LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
 				LEFT JOIN (
 					SELECT u.department, 
 						COUNT(*) as total, 
@@ -122,8 +130,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 					LEFT JOIN %s u on okr.userid = u.userid
 					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
 					GROUP BY u.department
-				) b on find_in_set(dept.id,b.department)
-			`, okrTable, userTable)).
+				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
+			`, departmentTable, okrTable, userTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
@@ -133,10 +141,9 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 				SUM(ifnull(b.three_to_seven,0)) three_to_seven,
 				SUM(ifnull(b.seven_to_ten,0)) seven_to_ten
 			`).
-			Group("department_id").
+			Where("dept.parent_id = 0").
+			Group("dept.id").
 			Order("b.total desc")
-			// Where("b.total > ?", 0)
-
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}
@@ -180,20 +187,21 @@ func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp)
 				select 
 					okr.userid,
 					COUNT(*) as total, 
-					SUM(CASE WHEN okr.score > 0 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed
+					SUM(CASE WHEN okr.score > -1 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed
 				from %s okr
 				LEFT JOIN %s users on okr.userid = users.userid
 				LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid = okr.userid
 				LEFT JOIN (
 					SELECT dept.id, 
 						COUNT(*) as total, 
-						SUM(CASE WHEN okr.superior_score > 0 THEN 1 ELSE 0 END) as completed 
+						SUM(CASE WHEN okr.superior_score > -1 THEN 1 ELSE 0 END) as completed 
 					FROM %s okr
 					LEFT JOIN %s users on okr.userid = users.userid
 					LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
 					WHERE okr.parent_id = 0 
 					GROUP BY dept.id
 				) uu on dept.id = uu.id
+				WHERE okr.parent_id = 0 
 				GROUP BY okr.userid
 			) b on a.userid = b.userid 
 		`, okrTable, userTable, departmentTable, okrTable, userTable, departmentTable)).
@@ -224,33 +232,47 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+			LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
+			LEFT JOIN (
+				select 
+					users.department, 
+					COUNT(*) as user_total,
+					SUM(CASE WHEN o.okr_total = o.completed THEN 1 ELSE 0 END) as completed 
+				FROM %s users
 				LEFT JOIN (
-					SELECT u.department, 
-						COUNT(*) as total, 
-						SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
-						SUM(CASE WHEN score >= 0 THEN 1 ELSE 0 END) as already_reviewed
+					SELECT 
+						okr.userid,
+						count(*) as okr_total,
+						SUM(CASE WHEN okr.score > -1 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed 
 					FROM %s okr
-					LEFT JOIN %s u on okr.userid = u.userid
-					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
-					GROUP BY u.department
-				) b on find_in_set(dept.id,b.department)
-				LEFT JOIN (
-					SELECT department, COUNT(*) as total 
-					FROM %s 
-					GROUP BY department
-				) c on find_in_set(dept.id,c.department)
-			`, okrTable, userTable, userTable)).
+					LEFT JOIN %s users on okr.userid = users.userid
+					LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid = okr.userid
+					LEFT JOIN (
+						SELECT dept.id, 
+							COUNT(*) as total, 
+							SUM(CASE WHEN okr.superior_score > -1 THEN 1 ELSE 0 END) as completed 
+						FROM %s okr
+						LEFT JOIN %s users on okr.userid = users.userid
+						LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
+						WHERE okr.parent_id = 0 
+						GROUP BY dept.id
+					) uu on dept.id = uu.id
+					WHERE okr.parent_id = 0 
+					GROUP BY okr.userid
+				) o on users.userid = o.userid
+				GROUP BY users.department
+			) c on find_in_set(dept.id, c.department) or find_in_set(dept_two.id, c.department) 
+			`, departmentTable, userTable, okrTable, userTable, departmentTable, okrTable, userTable, departmentTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
-				SUM(ifnull(c.total,0)) total,
-				SUM(ifnull(b.unscored,0)) unscored,
-				SUM(ifnull(b.already_reviewed,0)) already_reviewed
+				SUM(ifnull(c.user_total,0)) total,
+				SUM(ifnull(c.user_total,0) - ifnull(c.completed,0)) unscored,
+				SUM(ifnull(c.completed,0)) already_reviewed
 			`).
-			Group("department_id").
-			Order("b.total desc")
-			// Where("b.total > ?", 0)
-
+			Where("dept.parent_id = 0").
+			Group("dept.id").
+			Order("c.user_total desc")
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}

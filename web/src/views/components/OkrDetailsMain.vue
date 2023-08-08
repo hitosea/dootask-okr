@@ -174,9 +174,7 @@
             <div
                 class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[5px] md:pb-[15px] md:ml-24 min-h-[36px]">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start">
-                    <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">{{
-                        $t('KR') }}
-                    </li>
+                    <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
                         $t('对齐') }}
                     </li>

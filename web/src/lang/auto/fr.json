@@ -272,5 +272,15 @@
     "修改成功": "Modifié avec succès",
     "操作成功": "Opération réussie",
     "KR进度尚未达到100%": "La progression de KR n'a pas encore atteint 100 %",
-    "OKR详情": "Détails de l'OKR"
+    "OKR详情": "Détails de l'OKR",
+    "复盘详情": "Détails de l'examen",
+    "完成全部OKR评分的人员所占比例，一个人如果负责多个OKR，必须全部OKR都完成评分，才计为已完成评分人员": "La proportion de personnes qui ont terminé toutes les notations OKR. Si une personne est responsable de plusieurs OKR, tous les OKR doivent être notés avant d'être comptés comme ceux qui ont terminé la notation.",
+    "各个部门下完成OKR评分的人员所占比例": "La proportion du personnel qui remplit le score OKR dans chaque département",
+    "KR完成度:": "Diplôme d'achèvement KR :",
+    "KR评分:": "Classement KR :",
+    "对齐": "aligner",
+    "筛选": "filtre",
+    "取消收藏": "annuler le favori",
+    "添加收藏": "Ajouter aux Favoris",
+    "加载中...": "Chargement..."
 }
