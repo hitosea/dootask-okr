@@ -1179,9 +1179,8 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	err = s.CheckObjectiveOperation(kr, userid)
-	if err != nil {
-		return nil, err
+	if kr.Userid != userid {
+		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
 	// 更新取消状态
