@@ -125,7 +125,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 // 更新目标
 func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrUpdateReq) (*model.Okr, error) {
-	obj, err := s.GetObjectiveById(param.Id)
+	obj, err := s.GetObjectiveByIdWithKeyResults(param.Id)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
@@ -155,8 +155,29 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		return nil, e.New(constant.ErrOkrKeyResultAtLeastOne)
 	}
 
+	// 比较 obj.KeyResults 和 param.KeyResults 中的 id 差值，然后删除
+	var krIds []int
+	var diffIds []int
+	for _, kr := range obj.KeyResults {
+		krIds = append(krIds, kr.Id)
+	}
+
+	for _, kr := range param.KeyResults {
+		if kr.Id != 0 {
+			diffIds = append(diffIds, kr.Id)
+		}
+	}
+
+	diffIds = common.ArrayDifferenceProcessing(krIds, diffIds)
+
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
+		if len(diffIds) > 0 {
+			if err := tx.Where("id in (?)", diffIds).Delete(&model.Okr{}).Error; err != nil {
+				return err
+			}
+		}
+		obj.KeyResults = nil
 		for _, kr := range param.KeyResults {
 			if kr.Id == 0 {
 				// 新增kr
@@ -175,14 +196,6 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 				go DootaskService.DialogOkrPush(keyResult, user.Token, 4, common.ExplodeInt(",", kr.Participant, true))
 				obj.KeyResults = append(obj.KeyResults, keyResult)
 			} else {
-				// 是否删除 true-删除 false-不删除
-				if kr.IsDelete {
-					// 删除kr
-					if err := tx.Where("id = ?", kr.Id).Delete(&model.Okr{}).Error; err != nil {
-						return err
-					}
-					continue
-				}
 				// 更新kr
 				keyResult, err := s.updateKeyResult(tx, kr, user, obj)
 				if err != nil {
@@ -220,6 +233,15 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		obj.StartAt = startAt
 		obj.EndAt = endAt
 
+		// 重新计算总目标进度值
+		progress := s.CalculateProgressTx(tx, obj)
+		obj.Progress = progress
+		if progress >= 100 {
+			obj.Completed = 1
+		} else {
+			obj.Completed = 0
+		}
+
 		if err := tx.Save(obj).Error; err != nil {
 			return err
 		}
@@ -241,6 +263,24 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	return obj, nil
 }
 
+// 重新计算总目标进度值
+func (s *okrService) CalculateProgressTx(tx *gorm.DB, obj *model.Okr) int {
+	krs := obj.KeyResults
+	sumProgress := 0
+	for _, item := range krs {
+		// 计算总进度值
+		sumProgress += item.Progress
+	}
+
+	// 更新总目标进度值，kr 进度值相加/kr 数量
+	progress := 0
+	if len(krs) > 0 {
+		progress = int(math.Round(float64(sumProgress) / float64(len(krs))))
+	}
+
+	return progress
+}
+
 // 创建关键结果
 func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCreateReq, user *interfaces.UserInfoResp, obj *model.Okr) (*model.Okr, error) {
 	// KR标题
@@ -249,7 +289,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 	}
 
 	// 标题长度 255
-	if len(kr.Title) > 255 {
+	if !common.IsChineseCharCountValid(kr.Title) {
 		return nil, e.New(constant.ErrOkrTitleLengthInvalid)
 	}
 
@@ -307,7 +347,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	}
 
 	// 标题长度 255
-	if len(kr.Title) > 255 {
+	if !common.IsChineseCharCountValid(kr.Title) {
 		return nil, e.New(constant.ErrOkrTitleLengthInvalid)
 	}
 
@@ -624,7 +664,6 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		return nil, err
 	}
 
-	// db = db.Preload("KeyResults", "FIND_IN_SET(?, participant) > 0", user.Userid) // 只显示我参与的KR
 	db = db.Preload("KeyResults") // 显示全部KR
 	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
@@ -700,19 +739,6 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&okrs).Error; err != nil {
 		return nil, err
 	}
-
-	// 参与的O中，只显示我参与的KR
-	// for _, obj := range okrs {
-	// 	if common.InArrayInt(obj.Id, participantIds) {
-	// 		krs := make([]*model.Okr, 0, len(obj.KeyResults))
-	// 		for _, kr := range obj.KeyResults {
-	// 			if strings.Contains(kr.Participant, fmt.Sprintf("%d", user.Userid)) {
-	// 				krs = append(krs, kr)
-	// 			}
-	// 		}
-	// 		obj.KeyResults = krs
-	// 	}
-	// }
 
 	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
@@ -1021,7 +1047,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 更新总目标进度值，kr 进度值相加/kr 数量
 		progress := 0
 		if len(krs) > 0 {
-			progress = sumProgress / len(krs)
+			progress = int(math.Round(float64(sumProgress) / float64(len(krs))))
 		}
 
 		// 更新总目标的状态是否完成

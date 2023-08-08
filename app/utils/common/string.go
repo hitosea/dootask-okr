@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/mozillazg/go-pinyin"
 )
@@ -179,4 +180,9 @@ func GetMiddle(str, ta, tb string) string {
 		str = str[:strings.Index(str, tb)]
 	}
 	return str
+}
+
+// IsChineseCharCountValid 检查字符串中的中文字符数量是否超过255个
+func IsChineseCharCountValid(str string) bool {
+	return utf8.RuneCountInString(str) <= 255
 }

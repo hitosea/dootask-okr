@@ -20,7 +20,7 @@ func (api *BaseApi) OkrCreate() {
 	var param = interfaces.OkrCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	// 标题长度 255
-	if len(param.Title) > 255 {
+	if !common.IsChineseCharCountValid(param.Title) {
 		helper.ErrorWith(api.Context, constant.ErrOkrTitleLengthInvalid, nil)
 		return
 	}
@@ -63,7 +63,7 @@ func (api *BaseApi) OkrUpdate() {
 	var param = interfaces.OkrUpdateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	// 标题长度 255
-	if len(param.Title) > 255 {
+	if !common.IsChineseCharCountValid(param.Title) {
 		helper.ErrorWith(api.Context, constant.ErrOkrTitleLengthInvalid, nil)
 		return
 	}
