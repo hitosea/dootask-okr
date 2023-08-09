@@ -21,6 +21,7 @@ ErrOkrKeyResultAtLeastOne: 少なくとも1つの重要な結果があります
 ErrOkrKeyResultTitleEmpty: キー結果タイトルは空にしてはいけません。
 ErrOkrKrScoreNotComplete: KRレーティング未完了です
 ErrOkrNoData: データは検索できませんでした
+ErrOkrNoDepartment: 現在、どの部門にも所属していないので、発議することはできません!
 ErrOkrOwnerNotCancel: 担当者のみの取り扱いとなります
 ErrOkrOwnerNotScore: 担当者採点なしです
 ErrOkrOwnerScored: この採点は担当者の上司が行います。

@@ -19,6 +19,11 @@ import (
 func (api *BaseApi) OkrCreate() {
 	var param = interfaces.OkrCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 无部门不允许发起
+	if len(api.Userinfo.Department) == 0 {
+		helper.ErrorWith(api.Context, constant.ErrOkrNoDepartment, nil)
+		return
+	}
 	// 标题长度 255
 	if !common.IsChineseCharCountValid(param.Title) {
 		helper.ErrorWith(api.Context, constant.ErrOkrTitleLengthInvalid, nil)
