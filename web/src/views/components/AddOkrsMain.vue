@@ -41,8 +41,8 @@
                 <n-form-item v-if="departmentOwner" :label="$t('归属')" path="ascription">
                     <n-radio-group v-model:value="formValue.ascription" name="radiogroup3" :disabled="edit">
                         <n-space>
-                            <n-radio :value="2">{{ $t('个人') }}</n-radio>
                             <n-radio :value="1">{{ $t('部门') }}</n-radio>
+                            <n-radio :value="2">{{ $t('个人') }}</n-radio>
                         </n-space>
                     </n-radio-group>
                 </n-form-item>
@@ -184,6 +184,7 @@ const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
+
 const props = defineProps({
     edit: {
         type: Boolean,
@@ -209,7 +210,7 @@ const formValue = ref<any>({
     title: "",
     type: 1,
     priority: "P0",
-    ascription: 2,
+    ascription: 1,
     visible_range: 1,
     time: null,
     align_objective: null,
@@ -411,7 +412,7 @@ const handleClear = () => {
         title: "",
         type: 1,
         priority: "P0",
-        ascription: 2,
+        ascription: 1,
         visible_range: 1,
         time: null,
         align_objective: null,
@@ -470,11 +471,20 @@ window.addEventListener('apps-unmount', function () {
     userSelectApps.value.forEach(app => app.$destroy())
 })
 
+//判断初始化归属
+nextTick(()=>{
+    if(!departmentOwner){
+        formValue.value.ascription = 2
+    }
+})
+
+
 defineExpose({
     handleSubmit,
     closeDrawer,
     showDrawer,
 })
+
 </script>
 <style lang="less" scoped>
 :deep(.n-drawer-body-content-wrapper) {
