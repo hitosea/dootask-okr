@@ -381,6 +381,14 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
+	// 判断传入的KR是否跟数据库中的KR是否有改变
+	if keyResult.Title != kr.Title || keyResult.Confidence != kr.Confidence || keyResult.StartAt != startAt || keyResult.EndAt != endAt || keyResult.Participant != kr.Participant {
+		err = s.CheckObjectiveOperation(keyResult, user.Userid)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// 父级目标标题
 	keyResult.ParentTitle = obj.Title
 
@@ -1305,6 +1313,19 @@ func (s *okrService) CheckObjectiveOperation(okr *model.Okr, userid int) error {
 			return e.New(constant.ErrOkrCompleted)
 		}
 	} else {
+		// 父级O已取消
+		var parentOkr model.Okr
+		if err := core.DB.Where("id = ?", okr.ParentId).First(&parentOkr).Error; err != nil {
+			return err
+		}
+		if parentOkr.Canceled == 1 {
+			return e.New(constant.ErrOkrCanceled)
+		}
+		// 父级O已完成
+		if parentOkr.Completed == 1 {
+			return e.New(constant.ErrOkrCompleted)
+		}
+
 		if okr.Score > -1 || okr.SuperiorScore > -1 {
 			return e.New(constant.ErrOkrScored)
 		}
