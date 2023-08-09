@@ -2,7 +2,7 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <div :class="items.length == 0 ? 'okr-replay-main':''">
+            <div :class="items.length == 0 ? 'okr-replay-okrnotdatas':''">
                 <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
             </div>
             <div v-if="items.length != 0" class="replay">
@@ -172,6 +172,10 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .okr-replay-main {
+    @apply  flex flex-col gap-6;
+}
+
+.okr-replay-okrnotdatas {
     @apply pt-24 flex flex-col gap-6;
 }
 .replay {
