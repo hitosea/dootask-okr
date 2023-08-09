@@ -4,10 +4,10 @@
             <i @click="handleReturn" class="taskfont icon-return">&#xe704;</i>
             <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
             <div class="okr-right">
-                <div class="search-button"  :class="searchShow ? 'search-active' : ''">
-                    <span class="search-button-span" v-if="searchShow" >{{ tabsName }}</span>
-                    <n-input  v-if="searchShow" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
-                    <i class="taskfont" @click="()=>{searchShow = !searchShow}">&#xe6f8;</i>
+                <div class="search-button" @mouseover="()=>{searchShow = true }" @mouseout="()=>{searchShow = false }" :class="searchShow || searchObject? 'search-active' : ''">
+                    <span class="search-button-span" v-show="searchShow || searchObject" >{{ tabsName }}</span>
+                    <n-input  v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
+                    <i class="taskfont" >&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
                     <i class="taskfont">&#xe6f2;</i>

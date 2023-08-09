@@ -456,12 +456,12 @@ const utils = {
      */
     GoDate(format) {
         // 创建一个Date对象
-        const date = new Date(format);
-
-        // 构建日期时间字符串
-        const datetime = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} `;
-
-        return datetime
+        const dateObj = new Date(format);
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const formattedDate = `${year}/${month}/${day}`;
+        return (formattedDate)
     },
 
     /**

@@ -21,9 +21,9 @@
             </div>
 
             <h3 class="a-t-title" v-if="!item.align_objective">{{ item.title }}</h3>
-            <div v-else>
-                <h4 class="a-t-title-s ">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title " :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
+            <div class="flex-1 overflow-hidden" v-else>
+                <h4 class="a-t-title-s max-w-[90%]">{{ item.align_objective }}</h4>
+                <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
             <n-tooltip trigger="hover">
@@ -131,7 +131,7 @@ defineExpose({
     @apply flex flex-col gap-6 w-full;
 
     .a-t-list {
-        @apply flex items-center;
+        @apply flex items-center overflow-hidden;
 
         .a-t-tab {
             @apply flex items-center flex-initial flex-shrink-0 relative;
@@ -146,11 +146,11 @@ defineExpose({
         }
 
         .a-t-title {
-            @apply text-title-color text-14 truncate flex-auto ml-4;
+            @apply text-title-color text-14 flex-auto ml-4 line-clamp-1;
         }
 
         .a-t-title-s {
-            @apply text-text-tips text-12 truncate flex-auto ml-4 font-normal;
+            @apply text-text-tips text-12 flex-auto ml-4 font-normal line-clamp-1;
         }
     }
 }
