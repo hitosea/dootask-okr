@@ -20,7 +20,7 @@ func (api *BaseApi) OkrCreate() {
 	var param = interfaces.OkrCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	// 无部门不允许发起
-	if len(api.Userinfo.Department) == 0 {
+	if len(api.Userinfo.Department) == 0 && !api.Userinfo.IsAdmin() {
 		helper.ErrorWith(api.Context, constant.ErrOkrNoDepartment, nil)
 		return
 	}
