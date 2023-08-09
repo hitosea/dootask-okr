@@ -352,6 +352,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		DialogId:     obj.DialogId,
 		Priority:     obj.Priority,
 		Ascription:   obj.Ascription,
+		VisibleRange: obj.VisibleRange,
 		Participant:  kr.Participant,
 		Title:        kr.Title,
 		Confidence:   kr.Confidence,
@@ -452,6 +453,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	keyResult.Participant = kr.Participant
 	keyResult.Title = kr.Title
 	keyResult.Confidence = kr.Confidence
+	keyResult.VisibleRange = obj.VisibleRange
 	keyResult.StartAt = startAt
 	keyResult.EndAt = endAt
 
@@ -808,11 +810,11 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 
 		// 判断是否是部门负责人
 		var department model.UserDepartment
-		core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", user.Userid).First(&department)
-
+		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
 			// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Where("visible_range = 1 OR visible_range = 3")
+			// 自己除外
+			db = db.Where("visible_range = 1 OR visible_range = 3 OR userid = ?", user.Userid)
 		}
 	}
 
@@ -1000,7 +1002,10 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 		kr.KrScore = krScore
 	}
 
-	objResp := &interfaces.OkrResp{Okr: obj}
+	objResp := &interfaces.OkrResp{
+		Okr:          obj,
+		SuperiorUser: s.GetSuperiorUserIds(obj),
+	}
 
 	s.GetObjectiveExt(objResp, obj.KeyResults, user)
 
@@ -1243,14 +1248,14 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 // 检查用户是否为目标上级
 func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfoResp) bool {
-	if kr.Score == -1 {
-		// 负责人 = 部门负责人
-		return kr.Userid != user.Userid
+	// 负责人 = 部门负责人
+	if kr.Userid == user.Userid && kr.Score == -1 {
+		return false
 	}
 
 	// 是否超管评分 1.顶级部门负责人已评分 3.顶级部门负责人评分后，超管可评分
 	var topDepartment model.UserDepartment
-	core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", kr.Userid).First(&topDepartment)
+	core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("owner_userid = ?", kr.Userid).First(&topDepartment)
 	if user.IsAdmin() && topDepartment.Id > 0 {
 		return true
 	}
@@ -1280,6 +1285,36 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	}
 
 	return false
+}
+
+// 获取目标评分上级用户ids
+func (s *okrService) GetSuperiorUserIds(obj *model.Okr) []int {
+	var userids []int
+
+	// 如果是超管评分，则返回所有超管用户
+	var topDepartment model.UserDepartment
+	core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("owner_userid = ?", obj.Userid).First(&topDepartment)
+	if topDepartment.Id > 0 {
+		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Pluck("userid", &userids)
+		return userids
+	}
+
+	// 目标负责人的部门
+	depIds := common.ExplodeInt(",", obj.DepartmentId, true)
+	if len(depIds) == 0 {
+		return nil
+	}
+
+	// 检查用户是否为部门负责人
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
+	if err := core.DB.Model(&model.UserDepartment{}).
+		Where("id IN (?)", deptAllIds).
+		Where("parent_id > 0").
+		Pluck("owner_userid", &userids).Error; err != nil {
+		return nil
+	}
+
+	return userids
 }
 
 // 取消/重启目标

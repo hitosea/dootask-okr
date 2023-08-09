@@ -61,6 +61,7 @@ type OkrResp struct {
 	AlignCount     int      `json:"align_count"`     // 对齐目标数量
 	Alias          []string `json:"alias"`           // 目标别名
 	UserAvatar     string   `json:"user_avatar"`     // 用户头像
+	SuperiorUser   []int    `json:"superior_user"`   // 上级用户
 }
 
 // OKR对齐目标响应
