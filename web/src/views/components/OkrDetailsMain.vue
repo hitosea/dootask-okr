@@ -1,6 +1,6 @@
 <template >
-    <div class="flex flex-col md:flex-row md:max-h-[640px] md:min-h-[640px]">
-        <div class="flex-1 flex flex-col relative md:overflow-hidden">
+    <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
@@ -177,7 +177,7 @@
         </div>
 
         <div
-            class="md:min-w-[35.8%] relative flex flex-col flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] mt-[32px] md:mt-0">
+            class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] mt-[32px] md:mt-0">
             <div
                 class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[5px] md:pb-[15px] md:ml-24 min-h-[36px]">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start">
@@ -195,7 +195,7 @@
                 <i class="taskfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative mt-16 md:mt-0">
-                <div class="md:absolute top-[24px] bottom-0 left-0 right-0">
+                <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
                     <div class="text-center" v-if="navActive == 3">
                         <div class="flex md:hidden flex-col gap-3 min-h-[60px]">
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg"
@@ -262,7 +262,7 @@
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
-                    <div class="text-center" v-show="navActive == 0">
+                    <div class="text-center flex-1" v-show="navActive == 0">
                         <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
                         <DialogWrappers v-else />
@@ -684,7 +684,7 @@ const loadDialogWrappers = () => {
 
 //添加复盘
 const handleAddMultiple = () => {
-    if (detialData.value.score < 0) return 
+    if (detialData.value.score < 0) return  message.error($t('KR评分未完成'))
     if (window.innerWidth < 768) {
         router.push({
             path: '/addMultiple',

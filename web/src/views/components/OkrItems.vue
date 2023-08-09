@@ -144,7 +144,6 @@ const handleOpenDetail = (id) => {
         eidtId.value = id
         okrDetailsShow.value = true
     }
-
 }
 
 

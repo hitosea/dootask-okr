@@ -130,7 +130,7 @@ const handleClose = (e,id) => {
 }
 
 const handleReturn = () => {
-    router.back()
+    router.go(-1)
 }
 
 </script>

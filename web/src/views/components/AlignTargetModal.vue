@@ -1,5 +1,5 @@
 <template >
-    <n-modal v-model:show="props.value" transform-origin="center">
+    <n-modal v-model:show="props.value" transform-origin="center" :mask-closable="false">
         <n-card class="w-[640px]" :title="$t('对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />

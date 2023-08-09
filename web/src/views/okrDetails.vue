@@ -1,5 +1,5 @@
 <template >
-    <div class="bg-[#FAFAFA] h-full">
+    <div class="bg-[#FAFAFA] min-h-full flex">
         <div class="nav-top  h-[44px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
@@ -15,7 +15,7 @@
                 </div>
             </n-popover>
         </div>
-        <div class="pt-[58px] pb-16 pl-16 pr-16 ">
+        <div class="pt-[58px] pb-16 pl-16 pr-16 flex-1 min-h-full">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="true" :id="id" @isFollow="(e) => { is_follow = e }"
                 @canceled="(e) => { cancel = e }"></OkrDetailsMain>
         </div>
