@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: KRレーティング未完了です
 ErrOkrNoData: データは検索できませんでした
 ErrOkrOwnerNotCancel: 担当者のみの取り扱いとなります
 ErrOkrOwnerNotScore: 担当者採点なしです
-ErrOkrOwnerScored: 担当者が採点しました
+ErrOkrOwnerScored: この採点は担当者の上司が行います。
 ErrOkrPriorityInvalid: 目標優先度パラメーターエラーです
 ErrOkrProgressInvalid: 進捗は,0-100の整数で入力します。
 ErrOkrProgressNotEnough: KRの進捗はまだ100%です

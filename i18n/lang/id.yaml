@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: KR rating tidak lengkap
 ErrOkrNoData: Tak ada data relevan yang ditemukan
 ErrOkrOwnerNotCancel: Hanya orang yang bertanggung jawab
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
-ErrOkrOwnerScored: Orang yang bertanggung jawab dinilai
+ErrOkrOwnerScored: Nilai ini dinilai oleh atasan orang yang bertanggung jawab
 ErrOkrPriorityInvalid: Target prioritas parameter salah
 ErrOkrProgressInvalid: Masukkan bilangan bulat 0-100
 ErrOkrProgressNotEnough: KR apos; s kemajuan adalah tidak 100%

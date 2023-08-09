@@ -7,12 +7,13 @@ import (
 
 type UserDepartment struct {
 	core.BaseIdModels
-	Name        string    `json:"name"`
-	DialogId    int       `json:"dialog_id"`
-	ParentId    int       `json:"parent_id"`
-	OwnerUserid int       `json:"owner_userid"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	Name             string          `json:"name"`
+	DialogId         int             `json:"dialog_id"`
+	ParentId         int             `json:"parent_id"`
+	OwnerUserid      int             `json:"owner_userid"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	ParentDepartment *UserDepartment `gorm:"ForeignKey:ParentId" json:"parent_department,omitempty"`
 }
 
 var UserDepartmentModel = UserDepartment{}

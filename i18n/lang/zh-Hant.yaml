@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: KR評分未完成
 ErrOkrNoData: 沒有查詢到相關數據
 ErrOkrOwnerNotCancel: 僅限負責人操作
 ErrOkrOwnerNotScore: 負責人未評分
-ErrOkrOwnerScored: 負責人已評分
+ErrOkrOwnerScored: 此評分由負責人的上級進行評分
 ErrOkrPriorityInvalid: 目標優先級參數錯誤
 ErrOkrProgressInvalid: 進度請輸入0-100的整數
 ErrOkrProgressNotEnough: KR進度尚未達到100%

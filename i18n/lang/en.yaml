@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: KR score is not complete
 ErrOkrNoData: No data is queried
 ErrOkrOwnerNotCancel: Responsible person only
 ErrOkrOwnerNotScore: Person in charge not rated
-ErrOkrOwnerScored: Person in charge has scored
+ErrOkrOwnerScored: This rating is scored by the supervisor of the person in charge
 ErrOkrPriorityInvalid: The target priority parameter is incorrect
 ErrOkrProgressInvalid: Progress Please enter an integer ranging from 0 to 100
 ErrOkrProgressNotEnough: The KR progress has not reached 100%

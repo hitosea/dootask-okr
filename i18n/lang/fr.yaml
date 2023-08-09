@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Aucune donnée n’a été consultée
 ErrOkrOwnerNotCancel: Opération réservée aux personnes responsables
 ErrOkrOwnerNotScore: Responsable non évalué
-ErrOkrOwnerScored: Responsable a noté
+ErrOkrOwnerScored: Cette note a été notée par le supérieur de la personne responsable
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
 ErrOkrProgressInvalid: Progrès veuillez entrer un nombre entier de 0 à 100
 ErrOkrProgressNotEnough: Progrès KR pas encore atteint 100%

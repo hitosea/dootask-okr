@@ -23,7 +23,7 @@ ErrOkrKrScoreNotComplete: kr 채점은 완료되지 않았다
 ErrOkrNoData: 관련 데이터를 조회하지 못했다
 ErrOkrOwnerNotCancel: 책임자만 조작할수 있다
 ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다
-ErrOkrOwnerScored: 책임자가 이미 채점하였다.
+ErrOkrOwnerScored: 이 평점은 책임자의 상부에서 매긴다
 ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 0-100의 정수를 입력하십시오
 ErrOkrProgressNotEnough: kr는 아직 100% 가 되지 않았다

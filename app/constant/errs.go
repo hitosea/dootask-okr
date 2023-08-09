@@ -28,7 +28,7 @@ var (
 	ErrOkrProgressInvalid         = "ErrOkrProgressInvalid"         //进度请输入0-100的整数
 	ErrOkrProgressStatusInvalid   = "ErrOkrProgressStatusInvalid"   //进度状态参数错误
 	ErrOkrScoreInvalid            = "ErrOkrScoreInvalid"            //评分请输入0-10的整数
-	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //负责人已评分
+	ErrOkrOwnerScored             = "ErrOkrOwnerScored"             //此评分由负责人的上级进行评分
 	ErrOkrSuperiorScored          = "ErrOkrSuperiorScored"          //上级已评分
 	ErrOkrScoredNotUpdateProgress = "ErrOkrScoredNotUpdateProgress" //评分后不允许修改进度
 	ErrOkrKeyResultTitleEmpty     = "ErrOkrKeyResultTitleEmpty"     //关键结果标题不能为空

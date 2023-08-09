@@ -238,6 +238,11 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		obj.Progress = progress
 		if progress >= 100 {
 			obj.Completed = 1
+			// O目标完成时，重新计算KR总评分
+			score := s.CalculateScoreTx(tx, obj)
+			if score > 0 {
+				obj.Score = score
+			}
 		} else {
 			obj.Completed = 0
 		}
@@ -279,6 +284,27 @@ func (s *okrService) CalculateProgressTx(tx *gorm.DB, obj *model.Okr) int {
 	}
 
 	return progress
+}
+
+// O目标完成时，重新计算KR总评分
+func (s *okrService) CalculateScoreTx(tx *gorm.DB, obj *model.Okr) float64 {
+	// 是否满足计算KR总评分条件
+	completed := true
+	for _, item := range obj.KeyResults {
+		if item.Score == -1 || item.SuperiorScore == -1 {
+			completed = false
+			break
+		}
+	}
+
+	if !completed {
+		return 0
+	}
+
+	// 计算KR总评分
+	score := s.getObjectiveScore(obj)
+
+	return score
 }
 
 // 创建关键结果
@@ -609,6 +635,12 @@ func (s *okrService) getObjectiveScore(obj *model.Okr) float64 {
 
 // 所有KR更新评分是否完成，完成则更新O评分，否则不更新
 func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
+	// 检查所有KR评分是否完成
+	for _, kr := range obj.KeyResults {
+		if kr.Score == -1 || kr.SuperiorScore == -1 {
+			return nil
+		}
+	}
 	// 计算O评分
 	score := s.getObjectiveScore(obj)
 	if math.IsNaN(score) {
@@ -759,20 +791,43 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	if !common.InArray("admin", user.Identity) {
+		if len(user.Department) == 0 {
+			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
+		}
+
+		departments, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+
 		var sql []string
-		for _, departmentId := range user.Department {
+		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
 		db = db.Where(strings.Join(sql, " OR "))
 
-		// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-		db = db.Where("visible_range = 1 OR visible_range = 3")
+		// 判断是否是部门负责人
+		var department model.UserDepartment
+		core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", user.Userid).First(&department)
+
+		if department.Id == 0 {
+			// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			db = db.Where("visible_range = 1 OR visible_range = 3")
+		}
 	}
 
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
 	if departmentId != 0 {
-		db = db.Where("FIND_IN_SET(?, department_id) > 0", departmentId)
+		admDepartments, err := s.GetDepartmentsBySearchDeptId([]int{departmentId})
+		if err != nil {
+			return nil, err
+		}
+		var admSql []string
+		for _, departmentId := range admDepartments {
+			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(admSql, " OR "))
 	}
 
 	// 部门负责人可以通过人员筛选
@@ -1099,18 +1154,38 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
 	superior := s.IsObjectiveManager(kr, user)
 	if !superior {
-		// 检查用户是否为目标负责人
-		if kr.Userid != user.Userid {
-			return nil, e.New(constant.ErrOkrOwnerNotCancel)
-		}
 		// 检查是否已评分
 		if kr.Score > -1 {
 			return nil, e.New(constant.ErrOkrOwnerScored)
 		}
+		// 检查用户是否为目标负责人
+		if kr.Userid != user.Userid {
+			return nil, e.New(constant.ErrOkrOwnerNotCancel)
+		}
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&kr).Error; err != nil {
-				return err
+			// 如果是超管评分，则更新目标评分
+			if user.IsAdmin() {
+				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Updates(map[string]interface{}{
+					"score":          param.Score,
+					"superior_score": param.Score,
+				}).Scan(&kr).Error; err != nil {
+					return err
+				}
+				// 更新O评分
+				var obj *model.Okr
+				tx.Preload("KeyResults").Where("id = ?", kr.ParentId).First(&obj)
+				if err != nil {
+					return err
+				}
+				err = s.UpdateObjectiveScoreTx(tx, obj)
+				if err != nil {
+					return err
+				}
+			} else {
+				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&kr).Error; err != nil {
+					return err
+				}
 			}
 
 			// 新增动态日志
@@ -1168,39 +1243,40 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 // 检查用户是否为目标上级
 func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfoResp) bool {
+	if kr.Score == -1 {
+		// 负责人 = 部门负责人
+		return kr.Userid != user.Userid
+	}
+
+	// 是否超管评分 1.顶级部门负责人已评分 3.顶级部门负责人评分后，超管可评分
+	var topDepartment model.UserDepartment
+	core.DB.Model(&model.UserDepartment{}).Where("owner_userid = ?", kr.Userid).First(&topDepartment)
+	if user.IsAdmin() && topDepartment.Id > 0 {
+		return true
+	}
+
 	// 目标负责人的部门
 	depIds := common.ExplodeInt(",", kr.DepartmentId, true)
 	if len(depIds) == 0 {
 		return false
 	}
 
-	// 负责人 = 部门负责人
-	if kr.Userid == user.Userid && kr.Score == -1 {
-		return false
-	}
-
 	// 检查用户是否为部门负责人
-	departmentTable := core.DBTableName(&model.UserDepartment{})
-	userTable := core.DBTableName(&model.User{})
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	var count int64
-
-	if err := core.DB.Table(departmentTable+" AS d").
-		Select("u.userid").
-		Joins(fmt.Sprintf("LEFT JOIN %s AS u ON d.owner_userid = u.userid", userTable)).
-		Where("d.id in (?)", depIds).
-		Where("u.userid = ?", user.Userid).
+	if err := core.DB.Model(&model.UserDepartment{}).
+		Where("id IN (?)", deptAllIds).
+		Where("owner_userid = ?", user.Userid).
+		Where("parent_id > 0").
 		Count(&count).Error; err != nil {
 		return false
 	}
 
-	// 负责人评分 1.不是超管 2.kr负责人不是当前用户 3.当前用户是部门负责人
-	if count > 0 && !user.IsAdmin() && kr.Userid != user.Userid {
-		return true
-	}
-
-	// 是否超管评分 1.部门负责人已评分 3.部门负责人评分后，超管可评分
-	if user.IsAdmin() && kr.Score > -1 {
-		return true
+	if count > 0 {
+		// 负责人评分 1.不是超管 2.kr负责人不是当前用户 3.当前用户是部门负责人
+		if !user.IsAdmin() && kr.Userid != user.Userid {
+			return true
+		}
 	}
 
 	return false
@@ -1445,16 +1521,22 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 
 // 获取目标所属名称
 func (s *okrService) getOwningAlias(ascription int, userid int, departmentId string) []string {
-	alias := []string{""}
+	var alias []string
 	if departmentId != "" && ascription == 1 {
 		departmentIds := common.ExplodeInt(",", departmentId, true)
 		if len(departmentIds) == 0 {
 			return nil
 		}
 
-		// 获取部门名称
-		if err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("name", &alias).Error; err != nil {
+		// 遍历departmentId获取顶级的部门名称，及parent_id=0的部门名称
+		topLevelDepartments, err := s.GetUniqueTopLevelDepartments(departmentIds)
+		if err != nil {
 			return nil
+		}
+
+		// 获取所有顶级部门名称
+		for _, department := range topLevelDepartments {
+			alias = append(alias, department.Name)
 		}
 
 		return alias
@@ -1468,7 +1550,80 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 		}
 		alias = []string{user.GetNickname()}
 	}
+
 	return alias
+}
+
+// 通过顶级部门查询所有子部门
+func (s *okrService) GetDepartmentsBySearchDeptId(ids []int) ([]int, error) {
+	var departments []int
+
+	depts, err := s.GetUniqueTopLevelDepartments(ids)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, dept := range depts {
+		departments = append(departments, dept.Id)
+	}
+
+	allDeptIds, err := s.GetDepartmentsByTopLevelIds(departments)
+	if err != nil {
+		return nil, err
+	}
+
+	return allDeptIds, nil
+}
+
+// 获取顶级部门
+func (s *okrService) GetUniqueTopLevelDepartments(ids []int) ([]model.UserDepartment, error) {
+	var departments []model.UserDepartment
+
+	// 查询所有子部门
+	if err := core.DB.Where("id IN (?)", ids).Preload("ParentDepartment").Find(&departments).Error; err != nil {
+		return nil, err
+	}
+
+	// 获取所有顶级部门
+	encountered := make(map[int]bool)
+	var uniqueTopLevelDepartments []model.UserDepartment
+	for _, department := range departments {
+		// 判断是否为顶级部门
+		if department.ParentDepartment == nil {
+			uniqueTopLevelDepartments = append(uniqueTopLevelDepartments, department)
+			encountered[department.Id] = true
+			continue
+		}
+
+		// 找到顶级部门
+		topDepartment := department
+		for topDepartment.ParentDepartment != nil {
+			topDepartment = *topDepartment.ParentDepartment
+		}
+
+		// 判断是否已经添加过
+		if !encountered[topDepartment.Id] {
+			uniqueTopLevelDepartments = append(uniqueTopLevelDepartments, topDepartment)
+			encountered[topDepartment.Id] = true
+		}
+	}
+
+	return uniqueTopLevelDepartments, nil
+}
+
+// 通过顶级部门ids获取所有子部门信息包括顶级部门
+func (s *okrService) GetDepartmentsByTopLevelIds(ids []int) ([]int, error) {
+	var departments []int
+
+	// 查询所有子部门
+	if err := core.DB.Model(&model.UserDepartment{}).Where("parent_id IN (?)", ids).Pluck("id", &departments).Error; err != nil {
+		return nil, err
+	}
+
+	// 包括顶级部门ids
+	departments = common.ArrayUniqueInt(append(departments, ids...))
+
+	return departments, nil
 }
 
 // UpdateAlignObjective 更新对齐目标
@@ -1620,12 +1775,13 @@ func (s *okrService) GetDepartmentSearch(page, pageSize int) (*interfaces.Pagina
 	var departments []*model.UserDepartment
 	var count int64
 
-	if err := core.DB.Model(&model.UserDepartment{}).Count(&count).Error; err != nil {
+	query := core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0")
+	if err := query.Count(&count).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (page - 1) * pageSize
-	if err := core.DB.Model(&model.UserDepartment{}).Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&departments).Error; err != nil {
+	if err := query.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&departments).Error; err != nil {
 		return nil, err
 	}
 
