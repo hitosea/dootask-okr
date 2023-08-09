@@ -19,7 +19,7 @@ type okrAnalyzeService struct{}
  */
 func (s *okrAnalyzeService) GetOverallCompleteness(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzeOverall, error) {
 	var data interfaces.OkrAnalyzeOverall
-	db := core.DB.Model(model.Okr{}).Where("parent_id = 0")
+	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0")
 	if err := db.Session(&core.Session).Count(&data.Total).Error; err != nil {
 		return nil, err
 	}
@@ -49,7 +49,10 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 						SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
 					FROM %s okr
 					LEFT JOIN %s u on okr.userid = u.userid
-					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
+					where u.userid > 0 
+						and u.department <> '' 
+						and okr.parent_id = 0 
+						and okr.canceled = 0
 					GROUP BY u.department
 				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
 			`, departmentTable, okrTable, userTable)).
@@ -61,7 +64,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
-			Order("b.completed desc,b.total desc")
+			Order("completed / total desc,b.total desc")
 			// Where("b.total > ?", 0)
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
@@ -86,7 +89,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
  */
 func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzeScore, error) {
 	var data interfaces.OkrAnalyzeScore
-	db := core.DB.Model(model.Okr{}).Where("parent_id = 0")
+	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0")
 	if err := db.Session(&core.Session).Count(&data.Total).Error; err != nil {
 		return nil, err
 	}
@@ -128,7 +131,10 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 						SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
 					FROM %s okr
 					LEFT JOIN %s u on okr.userid = u.userid
-					where u.userid > 0 and u.department <> '' and okr.parent_id = 0
+					where u.userid > 0 
+						and u.department <> '' 
+						and okr.parent_id = 0
+						and okr.canceled = 0
 					GROUP BY u.department
 				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
 			`, departmentTable, okrTable, userTable)).
@@ -198,10 +204,10 @@ func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp)
 					FROM %s okr
 					LEFT JOIN %s users on okr.userid = users.userid
 					LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
-					WHERE okr.parent_id = 0 
+					WHERE okr.parent_id = 0 and okr.canceled = 0
 					GROUP BY dept.id
 				) uu on dept.id = uu.id
-				WHERE okr.parent_id = 0 
+				WHERE okr.parent_id = 0 and okr.canceled = 0
 				GROUP BY okr.userid
 			) b on a.userid = b.userid 
 		`, okrTable, userTable, departmentTable, okrTable, userTable, departmentTable)).
@@ -254,10 +260,10 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 						FROM %s okr
 						LEFT JOIN %s users on okr.userid = users.userid
 						LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
-						WHERE okr.parent_id = 0 
+						WHERE okr.parent_id = 0 and okr.canceled = 0
 						GROUP BY dept.id
 					) uu on dept.id = uu.id
-					WHERE okr.parent_id = 0 
+					WHERE okr.parent_id = 0 and okr.canceled = 0
 					GROUP BY okr.userid
 				) o on users.userid = o.userid
 				GROUP BY users.department
@@ -272,7 +278,7 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
-			Order("c.user_total desc")
+			Order("total desc")
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}
