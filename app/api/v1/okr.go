@@ -256,7 +256,7 @@ func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	// 进度
-	if param.Progress < 1 || param.Progress > 100 {
+	if param.Progress < 0 || param.Progress > 100 {
 		helper.ErrorWith(api.Context, constant.ErrOkrProgressInvalid, nil)
 		return
 	}
