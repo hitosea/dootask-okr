@@ -6,7 +6,7 @@
                 :label-placement="props.labelPlacement" label-width="auto" require-mark-placement="left">
 
                 <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
-                    <n-input v-model:value="formValue.title" :placeholder="$t('请输入目标')" />
+                    <n-input v-model:value="formValue.title" :maxlength="255" :placeholder="$t('请输入目标')" />
                 </n-form-item>
 
                 <n-form-item :label="$t('类型')" path="type">
@@ -47,14 +47,15 @@
                     </n-radio-group>
                 </n-form-item>
 
-                <n-form-item :label="$t('可见范围')">
-                    <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
-                        :options="generalOptions" />
-                </n-form-item>
 
                 <n-form-item :label="$t('周期')" path="time">
                     <n-date-picker class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
+                </n-form-item>
+
+                <n-form-item :label="$t('可见范围')">
+                    <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
+                        :options="generalOptions" />
                 </n-form-item>
 
                 <n-form-item :label="$t('对齐目标')">
@@ -75,7 +76,25 @@
             </n-form>
             <div>
                 <div class="flex items-center justify-between">
-                    <h3 class="text-14 text-text-li font-medium">{{ $t('关键KR') }}</h3>
+                    <h3 class="text-14 text-text-li font-medium flex items-center">
+                        {{ $t('关键KR') }}
+                        <n-popover trigger="click" placement="right-start" :width="220">
+                            <template #trigger>
+                                <n-icon class=" cursor-pointer text-text-tips ml-8" size="18"
+                                    :component="AlertCircleOutline" />
+                            </template>
+                            <div class="">
+                                <p class="text-14 text-[#FFBD23] font-medium">{{ $t('KR1：动词+你要追踪的内容+从到Y/或者具体值') }}</p>
+                                <p class="text-14 text-[#FFBD23] mt-8 font-medium">{{ $t('KR2：动词+什么时间节点+达成什么关键成果') }}</p>
+                                <p class="text-12 text-title-color mt-12">{{ $t('示例') }}</p>
+                                <p class="text-12 text-text-li">{{ $t('将客户续约率从70%提高到90%') }}</p>
+
+                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
+                            </div>
+                        </n-popover>
+                    </h3>
                     <div class="flex items-center cursor-pointer" @click="handleAddKr">
                         <i class="taskfont text-14 text-primary-color">&#xe731;</i>
                         <p class="text-14 text-primary-color ml-4">{{ $t('添加KR') }}</p>
@@ -97,7 +116,7 @@
                             require-mark-placement="left">
                             <n-grid :cols="4" :x-gap="16">
                                 <n-form-item-gi :span="4" class="w-full" label="KR" path="title">
-                                    <n-input v-model:value="item.title" :placeholder="$t('请输入')" />
+                                    <n-input v-model:value="item.title" :maxlength="255" :placeholder="$t('请输入')" />
                                 </n-form-item-gi>
 
                                 <n-form-item-gi :span="4" :label="$t('周期')" path="time">
@@ -122,12 +141,12 @@
 
 
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
-                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence"
-                                        placeholder="0-100" :show-button="false" />
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0"
+                                        v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
                                 </n-form-item-gi>
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('信心')">
-                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence"
-                                        placeholder="0-100" :show-button="false" />
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0"
+                                        v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
                                 </n-form-item-gi>
                             </n-grid>
                         </n-form>
@@ -149,8 +168,8 @@ import UserList from "./UserList.vue";
 import { addOkr, upDateOkr } from '@/api/modules/created'
 import { useMessage } from "naive-ui"
 import utils from "@/utils/utils";
-import { ResultDialog } from "@/api"
 import { UserStore } from '@/store/user'
+import { AlertCircleOutline } from '@vicons/ionicons5'
 
 const emit = defineEmits(['close', 'loadIng'])
 
@@ -328,7 +347,9 @@ const handleSubmit = () => {
                     message.success($t('修改成功'))
                     emit('close', 2, formValue.value.id)
                 })
-                .catch(ResultDialog)
+                .catch(({ msg }) => {
+                    message.error(msg)
+                })
                 .finally(() => {
                     loadIng.value = false
                     emit('loadIng', loadIng.value)
@@ -339,7 +360,9 @@ const handleSubmit = () => {
                     message.success($t('添加成功'))
                     emit('close', 1)
                 })
-                .catch(ResultDialog)
+                .catch(({ msg }) => {
+                    message.error(msg)
+                })
                 .finally(() => {
                     loadIng.value = false
                     emit('loadIng', loadIng.value)
@@ -500,5 +523,12 @@ defineExpose({
 
 .okr-user-selects {
     @apply w-full bg-none border-none !important;
+}
+
+</style>
+
+<style >
+:deep(.n-popover){
+    padding: 24px !important;
 }
 </style>

@@ -9,7 +9,7 @@
                 <div class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 text-15 text-title-color font-normal">
                     {{ props.data.title }}
                 </div>
-                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center">{{ $t('关键KR') }}</h3>
+                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('关键KR') }}</h3>
                 <div v-for="(item,index) in tableData" class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 ">
                     <h3 class="text-15 text-title-color font-normal"><span class="mr-4 text-12 text-text-tips">KR{{ index + 1 }}</span>{{ item.KR }}</h3>
                     <div class="mt-12 flex items-center">
@@ -57,7 +57,7 @@ const columns = ref<DataTableColumn[]>([
     {
         title: $t('目标（O）'),
         key: 'O',
-        minWidth: 100,
+        minWidth: 200,
         rowSpan: (rowData) => (rowData.lenght),
     },
     {
@@ -68,8 +68,25 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         title: $t('关键KR'),
-        minWidth: 100,
+        minWidth: 200,
         key: 'KR',
+        render(rowData,index) {
+            let arr = []
+            arr.push(
+                h ('span',{
+                    class:'text-primary-color shrink-0 mr-4',
+                },'KR' + (index + 1) )
+            )
+            arr.push(
+                h ('span',rowData.KR)
+            )
+            return h ('div',{
+                style:{
+                    display:'flex',
+                    alignItems:'start',
+                },
+            },arr)
+        }
     },
     {
         title: $t('KR完成度'),

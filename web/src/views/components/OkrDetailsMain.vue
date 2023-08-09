@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-6">
-                    <i v-if="detialData.completed == '0'" class="taskfont icon-title text-[#A7ACB6]"
+                    <i v-if="detialData.canceled == '0'" class="taskfont icon-title text-[#A7ACB6]"
                         @click="handleEdit">&#xe779;</i>
 
                     <i class="taskfont text-[#FFD023] cursor-pointer" v-if="detialData.is_follow"
@@ -45,7 +45,7 @@
 
             <n-scrollbar class="pr-[10px] ">
                 <n-spin :show="false">
-                    <h3 class=" text-title-color md:mt-[28px] text-18 md:text-24 font-normal md:line-clamp-1 md:min-h-[40px]">
+                    <h3 class=" text-title-color md:mt-[28px] text-18 md:text-24 leading-6 font-normal md:min-h-[40px]">
                         {{ detialData.title }}
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
@@ -101,7 +101,7 @@
                     <div class="hidden md:flex flex-col mt-20 gap-6 min-h-[60px]">
                         <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
                             <div class="flex items-center">
-                                <span class=" text-primary-color text-12 leading-5 mr-8">KR{{ index + 1 }}</span>
+                                <span class=" text-primary-color text-12 leading-5 mr-8 shrink-0">KR{{ index + 1 }}</span>
                                 <h4 class=" text-title-color text-14 font-normal line-clamp-1">{{ item.title }}</h4>
                             </div>
                             <div class="flex items-center justify-between mt-8">
@@ -120,19 +120,19 @@
                                 </div>
                                 <div class="flex items-center gap-6 shrink-0">
                                     <div class="flex items-center cursor-pointer"
-                                        @click="handleSchedule(item.id, item.progress, item.progress_status)">
+                                        @click="handleSchedule(item.id, item.progress, item.progress_status,item.score)">
                                         <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                             color="var(--primary-color)" status="success" :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
-                                        @click="handleConfidence(item.id, item.confidence)">
+                                        @click="handleConfidence(item.id, item.confidence,item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
-                                        @click="handleConfidence(item.id, item.confidence)">
+                                        @click="handleConfidence(item.id, item.confidence,item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
@@ -212,19 +212,19 @@
                                 </div>
                                 <div class="flex mt-16 py-8 shrink-0 border-solid border-0 border-t-[1px] border-[#F2F3F5]">
                                     <div class="flex items-center justify-center cursor-pointer flex-1 border-solid border-0 border-r-[1px] border-[#F2F3F5]"
-                                        @click="handleSchedule(item.id, item.progress, item.progress_status)">
+                                        @click="handleSchedule(item.id, item.progress, item.progress_status,item.score)">
                                         <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                             color="var(--primary-color)" status="success" :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
-                                        @click="handleConfidence(item.id, item.confidence)">
+                                        @click="handleConfidence(item.id, item.confidence ,item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
                                     <div v-else class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
-                                        @click="handleConfidence(item.id, item.confidence)">
+                                        @click="handleConfidence(item.id, item.confidence ,item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
@@ -384,7 +384,9 @@ const getDetail = (type) => {
         emit('isFollow',detialData.value.is_follow)
         emit('canceled', detialData.value.canceled)
     })
-        .catch(ResultDialog)
+    .catch(({msg})=>{
+            message.error(msg)
+        })
         .finally(() => {
             if (type == 'first') loadIng.value = false
         })
@@ -400,7 +402,9 @@ const handleFollowOkr = () => {
         emit('upData',  detialData.value.id)
         getDetail('')
     })
-        .catch(ResultDialog)
+        .catch(({msg})=>{
+            message.error(msg)
+        })
         .finally(() => {
             loadIng.value = false
         })
@@ -499,7 +503,9 @@ const handleGetLogList = () => {
 
             logListLastPage.value = data.last_page
         })
-            .catch(ResultDialog)
+        .catch(({msg})=>{
+            message.error(msg)
+        })
             .finally(() => {
                 loadIngR.value = false
             })
@@ -531,7 +537,9 @@ const handleGetReplayList = () => {
             })
             replayListLastPage.value = data.last_page
         })
-            .catch(ResultDialog)
+        .catch(({msg})=>{
+            message.error(msg)
+        })
             .finally(() => {
                 loadIngR.value = false
             })
@@ -558,7 +566,9 @@ const closeModal = () => {
 
 
 //打开进度
-const handleSchedule = (id, progress, progress_status) => {
+const handleSchedule = (id, progress, progress_status,score) => {
+    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (score > -1) return message.error($t('KR已评分无法操作'))
     degreeOfCompletionId.value = id
     degreeOfCompletionProgress.value = progress
     degreeOfCompletionProgressStatus.value = progress_status
@@ -578,7 +588,9 @@ const handleCloseDedree = (type) => {
 }
 
 //打开信心
-const handleConfidence = (id, confidences) => {
+const handleConfidence = (id, confidences, score) => {
+    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (score > -1) return message.error($t('KR已评分无法操作'))
     confidencesId.value = id
     confidence.value = confidences
     confidenceShow.value = true
@@ -595,7 +607,8 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
-    if (progress < 100) return message.warning($t('KR进度尚未达到100%'))
+    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (progress < 100) return message.error($t('KR进度尚未达到100%'))
     markId.value = id
     score.value = scores
     superiorScore.value = superior_score
@@ -612,7 +625,7 @@ const handleCloseMarks = (type) => {
     }
 }
 
-// 取消
+// 取消O
 const handleCancel = () => {
     loadIng.value = true
     okrCancel({
@@ -747,7 +760,9 @@ const participantChange = (item, index) => {
             message.success(msg)
             getDetail('')
         })
-        .catch(ResultDialog)
+        .catch(({msg})=>{
+            message.error(msg)
+        })
         .finally(() => {
             loadIng.value = false
         })
@@ -767,7 +782,9 @@ const submitSelectAlignment = (e) => {
             getDetail('')
             AlignTargetRef.value.getList()
         })
-        .catch(ResultDialog)
+        .catch(({msg})=>{
+            message.error(msg)
+        })
         .finally(() => {
             loadIng.value = false
         })

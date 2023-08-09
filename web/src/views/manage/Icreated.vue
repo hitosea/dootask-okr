@@ -1,11 +1,11 @@
 <template >
         <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
             <div class="i-created-main">
-                <PersonalStatistics ref="PersonalStatisticsRef" v-if="list.length != 0 && searchObject == ''" ></PersonalStatistics>
+                <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''" ></PersonalStatistics>
                 <div>
                     <OkrLoading v-if="loadIng"></OkrLoading>
                     <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0 && !loadIng"></OkrItems>
-                    <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject">
+                    <OkrNotDatas v-if="!loadIng && list.length == 0" :types="props.searchObject">
                         <template v-slot:content>
                             <div class="mt-5"><s></s>
                                 <div>

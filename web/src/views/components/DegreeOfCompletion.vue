@@ -93,7 +93,9 @@ const handleSubmit = () => {
         .then(({ msg }) => {
             message.success($t('操作成功'))
         })
-        .catch(ResultDialog)
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
         .finally(() => {
             emit('close', 1,)
             loadIng.value = false
