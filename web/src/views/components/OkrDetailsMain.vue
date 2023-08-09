@@ -4,9 +4,9 @@
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover v-if="detialData.completed == '0'" placement="bottom" trigger="click">
+                    <n-popover v-if="detialData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual">
                         <template #trigger>
-                            <div v-if="detialData.completed == '0'"
+                            <div @click="showPopover = !showPopover" v-if="detialData.completed == '0'"
                                 class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                 :class="detialData.completed == '0' || detialData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                                 <n-icon v-if="detialData.completed == '1'"
@@ -343,6 +343,7 @@ const navActive = ref(0)
 const dialogWrappersApp = ref()
 const loadIng = ref(false)
 const loadIngR = ref(false)
+const showPopover = ref(false)
 const detialData = ref<any>({})
 const message = useMessage()
 
@@ -646,6 +647,7 @@ const handleCancel = () => {
         id: detialData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
+        showPopover.value = false
         emit('upData', detialData.value.id)
         getDetail('')
     })

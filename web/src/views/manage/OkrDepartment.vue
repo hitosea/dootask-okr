@@ -27,22 +27,23 @@
                 </n-button>
             </div>
             <div
-                class="flex-1 flex items-center mt-16 md:mt-0 mb-16 justify-between md:justify-start 2xl:justify-end 2xl:mb-0">
-                <div class=" hidden md:block mb-4 mr-12 whitespace-nowrap 2xl:ml-24">
+                class="flex-1 flex items-center mt-16 md:mt-0 mb-16 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
+                <div class=" hidden md:block mb-4 mr-12 whitespace-nowrap 2xl:ml-24 ">
                     {{ $t('类型') }}
                 </div>
-                <n-button-group size="medium" class="mb-4 hidden md:flex">
-                    <n-button @click="handleClick2(null)" class=" rounded px-16 bg-white whitespace-nowrap">
+                <div class="mb-4 hidden md:flex">
+                    <div @click="handleClick2(null)" :class="types == null ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color':'bg-white border-[#F2F2F2]' " class="rounded px-12 py-6 border-solid border-[1px] cursor-pointer">
                         {{ $t('全部') }}
-                    </n-button>
-                    <div class="w-[4px]"></div>
-                    <n-button @click="handleClick2('1')" class=" rounded px-16 bg-white whitespace-nowrap">
-                        {{ $t('承诺型') }}
-                    </n-button>
-                    <n-button @click="handleClick2('2')" class=" rounded px-16 bg-white whitespace-nowrap">
-                        {{ $t('挑战型') }}
-                    </n-button>
-                </n-button-group>
+                    </div>
+                    <div class="flex ml-4">
+                        <div @click="handleClick2('1')" :class="types == '1' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color z-[2]':'bg-white border-[#F2F2F2]' " class="rounded-l px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                            {{ $t('承诺型') }}
+                        </div>
+                        <div @click="handleClick2('2')" :class="types == '2' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color':'bg-white border-[#F2F2F2]' " class="-ml-1 rounded-r px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                            {{ $t('挑战型') }}
+                        </div>
+                    </div>
+                </div>
 
                 <n-checkbox v-model:checked="completednotrated" class="md:ml-36 rounded whitespace-nowrap mb-2 "
                     @click="getList('search')">
@@ -203,6 +204,11 @@ const init = () => {
 const getList = (type) => {
     let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
+        if (serstatic) {
+            loadIng.value = true
+        } else if (type == 'onscrollsearch') {
+            onscrolloading.value = true
+        }
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id: departmentsvalue.value,
@@ -213,11 +219,6 @@ const getList = (type) => {
             start_at: daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000) : null,
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
-        }
-        if (serstatic) {
-            loadIng.value = true
-        } else if (type == 'onscrollsearch') {
-            onscrolloading.value = true
         }
         getDepartmentOkrList(sendata).then(({ data }) => {
             loadIng.value = false
@@ -241,6 +242,7 @@ const getList = (type) => {
 //搜索
 const handleClick = () => {
     isloading.value = true
+    page.value = 1
     getList('search');
 }
 
@@ -286,7 +288,7 @@ const upData = (id) => {
 const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
         // 重新请求数据
-        if (!loadIng.value) {
+        if (!onscrolloading.value) {
             page.value++
             getList('onscrollsearch')
         }

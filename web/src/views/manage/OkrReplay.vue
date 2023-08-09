@@ -141,7 +141,7 @@ const getData = (type) => {
 const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
         // 重新请求数据
-        if (!loadIng.value) {
+        if (!onscrolloading.value) {
             page.value++
             getData("onscrollsearch")
         }
