@@ -104,8 +104,8 @@ type OkrCanceledReq struct {
 
 // 更新参与人请求
 type OkrParticipantUpdateReq struct {
-	Id          int    `form:"id" binding:"required" json:"id"`                   // okr id
-	Participant string `form:"participant" binding:"required" json:"participant"` // 参与人,多个用逗号隔开
+	Id          int    `form:"id" binding:"required" json:"id"` // okr id
+	Participant string `form:"participant" json:"participant"`  // 参与人,多个用逗号隔开
 }
 
 // 更新信心指数请求
