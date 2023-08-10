@@ -125,9 +125,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
-				LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
 				LEFT JOIN (
-					SELECT u.department, 
+					SELECT depts.id, 
 						COUNT(*) as total, 
 						SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
 						SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three, 
@@ -135,13 +134,14 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 						SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
 					FROM %s okr
 					LEFT JOIN %s u on okr.userid = u.userid
+					LEFT JOIN %s depts on find_in_set(depts.id,u.department) 
 					where u.userid > 0 
 						and u.department <> '' 
 						and okr.parent_id = 0
 						and okr.canceled = 0
-					GROUP BY u.department
-				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
-			`, departmentTable, okrTable, userTable)).
+					GROUP BY depts.id
+				) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
+			`, okrTable, userTable, departmentTable, departmentTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
@@ -212,24 +212,23 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
-			LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
-			LEFT JOIN (
-				SELECT 
-					users.department,
-					count(*) as okr_total,
-					SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
-				FROM %s okr
-				LEFT JOIN %s users on okr.userid = users.userid
-				WHERE okr.parent_id = 0 and okr.canceled = 0
-				GROUP BY users.department
-			) c on find_in_set(dept.id, c.department) or find_in_set(dept_two.id, c.department) 
-			`, departmentTable, okrTable, userTable)).
+				LEFT JOIN (
+					SELECT depts.id, 
+						count(*) as okr_total,
+						SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
+					FROM %s okr
+					LEFT JOIN %s u on okr.userid = u.userid
+					LEFT JOIN %s depts on find_in_set(depts.id,u.department) 
+					where u.userid > 0 and u.department <> '' and okr.parent_id = 0 and okr.canceled = 0
+					GROUP BY depts.id
+				) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
+			`, okrTable, userTable, departmentTable, departmentTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
-				SUM(ifnull(c.okr_total,0)) total,
-				SUM(ifnull(c.okr_total,0) - ifnull(c.completed,0)) unscored,
-				SUM(ifnull(c.completed,0)) already_reviewed
+				SUM(ifnull(b.okr_total,0)) total,
+				SUM(ifnull(b.okr_total,0) - ifnull(b.completed,0)) unscored,
+				SUM(ifnull(b.completed,0)) already_reviewed
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
