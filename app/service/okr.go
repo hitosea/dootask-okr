@@ -1083,7 +1083,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果传值更新进度有值，则更新进度
-		if param.Progress != 0 {
+		if param.Progress != 0 && param.Progress != kr.Progress {
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", "修改KR进度", interfaces.OkrLogParams{
 				Title:          kr.Title,
 				ProgressChange: []int{kr.Progress, param.Progress},
@@ -1094,7 +1094,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		}
 
 		// 如果传值更新状态有值，则更新状态
-		if param.Status != 0 {
+		if param.Status != 0 && param.Status != kr.ProgressStatus {
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", "修改KR状态", interfaces.OkrLogParams{
 				Title:                kr.Title,
 				ProgressStatusChange: []string{model.ProgressStatusMap[kr.ProgressStatus], model.ProgressStatusMap[param.Status]},
@@ -1422,11 +1422,13 @@ func (s *okrService) UpdateConfidence(userid int, param interfaces.OkrConfidence
 		return nil, err
 	}
 
-	if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", "修改KR信心指数", interfaces.OkrLogParams{
-		Title:            kr.Title,
-		ConfidenceChange: []int{kr.Confidence, param.Confidence},
-	}); err != nil {
-		return nil, err
+	if kr.Confidence != param.Confidence {
+		if err := s.InsertOkrLogTx(core.DB, kr.ParentId, userid, "update", "修改KR信心指数", interfaces.OkrLogParams{
+			Title:            kr.Title,
+			ConfidenceChange: []int{kr.Confidence, param.Confidence},
+		}); err != nil {
+			return nil, err
+		}
 	}
 
 	kr.Confidence = param.Confidence
