@@ -763,7 +763,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
 
-		departments, err := s.GetDepartmentsBySearchDeptId(user.Userid, user.Department)
+		departments, err := s.GetDepartmentsBySearchDeptId(user.Department)
 		if err != nil {
 			return nil, err
 		}
@@ -833,7 +833,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
 
-		departments, err := s.GetDepartmentsBySearchDeptId(user.Userid, user.Department)
+		departments, err := s.GetDepartmentsBySearchDeptId(user.Department)
 		if err != nil {
 			return nil, err
 		}
@@ -856,7 +856,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
 	if departmentId != 0 {
-		admDepartments, err := s.GetDepartmentsBySearchDeptId(user.Userid, []int{departmentId})
+		admDepartments, err := s.GetDepartmentsBySearchDeptId([]int{departmentId})
 		if err != nil {
 			return nil, err
 		}
@@ -1308,7 +1308,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	}
 
 	// 检查用户是否为部门负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(user.Userid, depIds)
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 
 	// 获取部门小组负责人
 	var deptAllOwnerIds []int
@@ -1358,17 +1358,10 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 	}
 
 	// 检查用户是否为部门负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(userid, depIds)
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	// 获取部门小组负责人
 	var deptAllOwnerIds []int
 	core.DB.Model(&model.UserDepartment{}).Where("id IN (?)", deptAllIds).Where("parent_id > 0").Pluck("owner_userid", &deptAllOwnerIds)
-
-	// if err := core.DB.Model(&model.UserDepartment{}).
-	// 	Where("id IN (?)", deptAllIds).
-	// 	Where("parent_id > 0").
-	// 	Pluck("owner_userid", &userids).Error; err != nil {
-	// 	return nil
-	// }
 
 	db := core.DB.Model(&model.UserDepartment{}).
 		Where("id IN (?)", deptAllIds)
@@ -1670,7 +1663,7 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 }
 
 // 通过顶级部门查询所有子部门
-func (s *okrService) GetDepartmentsBySearchDeptId(userid int, ids []int) ([]int, error) {
+func (s *okrService) GetDepartmentsBySearchDeptId(ids []int) ([]int, error) {
 	var departments []int
 
 	depts, err := s.GetUniqueTopLevelDepartments(ids)
