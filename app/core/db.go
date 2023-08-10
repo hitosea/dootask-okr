@@ -40,7 +40,7 @@ func InDB(str string) (*gorm.DB, error) {
 	}
 
 	// 如果开关打开，则添加日志记录器
-	if os.Getenv("EnableSqlLog") == "true" {
+	if os.Getenv("MYSQL_EnableSqlLog") == "true" {
 		dbConfig.Logger = logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 			logger.Config{
