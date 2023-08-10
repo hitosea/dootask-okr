@@ -1,5 +1,5 @@
 <template >
-    <div class="bg-[#FAFAFA] min-h-full flex">
+    <div class="bg-[#FAFAFA] min-h-full flex relative" :style="{'z-index':modalTransferIndex}">
         <div class="nav-top  h-[44px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
@@ -11,7 +11,6 @@
                     <p class="py-8" @click="handleEdit"> {{ $t('编辑') }}</p>
                     <p class="py-8" @click="handleFollowOkr"> {{ is_follow ?   $t('取消收藏') : $t('添加收藏')}}</p>
                     <p class="py-8" @click="handleCancel"> {{ cancel == 0 ? $t('取消目标') : $t('重启目标') }}</p>
-
                 </div>
             </n-popover>
         </div>
@@ -33,8 +32,7 @@ const id = ref(null)
 const OkrDetailsMainRef = ref(null)
 const is_follow = ref(false)
 const cancel = ref(0)
-
-
+const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 
 if (route.query.data != undefined) {
     id.value = Number(route.query.data)

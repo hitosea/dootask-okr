@@ -21,7 +21,7 @@ const globalStore = GlobalStore()
 // 监听打开
 watch(() => globalStore.okrDetail, (newValue) => {
     if (newValue.show) {
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 910) {
             router.push({
                 path: '/okrDetails',
                 query: { data: globalStore.okrDetail.id },
