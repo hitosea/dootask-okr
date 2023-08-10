@@ -58,11 +58,11 @@
 
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
-                    <div class=" cursor-pointer" @click.stop="handleTarget(1, item.id)">{{ $t('对齐目标') }}({{ item.align_count
+                    <div class=" cursor-pointer" @click.stop="handleTarget(1, item.id, item.userid,item.align_objective)">{{ $t('对齐目标') }}({{ item.align_count
                     }}）</div>
                 </div>
                 <div class="align-target" v-else>
-                    <div class=" cursor-pointer" @click.stop="handleTarget(2, item.id)">
+                    <div class=" cursor-pointer" @click.stop="handleTarget(2, item.id, item.userid,item.align_objective)">
                         {{ $t('向上对齐') }}
                     </div>
                 </div>
@@ -70,11 +70,11 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :id="eidtId" @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :id="eidtId" :userid="userId" @close="() => { alignTargetShow = false }"
+        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(id,userid,align_objective)=>{handleTarget(2, id,userid,align_objective)}"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
-    <SelectAlignment :value="selectAlignmentShow" @close="() => { selectAlignmentShow = false }"
+    <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->
@@ -94,11 +94,13 @@ import { alignUpdate, okrFollow } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
 import { useRouter } from 'vue-router'
+import { UserStore } from '@/store/user'
 
+const userInfo = UserStore().info
 const router = useRouter()
-
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
+const alignObjective = ref([])
 const okrDetailsShow = ref(false)
 
 const nowInterval = ref<any>(null)
@@ -106,6 +108,7 @@ const nowTime = ref(0)
 const loadIng = ref(false)
 const message = useMessage()
 const eidtId = ref(0)
+const userId = ref(0)
 
 const RefOkrDetails = ref(null)
 
@@ -118,11 +121,15 @@ const props = defineProps({
 
 const emit = defineEmits(['upData', 'edit'])
 
-const handleTarget = (e, id) => {
+//对齐
+const handleTarget = (e, id,userid,align_objective) => {
     eidtId.value = id
+    userId.value = userid
     if (e == 1) {
         alignTargetShow.value = true
     } else {
+        if(userInfo.userid != userid ) return message.error($t('仅负责人可操作'))
+        alignObjective.value = align_objective
         selectAlignmentShow.value = true
     }
 
@@ -147,7 +154,7 @@ const handleOpenDetail = (id) => {
 }
 
 
-
+//关注
 const handleFollowOkr = (id) => {
     const upData = {
         id: id,
@@ -164,6 +171,7 @@ const handleFollowOkr = (id) => {
         })
 }
 
+//提交关注
 const submitSelectAlignment = (e) => {
     const upData = {
         align_objective: e.join(','),
@@ -181,17 +189,13 @@ const submitSelectAlignment = (e) => {
         })
 }
 
-
-
-
-
 //编辑
 const handleEdit = (data) => {
     emit('edit', data)
     okrDetailsShow.value = false
 }
 
-
+//时间
 const expiresFormat = (date) => {
     const Dates = new Date(date);
     const timestamp = Dates.getTime();

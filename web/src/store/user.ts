@@ -16,6 +16,7 @@ export const UserStore = defineStore({
             updated_at: "",
             userIsAdmin: false,
             identity:[],
+            userid:0,
         },
     }),
     actions: {

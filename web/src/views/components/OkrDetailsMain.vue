@@ -163,12 +163,12 @@
 
                     <h4 class="hidden md:block text-text-li text-16 font-medium mb-12">
                         {{ $t('对齐目标') }}
-                        <i v-if="detialData.completed == '0'" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                        <i v-if="detialData.completed == '0' && userInfo.userid == detialData.userid" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
                             @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" @unalign="handleUnalign">
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :userid="detialData.userid" @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
 
@@ -335,7 +335,9 @@ import Confidences from '@/views/components/Confidences.vue';
 import MarkVue from '@/views/components/Marks.vue';
 import { GlobalStore } from '@/store';
 import { useRouter } from 'vue-router'
+import { UserStore } from '@/store/user'
 
+const userInfo = UserStore().info
 const router = useRouter()
 const globalStore = GlobalStore()
 const userSelectApps = ref([]);
@@ -409,6 +411,7 @@ const getDetail = (type) => {
 
 // 关注
 const handleFollowOkr = () => {
+    if(userInfo.userid != detialData.value.userid ) return 
     loadIng.value = true
     okrFollow({
         id: detialData.value.id,
@@ -582,6 +585,7 @@ const closeModal = () => {
 
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
+    if(userInfo.userid != detialData.value.userid ) return
     if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     degreeOfCompletionId.value = id
@@ -604,6 +608,7 @@ const handleCloseDedree = (type) => {
 
 //打开信心
 const handleConfidence = (id, confidences, score) => {
+    if(userInfo.userid != detialData.value.userid ) return
     if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     confidencesId.value = id
@@ -622,6 +627,7 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
+    if(userInfo.userid != detialData.value.userid && detialData.value.superior_user?.indexOf(userInfo.userid) ==-1 ) return
     if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
     if (progress < 100) return message.error($t('KR进度尚未达到100%'))
     markId.value = id
@@ -642,6 +648,7 @@ const handleCloseMarks = (type) => {
 
 // 取消O
 const handleCancel = () => {
+    if(userInfo.userid != detialData.value.userid ) return message.error($t('仅负责人可操作'))
     loadIng.value = true
     okrCancel({
         id: detialData.value.id,
@@ -684,6 +691,7 @@ const loadDialogWrappers = () => {
 
 //添加复盘
 const handleAddMultiple = () => {
+    if(userInfo.userid != detialData.value.userid ) return
     if (detialData.value.score < 0) return  message.error($t('KR评分未完成'))
     if (window.innerWidth < 768) {
         router.push({

@@ -1,10 +1,15 @@
 <template >
     <n-modal v-model:show="props.value" transform-origin="center" :mask-closable="false">
-        <n-card class="w-[640px]" :title="$t('对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[640px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
+            <template #header>
+               {{ $t('对齐目标')}}
+               <i v-if="userInfo.userid == props.userid" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                            @click="handleOpenSelect">&#xe779;</i>
+            </template>
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
-            <AlignTarget :value="props.value" :id="props.id" @unalign="handleUnalign"></AlignTarget>
+            <AlignTarget :value="props.value" :id="props.id" :userid="userid" @alignObjective="(e)=>{ alignObjective = e }" @unalign="handleUnalign"></AlignTarget>
         </n-card>
     </n-modal>
 </template>
@@ -12,6 +17,11 @@
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
 import AlignTarget from "@/views/components/AlignTarget.vue";
+import { UserStore } from '@/store/user'
+
+const userInfo = UserStore().info
+const AlignTargetRef = ref(null)
+const alignObjective = ref([])
 
 const props = defineProps({
     value: {
@@ -22,10 +32,21 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    userid: {
+        type: Number,
+        default: 0,
+    },
 })
 
 
-const emit = defineEmits(['close','upData'])
+const emit = defineEmits(['close','upData','openSelectAlignment'])
+
+
+const handleOpenSelect = () => {
+    emit('openSelectAlignment',props.id,props.userid,alignObjective.value)
+    emit('close')
+}
+
 const handleClose = () => {
     emit('close')
 }

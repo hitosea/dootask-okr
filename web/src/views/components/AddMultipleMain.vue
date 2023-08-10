@@ -224,7 +224,7 @@ watch(() => props.multipleId, (newValue) => {
     }
 }, { immediate: true })
 
-watch(() => loadIng, (newValue) => {
+watch(() => loadIng.value, (newValue) => {
     emit('loadIng',newValue)   
 }, { immediate: true })
 

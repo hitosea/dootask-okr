@@ -26,7 +26,7 @@
                 <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
-            <n-tooltip trigger="hover">
+            <n-tooltip trigger="hover" v-if="userInfo.userid == props.userid">
                 <template #trigger>
                     <i class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
                         &#xe680;</i>
@@ -48,13 +48,15 @@
 import { useMessage, useDialog } from "naive-ui"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import { ResultDialog } from "@/api"
+import { UserStore } from '@/store/user'
 
+const userInfo = UserStore().info
 const loadIng = ref(false)
 const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
-const emit = defineEmits(['unalign'])
+const emit = defineEmits(['unalign','alignObjective'])
 
 const props = defineProps({
     value: {
@@ -62,6 +64,10 @@ const props = defineProps({
         default: false,
     },
     id: {
+        type: Number,
+        default: 0,
+    },
+    userid: {
         type: Number,
         default: 0,
     },
@@ -76,6 +82,11 @@ const getList = () => {
     getAlignDetail(upData)
         .then(({ data }) => {
             dataList.value = data
+            let alignObjective = []
+            dataList.value.map((item)=>{
+                alignObjective.push(item.id)
+            })
+            emit('alignObjective',alignObjective)
         })
         .catch(ResultDialog)
         .finally(() => {

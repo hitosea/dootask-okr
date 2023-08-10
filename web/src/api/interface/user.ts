@@ -12,6 +12,7 @@ export namespace User {
         userIsAdmin: boolean
         identity: any
         department_owner: any
+        userid: any
     }
 
     // 登录请求
