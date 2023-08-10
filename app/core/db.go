@@ -2,11 +2,15 @@ package core
 
 import (
 	"dootask-okr/config"
+	"log"
+	"os"
 	"strings"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -34,6 +38,19 @@ func InDB(str string) (*gorm.DB, error) {
 			SingularTable: false,  // true:单数 false:复数，统一和原dootask复数表名，此时，`User` 的表名应该是 `t_users`
 		},
 	}
+
+	// 如果开关打开，则添加日志记录器
+	if os.Getenv("EnableSQLLog") == "true" {
+		dbConfig.Logger = logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+			logger.Config{
+				SlowThreshold: time.Second, // 慢 SQL 阈值
+				LogLevel:      logger.Info, // Log level
+				Colorful:      true,        // 是否启用彩色打印
+			},
+		)
+	}
+
 	// 数据库类型
 	if dbType == "mysql" {
 		return gorm.Open(mysql.Open(dbPath), dbConfig)
