@@ -5,7 +5,6 @@ import { UserStore } from "@/store/user"
 export const loadingBarApiRef = ref(null)
 
 export default function createDemoRouter(app, routes) {
-
     const router = createRouter({
         history: createWebHashHistory(),
         routes

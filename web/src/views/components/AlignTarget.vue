@@ -56,7 +56,7 @@ const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
-const emit = defineEmits(['unalign','alignObjective'])
+const emit = defineEmits(['unalign', 'alignObjective'])
 
 const props = defineProps({
     value: {
@@ -82,13 +82,17 @@ const getList = () => {
     getAlignDetail(upData)
         .then(({ data }) => {
             dataList.value = data
-            let alignObjective = []
-            dataList.value.map((item)=>{
-                alignObjective.push(item.id)
-            })
-            emit('alignObjective',alignObjective)
+            if (dataList.value) {
+                let alignObjective = []
+                dataList.value.map((item) => {
+                    alignObjective.push(item.id)
+                })
+                emit('alignObjective', alignObjective)
+            }
         })
-        .catch(ResultDialog)
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
         .finally(() => {
             loadIng.value = false
         })
@@ -112,7 +116,9 @@ const alignCancel = (itemID) => {
                     getList();
                     emit('unalign', props.id)
                 })
-                .catch(ResultDialog)
+                .catch(({ msg }) => {
+                    message.error(msg)
+                })
                 .finally(() => {
                     loadIng.value = false
                 })
