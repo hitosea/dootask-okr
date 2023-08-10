@@ -30,7 +30,11 @@ const themeOverrides = {
         Form: {
             feedbackHeightMedium: "20px",
             feedbackFontSizeMedium: "12px"
-        }
+        },
+        Dialog:{
+            padding:"24px",
+            borderRadius:"16px",
+        },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
         common: {

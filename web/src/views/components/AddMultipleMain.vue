@@ -37,7 +37,7 @@ import { useMessage } from "naive-ui"
 
 const message = useMessage()
 const loadIng = ref(false)
-const editorContent = ref(``)
+const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
 
 const props = defineProps({
     data: {
@@ -132,7 +132,7 @@ const emit = defineEmits(['close','loadIng'])
 
 const closeDrawer = () => {
     tableData.value = []
-    editorContent.value = ``
+    editorContent.value = `<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`
 }
 
 const handleSubmit = () => {
@@ -225,7 +225,7 @@ watch(() => props.multipleId, (newValue) => {
 }, { immediate: true })
 
 watch(() => loadIng.value, (newValue) => {
-    emit('loadIng',newValue)   
+    emit('loadIng',newValue)
 }, { immediate: true })
 
 defineExpose({

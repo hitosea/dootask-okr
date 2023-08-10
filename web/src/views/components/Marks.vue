@@ -11,7 +11,7 @@
                     <p v-if="superiorScore > -1" class="flex-1 mb-12 text-title-color text-14">{{ $t('上级评分分数：') }}<span
                             class=" text-primary-color">{{ superiorScore }}</span></p>
                 </div>
-                <n-form v-if="Mark <= 0 || superiorScore <= 0" ref="formRef" :rules="rules" :model="formValue" size="medium"
+                <n-form v-if="props.inputShow" ref="formRef" :rules="rules" :model="formValue" size="medium"
                     label-placement="left" label-width="auto">
                     <n-form-item path="score">
                         <n-select v-model:value="formValue.score" :placeholder="$t('请选择评分')" :options="markOptions" />
@@ -124,6 +124,10 @@ const props = defineProps({
     superior_score: {
         type: Number,
         default: 0,
+    },
+    inputShow: {
+        type: Boolean,
+        default: false,
     },
 })
 

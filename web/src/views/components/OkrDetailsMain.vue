@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-6">
-                    <i v-if="detialData.canceled == '0' && detialData.completed == '0'"
+                    <i v-if="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
                         class="taskfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
 
                     <i class="taskfont text-[#FFD023] cursor-pointer" v-if="detialData.is_follow"
@@ -271,9 +271,9 @@
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
-                                <p class="text-12 leading-3 text-text-li">{{ item.user_nickname }}<span
-                                        class="opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
-                                <h4 class="text-14 leading-[14px] text-title-color font-normal"> <span
+                                <p class="text-12 leading-3 text-primary-color">{{ item.user_nickname }}<span
+                                        class=" text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
+                                <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
                                         class=" font-normal">{{ item.content }}</span></h4>
                             </div>
                         </div>
@@ -293,7 +293,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <p v-else class="text-12 mt-20 text-text-tips text-center">{{ $t('暂无复盘') }}</p>
+                            <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无复盘') }}</p>
                         </div>
                     </n-scrollbar>
                 </div>
@@ -319,7 +319,7 @@
     </Confidences>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" @close="handleCloseMarks">
+    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow" @close="handleCloseMarks">
     </MarkVue>
 </template>
 <script setup lang="ts">
@@ -328,7 +328,7 @@ import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpd
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
-import { useMessage } from "naive-ui"
+import { useMessage ,useDialog } from "naive-ui"
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 import Confidences from '@/views/components/Confidences.vue';
@@ -348,6 +348,7 @@ const loadIngR = ref(false)
 const showPopover = ref(false)
 const detialData = ref<any>({})
 const message = useMessage()
+const dialog = useDialog()
 
 const logListPage = ref(1)
 const logListLastPage = ref(99999)
@@ -375,6 +376,7 @@ const markShow = ref(false)
 const markId = ref(0)
 const score = ref(0)
 const superiorScore = ref(0)
+const inputShow = ref(false)
 
 
 const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled'])
@@ -411,7 +413,18 @@ const getDetail = (type) => {
 
 // 关注
 const handleFollowOkr = () => {
-    if(userInfo.userid != detialData.value.userid ) return 
+    if(userInfo.userid != detialData.value.userid ){
+        dialog.error({
+          title:  $t('温馨提示'),
+          content: $t('仅限负责人操作'),
+          closable: false,
+          positiveText: $t('确定'),
+          onPositiveClick: () => {
+
+          }
+        })
+        return
+    }
     loadIng.value = true
     okrFollow({
         id: detialData.value.id,
@@ -465,55 +478,43 @@ const handleGetLogList = () => {
         }).then(({ data }) => {
             data.data.map(item => {
                 if (item.content.includes('创建OKR')) {
-                    item.content = $t('创建OKR') + item.content.replace('创建OKR', '')
+                    item.content = $t('创建OKR')
                 }
                 if (item.content.includes('修改O目标标题')) {
-                    item.content = $t('修改O目标标题') + item.content.replace('修改O目标标题', '')
+                    item.content = $t('修改O目标标题') + ": " +item.records.title_change[0]+ ' => ' + item.records.title_change[1]
                 }
                 if (item.content.includes('修改O目标周期')) {
-                    item.content = $t('修改O目标周期') + item.content.replace('修改O目标周期', '')
+                    item.content = $t('修改O目标周期') + ": " +item.records.time_change[0]+ ' => ' + item.records.time_change[1]
                 }
                 if (item.content.includes('修改O目标状态')) {
-                    const regex = /\[([^[\]]+)]/;
-                    const match = item.content.match(regex);
-                    let result = []
-                    if (match) {
-                        result = match[1].split('=>');
-                    }
-                    item.content = $t('修改O目标状态') + `[${$t(result[0])} => ${$t(result[1])}]`
+                    item.content = $t('修改O目标状态') + ": " + $t(item.records.status_change[0])+ ' => ' +  $t(item.records.status_change[1])
                 }
                 if (item.content.includes('修改对齐目标')) {
-                    item.content = $t('修改对齐目标') + item.content.replace('修改对齐目标', '')
+                    item.content = $t('修改对齐目标')
                 }
                 if (item.content.includes('修改KR标题')) {
-                    item.content = $t('修改KR标题') + item.content.replace('修改KR标题', '')
+                    item.content = $t('修改KR标题') + ": " +item.records.title_change[0]+ ' => ' + item.records.title_change[1]
                 }
                 if (item.content.includes('修改KR周期')) {
-                    item.content = $t('修改KR周期') + item.content.replace('修改KR周期', '')
+                    item.content = $t('修改KR周期') + ": " +item.records.time_change[0]+ ' => ' + item.records.time_change[1]
                 }
                 if (item.content.includes('修改KR参与人')) {
-                    item.content = $t('修改KR参与人') + item.content.replace('修改KR参与人', '')
+                    item.content = $t('修改KR参与人')
                 }
                 if (item.content.includes('修改KR进度')) {
-                    item.content = $t('修改KR进度') + item.content.replace('修改KR进度', '')
+                    item.content = $t('修改KR进度') + ": "+ item.records.title + ' [ '+item.records.progress_change[0]+ '%' + ' => ' + item.records.progress_change[1]+ '%' +' ]'
                 }
                 if (item.content.includes('修改KR状态')) {
-                    const regex = /\[([^[\]]+)]/;
-                    const match = item.content.match(regex);
-                    let result = []
-                    if (match) {
-                        result = match[1].split('=>');
-                    }
-                    item.content = $t('修改KR状态') + item.content.replace('修改KR状态', '').replace(match[0], '') + `[${$t(result[0])} => ${$t(result[1])}]`
+                    item.content = $t('修改KR状态') + ": "+ item.records.title + ' [ '+ $t(item.records.progress_status_change[0]) + ' => ' + $t(item.records.progress_status_change[1]) +' ]'
                 }
                 if (item.content.includes('修改KR信心指数')) {
-                    item.content = $t('修改KR信心指数') + item.content.replace('修改KR信心指数', '')
+                    item.content = $t('修改KR信心指数') + ": "+ item.records.title + ' [ '+item.records.confidence_change[0] + ' => ' + item.records.confidence_change[1] +' ]'
                 }
                 if (item.content.includes('责任人打分')) {
-                    item.content = $t('责任人打分') + item.content.replace('责任人打分', '')
+                    item.content = $t('责任人打分') + ": "+ item.records.title
                 }
                 if (item.content.includes('上级打分')) {
-                    item.content = $t('上级打分') + item.content.replace('上级打分', '')
+                    item.content = $t('上级打分') + ": "+ item.records.title
                 }
                 logList.value.push(item)
             })
@@ -585,7 +586,18 @@ const closeModal = () => {
 
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
-    if(userInfo.userid != detialData.value.userid ) return
+    if(userInfo.userid != detialData.value.userid ){
+        dialog.error({
+          title:  $t('温馨提示'),
+          content: $t('仅限负责人操作'),
+          closable: false,
+          positiveText: $t('确定'),
+          onPositiveClick: () => {
+
+          }
+        })
+        return
+    }
     if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     degreeOfCompletionId.value = id
@@ -608,7 +620,18 @@ const handleCloseDedree = (type) => {
 
 //打开信心
 const handleConfidence = (id, confidences, score) => {
-    if(userInfo.userid != detialData.value.userid ) return
+    if(userInfo.userid != detialData.value.userid ){
+        dialog.error({
+          title:  $t('温馨提示'),
+          content: $t('仅限负责人操作'),
+          closable: false,
+          positiveText: $t('确定'),
+          onPositiveClick: () => {
+
+          }
+        })
+        return
+    }
     if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     confidencesId.value = id
@@ -633,6 +656,15 @@ const handleMark = (id, scores, superior_score, progress) => {
     markId.value = id
     score.value = scores
     superiorScore.value = superior_score
+    if(userInfo.userid == detialData.value.userid && scores < 0){
+        inputShow.value = true
+    }
+    if(detialData.value.superior_user?.indexOf(userInfo.userid) !=-1 && superior_score < 0){
+        inputShow.value = true
+    }
+    if(scores > -1 && superior_score > -1){
+        inputShow.value = false
+    }
     markShow.value = true
 }
 //关闭评分
@@ -648,7 +680,18 @@ const handleCloseMarks = (type) => {
 
 // 取消O
 const handleCancel = () => {
-    if(userInfo.userid != detialData.value.userid ) return message.error($t('仅负责人可操作'))
+    if(userInfo.userid != detialData.value.userid ){
+        dialog.error({
+          title:  $t('温馨提示'),
+          content: $t('仅限负责人操作'),
+          positiveText: $t('确定'),
+          closable: false,
+          onPositiveClick: () => {
+            showPopover.value = false
+          }
+        })
+        return
+    }
     loadIng.value = true
     okrCancel({
         id: detialData.value.id,
@@ -691,7 +734,18 @@ const loadDialogWrappers = () => {
 
 //添加复盘
 const handleAddMultiple = () => {
-    if(userInfo.userid != detialData.value.userid ) return
+    if(userInfo.userid != detialData.value.userid ){
+        dialog.error({
+          title:  $t('温馨提示'),
+          content: $t('仅限负责人操作'),
+          closable: false,
+          positiveText: $t('确定'),
+          onPositiveClick: () => {
+
+          }
+        })
+        return
+    }
     if (detialData.value.score < 0) return  message.error($t('KR评分未完成'))
     if (window.innerWidth < 768) {
         router.push({
@@ -735,6 +789,7 @@ const loadUserSelects = () => {
     nextTick(() => {
         if (!window.Vues) return false;
         document.querySelectorAll('UserSelects').forEach(e => {
+            let index = e.getAttribute('formkey')
             let item = detialData.value.key_results[e.getAttribute('formkey')];
             let app = new window.Vues.Vue({
                 el: e,
@@ -748,7 +803,7 @@ const loadUserSelects = () => {
                             border: false,
                             avatarSize: 20,
                             addIcon: false,
-                            disable: false
+                            disable: userInfo.userid != detialData.value.userid ||detialData.value.key_results[index].score > -1 || detialData.value.key_results[index].superior_score > -1
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
@@ -782,7 +837,7 @@ const participantChange = (item, index) => {
     loadIng.value = true
     participantUpdate(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('修改成功'))
             getDetail('')
         })
         .catch(({ msg }) => {
@@ -900,4 +955,8 @@ defineExpose({
     @apply w-full bg-primary-color absolute left-0 right-0 -bottom-14;
     height: 2px;
     content: ' ';
-}</style>
+}
+:deep(.n-button--error-type){
+    @apply bg-primary-color;
+}
+</style>

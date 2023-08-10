@@ -1,8 +1,12 @@
 <template>
     <div class="page-analysis">
         <div class="h-full flex flex-col">
-            <h2 class="page-title">{{ $t('OKR结果分析') }}</h2>
-            <div class="flex overflow-hidden">
+            <h2 class="page-title hidden md:block">{{ $t('OKR结果分析') }}</h2>
+            <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
+        <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
+        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR结果分析') }}</h2>
+    </div>
+            <div class="flex overflow-hidden mt-[28px] md:mt-0">
                 <n-scrollbar>
                     <n-grid x-gap="24" cols="1 600:2 800:3">
 
@@ -72,7 +76,7 @@
                                                 <span class="font-semibold">{{ analyzeDatas.score.seven_to_ten }}</span>
                                             </span>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                                 <n-divider class="py-20" />
@@ -102,7 +106,7 @@
                                     <div class="text-16 flex">{{ $t('OKR评分率') }}
                                         <n-tooltip trigger="hover">
                                             <template #trigger>
-                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
+                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
                                             </template>
                                             <p class="max-w-[300px]">{{$t('已完成评分的OKR新占比例， OKR里负责人与上级都完成评分， 能计为完成评分的OKR')}}</p>
                                         </n-tooltip>
@@ -125,10 +129,10 @@
                                 </div>
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
-                                    <div class="text-16 flex">{{ $t('OKR部门评分占比') }} 
+                                    <div class="text-16 flex">{{ $t('OKR部门评分占比') }}
                                         <n-tooltip trigger="hover">
                                             <template #trigger>
-                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
+                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
                                             </template>
                                             {{$t('各个部门完成OKR评分的所占比例')}}
                                         </n-tooltip>
@@ -281,6 +285,11 @@ const loadScoreRate = () => {
     });
 }
 
+//返回
+const handleReturn = () => {
+    router.back()
+}
+
 // 获取数据
 const getData = () => {
     // OKR整体平均完成度
@@ -291,7 +300,7 @@ const getData = () => {
     http.getAnalyzeDeptComplete().then(({ data }) => {
         analyzeDatas.value.deptCompletes = data
     })
-    // OKR评分分布  
+    // OKR评分分布
     http.getAnalyzeScore().then(({ data }) => {
         analyzeDatas.value.score = data
         loadScoreDistribute()
@@ -387,6 +396,13 @@ nextTick(() => {
 .okr-theme-dark{
     .progres{
         @apply text-[#505050] !important;
+    }
+}
+.nav-top {
+    @apply flex md:hidden items-center justify-between fixed top-0 left-0 right-0 px-16;
+
+    .icon-return {
+        @apply text-20 text-text-tips;
     }
 }
 </style>
