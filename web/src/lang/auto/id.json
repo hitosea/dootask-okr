@@ -282,5 +282,17 @@
     "筛选": "Saring",
     "取消收藏": "batalkan favorit",
     "添加收藏": "Tambahkan ke Favorit",
-    "加载中...": "Memuat..."
+    "加载中...": "Memuat...",
+    "OKR评分率": "tingkat skor OKR",
+    "已完成评分的OKR新占比例， OKR里负责人与上级都完成评分， 能计为完成评分的OKR": "Proporsi baru OKR yang telah dinilai, penanggung jawab dan atasan di OKR telah menyelesaikan penilaian, dapat dihitung sebagai OKR yang telah menyelesaikan penilaian",
+    "各个部门完成OKR评分的所占比例": "Proporsi skor OKR yang diselesaikan oleh masing-masing departemen",
+    "示例": "contoh",
+    "将客户续约率从70%提高到90%": "Tingkatkan tingkat pembaruan pelanggan dari 70% menjadi 90%",
+    "至少包含1个关键KR": "Berisi setidaknya 1 kunci KR",
+    "不建议超过5个关键KR": "Direkomendasikan tidak lebih dari 5 kunci KR",
+    "关键成功定量可衡量": "Kunci Sukses Secara Kuantitatif Terukur",
+    "O目标已取消无法操作": "O target telah dibatalkan dan tidak dapat dioperasikan",
+    "KR已评分无法操作": "KR telah dinilai dan tidak dapat dioperasikan",
+    "仅负责人可操作": "Hanya orang yang bertanggung jawab yang dapat beroperasi",
+    "KR评分未完成": "Penilaian KR Belum Selesai"
 }

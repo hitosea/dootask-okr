@@ -6,7 +6,6 @@
             @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @upData="(id)=>{ emit('upData',id) }"
             ></OkrDetailsMain>
         </n-card>
-
     </n-modal>
 </template>
 <script setup lang="ts">

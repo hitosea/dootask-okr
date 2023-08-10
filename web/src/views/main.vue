@@ -21,20 +21,18 @@ const globalStore = GlobalStore()
 // 监听打开
 watch(() => globalStore.okrDetail, (newValue) => {
     if (newValue.show) {
-        console.log(123123);
-        
-        // if (window.innerWidth < 768) {
+        if (window.innerWidth < 768) {
             router.push({
                 path: '/okrDetails',
                 query: { data: globalStore.okrDetail.id },
             })
-        // }
-        // else {
-            // okrDetailsShow.value = false
-            // nextTick(() => {
-            //     okrDetailsShow.value = true;
-            // })
-        // }
+        }
+        else {
+            okrDetailsShow.value = false
+            nextTick(() => {
+                okrDetailsShow.value = true;
+            })
+        }
     }
 }, { immediate: true })
 

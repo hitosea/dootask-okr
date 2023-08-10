@@ -15,6 +15,7 @@ type okrAnalyzeService struct{}
 
 /**
 * 获取OKR整体平均完成度
+* 公式：【所有O的完成度之和/O的数量】
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetOverallCompleteness(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzeOverall, error) {
@@ -31,6 +32,7 @@ func (s *okrAnalyzeService) GetOverallCompleteness(user *interfaces.UserInfoResp
 
 /**
 * 获取OKR各部门平均完成度
+* 公式：各部门所有已完成的O/O的数量（按完成度高到低显示，显示不完可使用滚动条滚动显示）【各部门所有O的完成度之和/各部门O的数量】
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (*[]interfaces.OkrAnalyzeDept, error) {
@@ -85,6 +87,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 
 /**
 * 获取OKR评分分布
+* 公式：显示O的评分分布
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzeScore, error) {
@@ -110,6 +113,7 @@ func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp) (*interfaces
 
 /**
 * 获取OKR各部门评分分布
+* 公式：显示各部门O的评分分布（O中某个KR完成评分也计入分数）
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]interfaces.OkrAnalyzeScoreDept, error) {
@@ -171,62 +175,32 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 }
 
 /**
-* 获取OKR人员评分率
+* 获取OKR员评分率
+* 公式：已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR【所有已完成评分的O/O的数量】
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp) (*interfaces.OkrAnalyzePersonnelScoreRate, error) {
 	var data interfaces.OkrAnalyzePersonnelScoreRate
-
-	// 总人员数量
-	if err := core.DB.Model(model.Okr{}).Select("Count(DISTINCT(userid)) as total").Find(&data.Total).Error; err != nil {
+	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0")
+	// 总okr数量
+	if err := db.Session(&core.Session).Select("Count(*) as total").Find(&data.Total).Error; err != nil {
 		return nil, err
 	}
-
 	// 检查部门表是否存在
 	if !strings.Contains(config.CONF.System.Dsn, "sqlite") {
-		// 已完成的人员数量： 个人必须全部KR都完成评分，才计为已完成评分人员（部门负责人已为自己的目标评分，而未为下级评分时，部门负责人的评分工作属于未完成)
-		okrTable := core.DBTableName(&model.Okr{})
-		userTable := core.DBTableName(&model.User{})
-		departmentTable := core.DBTableName(&model.UserDepartment{})
-		db := core.DB.Table(okrTable+" AS a").Joins(fmt.Sprintf(`
-			LEFT JOIN (
-				select 
-					okr.userid,
-					COUNT(*) as total, 
-					SUM(CASE WHEN okr.score > -1 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed
-				from %s okr
-				LEFT JOIN %s users on okr.userid = users.userid
-				LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid = okr.userid
-				LEFT JOIN (
-					SELECT dept.id, 
-						COUNT(*) as total, 
-						SUM(CASE WHEN okr.superior_score > -1 THEN 1 ELSE 0 END) as completed 
-					FROM %s okr
-					LEFT JOIN %s users on okr.userid = users.userid
-					LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
-					WHERE okr.parent_id = 0 and okr.canceled = 0
-					GROUP BY dept.id
-				) uu on dept.id = uu.id
-				WHERE okr.parent_id = 0 and okr.canceled = 0
-				GROUP BY okr.userid
-			) b on a.userid = b.userid 
-		`, okrTable, userTable, departmentTable, okrTable, userTable, departmentTable)).
-			Where("a.parent_id", 0).
-			Where("b.total = b.completed").
-			Select("Count(DISTINCT(a.userid)) as completed")
-		if err := db.Find(&data.Completed).Error; err != nil {
+		if err := db.Session(&core.Session).Select("Count(*) as completed").Where("score > -1").Find(&data.Completed).Error; err != nil {
 			return nil, err
 		}
 	} else {
 		data.Total = 0
 		data.Completed = 0
 	}
-
 	return &data, nil
 }
 
 /**
 * 获取OKR部门评分占比
+* 公式：各个部门完成OKR评分的所占比例【各部门所有已完成评分的O/各部门内O的数量】
 * @param user 用户
  */
 func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp) (*[]interfaces.OkrAnalyzeDeptScoreProportion, error) {
@@ -240,40 +214,21 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 			LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
 			LEFT JOIN (
-				select 
-					users.department, 
-					COUNT(*) as user_total,
-					SUM(CASE WHEN o.okr_total = o.completed THEN 1 ELSE 0 END) as completed 
-				FROM %s users
-				LEFT JOIN (
-					SELECT 
-						okr.userid,
-						count(*) as okr_total,
-						SUM(CASE WHEN okr.score > -1 and (dept.owner_userid is null OR uu.total = uu.completed ) THEN 1 ELSE 0 END) as completed 
-					FROM %s okr
-					LEFT JOIN %s users on okr.userid = users.userid
-					LEFT JOIN %s dept on find_in_set(dept.id, users.department) and dept.owner_userid = okr.userid
-					LEFT JOIN (
-						SELECT dept.id, 
-							COUNT(*) as total, 
-							SUM(CASE WHEN okr.superior_score > -1 THEN 1 ELSE 0 END) as completed 
-						FROM %s okr
-						LEFT JOIN %s users on okr.userid = users.userid
-						LEFT JOIN %s dept on find_in_set(dept.id, users.department) 
-						WHERE okr.parent_id = 0 and okr.canceled = 0
-						GROUP BY dept.id
-					) uu on dept.id = uu.id
-					WHERE okr.parent_id = 0 and okr.canceled = 0
-					GROUP BY okr.userid
-				) o on users.userid = o.userid
+				SELECT 
+					users.department,
+					count(*) as okr_total,
+					SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
+				FROM %s okr
+				LEFT JOIN %s users on okr.userid = users.userid
+				WHERE okr.parent_id = 0 and okr.canceled = 0
 				GROUP BY users.department
 			) c on find_in_set(dept.id, c.department) or find_in_set(dept_two.id, c.department) 
-			`, departmentTable, userTable, okrTable, userTable, departmentTable, okrTable, userTable, departmentTable)).
+			`, departmentTable, okrTable, userTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
-				SUM(ifnull(c.user_total,0)) total,
-				SUM(ifnull(c.user_total,0) - ifnull(c.completed,0)) unscored,
+				SUM(ifnull(c.okr_total,0)) total,
+				SUM(ifnull(c.okr_total,0) - ifnull(c.completed,0)) unscored,
 				SUM(ifnull(c.completed,0)) already_reviewed
 			`).
 			Where("dept.parent_id = 0").

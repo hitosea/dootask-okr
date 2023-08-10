@@ -282,5 +282,17 @@
     "筛选": "filter",
     "取消收藏": "cancel favorite",
     "添加收藏": "Add to Favorites",
-    "加载中...": "Loading..."
+    "加载中...": "Loading...",
+    "OKR评分率": "OKR score rate",
+    "已完成评分的OKR新占比例， OKR里负责人与上级都完成评分， 能计为完成评分的OKR": "The new proportion of OKRs that have been graded, the person in charge and the superior in the OKR have completed the grades, can be counted as OKRs that have completed the grades",
+    "各个部门完成OKR评分的所占比例": "The proportion of OKR scores completed by each department",
+    "示例": "example",
+    "将客户续约率从70%提高到90%": "Increase customer renewal rate from 70% to 90%",
+    "至少包含1个关键KR": "Contains at least 1 key KR",
+    "不建议超过5个关键KR": "No more than 5 key KRs are recommended",
+    "关键成功定量可衡量": "Key Success Quantitatively Measurable",
+    "O目标已取消无法操作": "O target has been canceled and cannot be operated",
+    "KR已评分无法操作": "KR has been scored and cannot be operated",
+    "仅负责人可操作": "Only the person in charge can operate",
+    "KR评分未完成": "KR Scoring Not Completed"
 }

@@ -282,5 +282,17 @@
     "筛选": "filtre",
     "取消收藏": "annuler le favori",
     "添加收藏": "Ajouter aux Favoris",
-    "加载中...": "Chargement..."
+    "加载中...": "Chargement...",
+    "OKR评分率": "Taux de score OKR",
+    "已完成评分的OKR新占比例， OKR里负责人与上级都完成评分， 能计为完成评分的OKR": "La nouvelle proportion d'OKR qui ont été notés, la personne responsable et le supérieur dans l'OKR ont terminé les notes, peuvent être comptés comme des OKR qui ont terminé les notes",
+    "各个部门完成OKR评分的所占比例": "La proportion de scores OKR complétés par chaque département",
+    "示例": "exemple",
+    "将客户续约率从70%提高到90%": "Augmenter le taux de renouvellement des clients de 70 % à 90 %",
+    "至少包含1个关键KR": "Contient au moins 1 clé KR",
+    "不建议超过5个关键KR": "Pas plus de 5 KR clés sont recommandés",
+    "关键成功定量可衡量": "Succès clé quantitativement mesurable",
+    "O目标已取消无法操作": "La cible O a été annulée et ne peut pas être utilisée",
+    "KR已评分无法操作": "KR a été marqué et ne peut pas être opéré",
+    "仅负责人可操作": "Seul le responsable peut opérer",
+    "KR评分未完成": "Notation KR non terminée"
 }

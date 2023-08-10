@@ -95,16 +95,16 @@
                             </div>
                         </n-gi>
 
-                        <!-- OKR人员评分率 -->
+                        <!-- OKR评分率 -->
                         <n-gi class="bg-white mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
-                                    <div class="text-16 flex">{{ $t('OKR人员评分率') }}
+                                    <div class="text-16 flex">{{ $t('OKR评分率') }}
                                         <n-tooltip trigger="hover">
                                             <template #trigger>
                                                 <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
                                             </template>
-                                            <p class="max-w-[300px]">{{$t('完成全部OKR评分的人员所占比例，一个人如果负责多个OKR，必须全部OKR都完成评分，才计为已完成评分人员')}}</p>
+                                            <p class="max-w-[300px]">{{$t('已完成评分的OKR新占比例， OKR里负责人与上级都完成评分， 能计为完成评分的OKR')}}</p>
                                         </n-tooltip>
                                     </div>
                                     <div class="pie">
@@ -130,7 +130,7 @@
                                             <template #trigger>
                                                 <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" /> 
                                             </template>
-                                            {{$t('各个部门下完成OKR评分的人员所占比例')}}
+                                            {{$t('各个部门完成OKR评分的所占比例')}}
                                         </n-tooltip>
                                     </div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
@@ -139,9 +139,9 @@
                                         <div class="custom-progres">
                                             <div class="progres">
                                                 <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}{{$t('人')}}</p>
-                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('人')}}</p>
+                                                <p v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}{{$t('个')}}</p>
                                             </div>
-                                            <div class="collect">{{ item.total }}{{$t('人')}}</div>
+                                            <div class="collect">{{ item.total }}{{$t('个')}}</div>
                                         </div>
                                     </div>
                                 </div>
