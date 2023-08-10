@@ -172,3 +172,14 @@ type OkrUserListReq struct {
 	DeptOnly bool `form:"dept_only,default=false" json:"dept_only"` // 是否只获取部门用户
 	*Pages
 }
+
+// OKR日志参数
+type OkrLogParams struct {
+	Title                string   `json:"title,omitempty"`                  // 标题
+	TitleChange          []string `json:"title_change,omitempty"`           // 标题变更
+	ProgressChange       []int    `json:"progress_change,omitempty"`        // 进度变更
+	ProgressStatusChange []string `json:"progress_status_change,omitempty"` // 进度状态变更
+	ConfidenceChange     []int    `json:"confidence_change,omitempty"`      // 信心指数变更
+	TimeChange           []string `json:"time_change,omitempty"`            // 时间变更
+	StatusChange         []string `json:"status_change,omitempty"`          // 状态变更
+}

@@ -38,17 +38,25 @@ func ArrayIntersectionProcessing(nums []int, itemIds []int) []int {
 
 // 差集处理
 func ArrayDifferenceProcessing(a, b []int) []int {
-	m := make(map[int]bool)
-	for _, item := range b {
-		m[item] = true
+	diffSet := make(map[int]bool)
+	// 将b切片中的元素添加到diffSet中
+	for _, num := range b {
+		diffSet[num] = true
 	}
-	var diff []int
-	for _, item := range a {
-		if _, ok := m[item]; !ok {
-			diff = append(diff, item)
+	// 遍历a切片中的元素，进行差集运算
+	for _, num := range a {
+		if _, ok := diffSet[num]; ok {
+			delete(diffSet, num)
+		} else {
+			diffSet[num] = true
 		}
 	}
-	return diff
+	// 将diffSet中的元素转换为切片
+	diffSlice := make([]int, 0, len(diffSet))
+	for num := range diffSet {
+		diffSlice = append(diffSlice, num)
+	}
+	return diffSlice
 }
 
 // str 数组去重

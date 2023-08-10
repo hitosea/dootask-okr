@@ -76,3 +76,11 @@ var AddTableOkrScore = &gormigrate.Migration{
 		return nil
 	},
 }
+
+// 更改日志表 新增record字段 AddTableOkrLogRecord
+var AddTableOkrLogRecord = &gormigrate.Migration{
+	ID: "2023071008-add-table-okr-log-record",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.Migrator().AddColumn(&model.OkrLog{}, "record")
+	},
+}
