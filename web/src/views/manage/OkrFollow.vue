@@ -102,9 +102,11 @@ const upData = (id, type) => {
 const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
         // 重新请求数据
-        if (!onscrolloading.value) {
-            page.value++
-            getList('onscrollsearch')
+        if (!onscrolloading.value && !loadIng.value) {
+            if(last_page.value > page.value){
+                page.value++
+                getList('onscrollsearch')
+            }
         }
     }
 }

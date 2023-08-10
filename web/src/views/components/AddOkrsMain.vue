@@ -78,7 +78,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="text-14 text-text-li font-medium flex items-center">
                         {{ $t('关键KR') }}
-                        <n-popover trigger="click" placement="right-start" :width="220">
+                        <n-popover trigger="hover" placement="right-start" :width="220">
                             <template #trigger>
                                 <n-icon class=" cursor-pointer text-text-tips ml-8" size="18"
                                     :component="AlertCircleOutline" />
@@ -119,7 +119,7 @@
                                     <n-input v-model:value="item.title" :maxlength="255" :placeholder="$t('请输入')" />
                                 </n-form-item-gi>
 
-                                <n-form-item-gi :span="4" :label="$t('周期')" path="time">
+                                <n-form-item-gi :span="4" :label="$t('时间')" path="time">
                                     <n-date-picker class="w-full" v-model:value="item.time" type="daterange" clearable
                                         size="medium" />
                                 </n-form-item-gi>
@@ -297,7 +297,7 @@ const timeRule = <any>{
         type: 'array',
         required: true,
         trigger: 'change',
-        message: $t('请选择周期')
+        message: $t('请选择时间')
     }
 }
 

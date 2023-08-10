@@ -586,7 +586,7 @@ const closeModal = () => {
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
     if(userInfo.userid != detialData.value.userid ) return
-    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     degreeOfCompletionId.value = id
     degreeOfCompletionProgress.value = progress
@@ -609,7 +609,7 @@ const handleCloseDedree = (type) => {
 //打开信心
 const handleConfidence = (id, confidences, score) => {
     if(userInfo.userid != detialData.value.userid ) return
-    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     confidencesId.value = id
     confidence.value = confidences
@@ -628,7 +628,7 @@ const handleCloseConfidenes = (type) => {
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
     if(userInfo.userid != detialData.value.userid && detialData.value.superior_user?.indexOf(userInfo.userid) ==-1 ) return
-    if (detialData.value.canceled == '1') return message.error($t('取消目标后不允许更改'))
+    if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (progress < 100) return message.error($t('KR进度尚未达到100%'))
     markId.value = id
     score.value = scores
@@ -654,12 +654,12 @@ const handleCancel = () => {
         id: detialData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
-        showPopover.value = false
         emit('upData', detialData.value.id)
         getDetail('')
     })
         .catch(ResultDialog)
         .finally(() => {
+            showPopover.value = false
             loadIng.value = false
         })
 }

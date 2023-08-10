@@ -188,12 +188,6 @@ const loadComplete = () => {
     });
 }
 
-
-nextTick(() => {
-    loadComplete();
-    getData()
-})
-
 defineExpose({
     getData
 })

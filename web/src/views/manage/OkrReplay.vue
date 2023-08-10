@@ -2,23 +2,18 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <div :class="items.length == 0 ? 'okr-replay-okrnotdatas':''">
+            <div :class="items.length == 0 ? 'okr-replay-okrnotdatas' : ''">
                 <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject"></OkrNotDatas>
             </div>
             <div v-if="items.length != 0" class="replay">
-                <div
-                    v-for="(item, index) in items"
-                    :key="index"
-                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
-                    @click="openMultiple"
-                >
+                <div v-for="(item, index) in items" :key="index"
+                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
                     <div class="replay-item-head">
                         <div>
                             <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-[#333333]"
-                                ><b>{{ item.replayName }}</b></span>
+                            <span class="text-[14px] m-[5px] text-[#333333]"><b>{{ item.replayName }}</b></span>
                             <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
@@ -39,16 +34,10 @@
             </div>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
-            <OkrDetailsModal
-                ref="RefOkrDetails"
-                :id="detailId"
-                :show="okrDetailsShow"
-                @close="
-                    () => {
-                        okrDetailsShow = false
-                    }
-                "
-            ></OkrDetailsModal>
+            <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @close="() => {
+                    okrDetailsShow = false
+                }
+                "></OkrDetailsModal>
         </div>
     </n-scrollbar>
 </template>
@@ -110,7 +99,7 @@ const returnReplayItem = (replay) => {
 
 // 获取数据
 const getData = (type) => {
-    let serstatic =  type == 'search' ? true  : false
+    let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
         // 获取复盘列表
         const data = {
@@ -118,9 +107,9 @@ const getData = (type) => {
             page: page.value,
             page_size: 10,
         }
-        if ( serstatic ){
+        if (serstatic) {
             loadIng.value = true
-        }else if ( type == 'onscrollsearch' ){
+        } else if (type == 'onscrollsearch') {
             onscrolloading.value = true
         }
         http.getReplayList(data).then(({ data }) => {
@@ -129,7 +118,7 @@ const getData = (type) => {
             if (serstatic) {
                 data.data ? loadResplayList(data.data) : []
             } else {
-                ;(data.data || []).map((item) => {
+                ; (data.data || []).map((item) => {
                     items.value.push(returnReplayItem(item))
                 })
             }
@@ -142,8 +131,10 @@ const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
         // 重新请求数据
         if (!onscrolloading.value && !loadIng.value) {
-            page.value++
-            getData("onscrollsearch")
+            if (last_page.value > page.value) {
+                page.value++
+                getData("onscrollsearch")
+            }
         }
     }
 }
@@ -172,12 +163,13 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .okr-replay-main {
-    @apply  flex flex-col gap-6;
+    @apply flex flex-col gap-6;
 }
 
 .okr-replay-okrnotdatas {
     @apply pt-24 flex flex-col gap-6;
 }
+
 .replay {
     width: 100%;
     height: 100%;

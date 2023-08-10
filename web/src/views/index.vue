@@ -98,7 +98,8 @@ const handleAdd = () => {
 const handleClose = (e,id) => {
     //重新获取列表
     if(tabsName.value == $t('我创建的OKR') && e == 1){
-        ICreatedRef.value.getList('search')     
+        ICreatedRef.value.getList('search')   
+          
     }
     else if(tabsName.value == $t('参与的OKR') && e == 1){
         OkrParticipantRef.value.getList('search')
