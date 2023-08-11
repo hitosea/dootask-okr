@@ -41,23 +41,18 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 	// 检查部门表是否存在
 	if !strings.Contains(config.CONF.System.Dsn, "sqlite") {
 		okrTable := core.DBTableName(&model.Okr{})
-		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
-				LEFT JOIN %s dept_two on dept_two.parent_id = dept.id
 				LEFT JOIN (
-					SELECT u.department, 
+					SELECT depts.id, 
 						COUNT(*) as total, 
 						SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
 					FROM %s okr
-					LEFT JOIN %s u on okr.userid = u.userid
-					where u.userid > 0 
-						and u.department <> '' 
-						and okr.parent_id = 0 
-						and okr.canceled = 0
-					GROUP BY u.department
-				) b on find_in_set(dept.id,b.department) or find_in_set(dept_two.id, b.department) 
-			`, departmentTable, okrTable, userTable)).
+					LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
+					where okr.parent_id = 0 and okr.canceled = 0
+					GROUP BY depts.id
+				) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
+			`, okrTable, departmentTable, departmentTable)).
 			Select(`
 				dept.id as department_id, 
 				dept.name as department_name, 
@@ -122,7 +117,6 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 	// 检查部门表是否存在
 	if !strings.Contains(config.CONF.System.Dsn, "sqlite") {
 		okrTable := core.DBTableName(&model.Okr{})
-		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 				LEFT JOIN (
@@ -133,15 +127,11 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 						SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven, 
 						SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
 					FROM %s okr
-					LEFT JOIN %s u on okr.userid = u.userid
-					LEFT JOIN %s depts on find_in_set(depts.id,u.department) 
-					where u.userid > 0 
-						and u.department <> '' 
-						and okr.parent_id = 0
-						and okr.canceled = 0
+					LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
+					where okr.parent_id = 0 and okr.canceled = 0
 					GROUP BY depts.id
 				) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
-			`, okrTable, userTable, departmentTable, departmentTable)).
+			`, okrTable, departmentTable, departmentTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
@@ -209,7 +199,6 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 	// 检查部门表是否存在
 	if !strings.Contains(config.CONF.System.Dsn, "sqlite") {
 		okrTable := core.DBTableName(&model.Okr{})
-		userTable := core.DBTableName(&model.User{})
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
 				LEFT JOIN (
@@ -217,12 +206,11 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 						count(*) as okr_total,
 						SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
 					FROM %s okr
-					LEFT JOIN %s u on okr.userid = u.userid
-					LEFT JOIN %s depts on find_in_set(depts.id,u.department) 
-					where u.userid > 0 and u.department <> '' and okr.parent_id = 0 and okr.canceled = 0
+					LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
+					where okr.parent_id = 0 and okr.canceled = 0
 					GROUP BY depts.id
 				) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
-			`, okrTable, userTable, departmentTable, departmentTable)).
+			`, okrTable, departmentTable, departmentTable)).
 			Select(`
 				dept.id as department_id,
 				dept.name as department_name,
