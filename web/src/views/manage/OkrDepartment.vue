@@ -179,6 +179,7 @@ watch(() => props.searchObject, (newValue) => {
 
 const init = () => {
     const sendata = {
+        dept_only: userInfo == 'admin' ? false : true,
         page: page.value,
         page_size: 10,
     }
