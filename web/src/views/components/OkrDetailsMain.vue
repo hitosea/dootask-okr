@@ -50,7 +50,7 @@
                 <img v-if="detialData.completed == '1'" class="absolute right-24 -bottom-[50px]" src="@/assets/images/icon/complete.png" />
             </div>
 
-            <n-scrollbar class="pr-[5px] ">
+            <n-scrollbar class="left-scrollbar">
                 <n-spin class="md:mr-24" :show="false">
                     <h3 class=" text-title-color md:mt-[28px]  text-18 md:text-24 leading-6 font-normal md:min-h-[40px]">
                         {{ detialData.title }}
@@ -163,12 +163,16 @@
 
                     <h4 class="hidden md:block text-text-li text-16 font-medium mb-12">
                         {{ $t('对齐目标') }}
-                        <i v-if="detialData.completed == '0' && userInfo.userid == detialData.userid" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                        <i v-if="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid " class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
                             @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :userid="detialData.userid" @unalign="handleUnalign">
+                        <AlignTarget ref="AlignTargetRef"
+                         :value="props.show" 
+                         :id="props.id" 
+                         :userid="detialData.userid" 
+                         :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid" @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
 
@@ -321,6 +325,9 @@
     <!-- 更新评分 -->
     <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow" @close="handleCloseMarks">
     </MarkVue>
+
+    <!-- 强提示 -->
+    <TipsModal :show="showModal" :content="tipsContent" @close="()=>{ showModal = false }"></TipsModal>
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
@@ -328,11 +335,12 @@ import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpd
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
-import { useMessage ,useDialog } from "naive-ui"
+import { useMessage } from "naive-ui"
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 import Confidences from '@/views/components/Confidences.vue';
 import MarkVue from '@/views/components/Marks.vue';
+import TipsModal from '@/views/components/TipsModal.vue';
 import { GlobalStore } from '@/store';
 import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
@@ -348,7 +356,8 @@ const loadIngR = ref(false)
 const showPopover = ref(false)
 const detialData = ref<any>({})
 const message = useMessage()
-const dialog = useDialog()
+const showModal = ref(false)
+const tipsContent = ref('')
 
 const logListPage = ref(1)
 const logListLastPage = ref(99999)
@@ -414,15 +423,8 @@ const getDetail = (type) => {
 // 关注
 const handleFollowOkr = () => {
     if(userInfo.userid != detialData.value.userid ){
-        dialog.error({
-          title:  $t('温馨提示'),
-          content: $t('仅限负责人操作'),
-          closable: false,
-          positiveText: $t('确定'),
-          onPositiveClick: () => {
-
-          }
-        })
+        tipsContent.value = $t('仅限负责人操作')
+        showModal.value = true
         return
     }
     loadIng.value = true
@@ -523,7 +525,7 @@ const handleGetLogList = () => {
             logListLastPage.value = data.last_page
         })
             .catch(({ msg }) => {
-                message.error(msg)
+             
             })
             .finally(() => {
                 loadIngR.value = false
@@ -557,7 +559,7 @@ const handleGetReplayList = () => {
             replayListLastPage.value = data.last_page
         })
             .catch(({ msg }) => {
-                message.error(msg)
+              
             })
             .finally(() => {
                 loadIngR.value = false
@@ -587,15 +589,8 @@ const closeModal = () => {
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
     if(userInfo.userid != detialData.value.userid ){
-        dialog.error({
-          title:  $t('温馨提示'),
-          content: $t('仅限负责人操作'),
-          closable: false,
-          positiveText: $t('确定'),
-          onPositiveClick: () => {
-
-          }
-        })
+        tipsContent.value = $t('仅限负责人操作')
+        showModal.value = true
         return
     }
     if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
@@ -621,15 +616,8 @@ const handleCloseDedree = (type) => {
 //打开信心
 const handleConfidence = (id, confidences, score) => {
     if(userInfo.userid != detialData.value.userid ){
-        dialog.error({
-          title:  $t('温馨提示'),
-          content: $t('仅限负责人操作'),
-          closable: false,
-          positiveText: $t('确定'),
-          onPositiveClick: () => {
-
-          }
-        })
+        tipsContent.value = $t('仅限负责人操作')
+        showModal.value = true
         return
     }
     if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
@@ -681,15 +669,9 @@ const handleCloseMarks = (type) => {
 // 取消O
 const handleCancel = () => {
     if(userInfo.userid != detialData.value.userid ){
-        dialog.error({
-          title:  $t('温馨提示'),
-          content: $t('仅限负责人操作'),
-          positiveText: $t('确定'),
-          closable: false,
-          onPositiveClick: () => {
-            showPopover.value = false
-          }
-        })
+        tipsContent.value = $t('仅限负责人操作')
+        showModal.value = true
+        showPopover.value = false
         return
     }
     loadIng.value = true
@@ -735,15 +717,8 @@ const loadDialogWrappers = () => {
 //添加复盘
 const handleAddMultiple = () => {
     if(userInfo.userid != detialData.value.userid ){
-        dialog.error({
-          title:  $t('温馨提示'),
-          content: $t('仅限负责人操作'),
-          closable: false,
-          positiveText: $t('确定'),
-          onPositiveClick: () => {
-
-          }
-        })
+        tipsContent.value = $t('仅限负责人操作')
+        showModal.value = true
         return
     }
     if (detialData.value.score < 0) return  message.error($t('KR评分未完成'))
@@ -958,5 +933,10 @@ defineExpose({
 }
 :deep(.n-button--error-type){
     @apply bg-primary-color;
+}
+:deep(.left-scrollbar){
+    .n-scrollbar-rail{
+        @apply right-0;
+    }
 }
 </style>

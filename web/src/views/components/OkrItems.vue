@@ -58,11 +58,11 @@
 
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
-                    <div class=" cursor-pointer" @click.stop="handleTarget(1, item.id, item.userid,item.align_objective)">{{ $t('对齐目标') }}({{ item.align_count
+                    <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count
                     }}）</div>
                 </div>
                 <div class="align-target" v-else>
-                    <div class=" cursor-pointer" @click.stop="handleTarget(2, item.id, item.userid,item.align_objective)">
+                    <div class=" cursor-pointer" @click.stop="handleTarget(2, item)">
                         {{ $t('向上对齐') }}
                     </div>
                 </div>
@@ -70,8 +70,8 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :id="eidtId" :userid="userId" @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(id,userid,align_objective)=>{handleTarget(2, id,userid,align_objective)}"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem"  @close="() => { alignTargetShow = false }"
+        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item)=>{handleTarget(2, item)}"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
@@ -109,6 +109,7 @@ const loadIng = ref(false)
 const message = useMessage()
 const eidtId = ref(0)
 const userId = ref(0)
+const eidtItem = ref({})
 
 const RefOkrDetails = ref(null)
 
@@ -122,14 +123,15 @@ const props = defineProps({
 const emit = defineEmits(['upData', 'edit'])
 
 //对齐
-const handleTarget = (e, id,userid,align_objective) => {
-    eidtId.value = id
-    userId.value = userid
+const handleTarget = (e, item) => {
+    eidtItem.value = item
+    eidtId.value = item.id
+    userId.value = item.userid
     if (e == 1) {
         alignTargetShow.value = true
     } else {
-        if(userInfo.userid != userid ) return message.error($t('仅负责人可操作'))
-        alignObjective.value = align_objective
+        if(userInfo.userid != item.userid ) return message.error($t('仅负责人可操作'))
+        alignObjective.value = item.align_objective
         selectAlignmentShow.value = true
     }
 

@@ -446,6 +446,8 @@ const handleAddKr = () => {
 const handleRemoveKr = (index) => {
     if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
+    console.log(index,formKRValue.value);
+    
 }
 
 // 对齐目标

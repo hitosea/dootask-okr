@@ -25,7 +25,7 @@
                         <n-button :loading="loadIng" type="default" @click="handleClose">
                             {{ Mark > -1 && superiorScore > -1 ? $t('关闭') : $t('取消') }}
                         </n-button>
-                        <n-button v-if="Mark <= 0 || superiorScore <= 0" :loading="loadIng" type="primary"
+                        <n-button v-if="props.inputShow" :loading="loadIng" type="primary"
                             @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>

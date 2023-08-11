@@ -26,9 +26,9 @@
                 <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
-            <n-tooltip trigger="hover" v-if="userInfo.userid == props.userid">
+            <n-tooltip trigger="hover" v-if="cancelShow">
                 <template #trigger>
-                    <i class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
+                    <i v-if="cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>
                 {{ $t('取消对齐') }}
@@ -47,19 +47,20 @@
 <script setup lang="ts">
 import { useMessage, useDialog } from "naive-ui"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
-import { ResultDialog } from "@/api"
-import { UserStore } from '@/store/user'
 
-const userInfo = UserStore().info
 const loadIng = ref(false)
 const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
-const emit = defineEmits(['unalign', 'alignObjective'])
+const emit = defineEmits(['unalign'])
 
 const props = defineProps({
     value: {
+        type: Boolean,
+        default: false,
+    },
+    cancelShow: {
         type: Boolean,
         default: false,
     },
@@ -82,13 +83,6 @@ const getList = () => {
     getAlignDetail(upData)
         .then(({ data }) => {
             dataList.value = data
-            if (dataList.value) {
-                let alignObjective = []
-                dataList.value.map((item) => {
-                    alignObjective.push(item.id)
-                })
-                emit('alignObjective', alignObjective)
-            }
         })
         .catch(({ msg }) => {
             message.error(msg)

@@ -162,6 +162,9 @@
 <script lang="ts" setup>
 import * as echarts from 'echarts';
 import * as http from "../api/modules/analysis";
+import {  useRouter } from 'vue-router';
+
+const router = useRouter()
 
 // 总提数据
 const analyzeDatas = ref({

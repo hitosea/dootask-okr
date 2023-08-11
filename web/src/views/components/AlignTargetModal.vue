@@ -3,13 +3,18 @@
         <n-card class="w-[640px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header>
                {{ $t('对齐目标')}}
-               <i v-if="userInfo.userid == props.userid" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+               <i v-if="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid" class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
                             @click="handleOpenSelect">&#xe779;</i>
             </template>
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
-            <AlignTarget :value="props.value" :id="props.id" :userid="userid" @alignObjective="(e)=>{ alignObjective = e }" @unalign="handleUnalign"></AlignTarget>
+            <AlignTarget 
+            :value="props.value" 
+            :id="props.eidtItem.id" 
+            :userid="props.eidtItem.userid" 
+            :cancelShow="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid" 
+             @unalign="handleUnalign"></AlignTarget>
         </n-card>
     </n-modal>
 </template>
@@ -20,21 +25,15 @@ import AlignTarget from "@/views/components/AlignTarget.vue";
 import { UserStore } from '@/store/user'
 
 const userInfo = UserStore().info
-const AlignTargetRef = ref(null)
-const alignObjective = ref([])
 
 const props = defineProps({
     value: {
         type: Boolean,
         default: false,
     },
-    id: {
-        type: Number,
-        default: 0,
-    },
-    userid: {
-        type: Number,
-        default: 0,
+    eidtItem: {
+        type: undefined,
+        default: {},
     },
 })
 
@@ -43,7 +42,7 @@ const emit = defineEmits(['close','upData','openSelectAlignment'])
 
 
 const handleOpenSelect = () => {
-    emit('openSelectAlignment',props.id,props.userid,alignObjective.value)
+    emit('openSelectAlignment',props.eidtItem)
     emit('close')
 }
 

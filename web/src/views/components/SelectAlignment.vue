@@ -131,13 +131,11 @@ const handleClear = () => {
 }
 
 const handleClose = () => {
-    handleClear()
     emit('close')
 }
 
 const handleSubmit = () => {
     emit('submit', cities.value)
-    handleClear()
     emit('close')
 }
 
