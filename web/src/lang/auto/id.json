@@ -294,5 +294,10 @@
     "O目标已取消无法操作": "O target telah dibatalkan dan tidak dapat dioperasikan",
     "KR已评分无法操作": "KR telah dinilai dan tidak dapat dioperasikan",
     "仅负责人可操作": "Hanya orang yang bertanggung jawab yang dapat beroperasi",
-    "KR评分未完成": "Penilaian KR Belum Selesai"
+    "KR评分未完成": "Penilaian KR Belum Selesai",
+    "温馨提示": "Tip yang baik",
+    "仅限负责人操作": "Operasi oleh penanggung jawab saja",
+    "没有找到匹配的结果": "tidak ditemukan hasil yang cocok",
+    "添加/编辑OKR": "Tambahkan/Edit OKR",
+    "添加/编辑复盘": "Tambahkan/edit ulasan"
 }

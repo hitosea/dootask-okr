@@ -609,7 +609,9 @@ func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *
 		if err != nil {
 			return nil, err
 		}
-		obj.UserAvatar = users[0].Userimg
+		if len(users) > 0 {
+			obj.UserAvatar = users[0].Userimg
+		}
 
 		s.GetObjectiveExt(obj, krs, user)
 	}

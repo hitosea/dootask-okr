@@ -82,7 +82,7 @@ const getList = (type) => {
                     list.value.push(item)
                 })
             }
-            PersonalStatisticsRef.value.getData()
+            PersonalStatisticsRef.value?.getData()
             last_page.value = data.last_page
         })
     }
