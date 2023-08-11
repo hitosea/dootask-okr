@@ -36,10 +36,10 @@
                         {{ $t('全部') }}
                     </div>
                     <div class="flex ml-4">
-                        <div @click="handleClick2('1')" :class="types == '1' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color z-[2]':'bg-white border-[#F2F2F2]' " class="rounded-l px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                        <div @click="handleClick2(1)" :class="types == '1' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color z-[2]':'bg-white border-[#F2F2F2]' " class="rounded-l px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
                             {{ $t('承诺型') }}
                         </div>
-                        <div @click="handleClick2('2')" :class="types == '2' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color':'bg-white border-[#F2F2F2]' " class="-ml-1 rounded-r px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                        <div @click="handleClick2(2)" :class="types == '2' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color':'bg-white border-[#F2F2F2]' " class="-ml-1 rounded-r px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
                             {{ $t('挑战型') }}
                         </div>
                     </div>
@@ -262,7 +262,7 @@ const handleReset = ()=>{
     principalvalue.value = null
     types.value = null
     daterange.value = null
-    loadingstatus.value=null
+    loadingstatus.value=false
     page.value=1  
     getList('search');
 }
