@@ -131,13 +131,13 @@
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
                                 </n-form-item-gi>
-                                <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
+                                <!-- <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
                                     <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
-                                </n-form-item-gi>
+                                </n-form-item-gi> -->
 
 
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
@@ -377,7 +377,7 @@ const handleSubmit = () => {
 const loadUserSelects = () => {
     nextTick(() => {
         if (!window.Vues) return false;
-        document.querySelectorAll('UserSelects').forEach(e => {
+        document.querySelectorAll('userselects').forEach(e => {
             let item = formKRValue.value[e.getAttribute('formkey')];
             let app = new window.Vues.Vue({
                 el: e,
@@ -385,6 +385,7 @@ const loadUserSelects = () => {
                 render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
+                        formkey: e.getAttribute('formkey'),
                         props: {
                             value: item.participant || [],
                             title: $t('选择参与人'),
@@ -446,8 +447,14 @@ const handleAddKr = () => {
 const handleRemoveKr = (index) => {
     if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
-    console.log(index,formKRValue.value);
-    
+    userSelectApps.value.forEach(app => {
+        let dom = document.createElement("UserSelects")
+        dom.setAttribute('formkey',app._vnode.data.formkey)
+        app.$el.replaceWith(dom);
+        app.$destroy()
+    })
+    userSelectApps.value = [];
+    loadUserSelects()
 }
 
 // 对齐目标
@@ -457,7 +464,6 @@ const handleGoal = () => {
 
 // 关闭Drawer
 const closeDrawer = () => {
-
     handleClear()
     userSelectApps.value.forEach(app => app.$destroy())
     emit('close')
