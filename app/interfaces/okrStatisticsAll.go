@@ -9,4 +9,5 @@ type OkrOverall struct {
 	CompletionSum int   	`json:"completion_sum"` 	//个人当前所有进度度
 	ScoreSum      float32   `json:"score_sum"`      	//个人当前所有评分
 	Total         int64 	`json:"total"`          	//个人当前所有目标数量,除去已取消
+	ScoreTotal    int64 	`json:"score_total"`        //个人当前所有有评分目标数量,除去已取消
 }

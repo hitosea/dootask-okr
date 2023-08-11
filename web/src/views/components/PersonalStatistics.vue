@@ -52,7 +52,7 @@
                     <div class="h-full w-[150px]" id="okrDegreeOfCompletionAndScore"></div>
                     <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
                         {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.score_sum,
-                            analyzeDatas.okrDegreeOfCompletionAndScore.total, 1) }}</h3>
+                            analyzeDatas.okrDegreeOfCompletionAndScore.score_total, 1) }}</h3>
                 </div>
             </div>
         </div>
@@ -66,12 +66,13 @@ import * as http from '../../api/modules/icreated';
 const analyzeDatas = ref({
     okrCompletedAndUncompleted: {
         uncompleted: 0,
-        completed: 0
+        completed: 0,
     },
     okrDegreeOfCompletionAndScore: {
         completion_sum: 0,
         score_sum: 0,
-        total: 0
+        total: 0,
+        score_total: 0,
     }
 })
 
@@ -144,7 +145,7 @@ const loadComplete = () => {
         ]
     });
     // 整体评分饼图
-    const averageScore = data.score_sum / (data.total || 1)
+    const averageScore = data.score_sum / (data.score_total || 1)
     scoreEcharts.value = scoreEcharts.value || echarts.init(document.getElementById('okrDegreeOfCompletionAndScore'));
     scoreEcharts.value.setOption({
         tooltip: {
