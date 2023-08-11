@@ -636,7 +636,7 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
-    if (userInfo.userid == detialData.value.userid || detialData.value.superior_user?.indexOf(userInfo.userid) != -1) {
+    if (userInfo.userid == detialData.value.userid || (detialData.value.superior_user?.indexOf(userInfo.userid) != -1 && detialData.value.superior_user?.indexOf(userInfo.userid) != undefined) ) {
         if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
         markId.value = id
@@ -652,6 +652,8 @@ const handleMark = (id, scores, superior_score, progress) => {
             inputShow.value = false
         }
         markShow.value = true
+    }else{
+        message.error($t('仅负责人和负责人上级可以操作！'))
     }
 }
 //关闭评分
