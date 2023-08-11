@@ -163,8 +163,8 @@ type OkrListBaseReq struct {
 
 // 对齐目标更新请求
 type OkrAlignUpdateReq struct {
-	Id             int    `form:"id" binding:"required" json:"id"`                           // okr id
-	AlignObjective string `form:"align_objective" binding:"required" json:"align_objective"` // 对齐目标
+	Id             int    `form:"id" binding:"required" json:"id"`        // okr id
+	AlignObjective string `form:"align_objective" json:"align_objective"` // 对齐目标
 }
 
 // 获取用户列表请求
