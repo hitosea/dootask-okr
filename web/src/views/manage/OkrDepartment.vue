@@ -46,7 +46,7 @@
                 </div>
 
                 <n-checkbox v-model:checked="completednotrated" class="md:ml-36 rounded whitespace-nowrap mb-2 "
-                    @click="getList('search')">
+                    @click="handleClick()">
                     <span class="text-text-tips">{{ $t('已完成未评分') }}</span>
                 </n-checkbox>
                 <div @click="active = true" class="flex md:hidden text-text-tips text-14">
@@ -63,7 +63,7 @@
                         <OkrLoading v-if="loadIng"></OkrLoading>
                         <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" :list="list">
                         </OkrItems>
-                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject">
+                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
                         </OkrNotDatas>
                         <OkrLoading v-if="onscrolloading" position="onscroll"></OkrLoading>
                     </div>
@@ -135,6 +135,7 @@ const active = ref(false)
 const loadIng = ref(false)
 const isloading = ref(false)
 const onscrolloading = ref(false)
+const loadingstatus = ref(false)
 const userInfo = UserStore().info.identity[0]
 const page = ref(1)
 const last_page = ref(99999)
@@ -243,6 +244,15 @@ const getList = (type) => {
 const handleClick = () => {
     isloading.value = true
     page.value = 1
+    loadingstatus.value=true
+    getList('search');
+}
+
+//类型
+const handleClick2 = (type) => {
+    types.value = type
+    page.value=1
+    loadingstatus.value=true
     getList('search');
 }
 
@@ -252,12 +262,8 @@ const handleReset = ()=>{
     principalvalue.value = null
     types.value = null
     daterange.value = null
-    getList('');
-}
-
-//类型
-const handleClick2 = (type) => {
-    types.value = type
+    loadingstatus.value=null
+    page.value=1  
     getList('search');
 }
 
