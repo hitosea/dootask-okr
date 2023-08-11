@@ -175,6 +175,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	}
 
 	diffIds = common.ArrayDifferenceProcessing(krIds, diffIds)
+	obj.VisibleRange = param.VisibleRange // 可见范围优先赋值
 
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -244,7 +245,6 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		obj.Title = param.Title
 		obj.Type = param.Type
 		obj.Priority = param.Priority
-		obj.VisibleRange = param.VisibleRange
 		obj.ProjectId = param.ProjectId
 		obj.StartAt = startAt
 		obj.EndAt = endAt
