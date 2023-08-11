@@ -770,8 +770,9 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		okrTable       = core.DBTableName(&model.Okr{})
 	)
 
-	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Order("okr.created_at desc")
-	participantDb := core.DB.Table(okrTable + " AS okr2").Order("okr2.created_at desc")
+	// 已取消和已完成的OKR不显示 测试提出的需求
+	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Where("okr.canceled = 0 AND okr.completed = 0").Order("okr.created_at desc")
+	participantDb := core.DB.Table(okrTable + " AS okr2").Where("okr2.canceled = 0 AND okr2.completed = 0").Order("okr2.created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	if !user.IsAdmin() {
