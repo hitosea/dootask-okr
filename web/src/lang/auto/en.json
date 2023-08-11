@@ -299,5 +299,10 @@
     "仅限负责人操作": "Operations by the person in charge only",
     "没有找到匹配的结果": "no matching results found",
     "添加/编辑OKR": "Add/Edit OKRs",
-    "添加/编辑复盘": "Add/edit review"
+    "添加/编辑复盘": "Add/edit review",
+    "价值与收获": "value and gain",
+    "我们从过程中学到了什么新东西": "What new things did we learn from the process",
+    "问题与不足": "Problems and deficiencies",
+    "请描述出现的某个问题并针对该问题展开分析": "Please describe a problem that occurred and analyze it",
+    "您当前未加入任何部门，不能发起！": "You are not currently in any department, cannot start!"
 }

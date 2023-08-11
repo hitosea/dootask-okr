@@ -3,7 +3,7 @@
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-12 md:pt-0 md:px-0">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
-                <div class="flex items-center gap-4" >
+                <div class="flex items-center gap-4">
                     <n-popover v-if="detialData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual">
                         <template #trigger>
                             <div @click="showPopover = !showPopover" v-if="detialData.completed == '0'"
@@ -38,13 +38,14 @@
                         @click.stop="handleFollowOkr">&#xe683;</i>
                     <i class="taskfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
 
-                    <div v-if="detialData.score  > -1" class="flex items-center cursor-pointer">
+                    <div v-if="detialData.score > -1" class="flex items-center cursor-pointer">
                         <img class="mr-8" src="@/assets/images/icon/fen.svg" />
                         <p class=" text-title-color text-12">{{ detialData.score }}{{ $t('分') }}
                         </p>
                     </div>
                 </div>
-                <img v-if="detialData.completed == '1'" class="absolute right-24 -bottom-[50px]" src="@/assets/images/icon/complete.png" />
+                <img v-if="detialData.completed == '1'" class="absolute right-24 -bottom-[50px]"
+                    src="@/assets/images/icon/complete.png" />
             </div>
 
             <n-scrollbar class="left-scrollbar">
@@ -105,7 +106,8 @@
                     <div class="hidden md:flex flex-col mt-20 gap-6 min-h-[60px]">
                         <div class="flex flex-col" v-for="(item, index) in detialData.key_results">
                             <div class="flex items-start">
-                                <span class=" text-primary-color text-12 leading-5 mr-8 mt-2 shrink-0">KR{{ index + 1 }}</span>
+                                <span class=" text-primary-color text-12 leading-5 mr-8 mt-2 shrink-0">KR{{ index + 1
+                                }}</span>
                                 <h4 class=" text-title-color text-14 font-normal">{{ item.title }}</h4>
                             </div>
                             <div class="flex items-center justify-between mt-8">
@@ -160,16 +162,15 @@
 
                     <h4 class="hidden md:block text-text-li text-16 font-medium mb-12">
                         {{ $t('对齐目标') }}
-                        <i v-if="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid " class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                        <i v-if="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
+                            class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
                             @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef"
-                         :value="props.show"
-                         :id="props.id"
-                         :userid="detialData.userid"
-                         :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid" @unalign="handleUnalign">
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :userid="detialData.userid"
+                            :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
+                            @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
 
@@ -266,7 +267,7 @@
                     <div class="text-center flex-1" v-show="navActive == 0">
                         <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
-                        <div v-else  class=" absolute -top-[20px] -bottom-[16px] left-0 right-0">
+                        <div v-else class=" absolute -top-[20px] -bottom-[16px] left-0 right-0">
                             <DialogWrappers />
                         </div>
                     </div>
@@ -275,7 +276,8 @@
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
                                 <p class="text-14 leading-3 text-primary-color">{{ item.user_nickname }}<span
-                                        class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
+                                        class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
+                                        }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
                                         class=" font-normal">{{ item.content }}</span></h4>
                             </div>
@@ -283,9 +285,10 @@
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
                         <div class="md:pl-24 pr-[10px]">
-                            <p class="cursor-pointer" :class="detialData.score < 0 ? 'text-text-tips' : 'text-primary-color' " @click="handleAddMultiple"> <i
-                                    class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
-                                    class="text-14" >{{ $t('添加复盘') }}</span></p>
+                            <p class="cursor-pointer"
+                                :class="detialData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
+                                @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
+                                    class="text-14">{{ $t('添加复盘') }}</span></p>
                             <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
                                 <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList"
                                     @click="handleCheckMultiple(item.id)">
@@ -322,11 +325,12 @@
     </Confidences>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow" @close="handleCloseMarks">
+    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow"
+        @close="handleCloseMarks">
     </MarkVue>
 
     <!-- 强提示 -->
-    <TipsModal :show="showModal" :content="tipsContent" @close="()=>{ showModal = false }"></TipsModal>
+    <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
@@ -387,7 +391,7 @@ const superiorScore = ref(0)
 const inputShow = ref(false)
 
 
-const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled','getList'])
+const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList'])
 
 const props = defineProps({
     show: {
@@ -477,40 +481,40 @@ const handleGetLogList = () => {
                     item.content = $t('创建OKR')
                 }
                 if (item.content.includes('修改O目标标题')) {
-                    item.content = $t('修改O目标标题') + ": " +item.records.title_change[0]+ ' => ' + item.records.title_change[1]
+                    item.content = $t('修改O目标标题') + ": " + item.records.title_change[0] + ' => ' + item.records.title_change[1]
                 }
                 if (item.content.includes('修改O目标周期')) {
-                    item.content = $t('修改O目标周期') + ": " +item.records.time_change[0]+ ' => ' + item.records.time_change[1]
+                    item.content = $t('修改O目标周期') + ": " + item.records.time_change[0] + ' => ' + item.records.time_change[1]
                 }
                 if (item.content.includes('修改O目标状态')) {
-                    item.content = $t('修改O目标状态') + ": " + $t(item.records.status_change[0])+ ' => ' +  $t(item.records.status_change[1])
+                    item.content = $t('修改O目标状态') + ": " + $t(item.records.status_change[0]) + ' => ' + $t(item.records.status_change[1])
                 }
                 if (item.content.includes('修改对齐目标')) {
                     item.content = $t('修改对齐目标')
                 }
                 if (item.content.includes('修改KR标题')) {
-                    item.content = $t('修改KR标题') + ": " +item.records.title_change[0]+ ' => ' + item.records.title_change[1]
+                    item.content = $t('修改KR标题') + ": " + item.records.title_change[0] + ' => ' + item.records.title_change[1]
                 }
                 if (item.content.includes('修改KR周期')) {
-                    item.content = $t('修改KR周期') + ": " +item.records.time_change[0]+ ' => ' + item.records.time_change[1]
+                    item.content = $t('修改KR周期') + ": " + item.records.time_change[0] + ' => ' + item.records.time_change[1]
                 }
                 if (item.content.includes('修改KR参与人')) {
                     item.content = $t('修改KR参与人')
                 }
                 if (item.content.includes('修改KR进度')) {
-                    item.content = $t('修改KR进度') + ": "+ item.records.title + ' [ '+item.records.progress_change[0]+ '%' + ' => ' + item.records.progress_change[1]+ '%' +' ]'
+                    item.content = $t('修改KR进度') + ": " + item.records.title + ' [ ' + item.records.progress_change[0] + '%' + ' => ' + item.records.progress_change[1] + '%' + ' ]'
                 }
                 if (item.content.includes('修改KR状态')) {
-                    item.content = $t('修改KR状态') + ": "+ item.records.title + ' [ '+ $t(item.records.progress_status_change[0]) + ' => ' + $t(item.records.progress_status_change[1]) +' ]'
+                    item.content = $t('修改KR状态') + ": " + item.records.title + ' [ ' + $t(item.records.progress_status_change[0]) + ' => ' + $t(item.records.progress_status_change[1]) + ' ]'
                 }
                 if (item.content.includes('修改KR信心指数')) {
-                    item.content = $t('修改KR信心指数') + ": "+ item.records.title + ' [ '+item.records.confidence_change[0] + ' => ' + item.records.confidence_change[1] +' ]'
+                    item.content = $t('修改KR信心指数') + ": " + item.records.title + ' [ ' + item.records.confidence_change[0] + ' => ' + item.records.confidence_change[1] + ' ]'
                 }
                 if (item.content.includes('责任人打分')) {
-                    item.content = $t('责任人打分') + ": "+ item.records.title
+                    item.content = $t('责任人打分') + ": " + item.records.title
                 }
                 if (item.content.includes('上级打分')) {
-                    item.content = $t('上级打分') + ": "+ item.records.title
+                    item.content = $t('上级打分') + ": " + item.records.title
                 }
                 logList.value.push(item)
             })
@@ -582,7 +586,7 @@ const closeModal = () => {
 
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
-    if(userInfo.userid != detialData.value.userid ){
+    if (userInfo.userid != detialData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
         return
@@ -609,7 +613,7 @@ const handleCloseDedree = (type) => {
 
 //打开信心
 const handleConfidence = (id, confidences, score) => {
-    if(userInfo.userid != detialData.value.userid ){
+    if (userInfo.userid != detialData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
         return
@@ -632,22 +636,23 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
-    if(userInfo.userid != detialData.value.userid && detialData.value.superior_user?.indexOf(userInfo.userid) ==-1 ) return
-    if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
-    if (progress < 100) return message.error($t('KR进度尚未达到100%'))
-    markId.value = id
-    score.value = scores
-    superiorScore.value = superior_score
-    if(userInfo.userid == detialData.value.userid && scores < 0){
-        inputShow.value = true
+    if (userInfo.userid == detialData.value.userid || detialData.value.superior_user?.indexOf(userInfo.userid) != -1) {
+        if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
+        if (progress < 100) return message.error($t('KR进度尚未达到100%'))
+        markId.value = id
+        score.value = scores
+        superiorScore.value = superior_score
+        if (userInfo.userid == detialData.value.userid && scores < 0) {
+            inputShow.value = true
+        }
+        if (detialData.value.superior_user?.indexOf(userInfo.userid) != -1 && superior_score < 0) {
+            inputShow.value = true
+        }
+        if (scores > -1 && superior_score > -1) {
+            inputShow.value = false
+        }
+        markShow.value = true
     }
-    if(detialData.value.superior_user?.indexOf(userInfo.userid) !=-1 && superior_score < 0){
-        inputShow.value = true
-    }
-    if(scores > -1 && superior_score > -1){
-        inputShow.value = false
-    }
-    markShow.value = true
 }
 //关闭评分
 const handleCloseMarks = (type) => {
@@ -662,7 +667,7 @@ const handleCloseMarks = (type) => {
 
 // 取消O
 const handleCancel = () => {
-    if(userInfo.userid != detialData.value.userid ){
+    if (userInfo.userid != detialData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
         showPopover.value = false
@@ -710,12 +715,12 @@ const loadDialogWrappers = () => {
 
 //添加复盘
 const handleAddMultiple = () => {
-    if(userInfo.userid != detialData.value.userid ){
+    if (userInfo.userid != detialData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
         return
     }
-    if (detialData.value.score < 0) return  message.error($t('KR评分未完成'))
+    if (detialData.value.score < 0) return message.error($t('KR评分未完成'))
     if (window.innerWidth < 768) {
         router.push({
             path: '/addMultiple',
@@ -772,7 +777,7 @@ const loadUserSelects = () => {
                             border: false,
                             avatarSize: 20,
                             addIcon: false,
-                            disable: userInfo.userid != detialData.value.userid ||detialData.value.key_results[index].score > -1 || detialData.value.key_results[index].superior_score > -1
+                            disable: userInfo.userid != detialData.value.userid || detialData.value.key_results[index].score > -1 || detialData.value.key_results[index].superior_score > -1
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
@@ -925,12 +930,13 @@ defineExpose({
     height: 2px;
     content: ' ';
 }
-:deep(.n-button--error-type){
+
+:deep(.n-button--error-type) {
     @apply bg-primary-color;
 }
-:deep(.left-scrollbar){
-    .n-scrollbar-rail{
+
+:deep(.left-scrollbar) {
+    .n-scrollbar-rail {
         @apply right-0;
     }
-}
-</style>
+}</style>

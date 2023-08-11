@@ -299,5 +299,10 @@
     "仅限负责人操作": "Opérations par le responsable uniquement",
     "没有找到匹配的结果": "aucun résultat correspondant trouvé",
     "添加/编辑OKR": "Ajouter/Modifier les OKR",
-    "添加/编辑复盘": "Ajouter/modifier un avis"
+    "添加/编辑复盘": "Ajouter/modifier un avis",
+    "价值与收获": "valeur et gain",
+    "我们从过程中学到了什么新东西": "Quelles nouvelles choses avons-nous apprises du processus",
+    "问题与不足": "Problèmes et lacunes",
+    "请描述出现的某个问题并针对该问题展开分析": "Veuillez décrire un problème survenu et l'analyser",
+    "您当前未加入任何部门，不能发起！": "Vous n'êtes actuellement dans aucun département, ne pouvez pas commencer !"
 }

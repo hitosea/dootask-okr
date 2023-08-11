@@ -45,6 +45,9 @@
         </div>
     </div>
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
+
+    <!-- 强提示 -->
+    <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>
 </template>
 
 <script lang="ts" setup>
@@ -56,7 +59,10 @@ import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
 import { useRouter } from 'vue-router'
+import { UserStore } from '@/store/user'
+import TipsModal from '@/views/components/TipsModal.vue';
 
+const userInfo = UserStore().info
 const router = useRouter()
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
@@ -71,6 +77,8 @@ const searchObject = ref('')
 const searchShow = ref(false)
 const tabsName = ref($t('我创建的OKR'))
 
+const showModal = ref(false)
+const tipsContent = ref('')
 
 const changeTabs = (e)=>{
     searchObject.value = ''
@@ -87,6 +95,11 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
+    if(userInfo.identity[0]!='admin' && userInfo.department.length == 0 ) {
+        tipsContent.value = $t('您当前未加入任何部门，不能发起！')
+        showModal.value = true
+        return
+    }
     if (window.innerWidth < 768) {
         router.push('/addOkr')
     }

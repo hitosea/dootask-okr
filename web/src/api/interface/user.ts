@@ -13,6 +13,7 @@ export namespace User {
         identity: any
         department_owner: any
         userid: any
+        department: any
     }
 
     // 登录请求
