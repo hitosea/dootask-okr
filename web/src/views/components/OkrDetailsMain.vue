@@ -1,24 +1,21 @@
 <template >
     <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
-        <div class="md:flex-1 flex flex-col relative md:overflow-hidden">
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-12 md:pt-0 md:px-0">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4" >
                     <n-popover v-if="detialData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual">
                         <template #trigger>
                             <div @click="showPopover = !showPopover" v-if="detialData.completed == '0'"
                                 class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                 :class="detialData.completed == '0' || detialData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                <n-icon v-if="detialData.completed == '1'"
-                                    :class="detialData.completed == '0' || detialData.canceled == '0' ? '' : 'text-primary-color'"
-                                    size="14" :component="CheckmarkSharp" />
                             </div>
                         </template>
                         <span class="cursor-pointer" @click="handleCancel">
                             {{ detialData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                         </span>
                     </n-popover>
-                    <div v-else
+                    <div v-if="detialData.completed == '1'"
                         class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid "
                         :class="detialData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                         <n-icon v-if="detialData.completed == '1'"
@@ -169,9 +166,9 @@
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
                         <AlignTarget ref="AlignTargetRef"
-                         :value="props.show" 
-                         :id="props.id" 
-                         :userid="detialData.userid" 
+                         :value="props.show"
+                         :id="props.id"
+                         :userid="detialData.userid"
                          :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid" @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
@@ -181,10 +178,10 @@
         </div>
 
         <div
-            class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] mt-[32px] md:mt-0">
+            class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] ">
             <div
-                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[5px] md:pb-[15px] md:ml-24 min-h-[36px]">
-                <ul class="flex w-full items-center gap-8 justify-between md:justify-start">
+                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white pt-[32px] md:pt-0">
+                <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
                         $t('对齐') }}
@@ -198,9 +195,9 @@
                 </ul>
                 <i class="taskfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block" @click="closeModal">&#xe6e5;</i>
             </div>
-            <div class="flex-auto relative mt-16 md:mt-0">
+            <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
-                    <div class="text-center" v-if="navActive == 3">
+                    <div class="text-center  mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 3">
                         <div class="flex md:hidden flex-col gap-3 min-h-[60px]">
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg"
                                 v-for="(item, index) in detialData.key_results">
@@ -262,28 +259,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center" v-if="navActive == 4">
+                    <div class="text-center mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
                         <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
-                        <DialogWrappers v-else />
+                        <div v-else  class=" absolute -top-[20px] -bottom-[16px] left-0 right-0">
+                            <DialogWrappers />
+                        </div>
                     </div>
-                    <n-scrollbar v-if="navActive == 1" :on-scroll="onScrollLogList">
+                    <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
-                                <p class="text-12 leading-3 text-primary-color">{{ item.user_nickname }}<span
-                                        class=" text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
+                                <p class="text-14 leading-3 text-primary-color">{{ item.user_nickname }}<span
+                                        class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at) }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
                                         class=" font-normal">{{ item.content }}</span></h4>
                             </div>
                         </div>
                     </n-scrollbar>
-                    <n-scrollbar v-if="navActive == 2" :on-scroll="onScrollReplayList">
-                        <div class="pl-24 pr-[10px]">
+                    <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
+                        <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer" :class="detialData.score < 0 ? 'text-text-tips' : 'text-primary-color' " @click="handleAddMultiple"> <i
                                     class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14" >{{ $t('添加复盘') }}</span></p>
@@ -388,7 +387,7 @@ const superiorScore = ref(0)
 const inputShow = ref(false)
 
 
-const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled'])
+const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled','getList'])
 
 const props = defineProps({
     show: {
@@ -422,11 +421,6 @@ const getDetail = (type) => {
 
 // 关注
 const handleFollowOkr = () => {
-    if(userInfo.userid != detialData.value.userid ){
-        tipsContent.value = $t('仅限负责人操作')
-        showModal.value = true
-        return
-    }
     loadIng.value = true
     okrFollow({
         id: detialData.value.id,
@@ -525,7 +519,7 @@ const handleGetLogList = () => {
             logListLastPage.value = data.last_page
         })
             .catch(({ msg }) => {
-             
+
             })
             .finally(() => {
                 loadIngR.value = false
@@ -559,7 +553,7 @@ const handleGetReplayList = () => {
             replayListLastPage.value = data.last_page
         })
             .catch(({ msg }) => {
-              
+
             })
             .finally(() => {
                 loadIngR.value = false
@@ -679,7 +673,7 @@ const handleCancel = () => {
         id: detialData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
-        emit('upData', detialData.value.id)
+        emit('getList')
         getDetail('')
     })
         .catch(ResultDialog)
@@ -927,7 +921,7 @@ defineExpose({
 }
 
 .li-nav.active::before {
-    @apply w-full bg-primary-color absolute left-0 right-0 -bottom-14;
+    @apply w-full bg-primary-color absolute left-0 right-0 -bottom-12 block md:hidden;
     height: 2px;
     content: ' ';
 }

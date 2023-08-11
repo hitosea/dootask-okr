@@ -21,17 +21,20 @@
                     </div>
                 </div>
             </div>
-            <h3 class="text-text-li text-14 md:text-18 font-normal mb-16 mt-24">{{ $t('回顾') }}</h3>
-            <div class="flex-auto shrink-0 min-h-[250px]">
-                <TEditor v-if="props.multipleId == 0" v-model:value="editorContent" :readOnly="false"></TEditor>
-                <div v-else v-html="editorContent"></div>
+            <h3 class="text-text-li text-14 md:text-18 font-normal mt-24">{{ $t('回顾') }}</h3>
+            <div class="flex-auto flex flex-col shrink-0 min-h-[250px]">
+                <!-- <TEditor v-if="props.multipleId == 0" v-model:value="editorContent" :readOnly="false"></TEditor>
+                <div v-else v-html="editorContent"></div> -->
+                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
+                <n-input class="flex-1 mt-8" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
+                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
+                <n-input class="flex-1 mt-8" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
             </div>
         </div>
     </n-scrollbar>
 </template>
 <script setup lang="ts">
 import { NSelect, DataTableColumn } from 'naive-ui';
-import TEditor from '@/components/TEditor.vue';
 import { replayCreate, replayDetail } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 

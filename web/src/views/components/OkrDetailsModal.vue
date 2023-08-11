@@ -3,7 +3,7 @@
         @after-leave="closeDrawer" :z-index="13">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
-            @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @upData="(id)=>{ emit('upData',id) }"
+            @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="()=>{  emit('getList') }" @upData="(id)=>{ emit('upData',id) }"
             ></OkrDetailsMain>
         </n-card>
     </n-modal>
@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
 
-const emit = defineEmits(['close', 'edit', 'upData'])
+const emit = defineEmits(['close', 'edit', 'upData','getList'])
 
 const OkrDetailsMainRef = ref(null)
 

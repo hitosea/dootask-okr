@@ -4,7 +4,7 @@
                 <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''" ></PersonalStatistics>
                 <div>
                     <OkrLoading v-if="loadIng"></OkrLoading>
-                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" v-if="list.length != 0 && !loadIng"></OkrItems>
+                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng"></OkrItems>
                     <OkrNotDatas v-if="!loadIng && list.length == 0" :types="props.searchObject != ''">
                         <template v-slot:content v-if="props.searchObject == ''">
                             <div class="mt-5"><s></s>
@@ -57,6 +57,11 @@ watch(() => props.searchObject, (newValue) => {
 }, { deep: true })
 
 const emit = defineEmits(['edit','add'])
+
+const resetGetList = ()=>{
+    page.value = 1
+    getList('search')
+}
 
 const getList = (type) => {
     let serstatic =  type == 'search' ? true : false

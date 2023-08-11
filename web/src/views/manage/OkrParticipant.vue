@@ -2,7 +2,7 @@
     <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
         <div class="okr-participant-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrItems @upData="upData" @edit="handleEdit" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
+            <OkrItems @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
             <OkrNotDatas v-if="!loadIng && list.length == 0" :types="searchObject !=''"></OkrNotDatas>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
         </div>
@@ -40,6 +40,11 @@ watch(() => props.searchObject, (newValue) => {
         clearInterval(searchTime.value)
     }, 300)
 }, { deep: true })
+
+const resetGetList = ()=>{
+    page.value = 1
+    getList('search')
+}
 
 const getList = (type) => {
     let serstatic =  type == 'search' ? true : false

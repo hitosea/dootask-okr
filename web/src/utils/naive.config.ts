@@ -35,6 +35,9 @@ const themeOverrides = {
             padding:"24px",
             borderRadius:"16px",
         },
+        Radio:{
+            dotColorDisabled:'#C0C0C0'
+        },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
         common: {

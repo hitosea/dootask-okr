@@ -1,11 +1,11 @@
 <template >
     <div class="bg-[#FAFAFA] min-h-full flex relative" :style="{'z-index':modalTransferIndex}">
-        <div class="nav-top  h-[44px] bg-[#FAFAFA] z-[5]">
+        <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
             <n-popover placement="bottom-end" trigger="click">
                 <template #trigger>
-                    <n-icon class="text-text-tips z-[2]" size="20" :component="EllipsisHorizontalSharp" />
+                    <i class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
                 <div class="flex flex-col">
                     <p class="py-8" @click="handleEdit"> {{ $t('编辑') }}</p>
@@ -14,7 +14,7 @@
                 </div>
             </n-popover>
         </div>
-        <div class="pt-[58px] pb-16 pl-16 pr-16 flex-1 min-h-full">
+        <div class="pt-[52px] pb-16 flex-1 min-h-full">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="true" :id="id" @isFollow="(e) => { is_follow = e }"
                 @canceled="(e) => { cancel = e }"></OkrDetailsMain>
         </div>
@@ -22,7 +22,6 @@
 </template>
 <script lang="ts" setup>
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
-import { EllipsisHorizontalSharp } from '@vicons/ionicons5'
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()
@@ -60,10 +59,10 @@ const handleFollowOkr = () => {
 </script>
 <style lang="less" scoped>
 .nav-top {
-    @apply flex items-center justify-between fixed top-0 left-0 right-0 px-16;
+    @apply flex items-center justify-between fixed top-0 left-0 right-0 px-10;
 
     .icon-return {
-        @apply text-20 text-text-tips;
+        @apply text-26 text-text-tips;
     }
 }
 </style>

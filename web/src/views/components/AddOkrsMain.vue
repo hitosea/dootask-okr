@@ -19,7 +19,7 @@
                 </n-form-item>
 
                 <n-form-item :label="$t('优先级')" path="priority">
-                    <n-radio-group v-model:value="formValue.priority" name="radiogroup2" :disabled="edit">
+                    <n-radio-group v-model:value="formValue.priority" name="radiogroup2" >
                         <n-space>
                             <template v-if="formValue.type == 1">
                                 <n-radio value="P0">
@@ -222,8 +222,8 @@ const formKRValue = ref<any>([
         time: null,
         confidence: null,
         participant: null,
+        randomString : utils.randomString(11)
     },
-
 ])
 
 

@@ -23,7 +23,7 @@
                 <div class="button-box flex justify-end mt-0">
                     <div class="flex items-center gap-4">
                         <n-button :loading="loadIng" type="default" @click="handleClose">
-                            {{ Mark > -1 && superiorScore > -1 ? $t('关闭') : $t('取消') }}
+                            {{ props.inputShow ?  $t('取消') : $t('关闭')}}
                         </n-button>
                         <n-button v-if="props.inputShow" :loading="loadIng" type="primary"
                             @click="handleSubmit">

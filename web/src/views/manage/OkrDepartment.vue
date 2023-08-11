@@ -61,7 +61,7 @@
                 <n-scrollbar :on-scroll="onScroll">
                     <div class="okr-department-main">
                         <OkrLoading v-if="loadIng"></OkrLoading>
-                        <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" :list="list">
+                        <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" @getList="resetGetList" :list="list">
                         </OkrItems>
                         <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
                         </OkrNotDatas>
@@ -112,7 +112,7 @@
                         <n-button :loading="isloading" type="primary" class="flex-1" @click="handleClick()">
                         {{ $t('搜索') }}
                          </n-button>
-                    </div>    
+                    </div>
 
                 </div>
             </n-drawer-content>
@@ -202,6 +202,11 @@ const init = () => {
 
 }
 
+const resetGetList = ()=>{
+    page.value = 1
+    getList('search')
+}
+
 const getList = (type) => {
     let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
@@ -263,7 +268,7 @@ const handleReset = ()=>{
     types.value = null
     daterange.value = null
     loadingstatus.value=false
-    page.value=1  
+    page.value=1
     getList('search');
 }
 

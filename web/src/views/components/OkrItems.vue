@@ -45,17 +45,19 @@
                 </div>
 
                 <div class="kr-list">
-                    <div class="kr-list-item" v-for="(childItem, index) in item.key_results">
-                        <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
-                        <p class="max-w-[70%]">{{ childItem.title }}</p>
-                        <div class="kr-list-schedule">
-                            <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
-                                :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
-                                :percentage="childItem.progress" />
-                            {{ childItem.progress }}%
+                    <template v-for="(childItem, index) in item.key_results">
+                        <div class="kr-list-item" v-if="index < 3">
+                            <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
+                            <p class="max-w-[70%]">{{ childItem.title }}</p>
+                            <div class="kr-list-schedule">
+                                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
+                                    :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                                    color="var(--primary-color)" status="success" :percentage="childItem.progress" />
+                                {{ childItem.progress }}%
+                            </div>
                         </div>
-                    </div>
-
+                    </template>
+                    <div v-if="item.key_results.length > 3" class=" text-14 text-primary-color">KR(+{{ item.key_results.length - 3 }})</div>
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
                     <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count
@@ -63,15 +65,15 @@
                 </div>
                 <div class="align-target" v-else>
                     <div class=" cursor-pointer" @click.stop="handleTarget(2, item)">
-                        {{ $t('向上对齐') }}
+                        + {{ $t('向上对齐') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem"  @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item)=>{handleTarget(2, item)}"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem" @close="() => { alignTargetShow = false }"
+        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
@@ -79,7 +81,7 @@
 
     <!-- OKR详情 -->
     <OkrDetailsModal ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @edit="handleEdit" @upData="(id) => { emit('upData', id) }"></OkrDetailsModal>
+        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="()=>{ emit('getList') }"></OkrDetailsModal>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
@@ -120,7 +122,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['upData', 'edit'])
+const emit = defineEmits(['upData', 'edit','getList'])
 
 //对齐
 const handleTarget = (e, item) => {
@@ -130,7 +132,7 @@ const handleTarget = (e, item) => {
     if (e == 1) {
         alignTargetShow.value = true
     } else {
-        if(userInfo.userid != item.userid ) return message.error($t('仅负责人可操作'))
+        if (userInfo.userid != item.userid) return message.error($t('仅负责人可操作'))
         alignObjective.value = item.align_objective
         selectAlignmentShow.value = true
     }
@@ -144,9 +146,9 @@ const pStatus = (p) => {
 //打开详情
 const handleOpenDetail = (id) => {
     if (window.innerWidth < 768) {
-         router.push({
-           path:'/okrDetails',
-           query: { data: id},
+        router.push({
+            path: '/okrDetails',
+            query: { data: id },
         })
     }
     else {
