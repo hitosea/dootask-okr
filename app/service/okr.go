@@ -96,6 +96,10 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 		// 关键结果
 		for _, kr := range param.KeyResults {
+			// 去掉kr.Participant中的0
+			if strings.Contains(kr.Participant, "0,") {
+				kr.Participant = strings.Trim(kr.Participant, "0,")
+			}
 			keyResult, err := s.createKeyResult(tx, kr, user, obj)
 			if err != nil {
 				return err
@@ -118,7 +122,9 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 	// 创建O时（通知发起/所有KR参与人）
 	participantIds = common.ArrayUniqueInt(participantIds)
-	go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)
+	if len(participantIds) > 0 {
+		go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)
+	}
 
 	return obj, nil
 }
@@ -179,6 +185,10 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		}
 		obj.KeyResults = nil
 		for _, kr := range param.KeyResults {
+			// 去掉kr.Participant中的0
+			if strings.Contains(kr.Participant, "0,") {
+				kr.Participant = strings.Trim(kr.Participant, "0,")
+			}
 			if kr.Id == 0 {
 				// 新增kr
 				var addKr interfaces.OkrKeyResultCreateReq
@@ -214,7 +224,9 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 			}); err != nil {
 				return err
 			}
-			go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
+			if len(participantIds) > 0 {
+				go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
+			}
 		}
 
 		// O时间变动时，发送提示消息
@@ -224,7 +236,9 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 			}); err != nil {
 				return err
 			}
-			go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
+			if len(participantIds) > 0 {
+				go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
+			}
 		}
 
 		obj.Title = param.Title
@@ -1105,7 +1119,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果传值更新进度有值，则更新进度
-		if param.Progress != 0 && param.Progress != kr.Progress {
+		if param.Progress != kr.Progress {
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", "修改KR进度", interfaces.OkrLogParams{
 				Title:          kr.Title,
 				ProgressChange: []int{kr.Progress, param.Progress},
@@ -1116,7 +1130,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		}
 
 		// 如果传值更新状态有值，则更新状态
-		if param.Status != 0 && param.Status != kr.ProgressStatus {
+		if param.Status != kr.ProgressStatus {
 			if err := s.InsertOkrLogTx(tx, kr.ParentId, user.Userid, "update", "修改KR状态", interfaces.OkrLogParams{
 				Title:                kr.Title,
 				ProgressStatusChange: []string{model.ProgressStatusMap[kr.ProgressStatus], model.ProgressStatusMap[param.Status]},
@@ -1431,6 +1445,11 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 	err = s.CheckObjectiveOperation(kr, user.Userid)
 	if err != nil {
 		return nil, err
+	}
+
+	// 去掉Participant中的0
+	if strings.Contains(param.Participant, "0,") {
+		param.Participant = strings.Trim(param.Participant, "0,")
 	}
 
 	oldParticipant := common.ExplodeInt(",", kr.Participant, true)
