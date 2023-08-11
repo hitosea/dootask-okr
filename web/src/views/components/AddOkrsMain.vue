@@ -131,15 +131,13 @@
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
                                 </n-form-item-gi>
-                                <!-- <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
+                                <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
                                     <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
-                                </n-form-item-gi> -->
-
-
+                                </n-form-item-gi>
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
                                     <n-input-number class="w-full" :max="100" :min="0" :precision="0"
                                         v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
