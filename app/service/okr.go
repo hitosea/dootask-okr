@@ -754,8 +754,9 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		})
 	}
 
-	for _, obj := range okrs {
-		s.GetObjectiveExt(obj, obj.KeyResults, user)
+	okrs, err := s.GetObjectivesWithDetails(okrs, user)
+	if err != nil {
+		return nil, err
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
