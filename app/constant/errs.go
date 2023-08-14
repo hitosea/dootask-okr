@@ -40,7 +40,7 @@ var (
 	ErrOkrTitleLengthInvalid      = "ErrOkrTitleLengthInvalid"      //标题内容过长，请限制在255个字符以内
 	ErrOkrTimeInvalid             = "ErrOkrTimeInvalid"             //开始时间不能大于结束时间，请重新选择合适的时间段
 	ErrOkrOwnerNotCancel          = "ErrOkrOwnerNotCancel"          //仅限负责人操作
-	ErrOkrReplayCommentInvalid    = "ErrOkrReplayCommentInvalid"    //请选择正确的复盘KR评价
+	ErrOkrReplayCommentInvalid    = "ErrOkrReplayCommentInvalid"    //请选择KR评价
 	ErrOkrNoDepartment            = "ErrOkrNoDepartment"            //您当前未加入任何部门，不能发起！
 	ErrOkrReplayLengthInvalid     = "ErrOkrReplayLengthInvalid"     //内容过长，请限制在255个字符以内
 

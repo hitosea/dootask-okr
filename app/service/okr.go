@@ -1437,14 +1437,12 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 	var record interfaces.OkrLogParams
 	if kr.Canceled == 0 {
 		kr.Canceled = 1
-		// logContent = fmt.Sprintf("修改O目标状态: [%s=>%s]", model.CanceledMap[0], model.CanceledMap[1])
 		record = interfaces.OkrLogParams{
 			StatusChange: []string{model.CanceledMap[0], model.CanceledMap[1]},
 		}
 
 	} else if kr.Canceled == 1 {
 		kr.Canceled = 0
-		// logContent = fmt.Sprintf("修改O目标状态: [%s=>%s]", model.CanceledMap[1], model.CanceledMap[0])
 		record = interfaces.OkrLogParams{
 			StatusChange: []string{model.CanceledMap[1], model.CanceledMap[0]},
 		}

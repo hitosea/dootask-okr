@@ -29,7 +29,7 @@ ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 0-100의 정수를 입력하십시오
 ErrOkrProgressNotEnough: kr는 아직 100% 가 되지 않았다
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
-ErrOkrReplayCommentInvalid: 올바른 복수 kr 평가를 선택하세요
+ErrOkrReplayCommentInvalid: kr 평가를 선택해 주세요
 ErrOkrReplayLengthInvalid: 내용이 너무 깁니다. 255 글자로 제한하십시오
 ErrOkrScoreInvalid: 별점은 0-10의 정수를 입력하십시오
 ErrOkrScored: 채점된 kr은 조작할 수 없습니다
