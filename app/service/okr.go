@@ -465,7 +465,11 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR参与人", nil); err != nil {
 			return nil, err
 		}
-		go DootaskService.DialogOkrPush(keyResult, user.Token, 4, diffParticipant)
+
+		addDiffParticipant := common.ArrayDifferenceAddProcessing(newParticipant, oldParticipant)
+		if len(addDiffParticipant) > 0 {
+			go DootaskService.DialogOkrPush(keyResult, user.Token, 4, diffParticipant)
+		}
 	}
 
 	// KR信息指数变动时，新增动态信息
@@ -799,7 +803,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
 			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Where("visible_range IN (1, 3) OR userid = ?", user.Userid)
+			db = db.Where("okr.visible_range IN (1, 3) OR okr.userid = ?", user.Userid)
 		} else {
 			// 判断是否是同级部门负责人
 			var departmentSameLevel []model.UserDepartment
@@ -808,9 +812,9 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 				// 部门负责人可以看到自己所在部门的所有OKR
 				var sqlSame []string
 				for _, department := range departmentSameLevel {
-					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
 				}
-				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR userid = ?", user.Userid)
+				db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR okr.userid = ?", user.Userid)
 			}
 		}
 	}
@@ -1484,7 +1488,16 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 		if err := s.InsertOkrLogTx(core.DB, kr.ParentId, user.Userid, "update", "修改KR参与人", nil); err != nil {
 			return nil, err
 		}
-		go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
+
+		addDiffParticipant := common.ArrayDifferenceAddProcessing(newParticipant, oldParticipant)
+		if len(addDiffParticipant) > 0 {
+			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			if err != nil {
+				return nil, e.New(constant.ErrOkrNoData)
+			}
+			kr.ParentTitle = obj.Title
+			go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
+		}
 	}
 
 	kr.Participant = param.Participant
