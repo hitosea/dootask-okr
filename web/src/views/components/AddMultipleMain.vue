@@ -26,9 +26,11 @@
                 <!-- <TEditor v-if="props.multipleId == 0" v-model:value="review" :readOnly="false"></TEditor>
                 <div v-else v-html="review"></div> -->
                 <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
-                <n-input class="mt-8" :rows="8" v-model:value="review" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
+                <p v-else v-html="review"></p>
                 <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
-                <n-input class="mt-8" :rows="8" v-model:value="problem" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
+                <p v-else v-html="problem"></p>
             </div>
         </div>
     </n-scrollbar>
@@ -82,7 +84,9 @@ const columns = ref<DataTableColumn[]>([
                 },'KR' + (index + 1) )
             )
             arr.push(
-                h ('span',rowData.KR)
+                h ('span',{
+                    class:'line-clamp-2'
+                },rowData.KR)
             )
             return h ('div',{
                 style:{

@@ -2,7 +2,10 @@
     <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
     <div class="replay-details">
         <div class="replay-details-title">{{ $t("回顾") }}</div>
-        <pre class="whitespace-normal break-words" v-html="review"></pre>
+        <h3 class="mt-12 text-title-color text-24 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
+        <p class="text-title-color text-14" v-html="review"></p>
+        <h3 class="mt-16 text-title-color text-24 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
+        <p class="text-title-color text-14" v-html="problem"></p>
     </div>
 </template>
 
@@ -12,10 +15,14 @@ const props = defineProps(["okrReplayList"])
 
 // 回顾
 let review = ref("")
+let problem = ref("")
 
 // 加载表格
 const loadTable = (krReplay) => {
+    console.log(krReplay);
+    
     review = krReplay.review
+    problem = krReplay.problem
     let count = 1
     data.value = krReplay.krList.map((itemData, index) => {
         const additionalProps =

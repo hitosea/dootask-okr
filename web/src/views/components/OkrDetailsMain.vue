@@ -117,12 +117,15 @@
                             </div>
                             <div class="flex items-center justify-between mt-8">
                                 <div class="flex items-center mr-24">
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
                                         <div v-if="showUserSelect">
                                             <UserSelects :formkey="index" />
                                         </div>
                                         <n-avatar v-if="!showUserSelect" round :size="20"
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    </div>
+                                    <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
+                                        <span class="scale-[0.8333] origin-center">+{{ item.participant.split(',').length - 4 }}</span>
                                     </div>
                                     <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
                                     <p class="flex-1 text-text-li text-14 min-w-[140px] shrink-0">{{
@@ -173,7 +176,7 @@
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :userid="detialData.userid"
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true" :userid="detialData.userid"
                             :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
                             @unalign="handleUnalign">
                         </AlignTarget>
@@ -266,13 +269,15 @@
                         </div>
                     </div>
                     <div class="text-center mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" @unalign="handleUnalign">
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
+                        :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
+                        @unalign="handleUnalign">
                         </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
                         <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
-                        <div v-else class=" absolute -top-[20px] -bottom-[16px] left-0 right-0">
+                        <div v-else class=" absolute top-0 md:-top-[20px] -bottom-[16px] left-0 right-0">
                             <DialogWrappers />
                         </div>
                     </div>
@@ -291,6 +296,7 @@
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
                         <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer"
+                            v-if="userInfo.userid == detialData.userid"
                                 :class="detialData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
@@ -626,6 +632,7 @@ const handleConfidence = (id, confidences, score) => {
         showModal.value = true
         return
     }
+    if (detialData.value.completed == '1') return message.error($t('O目标已完成无法操作'))
     if (detialData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     if (score > -1) return message.error($t('KR已评分无法操作'))
     confidencesId.value = id

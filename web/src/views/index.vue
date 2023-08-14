@@ -16,12 +16,12 @@
         </div>
         <div class="okr-tabs">
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
-                <n-tab-pane :tab="$t('我创建的OKR')" :name="$t('我创建的OKR')">
+                <n-tab-pane :tab="$t('我创建的')" :name="$t('我创建的')">
                     <div class="okr-scrollbar">
                         <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"></Icreated>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('参与的OKR')" :name="$t('参与的OKR')">
+                <n-tab-pane :tab="$t('我参与的')" :name="$t('我参与的')">
                     <div class="okr-scrollbar">
                         <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject"  @edit="handleEdit" ></OkrParticipant>
                     </div>
@@ -31,7 +31,7 @@
                         <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"></OkrDepartment>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('关注的OKR')" :name="$t('关注的OKR')">
+                <n-tab-pane :tab="$t('我关注的')" :name="$t('我关注的')">
                     <div class="okr-scrollbar">
                         <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"></OkrFollow>
                     </div>
@@ -75,7 +75,7 @@ const edit = ref(false)
 let editData = {}
 const searchObject = ref('')
 const searchShow = ref(false)
-const tabsName = ref($t('我创建的OKR'))
+const tabsName = ref($t('我创建的'))
 
 const showModal = ref(false)
 const tipsContent = ref('')
@@ -110,31 +110,31 @@ const handleAdd = () => {
 
 const handleClose = (e,id) => {
     //重新获取列表
-    if(tabsName.value == $t('我创建的OKR') && e == 1){
+    if(tabsName.value == $t('我创建的') && e == 1){
         ICreatedRef.value.getList('search')   
           
     }
-    else if(tabsName.value == $t('参与的OKR') && e == 1){
+    else if(tabsName.value == $t('我参与的') && e == 1){
         OkrParticipantRef.value.getList('search')
     }
     else if(tabsName.value == $t('部门OKR') && e == 1){
         OkrDepartmentRef.value.getList('search')
     }
-    else if(tabsName.value == $t('关注的OKR') && e == 1){
+    else if(tabsName.value == $t('我关注的') && e == 1){
         OkrFollowRef.value.getList('search')
     }
 
     //更新单条数据
-    if(tabsName.value == $t('我创建的OKR') && e == 2){
+    if(tabsName.value == $t('我创建的') && e == 2){
         ICreatedRef.value.upData(id)      
     }
-    else if(tabsName.value == $t('参与的OKR') && e == 2){
+    else if(tabsName.value == $t('我参与的') && e == 2){
         OkrParticipantRef.value.upData(id)
     }
     else if(tabsName.value == $t('部门OKR') && e == 2){
         OkrDepartmentRef.value.upData(id)
     }
-    else if(tabsName.value == $t('关注的OKR') && e == 2){
+    else if(tabsName.value == $t('我关注的') && e == 2){
         OkrFollowRef.value.upData(id)
     }
 

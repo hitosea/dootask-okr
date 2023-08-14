@@ -7,7 +7,7 @@
             <div>
                 <n-form ref="formRef" :model="formValue" size="medium" label-placement="left" label-width="auto">
                     <n-form-item >
-                        <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="formValue.confidence" :show-button="false">
+                        <n-input-number class="w-full" :max="100" :min="0" :precision="0" :placeholder="$t('请输入')" v-model:value="formValue.confidence" :show-button="false">
 
                         </n-input-number>
                     </n-form-item>
@@ -57,7 +57,7 @@ const props = defineProps({
 
 watch(() => props.id, (newValue) => {
     if (newValue) {
-        formValue.value.confidence = props.confidence
+        formValue.value.confidence = props.confidence || null
     }
 }, { immediate: true })
 

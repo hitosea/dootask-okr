@@ -35,7 +35,7 @@
                                         class="flex items-center hover:bg-[#F4F5F7] pl-[43px] py-[9px] rounded">
                                         <n-checkbox :value="items.id" />
                                         <span class="ml-12 mr-4 text-12 leading-3 text-text-tips">KR{{ indexs + 1 }}</span>
-                                        <p class=" flex-1 text-14 leading-3 text-title-color line-clamp-1 pr-16">
+                                        <p class=" flex-1 text-14 leading-4 text-title-color line-clamp-1 pr-16">
                                             {{ items.title }}
                                         </p>
                                     </div>

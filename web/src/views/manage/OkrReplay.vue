@@ -94,6 +94,7 @@ const returnReplayItem = (replay) => {
         krList: replay.kr_history ? replay.kr_history : [],
         okrProgress: replay.okr_progress,
         review: replay.review,
+        problem:replay.problem
     }
 }
 

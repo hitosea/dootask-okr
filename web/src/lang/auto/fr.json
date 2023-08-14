@@ -305,5 +305,10 @@
     "问题与不足": "Problèmes et lacunes",
     "请描述出现的某个问题并针对该问题展开分析": "Veuillez décrire un problème survenu et l'analyser",
     "您当前未加入任何部门，不能发起！": "Vous n'êtes actuellement dans aucun département, ne pouvez pas commencer !",
-    "仅负责人和负责人上级可以操作！": "Seul le responsable et le responsable peuvent le faire fonctionner !"
+    "仅负责人和负责人上级可以操作！": "Seul le responsable et le responsable peuvent le faire fonctionner !",
+    "超期未完成": "En retard non terminé",
+    "O目标已完成无法操作": "O La cible est terminée et ne peut pas être utilisée",
+    "我创建的": "J'ai créé",
+    "我参与的": "j'ai participé",
+    "我关注的": "je suis concerné"
 }

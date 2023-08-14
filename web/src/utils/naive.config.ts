@@ -38,6 +38,10 @@ const themeOverrides = {
         Radio:{
             dotColorDisabled:'#C0C0C0'
         },
+        Checkbox:{
+            borderRadius:'99px',
+            sizeMedium:'18px',
+        },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
         common: {

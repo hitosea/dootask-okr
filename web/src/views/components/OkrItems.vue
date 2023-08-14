@@ -257,7 +257,7 @@ onUnmounted(()=>{
                     }
 
                     h3 {
-                        @apply text-title-color text-14 font-normal md:line-clamp-1;
+                        @apply text-title-color text-14 font-normal line-clamp-3 md:line-clamp-1;
                     }
                 }
 

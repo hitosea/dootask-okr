@@ -26,15 +26,15 @@
                 <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
-            <div class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'mr-24':''">
+            <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'mr-24':''">
                 <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                     :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                     :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
             </div>
-            <n-tooltip trigger="hover" v-if="cancelShow">
+            <n-tooltip trigger="hover" v-if="props.cancelShow">
                 <template #trigger>
-                    <i v-if="cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
+                    <i v-if="props.cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>
                 {{ $t('取消对齐') }}
@@ -61,6 +61,10 @@ const props = defineProps({
         default: false,
     },
     cancelShow: {
+        type: Boolean,
+        default: false,
+    },
+    progressShow: {
         type: Boolean,
         default: false,
     },

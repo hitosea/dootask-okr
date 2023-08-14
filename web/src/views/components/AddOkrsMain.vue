@@ -136,7 +136,7 @@
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
-                                    </UserList>
+                                    </UserList>    
                                 </n-form-item-gi>
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
                                     <n-input-number class="w-full" :max="100" :min="0" :precision="0"

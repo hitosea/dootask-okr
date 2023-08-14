@@ -251,6 +251,7 @@ const handleClick = () => {
     isloading.value = true
     page.value = 1
     loadingstatus.value=true
+    active.value = false
     getList('search');
 }
 
@@ -269,6 +270,7 @@ const handleReset = ()=>{
     types.value = null
     daterange.value = null
     loadingstatus.value=false
+    active.value = false
     page.value=1
     getList('search');
 }
