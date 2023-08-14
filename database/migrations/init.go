@@ -84,3 +84,17 @@ var AddTableOkrLogRecord = &gormigrate.Migration{
 		return tx.Migrator().AddColumn(&model.OkrLog{}, "record")
 	},
 }
+
+// 更改复盘表 新增problem字段 AddTableOkrReplayProblem
+var AddTableOkrReplayProblem = &gormigrate.Migration{
+	ID: "2023081408-add-table-okr-replay-problem",
+	Migrate: func(tx *gorm.DB) error {
+		if err := tx.Migrator().AlterColumn(&model.OkrReplay{}, "review"); err != nil {
+			return err
+		}
+		if err := tx.Migrator().AddColumn(&model.OkrReplay{}, "problem"); err != nil {
+			return err
+		}
+		return nil
+	},
+}

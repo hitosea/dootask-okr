@@ -42,6 +42,7 @@ var (
 	ErrOkrOwnerNotCancel          = "ErrOkrOwnerNotCancel"          //仅限负责人操作
 	ErrOkrReplayCommentInvalid    = "ErrOkrReplayCommentInvalid"    //请选择正确的复盘KR评价
 	ErrOkrNoDepartment            = "ErrOkrNoDepartment"            //您当前未加入任何部门，不能发起！
+	ErrOkrReplayLengthInvalid     = "ErrOkrReplayLengthInvalid"     //内容过长，请限制在255个字符以内
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

@@ -375,6 +375,11 @@ func (api *BaseApi) OkrConfidenceUpdate() {
 func (api *BaseApi) OkrReplayCreate() {
 	var param = interfaces.OkrReplayCreateReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 价值与收获、问题与不足 限制255
+	if !common.IsChineseCharCountValid(param.Review) || !common.IsChineseCharCountValid(param.Problem) {
+		helper.ErrorWith(api.Context, constant.ErrOkrReplayLengthInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.CreateOkrReplay(api.Userinfo.Userid, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)

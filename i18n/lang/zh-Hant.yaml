@@ -30,6 +30,7 @@ ErrOkrProgressInvalid: 進度請輸入0-100的整數
 ErrOkrProgressNotEnough: KR進度尚未達到100%
 ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrReplayCommentInvalid: 請選擇正確的覆盤KR評價
+ErrOkrReplayLengthInvalid: 內容過長，請限制在255個字符以內
 ErrOkrScoreInvalid: 評分請輸入0-10的整數
 ErrOkrScored: KR已評分無法操作
 ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度

@@ -282,13 +282,15 @@ definitions:
       okr_id:
         description: okr id
         type: integer
+      problem:
+        description: 问题与不足
+        type: string
       review:
-        description: 回顾
+        description: 价值与收获
         type: string
     required:
     - comments
     - okr_id
-    - review
     type: object
   interfaces.OkrResp:
     properties:
@@ -362,11 +364,19 @@ definitions:
       superior_score:
         description: 上级评分
         type: number
+      superior_user:
+        description: 上级用户
+        items:
+          type: integer
+        type: array
       title:
         type: string
       type:
         type: integer
       updated_at:
+        type: string
+      user_avatar:
+        description: 用户头像
         type: string
       userid:
         type: integer
@@ -531,6 +541,11 @@ definitions:
         type: integer
       operation:
         type: string
+      record:
+        type: string
+      records:
+        additionalProperties: true
+        type: object
       user_avatar:
         type: string
       user_nickname:
@@ -566,6 +581,8 @@ definitions:
         type: string
       okr_userid:
         type: integer
+      problem:
+        type: string
       review:
         type: string
       updated_at:
@@ -610,6 +627,8 @@ definitions:
         type: string
       owner_userid:
         type: integer
+      parent_department:
+        $ref: '#/definitions/model.UserDepartment'
       parent_id:
         type: integer
       updated_at:
@@ -723,7 +742,6 @@ paths:
       - description: 对齐目标
         in: formData
         name: align_objective
-        required: true
         type: string
       - description: okr id
         in: formData
@@ -1243,7 +1261,6 @@ paths:
       - description: 参与人,多个用逗号隔开
         in: formData
         name: participant
-        required: true
         type: string
       responses:
         "200":

@@ -190,8 +190,7 @@ var doc = `{
                         "type": "string",
                         "description": "对齐目标",
                         "name": "align_objective",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "integer",
@@ -1089,8 +1088,7 @@ var doc = `{
                         "type": "string",
                         "description": "参与人,多个用逗号隔开",
                         "name": "participant",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2025,8 +2023,7 @@ var doc = `{
             "type": "object",
             "required": [
                 "comments",
-                "okr_id",
-                "review"
+                "okr_id"
             ],
             "properties": {
                 "comments": {
@@ -2040,8 +2037,12 @@ var doc = `{
                     "description": "okr id",
                     "type": "integer"
                 },
+                "problem": {
+                    "description": "问题与不足",
+                    "type": "string"
+                },
                 "review": {
-                    "description": "回顾",
+                    "description": "价值与收获",
                     "type": "string"
                 }
             }
@@ -2149,6 +2150,13 @@ var doc = `{
                     "description": "上级评分",
                     "type": "number"
                 },
+                "superior_user": {
+                    "description": "上级用户",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "title": {
                     "type": "string"
                 },
@@ -2156,6 +2164,10 @@ var doc = `{
                     "type": "integer"
                 },
                 "updated_at": {
+                    "type": "string"
+                },
+                "user_avatar": {
+                    "description": "用户头像",
                     "type": "string"
                 },
                 "userid": {
@@ -2391,6 +2403,13 @@ var doc = `{
                 "operation": {
                     "type": "string"
                 },
+                "record": {
+                    "type": "string"
+                },
+                "records": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
                 "user_avatar": {
                     "type": "string"
                 },
@@ -2443,6 +2462,9 @@ var doc = `{
                 },
                 "okr_userid": {
                     "type": "integer"
+                },
+                "problem": {
+                    "type": "string"
                 },
                 "review": {
                     "type": "string"
@@ -2510,6 +2532,9 @@ var doc = `{
                 },
                 "owner_userid": {
                     "type": "integer"
+                },
+                "parent_department": {
+                    "$ref": "#/definitions/model.UserDepartment"
                 },
                 "parent_id": {
                     "type": "integer"

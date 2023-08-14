@@ -118,7 +118,8 @@ type OkrConfidenceUpdateReq struct {
 type OkrReplayCreateReq struct {
 	OkrId    int                 `json:"okr_id" binding:"required"`   // okr id
 	Comments []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
-	Review   string              `json:"review"`                      // 回顾
+	Review   string              `json:"review"`                      // 价值与收获
+	Problem  string              `json:"problem"`                     // 问题与不足
 }
 
 // 复盘评价

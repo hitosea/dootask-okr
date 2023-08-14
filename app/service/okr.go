@@ -794,13 +794,24 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 			fmt.Fprintf(&participantSql, "FIND_IN_SET(%d, okr2.department_id) = 0", departmentId)
 		}
 
-		// 判断是否是部门负责人
+		// 判断是否是普通组员
 		var department model.UserDepartment
 		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
-			// 可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			// 自己除外
-			db = db.Where("visible_range = 1 OR visible_range = 3 OR userid = ?", user.Userid)
+			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			db = db.Where("visible_range IN (1, 3) OR userid = ?", user.Userid)
+		} else {
+			// 判断是否是同级部门负责人
+			var departmentSameLevel []model.UserDepartment
+			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			if len(departmentSameLevel) > 0 {
+				// 部门负责人可以看到自己所在部门的所有OKR
+				var sqlSame []string
+				for _, department := range departmentSameLevel {
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+				}
+				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR userid = ?", user.Userid)
+			}
 		}
 	}
 
@@ -866,18 +877,18 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		if department.Id == 0 {
 			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
 			db = db.Where("visible_range IN (1, 3) OR userid = ?", user.Userid)
-		}
-
-		// 判断是否是同级部门负责人
-		var departmentSameLevel []model.UserDepartment
-		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
-		if len(departmentSameLevel) > 0 {
-			// 部门负责人可以看到自己所在部门的所有OKR
-			var sqlSame []string
-			for _, department := range departmentSameLevel {
-				sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+		} else {
+			// 判断是否是同级部门负责人
+			var departmentSameLevel []model.UserDepartment
+			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			if len(departmentSameLevel) > 0 {
+				// 部门负责人可以看到自己所在部门的所有OKR
+				var sqlSame []string
+				for _, department := range departmentSameLevel {
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+				}
+				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR userid = ?", user.Userid)
 			}
-			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR userid = ?", user.Userid)
 		}
 	}
 
@@ -1584,6 +1595,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrProgress:     obj.Progress,
 		OkrPriority:     obj.Priority,
 		Review:          req.Review,
+		Problem:         req.Problem,
 	}
 
 	// 创建 KR 复盘历史记录

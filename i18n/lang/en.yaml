@@ -30,6 +30,7 @@ ErrOkrProgressInvalid: Progress Please enter an integer ranging from 0 to 100
 ErrOkrProgressNotEnough: The KR progress has not reached 100%
 ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrReplayCommentInvalid: Please select the correct KR review
+ErrOkrReplayLengthInvalid: The content is too long. Please limit it to 255 characters
 ErrOkrScoreInvalid: Please enter an integer ranging from 0 to 10
 ErrOkrScored: The KR has been scored and cannot be operated
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
