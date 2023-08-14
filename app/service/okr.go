@@ -519,14 +519,12 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 		}
 	}
 
-	// 删除旧的对齐目标
-	if err := db.Where("okr_id = ?", obj.Id).Delete(&model.OkrAlign{}).Error; err != nil {
-		return err
-	}
+	// 计算新增的差集
+	alignmentDiffIds := common.ArrayDifferenceAddProcessing(alignmentIds, ids)
 
 	// 批量插入新的对齐目标
 	var alignmentObjs []*model.OkrAlign
-	for _, alignmentId := range alignmentIds {
+	for _, alignmentId := range alignmentDiffIds {
 		if err := db.Where("id = ?", alignmentId).First(&model.Okr{}).Error; err != nil {
 			continue
 		}
@@ -536,8 +534,10 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 		})
 	}
 
-	if err := db.Create(alignmentObjs).Error; err != nil {
-		return err
+	if len(alignmentObjs) > 0 {
+		if err := db.Create(alignmentObjs).Error; err != nil {
+			return err
+		}
 	}
 
 	return nil
