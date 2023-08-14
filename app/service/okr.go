@@ -1351,21 +1351,20 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 		return false
 	}
 
-	// 检查用户是否为部门负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
-
 	// 获取部门小组负责人
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	var deptAllOwnerIds []int
 	core.DB.Model(&model.UserDepartment{}).Where("id IN (?)", deptAllIds).Where("parent_id > 0").Pluck("owner_userid", &deptAllOwnerIds)
 
 	var count int64
 	db := core.DB.Model(&model.UserDepartment{}).
-		Where("id IN (?)", deptAllIds).
 		Where("owner_userid = ?", user.Userid)
 
 	if common.InArrayInt(kr.Userid, deptAllOwnerIds) {
+		db = db.Where("id IN (?)", deptAllIds)
 		db = db.Where("parent_id = 0")
 	} else {
+		db = db.Where("id IN (?)", depIds)
 		db = db.Where("parent_id > 0")
 	}
 
@@ -1401,18 +1400,18 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 		return nil
 	}
 
-	// 检查用户是否为部门负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	// 获取部门小组负责人
+	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	var deptAllOwnerIds []int
 	core.DB.Model(&model.UserDepartment{}).Where("id IN (?)", deptAllIds).Where("parent_id > 0").Pluck("owner_userid", &deptAllOwnerIds)
 
-	db := core.DB.Model(&model.UserDepartment{}).
-		Where("id IN (?)", deptAllIds)
+	db := core.DB.Model(&model.UserDepartment{})
 
 	if common.InArrayInt(obj.Userid, deptAllOwnerIds) {
+		db = db.Where("id IN (?)", deptAllIds)
 		db = db.Where("parent_id = 0")
 	} else {
+		db = db.Where("id IN (?)", depIds)
 		db = db.Where("parent_id > 0")
 	}
 
