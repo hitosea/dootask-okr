@@ -81,7 +81,11 @@ func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.
 func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, deptOnly bool, page, pageSize int) (*interfaces.Pagination, error) {
 	var departments string
 	if deptOnly {
-		departments = common.ArrayImplode(user.Department)
+		allDepartments, err := OkrService.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+		departments = common.ArrayImplode(allDepartments)
 	}
 	url := fmt.Sprintf("%s%s?keys[departments]=%s&page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/users/search", departments, page, pageSize, user.Token)
 	result, err := s.client.Get(url)
