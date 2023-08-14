@@ -1,7 +1,7 @@
 <template >
     <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{'z-index':modalTransferIndex}">
         <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
-        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR管理') }}</h2>
+        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ edit ? $t('编辑OKR') : $t('添加OKR') }}</h2>
         <n-icon @click="handleSubmit" class="text-primary-color mr-4 z-[3]" size="20" :component="Checkmark" />
     </div>
     <div class="pt-[76px] pb-16 pl-16 pr-2">

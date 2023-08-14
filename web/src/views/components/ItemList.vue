@@ -25,7 +25,7 @@ const openList = () => {
 const getItem = () => {
     const data = {
         page: page.value,
-        page_size: 10,
+        page_size: 100,
     }
     loadIng.value = true
     getProjectList(data).then(({ data }) => {

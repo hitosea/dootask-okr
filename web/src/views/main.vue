@@ -4,13 +4,16 @@
         <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
         <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
     </div>
-    <OkrDetailsModal ref="RefOkrDetails" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close">
+    <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close">
     </OkrDetailsModal>
+
+    <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
 </template>
 
 <script lang="ts" setup>
 import { watch } from 'vue';
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
+import AddOkrsDrawer from '@/views/components/AddOkrsDrawer.vue'
 import { GlobalStore } from "@/store"
 import { useRouter } from 'vue-router'
 
@@ -18,6 +21,18 @@ const router = useRouter()
 const okrDetailsShow = ref(false)
 const globalStore = GlobalStore()
 
+const addShow = ref(false)
+const edit = ref(false)
+let editData = {}
+
+
+//编辑
+const handleEdit = (data) => {
+    okrDetailsShow.value = false
+    addShow.value = true
+    edit.value = true
+    editData = data
+}
 // 监听打开
 watch(() => globalStore.okrDetail, (newValue) => {
     if (newValue.show) {
@@ -41,5 +56,11 @@ const close = () => {
     okrDetailsShow.value = false
     globalStore.okrDetail.id = 0
     globalStore.okrDetail.show = false
+}
+
+const handleClose = (e,id) => {
+    edit.value = false
+    editData = {}
+    addShow.value = false
 }
 </script>

@@ -26,6 +26,12 @@
                 <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
+            <div class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'mr-24':''">
+                <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                    :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
+                    :percentage="item.progress" />
+                <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
+            </div>
             <n-tooltip trigger="hover" v-if="cancelShow">
                 <template #trigger>
                     <i v-if="cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
@@ -33,12 +39,6 @@
                 </template>
                 {{ $t('取消对齐') }}
             </n-tooltip>
-            <div class="flex md:hidden ml-auto min-w-[55px] items-center cursor-pointer">
-                <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
-                    :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
-                    :percentage="item.progress" />
-                <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
-            </div>
         </div>
 
     </div>

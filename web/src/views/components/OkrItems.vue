@@ -27,8 +27,10 @@
                     <i class="taskfont"> &#xe61a;</i>
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
-                    <i class="taskfont"> &#xe71d;</i>
-                    <p>{{ expiresFormat(item.end_at) }}</p>
+                    <template v-if="item.canceled == '0' && item.completed =='0'">                        
+                        <i class="taskfont" :class="isOverdue ?'text-[#FF7070]' : ''"> &#xe71d;</i>
+                        <p :class="isOverdue ?'text-[#FF7070]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                    </template>
                 </div>
 
                 <div class="okr-time-web">
@@ -184,7 +186,7 @@ const submitSelectAlignment = (e) => {
     loadIng.value = true
     alignUpdate(upData)
         .then(({ msg }) => {
-            message.success(msg)
+            message.success($t('操作成功'))
             emit('upData', eidtId.value)
         })
         .catch(ResultDialog)
@@ -206,10 +208,19 @@ const expiresFormat = (date) => {
     return webTs.countDownFormat(timestamp, nowTime.value)
 }
 
+const isOverdue = (detialData) => {
+    let time = utils.GoDateHMS(detialData.end_at)
+    return Number(utils.Date(time, true)) < nowTime.value;
+}
+
 onMounted(() => {
     nowInterval.value = setInterval(() => {
         nowTime.value = utils.Time();
     }, 1000);
+})
+
+onUnmounted(()=>{
+    clearInterval(nowInterval.value); 
 })
 
 </script>

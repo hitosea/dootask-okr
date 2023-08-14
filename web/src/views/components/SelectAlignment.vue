@@ -58,7 +58,7 @@
                         {{ $t('项') }}
                     </p>
                     <div class="flex items-center gap-4">
-                        <n-button class="hidden md:block" :loading="loadIng" type="default" @click="handleClose">
+                        <n-button class="hidden md:flex" :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
                         <n-button :loading="loadIng" type="primary" @click="handleSubmit">

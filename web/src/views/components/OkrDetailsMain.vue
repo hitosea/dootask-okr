@@ -74,10 +74,15 @@
                                 <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
                                 <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14">
+                            <p class="flex-1 text-text-li text-14 flex items-center">
                                 <span v-if="detialData.start_at">{{ utils.GoDate(detialData.start_at || 0) }} ~ {{
                                     utils.GoDate(detialData.end_at || 0) }}</span>
+                             <template v-if="detialData.completed == '0' && detialData.end_at">
+                                <n-tag class="ml-4" v-if="within24Hours(detialData.end_at)" type="info"><i class="taskfont text-14 mr-4">&#xe71d;</i>{{expiresFormat(detialData.end_at)}}</n-tag>
+                                <n-tag class="ml-4" v-if="isOverdue(detialData)" type="error">{{$t('超期未完成')}}</n-tag>
+                             </template>
                             </p>
+
                         </div>
 
                         <div class="flex items-center">
@@ -347,6 +352,7 @@ import TipsModal from '@/views/components/TipsModal.vue';
 import { GlobalStore } from '@/store';
 import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
+import webTs from '@/utils/web';
 
 const userInfo = UserStore().info
 const router = useRouter()
@@ -390,6 +396,8 @@ const score = ref(0)
 const superiorScore = ref(0)
 const inputShow = ref(false)
 
+const nowInterval = ref<any>(null)
+const nowTime = ref(0)
 
 const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList'])
 
@@ -643,13 +651,19 @@ const handleMark = (id, scores, superior_score, progress) => {
         score.value = scores
         superiorScore.value = superior_score
         if (userInfo.userid == detialData.value.userid && scores < 0) {
-            inputShow.value = true
+            inputShow.value = true                   
+        }
+        if (userInfo.userid == detialData.value.userid && scores > -1) {
+            inputShow.value = false  
         }
         if (detialData.value.superior_user?.indexOf(userInfo.userid) != -1 && superior_score < 0) {
             inputShow.value = true
         }
-        if (scores > -1 && superior_score > -1) {
+        if (detialData.value.superior_user?.indexOf(userInfo.userid) != -1 && superior_score > -1) {
             inputShow.value = false
+        }
+        if (scores > -1 && superior_score > -1) {
+            inputShow.value = false     
         }
         markShow.value = true
     }else{
@@ -824,6 +838,23 @@ const participantChange = (item, index) => {
         })
 }
 
+
+//超期判断
+const within24Hours = (date) => {
+    let time = utils.GoDateHMS(date)
+    return  Number(utils.Date(time, true)) - nowTime.value < 86400
+}
+
+const expiresFormat = (date) => {
+    return webTs.countDownFormat(date, nowTime.value)
+}
+
+
+const isOverdue = (detialData) => {
+    let time = utils.GoDateHMS(detialData.end_at)
+    return Number(utils.Date(time, true)) < nowTime.value;
+}
+
 //添加对齐目标
 const submitSelectAlignment = (e) => {
     const upData = {
@@ -883,6 +914,15 @@ nextTick(() => {
     if (window.innerWidth < 768) {
         navActive.value = 3
     }
+})
+
+onMounted(() => {
+    nowInterval.value = setInterval(() => {
+        nowTime.value = utils.Time();
+    }, 1000);
+})
+onUnmounted(()=>{
+    clearInterval(nowInterval.value); 
 })
 
 defineExpose({

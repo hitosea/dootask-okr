@@ -7,9 +7,6 @@ import piniaPersistConfig from "./config/pinia-persist"
 import { I18nGlobal } from "@/lang"
 import utils from "@/utils/utils"
 
-const screenOrientation = utils.screenOrientation()
-const windowLandscape = utils.screenOrientation() === 'landscape'
-const windowPortrait = utils.screenOrientation() === 'portrait'
 
 export const GlobalStore = defineStore({
     id: "GlobalState",
@@ -19,9 +16,6 @@ export const GlobalStore = defineStore({
         themeName: "",
         timer: {},
         // 浏览器窗口方向
-        windowOrientation: computed(() => { return screenOrientation }),
-        windowLandscape: computed(() => { return windowLandscape }), // 横屏
-        windowPortrait: computed(() => { return windowPortrait; }),   // 竖屏
         windowActive: true,
         windowScrollY: 0,
         keyboardType: null,

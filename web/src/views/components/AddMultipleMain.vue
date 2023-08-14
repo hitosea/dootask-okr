@@ -23,12 +23,12 @@
             </div>
             <h3 class="text-text-li text-14 md:text-18 font-normal mt-24">{{ $t('回顾') }}</h3>
             <div class="flex-auto flex flex-col shrink-0 min-h-[250px]">
-                <!-- <TEditor v-if="props.multipleId == 0" v-model:value="editorContent" :readOnly="false"></TEditor>
-                <div v-else v-html="editorContent"></div> -->
+                <!-- <TEditor v-if="props.multipleId == 0" v-model:value="review" :readOnly="false"></TEditor>
+                <div v-else v-html="review"></div> -->
                 <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
-                <n-input class="flex-1 mt-8" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
+                <n-input class="mt-8" :rows="8" v-model:value="review" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
                 <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
-                <n-input class="flex-1 mt-8" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
+                <n-input class="mt-8" :rows="8" v-model:value="problem" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
             </div>
         </div>
     </n-scrollbar>
@@ -40,7 +40,8 @@ import { useMessage } from "naive-ui"
 
 const message = useMessage()
 const loadIng = ref(false)
-const editorContent = ref(`<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`)
+const review = ref(``)
+const problem = ref(``)
 
 const props = defineProps({
     data: {
@@ -135,13 +136,15 @@ const emit = defineEmits(['close','loadIng'])
 
 const closeDrawer = () => {
     tableData.value = []
-    editorContent.value = `<p><span style="font-size: 24pt;"><strong>价值与收获</strong></span></p> <p>&nbsp;</p> <p><span style="font-size: 24pt;"><span style="font-size: 32px;"><strong>问题与不足</strong></span></span></p> <p>&nbsp;</p>`
+    review.value = ``
+    problem.value = ``
 }
 
 const handleSubmit = () => {
     const upData = {
         okr_id: props.data.id,
-        review: editorContent.value,
+        review: review.value,
+        problem: problem.value,
         comments: [],
     }
     tableData.value.map((item, index) => {
@@ -216,7 +219,8 @@ watch(() => props.multipleId, (newValue) => {
                         })
                     }
                 }
-                editorContent.value = data.review
+                review.value = data.review
+                problem.value = data.problem
             })
             .catch(({msg})=>{
                 message.error(msg)
