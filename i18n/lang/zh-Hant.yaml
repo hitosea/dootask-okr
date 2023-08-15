@@ -32,7 +32,7 @@ ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrReplayCommentInvalid: 請選擇KR評價
 ErrOkrReplayLengthInvalid: 內容過長，請限制在255個字符以內
 ErrOkrScoreInvalid: 評分請輸入0-10的整數
-ErrOkrScored: KR已評分無法操作
+ErrOkrScored: KR已評分無法操作：{{.detail}}
 ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度
 ErrOkrSuperiorScored: 上級已評分
 ErrOkrTimeEmpty: 時間不能爲空

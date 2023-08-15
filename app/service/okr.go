@@ -182,13 +182,25 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		if len(diffIds) > 0 {
+			// 先判断是否已评分，已评分的不允许删除
+			var delOkr []model.Okr
+			err := tx.Model(&model.Okr{}).Where("id in (?)", diffIds).Find(&delOkr).Error
+			if err != nil {
+				return err
+			}
+			for _, okr := range delOkr {
+				if okr.Score > -1 || okr.SuperiorScore > -1 {
+					return e.WithDetail(constant.ErrOkrScored, okr.Title, nil)
+				}
+			}
+			// 删除关键结果
 			if err := tx.Where("id in (?)", diffIds).Delete(&model.Okr{}).Error; err != nil {
 				return err
 			}
 		}
 		obj.KeyResults = nil
 		for _, kr := range param.KeyResults {
-			// 去掉kr.Participant中的0
+			// 去掉kr.Participant中的0或0,
 			kr.Participant = strings.TrimLeft(kr.Participant, "0,")
 			kr.Participant = strings.TrimLeft(kr.Participant, "0")
 			if kr.Id == 0 {
@@ -1564,7 +1576,7 @@ func (s *okrService) CheckObjectiveOperation(okr *model.Okr, userid int) error {
 		}
 
 		if okr.Score > -1 || okr.SuperiorScore > -1 {
-			return e.New(constant.ErrOkrScored)
+			return e.WithDetail(constant.ErrOkrScored, okr.Title, nil)
 		}
 	}
 	return nil

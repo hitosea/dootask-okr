@@ -35,7 +35,7 @@ var (
 	ErrOkrTimeEmpty               = "ErrOkrTimeEmpty"               //时间不能为空
 	ErrOkrCanceled                = "ErrOkrCanceled"                //O目标已取消无法操作
 	ErrOkrCompleted               = "ErrOkrCompleted"               //O目标已完成无法操作
-	ErrOkrScored                  = "ErrOkrScored"                  //KR已评分无法操作
+	ErrOkrScored                  = "ErrOkrScored"                  //KR已评分无法操作：{{.detail}}
 	ErrOkrTimeFormat              = "ErrOkrTimeFormat"              //时间格式错误
 	ErrOkrTitleLengthInvalid      = "ErrOkrTitleLengthInvalid"      //标题内容过长，请限制在255个字符以内
 	ErrOkrTimeInvalid             = "ErrOkrTimeInvalid"             //开始时间不能大于结束时间，请重新选择合适的时间段
