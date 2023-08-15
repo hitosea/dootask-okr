@@ -59,7 +59,13 @@ var AddTableOkrLog = &gormigrate.Migration{
 var AddTableOkrReplayHistoryComment = &gormigrate.Migration{
 	ID: "2023071006-add-table-okr-replay-history-comment",
 	Migrate: func(tx *gorm.DB) error {
-		return tx.Migrator().AlterColumn(&model.OkrReplayHistory{}, "comment")
+		if !tx.Migrator().HasColumn(&model.OkrReplayHistory{}, "comment") {
+			if err := tx.Migrator().AlterColumn(&model.OkrReplayHistory{}, "comment"); err != nil {
+				return err
+			}
+			return nil
+		}
+		return nil
 	},
 }
 
@@ -67,11 +73,17 @@ var AddTableOkrReplayHistoryComment = &gormigrate.Migration{
 var AddTableOkrScore = &gormigrate.Migration{
 	ID: "2023071007-add-table-okr-score",
 	Migrate: func(tx *gorm.DB) error {
-		if err := tx.Migrator().AlterColumn(&model.Okr{}, "score"); err != nil {
-			return err
+		if tx.Migrator().HasColumn(&model.Okr{}, "score") {
+			if err := tx.Migrator().AlterColumn(&model.Okr{}, "score"); err != nil {
+				return err
+			}
+			return nil
 		}
-		if err := tx.Migrator().AlterColumn(&model.Okr{}, "superior_score"); err != nil {
-			return err
+		if tx.Migrator().HasColumn(&model.Okr{}, "superior_score") {
+			if err := tx.Migrator().AlterColumn(&model.Okr{}, "superior_score"); err != nil {
+				return err
+			}
+			return nil
 		}
 		return nil
 	},
@@ -81,7 +93,13 @@ var AddTableOkrScore = &gormigrate.Migration{
 var AddTableOkrLogRecord = &gormigrate.Migration{
 	ID: "2023071008-add-table-okr-log-record",
 	Migrate: func(tx *gorm.DB) error {
-		return tx.Migrator().AddColumn(&model.OkrLog{}, "record")
+		if !tx.Migrator().HasColumn(&model.OkrLog{}, "record") {
+			if err := tx.Migrator().AddColumn(&model.OkrLog{}, "record"); err != nil {
+				return err
+			}
+			return nil
+		}
+		return nil
 	},
 }
 
@@ -89,11 +107,17 @@ var AddTableOkrLogRecord = &gormigrate.Migration{
 var AddTableOkrReplayProblem = &gormigrate.Migration{
 	ID: "2023081408-add-table-okr-replay-problem",
 	Migrate: func(tx *gorm.DB) error {
-		if err := tx.Migrator().AlterColumn(&model.OkrReplay{}, "review"); err != nil {
-			return err
+		if tx.Migrator().HasColumn(&model.OkrReplay{}, "review") {
+			if err := tx.Migrator().AlterColumn(&model.OkrReplay{}, "review"); err != nil {
+				return err
+			}
+			return nil
 		}
-		if err := tx.Migrator().AddColumn(&model.OkrReplay{}, "problem"); err != nil {
-			return err
+		if !tx.Migrator().HasColumn(&model.OkrReplay{}, "problem") {
+			if err := tx.Migrator().AddColumn(&model.OkrReplay{}, "problem"); err != nil {
+				return err
+			}
+			return nil
 		}
 		return nil
 	},
