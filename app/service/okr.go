@@ -622,15 +622,6 @@ func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *
 			kr.KrScore = krScore
 		}
 
-		// 用户头像
-		users, err := DootaskService.GetUserBasic(user.Token, []int{obj.Userid})
-		if err != nil {
-			return nil, err
-		}
-		if len(users) > 0 {
-			obj.UserAvatar = users[0].Userimg
-		}
-
 		s.GetObjectiveExt(obj, krs, user)
 	}
 	return objs, nil
@@ -645,6 +636,12 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 	obj.AlignObjective = aliasIds                                              // 对齐目标
 	obj.AlignCount = len(aliasIds)                                             // 对齐目标数量
 	obj.Alias = s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId) // 目标所属名称
+
+	// 用户头像
+	users, _ := DootaskService.GetUserBasic(user.Token, []int{obj.Userid})
+	if len(users) > 0 {
+		obj.UserAvatar = users[0].Userimg
+	}
 
 	return obj
 }
