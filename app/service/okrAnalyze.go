@@ -61,7 +61,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp) (
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
-			Order("completed / total desc,b.total desc")
+			Order("SUM(b.completed) / SUM(b.total) desc")
 			// Where("b.total > ?", 0)
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
