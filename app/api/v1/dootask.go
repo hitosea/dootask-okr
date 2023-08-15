@@ -54,7 +54,7 @@ func (api *BaseApi) OkrUserBasic() {
 func (api *BaseApi) OkrUserList() {
 	var param = interfaces.OkrUserListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.DootaskService.GetUserList(api.Userinfo, param.DeptOnly, param.Page, param.PageSize)
+	result, err := service.DootaskService.GetUserList(api.Userinfo, param.Keyword, param.DeptOnly, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

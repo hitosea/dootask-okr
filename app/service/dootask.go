@@ -9,6 +9,7 @@ import (
 	e "dootask-okr/app/utils/error"
 	"dootask-okr/config"
 	"encoding/json"
+	"net/url"
 
 	"fmt"
 	"time"
@@ -78,7 +79,7 @@ func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.
 }
 
 // 获取用户列表
-func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, deptOnly bool, page, pageSize int) (*interfaces.Pagination, error) {
+func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, keyword string, deptOnly bool, page, pageSize int) (*interfaces.Pagination, error) {
 	var departments string
 	if deptOnly {
 		allDepartments, err := OkrService.GetDepartmentsBySearchDeptId(user.Department)
@@ -87,7 +88,7 @@ func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, deptOnly bool
 		}
 		departments = common.ArrayImplode(allDepartments)
 	}
-	url := fmt.Sprintf("%s%s?keys[departments]=%s&page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/users/search", departments, page, pageSize, user.Token)
+	url := fmt.Sprintf("%s%s?keys[departments]=%s&keys[key]=%s&page=%d&pagesize=%d&token=%s", config.DooTaskUrl, "/api/users/search", departments, url.QueryEscape(keyword), page, pageSize, user.Token)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return nil, err

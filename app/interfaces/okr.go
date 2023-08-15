@@ -170,7 +170,8 @@ type OkrAlignUpdateReq struct {
 
 // 获取用户列表请求
 type OkrUserListReq struct {
-	DeptOnly bool `form:"dept_only,default=false" json:"dept_only"` // 是否只获取部门用户
+	DeptOnly bool   `form:"dept_only,default=false" json:"dept_only"` // 是否只获取部门用户
+	Keyword  string `form:"keyword" json:"keyword"`                   // 关键词
 	*Pages
 }
 

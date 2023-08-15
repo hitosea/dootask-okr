@@ -1576,6 +1576,10 @@ paths:
         in: query
         name: dept_only
         type: boolean
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
       - description: 当前页，默认:1
         in: query
         name: page
