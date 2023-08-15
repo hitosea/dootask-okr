@@ -1,6 +1,6 @@
 <template >
-    <n-modal v-model:show="show" transform-origin="center">
-        <n-card class="w-[480px] max-w-[90%]" :title="$t('更新 KR 完成度')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+    <n-modal v-model:show="show" transform-origin="center" :mask-closable="false">
+        <n-card class="w-[480px] max-w-[90%]" :title="$t('更新 KR 完成度')" :bordered="false" size="huge" role="dialog" aria-modal="true" >
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
@@ -8,7 +8,7 @@
                 <n-form ref="formRef" :model="formValue" size="medium"  label-placement="left"
                     label-width="auto">
                     <n-form-item :label="$t('完成度')" >
-                        <n-input-number v-model:value="formValue.progress" :max="100" :min="0" :precision="0" :placeholder="$t('请输入')"
+                        <n-input-number v-model:value="formValue.progress" :max="100" :min="0" :precision="0" placeholder="0"
                             :show-button="false">
                             <template #suffix> %</template>
                         </n-input-number>
@@ -27,11 +27,11 @@
 
             <template #footer>
                 <div class="button-box flex justify-end mt-0">
-                    <div class="flex items-center gap-4">
-                        <n-button :loading="loadIng" type="default" @click="handleClose">
+                    <div class="flex flex-1 md:flex-initial items-center gap-4">
+                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" type="default" @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
-                        <n-button :loading="loadIng" type="primary" @click="handleSubmit">
+                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" type="primary" @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
                     </div>

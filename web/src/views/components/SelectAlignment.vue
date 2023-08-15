@@ -1,21 +1,21 @@
 <template >
     <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear" :mask-closable="false">
         <n-card
-            class="max-w-[640px] w-full h-[calc(100vh-44px)] md:h-auto top-22 md:top-0 rounded-none rounded-t-xl md:rounded-xl"
+            class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-26 md:top-0 rounded-none rounded-t-xl md:rounded-xl"
             :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer" size="24" :component="Close" @click="handleClose" />
             </template>
-            <div>
-                <n-input v-model:value="searchName" placeholder="搜索" :on-update:value="searchInput">
+            <div class="flex flex-col flex-1 overflow-hidden">
+                <n-input v-model:value="searchName" placeholder="搜索" :autofocus="false" :on-update:value="searchInput">
                     <template #prefix>
                         <i class="taskfont"> &#xe6f8;</i>
                     </template>
                 </n-input>
 
-                <n-checkbox-group v-model:value="cities" class="mt-[16px]" v-if="okrList.length > 0">
-                    <div class="flex flex-col ">
-                        <n-scrollbar class="max-h-[300px]" :on-scroll="onScroll">
+                <n-checkbox-group  v-model:value="cities" class="flex mt-[16px] overflow-hidden" v-if="okrList.length > 0">
+                    <div class="flex flex-col flex-auto ">
+                        <n-scrollbar class="max-h-full md:max-h-[300px]" :on-scroll="onScroll">
                             <div class="align-okr" v-for="(item, index) in okrList">
                                 <div class="object-field ">
                                     <n-checkbox :value="item.id" />
@@ -48,7 +48,7 @@
                         </n-scrollbar>
                     </div>
                 </n-checkbox-group>
-                <div v-else class="flex items-center justify-center py-[60px]">
+                <div v-else class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
                         <img class="w-80" src="@/assets/images/icon/notSearch.svg" />
                         <p class="mt-10">{{ $t('没有找到匹配的结果') }}</p>     
@@ -154,7 +154,7 @@ const getList = (type) => {
         const data = {
             objective: searchName.value,
             page: page.value,
-            page_size: 10,
+            page_size: 20,
         }
         loadIng.value = true
         getAlignList(data).then(({ data }) => {
@@ -232,5 +232,11 @@ const pStatus = (p) => {
 
 .button-box {
     @apply flex items-center justify-between mt-0;
+}
+:deep(.n-card__content){
+    @apply flex-auto flex overflow-hidden;
+}
+:deep(.n-card__footer){
+    @apply flex-initial ;
 }
 </style>

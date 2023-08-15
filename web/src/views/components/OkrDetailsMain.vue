@@ -407,7 +407,7 @@ const inputShow = ref(false)
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 
-const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList','openDetail'])
+const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList','openDetail','getDetail'])
 
 const props = defineProps({
     show: {
@@ -429,6 +429,7 @@ const getDetail = (type) => {
     }).then(({ data }) => {
         detialData.value = data
         emit('isFollow', detialData.value.is_follow)
+        emit('getDetail', detialData.value)
         emit('canceled', detialData.value.canceled)
     })
         .catch(({ msg }) => {
@@ -724,6 +725,7 @@ const openDetail = (id,userid) => {
     emit('openDetail', id,userid)
     nextTick(()=>{
         getDetail('')
+        AlignTargetRef.value.getList()
     })
 }
 

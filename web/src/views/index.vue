@@ -58,12 +58,13 @@ import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
-import { useRouter } from 'vue-router'
+import { useRouter ,useRoute } from 'vue-router'
 import { UserStore } from '@/store/user'
 import TipsModal from '@/views/components/TipsModal.vue';
 
 const userInfo = UserStore().info
 const router = useRouter()
+const route = useRoute()
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
 const OkrDepartmentRef = ref(null)
@@ -80,10 +81,17 @@ const tabsName = ref($t('我创建的'))
 const showModal = ref(false)
 const tipsContent = ref('')
 
+if (route.query.active == undefined) {
+    router.replace({ query: { active: tabsName.value } })
+}else{
+    tabsName.value = route.query.active
+}
+
 const changeTabs = (e)=>{
     searchObject.value = ''
     searchShow.value = false
     tabsName.value = e
+    router.replace({ query: { active:e } })
 }
 
 //编辑

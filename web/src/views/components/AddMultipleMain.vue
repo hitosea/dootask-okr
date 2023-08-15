@@ -1,36 +1,48 @@
 <template >
     <n-scrollbar class="h-full">
         <div class="flex flex-col shrink-0 h-full">
-            <h3 class="text-text-li text-18 font-normal mb-16  hidden md:block">OKR</h3>
-            <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false" size="small"
-                style="--n-td-color-hover-modal:#ffffff" />
+            <h3 class="text-text-li text-18 font-medium mb-16  hidden md:block">OKR</h3>
+            <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false"
+                size="small" style="--n-td-color-hover-modal:#ffffff" />
             <div class="flex flex-col md:hidden" v-if="props.data">
-                <h3 class=" text-text-li text-14 font-normal flex justify-between items-center">{{ $t('目标（O）') }} <span class="text-primary-color">{{ props.data.progress }}%</span></h3>
-                <div class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 text-15 text-title-color font-normal">
+                <h3 class=" text-text-li text-14 font-normal flex justify-between items-center">{{ $t('目标（O）') }} <span
+                        class="text-primary-color">{{ props.data.progress }}%</span></h3>
+                <div
+                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 text-15 text-title-color font-medium">
                     {{ props.data.title }}
                 </div>
-                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('关键KR') }}</h3>
-                <div v-for="(item,index) in tableData" class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 ">
-                    <h3 class="text-15 text-title-color font-normal"><span class="mr-4 text-12 text-text-tips">KR{{ index + 1 }}</span>{{ item.KR }}</h3>
+                <h3 class="mt-16 text-text-li text-14 font-medium flex justify-between items-center ">{{ $t('关键KR') }}</h3>
+                <div v-for="(item, index) in tableData"
+                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-12 p-16 ">
+                    <h3 class="text-15 text-title-color font-medium"><span class="mr-4 text-12 text-text-tips">KR{{ index +
+                        1 }}</span>{{ item.KR }}</h3>
                     <div class="mt-12 flex items-center">
-                        <p class="text-12 text-text-li flex-1 border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{ $t('KR完成度:') }}<span class=" text-primary-color">{{item.KRcomplete}}</span></p>
-                        <p class="text-12 text-text-li flex-1 text-center border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{ $t('KR评分:') }}<span class=" text-primary-color">{{item.KRMark}}</span></p>
+                        <p class="text-12 text-text-li flex-1 border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{
+                            $t('KR完成度:') }}<span class=" text-primary-color">{{ item.KRcomplete }}</span></p>
+                        <p
+                            class="text-12 text-text-li flex-1 text-center border-solid border-0 border-r-[1px] border-[#F2F2F2]">
+                            {{ $t('KR评分:') }}<span class=" text-primary-color">{{ item.KRMark }}</span></p>
                         <div class="flex-1 flex justify-end">
-                             <n-select v-if="props.multipleId == 0" class="w-[90%]" :placeholder="$t('请选择评价')" :options="itemOptions" :disabled="props.multipleId > 0"  v-model:value="tableData[index].evaluate"></n-select>
-                             <p v-else class="text-12 text-text-li flex-1 text-center "><span class="">{{tableData[index].evaluate == 1? $t('做得好的') :$t('可提升的')}}</span></p>
+                            <n-select v-if="props.multipleId == 0" class="w-[90%]" :placeholder="$t('请选择评价')"
+                                :options="itemOptions" :disabled="props.multipleId > 0"
+                                v-model:value="tableData[index].evaluate"></n-select>
+                            <p v-else class="text-12 text-text-li flex-1 text-center "><span
+                                    class="">{{ tableData[index].evaluate == 1 ? $t('做得好的') : $t('可提升的') }}</span></p>
                         </div>
                     </div>
                 </div>
             </div>
-            <h3 class="text-text-li text-14 md:text-18 font-normal mt-24">{{ $t('回顾') }}</h3>
+            <h3 class="text-text-li text-14 md:text-18 font-medium mt-24">{{ $t('回顾') }}</h3>
             <div class="flex-auto flex flex-col shrink-0 min-h-[250px]">
                 <!-- <TEditor v-if="props.multipleId == 0" v-model:value="review" :readOnly="false"></TEditor>
                 <div v-else v-html="review"></div> -->
-                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
-                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea" maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')"/>
+                <h3 class="mt-16 text-text-li text-14 md:text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea"
+                    maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')" />
                 <p v-else v-html="review"></p>
-                <h3 class="mt-16 text-text-li text-14 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
-                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea" maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')"/>
+                <h3 class="mt-16 text-text-li text-14 md:text-20 font-medium flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
+                    maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')" />
                 <p v-else v-html="problem"></p>
             </div>
         </div>
@@ -77,24 +89,24 @@ const columns = ref<DataTableColumn[]>([
         title: $t('关键KR'),
         minWidth: 200,
         key: 'KR',
-        render(rowData,index) {
+        render(rowData, index) {
             let arr = []
             arr.push(
-                h ('span',{
-                    class:'text-primary-color shrink-0 mr-4',
-                },'KR' + (index + 1) )
+                h('span', {
+                    class: 'text-primary-color shrink-0 mr-4',
+                }, 'KR' + (index + 1))
             )
             arr.push(
-                h ('span',{
-                    class:'line-clamp-2'
-                },rowData.KR)
+                h('span', {
+                    class: 'line-clamp-2'
+                }, rowData.KR)
             )
-            return h ('div',{
-                style:{
-                    display:'flex',
-                    alignItems:'start',
+            return h('div', {
+                style: {
+                    display: 'flex',
+                    alignItems: 'start',
                 },
-            },arr)
+            }, arr)
         }
     },
     {
@@ -112,15 +124,19 @@ const columns = ref<DataTableColumn[]>([
         key: 'evaluate',
         minWidth: 150,
         render(rowData) {
-            return h(NSelect, {
-                placeholder: $t('请选择评价'),
-                value: rowData.evaluate,
-                options: itemOptions.value,
-                disabled: props.multipleId > 0,
-                onUpdateValue: (e: any) => {
-                    rowData.evaluate = e
-                },
-            })
+            if (props.multipleId == 0) {
+                return h(NSelect, {
+                    placeholder: $t('请选择评价'),
+                    value: rowData.evaluate,
+                    options: itemOptions.value,
+                    disabled: props.multipleId > 0,
+                    onUpdateValue: (e: any) => {
+                        rowData.evaluate = e
+                    },
+                })
+            }else{
+                return h('p', rowData.evaluate == 1 ? $t('做得好的') : $t('可提升的'))
+            }
         }
     }
 ])
@@ -137,7 +153,7 @@ const itemOptions = ref([
 ])
 
 
-const emit = defineEmits(['close','loadIng'])
+const emit = defineEmits(['close', 'loadIng'])
 
 const closeDrawer = () => {
     tableData.value = []
@@ -165,9 +181,9 @@ const handleSubmit = () => {
             message.success($t('添加成功'))
             emit('close')
         })
-        .catch(({msg}) => {
+        .catch(({ msg }) => {
             message.error(msg)
-        } )
+        })
         .finally(() => {
             loadIng.value = false
         })
@@ -214,7 +230,7 @@ watch(() => props.multipleId, (newValue) => {
                     KRMark: data.kr_history[0].score,
                     evaluate: data.kr_history[0].comment,
                 })
-                if( data.kr_history.length > 1 ){
+                if (data.kr_history.length > 1) {
                     for (let index = 1; index < data.kr_history.length; index++) {
                         tableData.value.push({
                             KR: data.kr_history[index].title,
@@ -227,9 +243,9 @@ watch(() => props.multipleId, (newValue) => {
                 review.value = data.review
                 problem.value = data.problem
             })
-            .catch(({msg})=>{
+            .catch(({ msg }) => {
                 message.error(msg)
-            } )
+            })
             .finally(() => {
                 loadIng.value = false
             })
@@ -237,7 +253,7 @@ watch(() => props.multipleId, (newValue) => {
 }, { immediate: true })
 
 watch(() => loadIng.value, (newValue) => {
-    emit('loadIng',newValue)
+    emit('loadIng', newValue)
 }, { immediate: true })
 
 defineExpose({

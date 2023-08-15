@@ -1,6 +1,6 @@
 <template >
-    <n-modal v-model:show="show" transform-origin="center" @after-leave="closeModal">
-        <n-card class="w-[480px] max-w-[90%]" :title="$t('评分')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+    <n-modal v-model:show="show" transform-origin="center" @after-leave="closeModal" :mask-closable="false">
+        <n-card class="w-[480px] max-w-[90%]" :title="$t('评分')" :bordered="false" size="huge" role="dialog" aria-modal="true" >
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>
@@ -21,11 +21,11 @@
 
             <template #footer>
                 <div class="button-box flex justify-end mt-0">
-                    <div class="flex items-center gap-4">
-                        <n-button :loading="loadIng" type="default" @click="handleClose">
+                    <div class="flex flex-1 md:flex-initial items-center gap-4">
+                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" type="default" @click="handleClose">
                             {{ props.inputShow ?  $t('取消') : $t('关闭')}}
                         </n-button>
-                        <n-button v-if="props.inputShow" :loading="loadIng" type="primary"
+                        <n-button class="flex-1 md:flex-initial" v-if="props.inputShow" :loading="loadIng" type="primary"
                             @click="handleSubmit">
                             {{ $t('确定') }}
                         </n-button>
