@@ -795,7 +795,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
 
-		departments, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
 		if err != nil {
 			return nil, err
 		}
@@ -876,7 +876,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
 
-		departments, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
 		if err != nil {
 			return nil, err
 		}
@@ -910,7 +910,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	// 超级管理员可以通过部门筛选
 	departmentId := param.DepartmentId
 	if departmentId != 0 {
-		admDepartments, err := s.GetDepartmentsBySearchDeptId([]int{departmentId})
+		admDepartments, _, err := s.GetDepartmentsBySearchDeptId([]int{departmentId})
 		if err != nil {
 			return nil, err
 		}
@@ -1362,7 +1362,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	}
 
 	// 获取部门小组负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
+	deptAllIds, _, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	var deptAllOwnerIds []int
 	core.DB.Model(&model.UserDepartment{}).Where("id IN (?)", deptAllIds).Where("parent_id > 0").Pluck("owner_userid", &deptAllOwnerIds)
 
@@ -1378,8 +1378,17 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
 
-	if err := db.Count(&count).Error; err != nil {
-		return false
+	// 先判断parent_id = 0的顶级负责人，有则直接返回；如果不存在再查询parent_id > 0的子部门负责人
+	if err := db.Session(&core.Session).Where("parent_id = 0").Count(&count).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			if err := db.Session(&core.Session).
+				Where("parent_id > 0").
+				Count(&count).Error; err != nil {
+				return false
+			}
+		} else {
+			return false
+		}
 	}
 
 	if count > 0 {
@@ -1411,7 +1420,7 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 	}
 
 	// 获取部门小组负责人
-	deptAllIds, _ := s.GetDepartmentsBySearchDeptId(depIds)
+	deptAllIds, _, _ := s.GetDepartmentsBySearchDeptId(depIds)
 	var deptAllOwnerIds []int
 	core.DB.Model(&model.UserDepartment{}).Where("id IN (?)", deptAllIds).Where("parent_id > 0").Pluck("owner_userid", &deptAllOwnerIds)
 
@@ -1425,8 +1434,17 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
 
-	if err := db.Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
-		return nil
+	// 先判断parent_id = 0的顶级负责人，有则直接返回；如果不存在再查询parent_id > 0的子部门负责人
+	if err := db.Session(&core.Session).Where("parent_id = 0").Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			if err := db.Session(&core.Session).
+				Where("parent_id > 0").
+				Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
+				return nil
+			}
+		} else {
+			return nil
+		}
 	}
 
 	return userids
@@ -1729,12 +1747,12 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 }
 
 // 通过顶级部门查询所有子部门
-func (s *okrService) GetDepartmentsBySearchDeptId(ids []int) ([]int, error) {
+func (s *okrService) GetDepartmentsBySearchDeptId(ids []int) ([]int, []int, error) {
 	var departments []int
 
 	depts, err := s.GetUniqueTopLevelDepartments(ids)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	for _, dept := range depts {
@@ -1743,10 +1761,10 @@ func (s *okrService) GetDepartmentsBySearchDeptId(ids []int) ([]int, error) {
 
 	allDeptIds, err := s.GetDepartmentsByTopLevelIds(departments)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return allDeptIds, nil
+	return allDeptIds, departments, nil
 }
 
 // 获取顶级部门

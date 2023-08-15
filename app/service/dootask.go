@@ -82,7 +82,7 @@ func (s dootaskService) GetUserBasic(token string, userid []int) ([]*interfaces.
 func (s dootaskService) GetUserList(user *interfaces.UserInfoResp, keyword string, deptOnly bool, page, pageSize int) (*interfaces.Pagination, error) {
 	var departments string
 	if deptOnly {
-		allDepartments, err := OkrService.GetDepartmentsBySearchDeptId(user.Department)
+		allDepartments, _, err := OkrService.GetDepartmentsBySearchDeptId(user.Department)
 		if err != nil {
 			return nil, err
 		}
