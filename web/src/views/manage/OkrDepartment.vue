@@ -5,13 +5,21 @@
                 <div v-if="userInfo == 'admin'" class=" mb-2 mr-8 whitespace-nowrap">
                     {{ $t('部门') }}
                 </div>
-                <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments"
+                <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
                     class="w-[33%] h-[36px] mr-24" :placeholder="$t('全部')" />
                 <div class=" mb-2 mr-8 whitespace-nowrap">
                     {{ $t('负责人') }}
                 </div>
-                <n-select v-model:value="principalvalue" :options="principal" class="w-[33%] h-[36px] "
-                    :placeholder="$t('全部')" />
+                <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="w-[33%] h-[36px]" filterable :placeholder="$t('全部')" clearable>
+                    <template #action>
+                        <div v-if="principallast_page > principalpage" quaternary class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
+                            {{ $t('更多...') }}
+                        </div>
+                        <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
+                            {{ $t('已经到底了') }}
+                        </div>
+                    </template> 
+                </n-select>
 
                 <div class=" mb-2 mr-8 ml-24 whitespace-nowrap">
                     {{ $t('时间') }}
@@ -49,8 +57,8 @@
                     @click="handleClick()">
                     <span class="text-text-tips">{{ $t('已完成未评分') }}</span>
                 </n-checkbox>
-                <div @click="active = true" class="flex md:hidden text-text-tips text-14">
-                    <i class="taskfont">&#xe700;</i>
+                <div @click="active = true" class="flex md:hidden text-14" :class=" searchActive ? 'text-primary-color' : 'text-text-tips'">
+                    <i class="taskfont" >&#xe700;</i>
                     {{ $t('筛选') }}
                 </div>
 
@@ -83,19 +91,27 @@
                     <div v-if="userInfo == 'admin'" class="whitespace-nowrap">
                         {{ $t('部门') }}
                     </div>
-                    <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments"
+                    <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
                         class=" h-[36px] mr-24" :placeholder="$t('全部')" />
 
                     <div class=" whitespace-nowrap" :class="userInfo == 'admin' ? 'mt-16' : ''">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" class="h-[36px] "
-                        :placeholder="$t('全部')" />
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="h-[36px]" filterable :placeholder="$t('全部')" clearable>
+                        <template #action>
+                            <div v-if="principallast_page > principalpage" quaternary class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
+                                {{ $t('更多...') }}
+                            </div>
+                            <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
+                                {{ $t('已经到底了') }}
+                            </div>
+                        </template> 
+                    </n-select>
 
                     <div class="mt-16 whitespace-nowrap">
                         {{ $t('类型') }}
                     </div>
-                    <n-select v-model:value="types" :options="typeList" class="h-[36px] "
+                    <n-select v-model:value="types" :options="typeList" class="h-[36px] " clearable
                         :placeholder="$t('全部')" />
 
 
@@ -138,7 +154,9 @@ const onscrolloading = ref(false)
 const loadingstatus = ref(false)
 const userInfo = UserStore().info.identity[0]
 const page = ref(1)
+const principalpage = ref(1)
 const last_page = ref(99999)
+const principallast_page = ref(99999)
 const list = ref([])
 const departmentsvalue = ref(null)
 const principalvalue = ref(null)
@@ -146,15 +164,14 @@ const types = ref(null);
 const daterange = ref(null)
 const completednotrated = ref(false)
 const searchTime = ref(null)
+const keyWord = ref('')
 
 const emit = defineEmits(['edit'])
 
 const departments = ref([
     { label: $t('全部'), value: null },
 ])
-const principal = ref([
-    { label: $t('全部'), value: null },
-])
+const principal = ref([])
 const typeList = ref([
     { label: $t('全部'), value: null },
     { label: $t('承诺型'), value: 1 },
@@ -177,21 +194,52 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-const init = () => {
+const searchActive = computed(()=>{
+    return departmentsvalue.value != null || principalvalue.value  != null || types.value  != null ||  daterange.value  != null
+})
+
+const getUser = (keyword) => {
+    if ( keyword == '' ) {
+        principalpage.value = 1
+    }
+    keyWord.value = keyword
     const sendata = {
         dept_only: userInfo == 'admin' ? false : true,
-        page: page.value,
-        page_size: 10,
+        page: principalpage.value,
+        page_size: 20,
+        keyword: keyword,
     }
+    
     getUserList(sendata).then(({ data }) => {
-        data.data.map(item => {
-            principal.value.push({
-                label: item.nickname,
-                value: item.userid,
-            })
-        })
+        if ( keyword == '' ) {
+            principal.value = ([
+                { label: $t('全部'), value: null }
+            ])
+            data.data.map(item => {
+                    principal.value.push({
+                        label: item.nickname,
+                        value: item.userid,
+                    })
+                })
+            }
+        else {
+            principal.value = ([])
+            if (data.data) {
+                data.data.map(item => {
+                    principal.value.push({
+                        label: item.nickname,
+                        value: item.userid,
+                    })
+                })
+            }
+        }
+        principallast_page.value = data.last_page
     })
+    
+}
 
+const init = () => {
+    principalClick('init')
     getDepartmentList().then(({ data }) => {
         data.data.map(item => {
             departments.value.push({
@@ -200,7 +248,6 @@ const init = () => {
             })
         })
     })
-
 }
 
 const resetGetList = ()=>{
@@ -209,6 +256,7 @@ const resetGetList = ()=>{
 }
 
 const getList = (type) => {
+    
     let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
         if (serstatic) {
@@ -261,6 +309,35 @@ const handleClick2 = (type) => {
     page.value=1
     loadingstatus.value=true
     getList('search');
+}
+
+//负责人
+const principalClick = (type) => {
+    if (type == 'init'){
+        principalpage.value = 1
+        principal.value = ([
+            { label: $t('全部'), value: null }
+        ])
+    }else{
+        principalpage.value++
+    }
+    const sendata = {
+        dept_only: userInfo == 'admin' ? false : true,
+        page: principalpage.value,
+        page_size: 20,
+        keyword: keyWord.value,
+     }
+    getUserList(sendata).then(({ data }) => {
+            if (data.data) {
+                data.data.map(item => {
+                    principal.value.push({
+                        label: item.nickname,
+                        value: item.userid,
+                    })
+                })
+            }
+        principallast_page.value = data.last_page
+    })
 }
 
 //重置
