@@ -1,7 +1,7 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail(item.id)" v-for="(item) in props.list">
-            <n-progress class=" hidden md:block" :class="item.progress == 100 ? 'opacity-60' : ''" style="width: 52px;"
+        <div class="okr-item-box" @click="handleOpenDetail(item.id,item.userid)" v-for="(item) in props.list">
+            <n-progress class=" hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''" style="width: 52px;"
                 :color="item.canceled == '1' ? '#A7ABB5' : 'var(--primary-color)'"
                 indicator-text-color="var(--primary-color)" type="circle" :percentage="item.progress" :offset-degree="180"
                 :stroke-width="8">
@@ -9,18 +9,23 @@
                         class="text-12">%</span></p>
                 <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
             </n-progress>
-            <div class="okr-list" :class="item.progress == 100 ? 'opacity-60' : ''">
+            <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
                         <span class="scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <h3 :class="item.progress == 100 ? 'line-through' : ''">{{ item.title }}</h3>
+                        <h3 :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star" v-if="item.is_follow"
+                        <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont md:pr-16" v-else @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="taskfont md:pr-16" v-if="!item.is_follow && item.completed == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="taskfont okr-title-icon">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
+                        <div  v-if="item.completed == '1'"
+                                class="flex md:hidden items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer border-primary-color bg-primary-color"
+                                >
+                                <n-icon class="text-white" size="14" :component="CheckmarkSharp" />
+                        </div>
                     </div>
                 </div>
                 <div class="okr-time">
@@ -28,8 +33,12 @@
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
                     <template v-if="item.canceled == '0' && item.completed =='0'">                        
-                        <i class="taskfont" :class="isOverdue ?'text-[#FF7070]' : ''"> &#xe71d;</i>
-                        <p :class="isOverdue ?'text-[#FF7070]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                        <i class="taskfont" :class="isOverdue(item.end_at) ?'text-[#FF7070]' : ''"> &#xe71d;</i>
+                        <p :class="isOverdue(item.end_at) ?'text-[#FF7070]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                    </template>
+                    <template v-if="item.canceled == '1' || item.completed =='1'">                        
+                        <i class="taskfont" > &#xe71d;</i>
+                        <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
                 </div>
 
@@ -89,9 +98,7 @@
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
-
-
-
+import { CheckmarkSharp } from '@vicons/ionicons5'
 import utils from '@/utils/utils';
 import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
@@ -146,11 +153,14 @@ const pStatus = (p) => {
 }
 
 //打开详情
-const handleOpenDetail = (id) => {
+const handleOpenDetail = (id,userid) => {
     if (window.innerWidth < 768) {
         router.push({
             path: '/okrDetails',
-            query: { data: id },
+            query: { 
+                data: id,
+                userid:userid,
+             },
         })
     }
     else {
@@ -208,8 +218,8 @@ const expiresFormat = (date) => {
     return webTs.countDownFormat(timestamp, nowTime.value)
 }
 
-const isOverdue = (detialData) => {
-    let time = utils.GoDateHMS(detialData.end_at)
+const isOverdue = (end_at) => {
+    let time = utils.GoDateHMS(end_at)
     return Number(utils.Date(time, true)) < nowTime.value;
 }
 

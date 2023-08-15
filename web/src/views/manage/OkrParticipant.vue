@@ -115,7 +115,8 @@ onMounted(() => {
 
 defineExpose({
     upData,
-    getList
+    getList,
+    resetGetList
 })
 </script>
 <style lang="less" scoped>

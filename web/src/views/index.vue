@@ -111,17 +111,16 @@ const handleAdd = () => {
 const handleClose = (e,id) => {
     //重新获取列表
     if(tabsName.value == $t('我创建的') && e == 1){
-        ICreatedRef.value.getList('search')   
-          
+        ICreatedRef.value.resetGetList('search')   
     }
     else if(tabsName.value == $t('我参与的') && e == 1){
-        OkrParticipantRef.value.getList('search')
+        OkrParticipantRef.value.resetGetList('search')
     }
     else if(tabsName.value == $t('部门OKR') && e == 1){
-        OkrDepartmentRef.value.getList('search')
+        OkrDepartmentRef.value.resetGetList('search')
     }
     else if(tabsName.value == $t('我关注的') && e == 1){
-        OkrFollowRef.value.getList('search')
+        OkrFollowRef.value.resetGetList('search')
     }
 
     //更新单条数据

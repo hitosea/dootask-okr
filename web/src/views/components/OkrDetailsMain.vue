@@ -1,6 +1,6 @@
 <template >
     <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
-        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-12 md:pt-0 md:px-0">
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-12 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive':''">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
@@ -189,7 +189,9 @@
         <div
             class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] ">
             <div
-                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white pt-[32px] md:pt-0">
+                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white pt-[32px] md:pt-0"
+                :class="navActive == 0 ? 'pt-14':''"
+                >
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
@@ -941,6 +943,9 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
+.navActive{
+    @apply hidden md:flex;
+}
 .icon-title {
     @apply text-16 cursor-pointer;
 }

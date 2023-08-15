@@ -8,9 +8,9 @@
                     <i class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
                 <div class="flex flex-col">
-                    <p class="py-8" @click="handleEdit"> {{ $t('编辑') }}</p>
+                    <p class="py-8" @click="handleEdit" v-if="userInfo.userid == userid"> {{ $t('编辑') }}</p>
                     <p class="py-8" @click="handleFollowOkr"> {{ is_follow ?   $t('取消收藏') : $t('添加收藏')}}</p>
-                    <p class="py-8" @click="handleCancel"> {{ cancel == 0 ? $t('取消目标') : $t('重启目标') }}</p>
+                    <p class="py-8" @click="handleCancel" v-if="userInfo.userid == userid"> {{ cancel == 0 ? $t('取消目标') : $t('重启目标') }}</p>
                 </div>
             </n-popover>
         </div>
@@ -23,11 +23,14 @@
 <script lang="ts" setup>
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { UserStore } from '@/store/user'
 
+const userInfo = UserStore().info
 const route = useRoute()
 const router = useRouter()
 
 const id = ref(null)
+const userid = ref(null)
 const OkrDetailsMainRef = ref(null)
 const is_follow = ref(false)
 const cancel = ref(0)
@@ -35,6 +38,7 @@ const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex
 
 if (route.query.data != undefined) {
     id.value = Number(route.query.data)
+    userid.value = Number(route.query.userid)
 }
 
 

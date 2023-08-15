@@ -16,7 +16,8 @@
                         <p class="text-12 text-text-li flex-1 border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{ $t('KR完成度:') }}<span class=" text-primary-color">{{item.KRcomplete}}</span></p>
                         <p class="text-12 text-text-li flex-1 text-center border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{ $t('KR评分:') }}<span class=" text-primary-color">{{item.KRMark}}</span></p>
                         <div class="flex-1 flex justify-end">
-                             <n-select class="w-[90%]" :placeholder="$t('请选择评价')" :options="itemOptions" :disabled="props.multipleId > 0"  v-model:value="tableData[index].evaluate"></n-select>
+                             <n-select v-if="props.multipleId == 0" class="w-[90%]" :placeholder="$t('请选择评价')" :options="itemOptions" :disabled="props.multipleId > 0"  v-model:value="tableData[index].evaluate"></n-select>
+                             <p v-else class="text-12 text-text-li flex-1 text-center "><span class="">{{tableData[index].evaluate == 1? $t('做得好的') :$t('可提升的')}}</span></p>
                         </div>
                     </div>
                 </div>

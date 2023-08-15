@@ -49,8 +49,9 @@ import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import * as http from "../../api/modules/replay"
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import OkrLoading from '../components/OkrLoading.vue'
+import { useRouter } from 'vue-router'
 
-
+const router = useRouter()
 const addMultipleShow = ref(false)
 const items = ref([])
 const loadIng = ref(false)
@@ -152,8 +153,17 @@ const openMultiple = () => {
 
 //查看okr详情
 const openOkrDetail = (id) => {
-    okrDetailsShow.value = true
-    detailId.value = id
+
+    if (window.innerWidth < 768) {
+        router.push({
+            path: '/okrDetails',
+            query: { data: id },
+        })
+    }
+    else {
+        detailId.value = id
+         okrDetailsShow.value = true
+    }
 }
 
 onMounted(() => {

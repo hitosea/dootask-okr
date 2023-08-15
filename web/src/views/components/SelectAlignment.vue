@@ -1,6 +1,8 @@
 <template >
     <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear" :mask-closable="false">
-        <n-card class="max-w-[640px] w-full h-[calc(100vh-44px)] md:h-auto top-22 md:top-0 rounded-none rounded-t-xl md:rounded-xl" :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card
+            class="max-w-[640px] w-full h-[calc(100vh-44px)] md:h-auto top-22 md:top-0 rounded-none rounded-t-xl md:rounded-xl"
+            :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
                 <n-icon class="cursor-pointer" size="24" :component="Close" @click="handleClose" />
             </template>
@@ -11,19 +13,16 @@
                     </template>
                 </n-input>
 
-                <n-checkbox-group v-model:value="cities" class="mt-[16px]">
+                <n-checkbox-group v-model:value="cities" class="mt-[16px]" v-if="okrList.length > 0">
                     <div class="flex flex-col ">
                         <n-scrollbar class="max-h-[300px]" :on-scroll="onScroll">
                             <div class="align-okr" v-for="(item, index) in okrList">
                                 <div class="object-field ">
                                     <n-checkbox :value="item.id" />
-                                    <i class="taskfont"
-                                        :class="
-                                        [item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer',
+                                    <i class="taskfont" :class="[item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer',
                                         openList.indexOf(index) != -1 ? 'active' : ''
                                         ]
-                                        "
-                                        @click="handleOpen(index, item.key_results)">&#xe745;</i>
+                                        " @click="handleOpen(index, item.key_results)">&#xe745;</i>
                                     <span class="span scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority
                                     }}</span>
                                     <h3 class="text-14 text-title-color font-normal line-clamp-1 ml-4 pr-16">
@@ -43,12 +42,23 @@
                             </div>
 
 
-                            <div class="flex justify-center">
-                                <n-spin size="small" v-if="loadIng" />
-                            </div>
+                            <!-- <div class="flex justify-center">
+                                <n-spin size="small" :show="loadIng" ></n-spin>
+                            </div> -->
                         </n-scrollbar>
                     </div>
                 </n-checkbox-group>
+                <div v-else class="flex items-center justify-center py-[60px]">
+                    <div v-if="searchName !='' && okrList.length ==0">
+                        <img class="w-80" src="@/assets/images/icon/notSearch.svg" />
+                        <p class="mt-10">{{ $t('没有找到匹配的结果') }}</p>     
+                    </div>
+                    <div v-if="searchName =='' && okrList.length ==0">
+                        <img class="w-80" src="@/assets/images/icon/notData.svg" />
+                        <p class="mt-10">{{ $t('暂无数据') }}</p>     
+                    </div>
+                     
+                </div>
             </div>
             <template #footer>
                 <div class="button-box">
