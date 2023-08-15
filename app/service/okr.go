@@ -96,10 +96,10 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 		// 关键结果
 		for _, kr := range param.KeyResults {
-			// 去掉kr.Participant中的0
-			if strings.Contains(kr.Participant, "0,") {
-				kr.Participant = strings.Trim(kr.Participant, "0,")
-			}
+			// 去掉kr.Participant中的0或0,
+			kr.Participant = strings.TrimLeft(kr.Participant, "0,")
+			kr.Participant = strings.TrimLeft(kr.Participant, "0")
+
 			keyResult, err := s.createKeyResult(tx, kr, user, obj)
 			if err != nil {
 				return err
@@ -176,6 +176,8 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 	diffIds = common.ArrayDifferenceProcessing(krIds, diffIds)
 	obj.VisibleRange = param.VisibleRange // 可见范围优先赋值
+	obj.Type = param.Type                 // 类型优先赋值
+	obj.Priority = param.Priority         // 优先级优先赋值
 
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -187,9 +189,8 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		obj.KeyResults = nil
 		for _, kr := range param.KeyResults {
 			// 去掉kr.Participant中的0
-			if strings.Contains(kr.Participant, "0,") {
-				kr.Participant = strings.Trim(kr.Participant, "0,")
-			}
+			kr.Participant = strings.TrimLeft(kr.Participant, "0,")
+			kr.Participant = strings.TrimLeft(kr.Participant, "0")
 			if kr.Id == 0 {
 				// 新增kr
 				var addKr interfaces.OkrKeyResultCreateReq
@@ -243,8 +244,6 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		}
 
 		obj.Title = param.Title
-		obj.Type = param.Type
-		obj.Priority = param.Priority
 		obj.ProjectId = param.ProjectId
 		obj.StartAt = startAt
 		obj.EndAt = endAt
@@ -366,6 +365,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		ParentId:     obj.Id,
 		ProjectId:    obj.ProjectId,
 		DialogId:     obj.DialogId,
+		Type:         obj.Type,
 		Priority:     obj.Priority,
 		Ascription:   obj.Ascription,
 		VisibleRange: obj.VisibleRange,
@@ -425,7 +425,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	}
 
 	// 判断传入的KR是否跟数据库中的KR是否有改变
-	if keyResult.Title != kr.Title || keyResult.Confidence != kr.Confidence || keyResult.StartAt != startAt || keyResult.EndAt != endAt || keyResult.Participant != kr.Participant {
+	if keyResult.Type != obj.Type || keyResult.Priority != obj.Priority || keyResult.Title != kr.Title || keyResult.Confidence != kr.Confidence || keyResult.StartAt != startAt || keyResult.EndAt != endAt || keyResult.Participant != kr.Participant {
 		err = s.CheckObjectiveOperation(keyResult, user.Userid)
 		if err != nil {
 			return nil, err
@@ -481,7 +481,8 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 			return nil, err
 		}
 	}
-
+	keyResult.Type = obj.Type
+	keyResult.Priority = obj.Priority
 	keyResult.ProjectId = obj.Id
 	keyResult.Participant = kr.Participant
 	keyResult.Title = kr.Title
@@ -1362,7 +1363,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 		db = db.Where("parent_id = 0")
 	} else {
 		db = db.Where("id IN (?)", depIds)
-		db = db.Where("parent_id > 0")
+		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
 
 	if err := db.Count(&count).Error; err != nil {
@@ -1409,10 +1410,10 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 		db = db.Where("parent_id = 0")
 	} else {
 		db = db.Where("id IN (?)", depIds)
-		db = db.Where("parent_id > 0")
+		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
 
-	if err := db.Pluck("owner_userid", &userids).Error; err != nil {
+	if err := db.Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
 		return nil
 	}
 
