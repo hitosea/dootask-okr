@@ -20,10 +20,10 @@
                 </div>
             </div>
 
-            <h3 class="a-t-title" v-if="!item.align_objective">{{ item.title }}</h3>
+            <h3 class="a-t-title cursor-pointer" v-if="!item.align_objective" @click="handleDetail(item.id,item.userid)">{{ item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
                 <h4 class="a-t-title-s max-w-[90%]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title max-w-[90%]" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
+                <h3 class="a-t-title max-w-[90%] cursor-pointer" @click="handleDetail(item.parent_id,item.userid)" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                     item.title }}</h3>
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'mr-24':''">
@@ -53,7 +53,7 @@ const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
-const emit = defineEmits(['unalign'])
+const emit = defineEmits(['unalign','openDetail'])
 
 const props = defineProps({
     value: {
@@ -126,6 +126,10 @@ const alignCancel = (itemID) => {
         }
     })
 
+}
+
+const handleDetail = (id,userid)=>{
+    emit('openDetail',id,userid)
 }
 
 watch(() => props.value, (newValue) => {

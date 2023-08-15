@@ -84,7 +84,7 @@
     </div>
     <!-- 查看对齐OKR -->
     <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem" @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }"></AlignTargetModal>
+        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }" @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
@@ -92,7 +92,7 @@
 
     <!-- OKR详情 -->
     <OkrDetailsModal ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="()=>{ emit('getList') }"></OkrDetailsModal>
+        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="()=>{ emit('getList') }" @openDetail="handleOpenDetail"></OkrDetailsModal>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';

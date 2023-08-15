@@ -178,7 +178,7 @@
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true" :userid="detialData.userid"
                             :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
-                            @unalign="handleUnalign">
+                            @unalign="handleUnalign" @openDetail="openDetail">
                         </AlignTarget>
                     </div>
 
@@ -273,7 +273,7 @@
                     <div class="text-center mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
                         :cancelShow="detialData.canceled == '0' && detialData.completed == '0' && userInfo.userid == detialData.userid"
-                        @unalign="handleUnalign">
+                        @unalign="handleUnalign" @openDetail="openDetail">
                         </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
@@ -407,7 +407,7 @@ const inputShow = ref(false)
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 
-const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList'])
+const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList','openDetail'])
 
 const props = defineProps({
     show: {
@@ -717,6 +717,14 @@ const handleCancel = () => {
 const handleUnalign = () => {
     emit('upData', detialData.value.id)
     getDetail('')
+}
+
+// 点击对齐目标跳转
+const openDetail = (id,userid) => {
+    emit('openDetail', id,userid)
+    nextTick(()=>{
+        getDetail('')
+    })
 }
 
 // 加载聊天组件

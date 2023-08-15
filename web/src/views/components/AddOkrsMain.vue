@@ -105,7 +105,7 @@
                     <div
                         class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                         <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
-                        <div class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
+                        <div v-if="item.score == -1" class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
                             <i class="taskfont text-14 text-text-tips">&#xe787;</i>
                         </div>
                     </div>
@@ -222,7 +222,7 @@ const formKRValue = ref<any>([
         time: null,
         confidence: null,
         participant: null,
-        randomString : utils.randomString(11)
+        score:-1,
     },
 ])
 
@@ -424,6 +424,7 @@ const handleClear = () => {
             time: null,
             confidence: null,
             participant: null,
+            score:-1,
         },
     ]
 }
@@ -436,6 +437,7 @@ const handleAddKr = () => {
             time: null,
             confidence: null,
             participant: null,
+            score:-1,
         },
     )
     loadUserSelects()
