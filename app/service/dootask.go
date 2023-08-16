@@ -2,7 +2,6 @@ package service
 
 import (
 	"dootask-okr/app/constant"
-	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
@@ -138,26 +137,27 @@ func (s dootaskService) GetProjectList(token string, page, pageSize int) (*inter
 }
 
 // 创建OKR评论会话
-func (s dootaskService) DialogOkrAdd(token string, okr *model.Okr) (int, error) {
+func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) {
 	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/dialog/okr/add")
 	params := make(map[string]interface{})
 	params["name"] = okr.Title
 	params["link_id"] = okr.Id
 	userids := []int{okr.Userid}
 
-	// 当okr有部门时，添加部门负责人
-	if okr.DepartmentId != "" {
-		departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
-		if len(departmentIds) > 0 {
-			// 获取部门负责人userid
-			var ownerids []int
-			err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("owner_userid", &ownerids).Error
-			if err != nil {
-				return 0, err
-			}
-			userids = common.ArrayUniqueInt(append(userids, ownerids...))
-		}
-	}
+	// // 当okr有部门时，添加部门负责人
+	// if okr.DepartmentId != "" {
+	// 	departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
+	// 	if len(departmentIds) > 0 {
+	// 		// 获取部门负责人userid
+	// 		var ownerids []int
+	// 		err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("owner_userid", &ownerids).Error
+	// 		if err != nil {
+	// 			return 0, err
+	// 		}
+	// 		userids = common.ArrayUniqueInt(append(userids, ownerids...))
+	// 	}
+	// }
+
 	//
 	params["userids"] = userids
 	result, err := s.client.PostToken(url, params, token)
@@ -175,6 +175,34 @@ func (s dootaskService) DialogOkrAdd(token string, okr *model.Okr) (int, error) 
 	}
 
 	return int(dialogId), nil
+}
+
+// 新增组员
+func (s dootaskService) DialogGroupAdduser(token string, dialogId int, userids []int) error {
+	url := fmt.Sprintf("%s%s?token=%s&dialog_id=%d&userids=%v", config.DooTaskUrl, "/api/dialog/group/adduser", token, dialogId, common.StructToJson(userids))
+	result, err := s.client.Get(url)
+	if err != nil {
+		return err
+	}
+	_, err = s.UnmarshalAndCheckResponse(result)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 删除组员
+func (s dootaskService) DialogGroupDeluser(token string, dialogId int, userids []int) error {
+	url := fmt.Sprintf("%s%s?token=%s&dialog_id=%d&userids=%v", config.DooTaskUrl, "/api/dialog/group/deluser", token, dialogId, common.StructToJson(userids))
+	result, err := s.client.Get(url)
+	if err != nil {
+		return err
+	}
+	_, err = s.UnmarshalAndCheckResponse(result)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // 推送OKR相关信息

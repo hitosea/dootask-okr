@@ -78,10 +78,11 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		}
 
 		// 创建对话
-		dialogId, err := DootaskService.DialogOkrAdd(user.Token, obj)
+		dialogId, err := DootaskService.DialogOkrAdd(obj, user.Token)
 		if err != nil {
 			return err
 		}
+
 		obj.DialogId = dialogId
 		if err := tx.Save(obj).Error; err != nil {
 			return err
@@ -123,7 +124,8 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	// 创建O时（通知发起/所有KR参与人）
 	participantIds = common.ArrayUniqueInt(participantIds)
 	if len(participantIds) > 0 {
-		go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)
+		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participantIds) // 新增对话成员
+		go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)            // 推送对话消息
 	}
 
 	return obj, nil
@@ -482,7 +484,15 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 		addDiffParticipant := common.ArrayDifferenceAddProcessing(newParticipant, oldParticipant)
 		if len(addDiffParticipant) > 0 {
+			go DootaskService.DialogGroupAdduser(user.Token, keyResult.DialogId, addDiffParticipant) // 新增对话成员
 			go DootaskService.DialogOkrPush(keyResult, user.Token, 4, diffParticipant)
+		}
+
+		// 删除KR参与人时，移出对话成员
+		delDiffParticipant := common.ArrayDifferenceAddProcessing(oldParticipant, newParticipant)
+		delDiffParticipant = common.ArrayRemove(delDiffParticipant, keyResult.Userid)
+		if len(delDiffParticipant) > 0 {
+			go DootaskService.DialogGroupDeluser(user.Token, keyResult.DialogId, delDiffParticipant) // 移出对话成员
 		}
 	}
 
@@ -1567,7 +1577,15 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 				return nil, e.New(constant.ErrOkrNoData)
 			}
 			kr.ParentTitle = obj.Title
+			go DootaskService.DialogGroupAdduser(user.Token, kr.DialogId, addDiffParticipant) // 新增对话成员
 			go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
+		}
+
+		// 删除KR参与人时，移出对话成员
+		delDiffParticipant := common.ArrayDifferenceAddProcessing(oldParticipant, newParticipant)
+		delDiffParticipant = common.ArrayRemove(delDiffParticipant, kr.Userid)
+		if len(delDiffParticipant) > 0 {
+			go DootaskService.DialogGroupDeluser(user.Token, kr.DialogId, delDiffParticipant) // 移出对话成员
 		}
 	}
 

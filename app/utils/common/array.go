@@ -74,6 +74,17 @@ func ArrayDifferenceAddProcessing(a, b []int) []int {
 	return diff
 }
 
+// 移除数组中的某个元素
+func ArrayRemove(nums []int, val int) []int {
+	var result []int
+	for _, v := range nums {
+		if v != val {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
 // str 数组去重
 func ArrayUniqueStr(nums []string) []string {
 	result := make([]string, 0, len(nums))
