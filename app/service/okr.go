@@ -971,9 +971,6 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		}
 	}
 
-	// 自己的永远存在
-	db = db.Or("parent_id = 0 AND userid = ?", user.Userid)
-
 	var count int64
 	if err := db.Count(&count).Error; err != nil {
 		return nil, err
