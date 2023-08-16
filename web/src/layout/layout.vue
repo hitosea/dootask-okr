@@ -19,6 +19,7 @@ const loadingBar = useLoadingBar()
 const globalStore = GlobalStore()
 const { addMultipleShow, multipleId,addMultipleData} = globalStore.multipleSetup()
 
+
 //关闭复盘
 const handleCloseMultiple = () => {
     globalStore.$patch((state) => {
@@ -39,6 +40,7 @@ onMounted(() => {
     loadingBarApiRef.value = loadingBar
     loadingBar.finish()
     window.addEventListener('scroll', windowScrollListener);
+
 })
 
 const windowScrollListener = () => {

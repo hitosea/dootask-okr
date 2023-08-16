@@ -30,9 +30,6 @@ export default function createDemoRouter(app, routes) {
                 loadingBarApiRef.value.finish()
             }
         }
-        if (to.meta.title) {
-            document.title  = to.meta.title as any
-          }
     })
 
     return router

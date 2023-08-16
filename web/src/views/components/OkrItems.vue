@@ -68,7 +68,7 @@
                             </div>
                         </div>
                     </template>
-                    <div v-if="item.key_results.length > 3" class=" text-14 text-primary-color">KR(+{{ item.key_results.length - 3 }})</div>
+                    <div v-if="item.key_results && item.key_results.length > 3" class=" text-14 text-primary-color">KR(+{{ item.key_results.length - 3 }})</div>
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
                     <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count

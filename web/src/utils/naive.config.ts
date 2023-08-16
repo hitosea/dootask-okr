@@ -41,6 +41,7 @@ const themeOverrides = {
         Checkbox:{
             borderRadius:'99px',
             sizeMedium:'18px',
+            border:'1px solid #B1B3B7',
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {

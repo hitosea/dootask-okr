@@ -4,7 +4,7 @@
         <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
         <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
     </div>
-    <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close">
+    <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close" @openDetail="handleOpenDetail">
     </OkrDetailsModal>
 
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
@@ -33,6 +33,8 @@ const handleEdit = (data) => {
     edit.value = true
     editData = data
 }
+
+
 // 监听打开
 watch(() => globalStore.okrDetail, (newValue) => {
     if (newValue.show) {
@@ -49,7 +51,24 @@ watch(() => globalStore.okrDetail, (newValue) => {
             })
         }
     }
-}, { immediate: true })
+})
+
+//点击对齐目标名字再次打开
+const handleOpenDetail = (id)=>{
+    if (window.innerWidth < 910) {
+            router.push({
+                path: '/okrDetails',
+                query: { data: id },
+            })
+        }
+        else {
+            globalStore.okrDetail.id = id
+            okrDetailsShow.value = false
+            nextTick(() => {
+                okrDetailsShow.value = true;
+            })
+        }
+}
 
 // 关闭
 const close = () => {

@@ -308,10 +308,24 @@ const handleSubmit = () => {
     formRef.value?.validate((errors) => {
         formRefs.value?.forEach(element => {
             element.validate((errors) => {
-                if (errors) return false;
+                if (errors) {
+                    const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error') 
+                    errorList[0].scrollIntoView({
+                        block:'center',
+                        behavior:'smooth',
+                    })
+                    return false;
+                } 
             })
         });
-        if (errors) return false;
+        if (errors) {
+            const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error') 
+                errorList[0].scrollIntoView({
+                    block:'center',
+                    behavior:'smooth',
+                })
+            return false
+        };
         const keyResults = []
         for (let index = 0; index < formKRValue.value.length; index++) {
             if (!formKRValue.value[index].title || !formKRValue.value[index].time) return

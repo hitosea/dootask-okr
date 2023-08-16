@@ -8,9 +8,9 @@
                     <i class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
                 <div class="flex flex-col">
-                    <p class="py-8" @click="handleEdit" v-if="userInfo.userid == userid && detail.canceled == '0' && detail.completed == '0'"> {{ $t('编辑') }}</p>
+                    <p class="py-8" @click="handleEdit" v-if="userInfo.userid == detail.userid && detail.canceled == '0' && detail.completed == '0'"> {{ $t('编辑') }}</p>
                     <p class="py-8" @click="handleFollowOkr"> {{ is_follow ? $t('取消收藏') : $t('添加收藏') }}</p>
-                    <p class="py-8" @click="handleCancel" v-if="userInfo.userid == userid"> {{ cancel == 0 ? $t('取消目标') :
+                    <p class="py-8" @click="handleCancel" v-if="userInfo.userid == detail.userid && detail.completed == '0'"> {{ cancel == 0 ? $t('取消目标') :
                         $t('重启目标') }}</p>
                 </div>
             </n-popover>
@@ -58,7 +58,9 @@ const getDetail = (item) => {
     detail.value = item
 }
 const handleReturn = () => {
-    router.back()
+    console.log(route);
+    
+    router.go(-1)
 }
 
 const handleEdit = () => {

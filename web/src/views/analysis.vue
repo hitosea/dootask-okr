@@ -104,7 +104,7 @@
                             <div class="list-body">
                                 <div class="echarts-pie">
                                     <div class="text-16 flex">{{ $t('OKR评分率') }}
-                                        <n-tooltip trigger="hover">
+                                        <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300" >
                                             <template #trigger>
                                                 <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
                                             </template>
@@ -193,6 +193,10 @@ const calculatingProgress = (complete:number,total:number) => {
     return parseFloat((complete / (total || 1) * 100).toFixed(2))
 }
 
+//计算屏幕宽度
+const widthWindow = computed(()=>{
+    return window.innerWidth 
+})
 
 // OKR整体平均完成度
 const completeEcharts = ref(null);

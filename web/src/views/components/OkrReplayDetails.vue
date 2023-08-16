@@ -19,8 +19,6 @@ let problem = ref("")
 
 // 加载表格
 const loadTable = (krReplay) => {
-    console.log(krReplay);
-    
     review = krReplay.review
     problem = krReplay.problem
     let count = 1
@@ -52,6 +50,7 @@ const data = ref([])
 const columns = ref<DataTableColumn[]>([
     {
         key: "targetTitle",
+        minWidth:'100px',
         rowSpan: (rowData) => rowData.length,
         title() {
             return h(
@@ -81,6 +80,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         key: "completeness",
+        minWidth:'100px',
         rowSpan: (rowData) => rowData.length,
         title() {
             return h(
@@ -110,6 +110,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         key: "krTitle",
+        minWidth:'100px',
         title() {
             return h(
                 "p",
@@ -163,6 +164,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         key: "krCompleteness",
+        minWidth:'100px',
         title() {
             return h(
                 "p",
@@ -191,6 +193,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         key: "score",
+        minWidth:'100px',
         title() {
             return h(
                 "p",
@@ -219,6 +222,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         key: "evaluate",
+        minWidth:'100px',
         title() {
             return h(
                 "p",

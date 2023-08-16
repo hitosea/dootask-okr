@@ -42,4 +42,5 @@ export interface replayData {
     kr_history?:any
     okr_progress?:any
     review?:any
+    problem?:any
 }

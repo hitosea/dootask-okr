@@ -10,6 +10,7 @@ export const routes = [
     {
         name: "OkrDetails",
         path: "/",
+        meta: { title:  I18n.global.t('OKR管理')},
         component: Main
     },
     {
@@ -24,6 +25,7 @@ export const routes = [
         meta: { title:  I18n.global.t('OKR结果分析')},
         component: Analysis
     },
+
     {
         name: "addOkr",
         path: "/addOkr",

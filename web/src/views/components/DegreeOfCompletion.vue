@@ -28,7 +28,7 @@
             <template #footer>
                 <div class="button-box flex justify-end mt-0">
                     <div class="flex flex-1 md:flex-initial items-center gap-4">
-                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" type="default" @click="handleClose">
+                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" strong secondary @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
                         <n-button class="flex-1 md:flex-initial" :loading="loadIng" type="primary" @click="handleSubmit">
