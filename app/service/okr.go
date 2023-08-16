@@ -922,6 +922,13 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR userid = ?", user.Userid)
 			}
 		}
+	} else {
+		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR
+		var adminUserIds []int
+		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Pluck("userid", &adminUserIds)
+		if len(adminUserIds) > 0 {
+			db = db.Where("userid NOT IN (?)", adminUserIds)
+		}
 	}
 
 	// 超级管理员可以通过部门筛选
