@@ -51,11 +51,11 @@
                 <div v-else class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
                         <img class="w-80" src="@/assets/images/icon/notSearch.svg" />
-                        <p class="mt-10">{{ $t('没有找到匹配的结果') }}</p>     
+                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果') }}</p>     
                     </div>
                     <div v-if="searchName =='' && okrList.length ==0">
                         <img class="w-80" src="@/assets/images/icon/notData.svg" />
-                        <p class="mt-10">{{ $t('暂无数据') }}</p>     
+                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>     
                     </div>
                 </div>
             </div>
