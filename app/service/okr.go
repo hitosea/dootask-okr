@@ -923,9 +923,9 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 			}
 		}
 	} else {
-		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR
+		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR，除去有部门的超管
 		var adminUserIds []int
-		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Pluck("userid", &adminUserIds)
+		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Where("department IS NULL OR department = '' OR department = ',,'").Pluck("userid", &adminUserIds)
 		if len(adminUserIds) > 0 {
 			db = db.Where("userid NOT IN (?)", adminUserIds)
 		}
