@@ -851,7 +851,12 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		return nil, err
 	}
 
-	db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
+	if len(participantIds) > 0 {
+		db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
+	}
+
+	// 自己的永远存在
+	db = db.Or("okr.parent_id = 0 AND okr.userid = ?", user.Userid)
 
 	if err = db.Count(&count).Error; err != nil {
 		return nil, err
@@ -964,6 +969,9 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		}
 	}
 
+	// 自己的永远存在
+	db = db.Or("parent_id = 0 AND userid = ?", user.Userid)
+
 	var count int64
 	if err := db.Count(&count).Error; err != nil {
 		return nil, err
@@ -1033,13 +1041,57 @@ func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective stri
 func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var replays []*model.OkrReplay
 
-	db := core.DB.Model(&model.OkrReplay{}).
-		Where("userid = ?", user.Userid).
-		Order("created_at DESC")
+	okrTable := core.DBTableName(&model.Okr{})
+	okrReplayTable := core.DBTableName(&model.OkrReplay{})
+
+	db := core.DB.Table(okrReplayTable + " AS replay").
+		Select("replay.*, okr.visible_range, okr.parent_id").
+		Joins(fmt.Sprintf(`LEFT JOIN %s okr ON replay.okr_id = okr.id`, okrTable)).
+		Order("replay.created_at DESC")
+
+	// 用户不是超级管理员时，只能看到自己所在部门的OKR
+	if !user.IsAdmin() {
+		if len(user.Department) == 0 {
+			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
+		}
+
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+		var sql []string
+		for _, departmentId := range departments {
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(sql, " OR "))
+
+		// 判断是否是普通组员
+		var department model.UserDepartment
+		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
+		if department.Id == 0 {
+			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			db = db.Where("okr.visible_range IN (1, 3) OR replay.okr_userid = ?", user.Userid)
+		} else {
+			// 判断是否是同级部门负责人
+			var departmentSameLevel []model.UserDepartment
+			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			if len(departmentSameLevel) > 0 {
+				// 部门负责人可以看到自己所在部门的所有OKR
+				var sqlSame []string
+				for _, department := range departmentSameLevel {
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", department.Id))
+				}
+				db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR replay.okr_userid = ?", user.Userid)
+			}
+		}
+	}
 
 	if objective != "" {
-		db = db.Where("okr_title LIKE ?", "%"+objective+"%")
+		db = db.Where("replay.okr_title LIKE ?", "%"+objective+"%")
 	}
+
+	// 自己的永远存在
+	db = db.Or("okr.parent_id = 0 AND replay.okr_userid = ?", user.Userid)
 
 	var count int64
 	if err := db.Count(&count).Error; err != nil {
@@ -1375,27 +1427,22 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 		db = db.Where("parent_id = 0")
 	} else {
 		db = db.Where("id IN (?)", depIds)
-		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
 
 	// 先判断parent_id = 0的顶级负责人，有则直接返回；如果不存在再查询parent_id > 0的子部门负责人
 	if err := db.Session(&core.Session).Where("parent_id = 0").Count(&count).Error; err != nil {
-		if errors.Is(err, core.ErrRecordNotFound) {
-			if err := db.Session(&core.Session).
-				Where("parent_id > 0").
-				Count(&count).Error; err != nil {
-				return false
-			}
-		} else {
+		return false
+	}
+	if count == 0 {
+		if err := db.Session(&core.Session).
+			Where("parent_id > 0").
+			Count(&count).Error; err != nil {
 			return false
 		}
 	}
 
 	if count > 0 {
-		// 负责人评分 1.不是超管 2.kr负责人不是当前用户 3.当前用户是部门负责人
-		if !user.IsAdmin() && kr.Userid != user.Userid {
-			return true
-		}
+		return true
 	}
 
 	return false
@@ -1431,18 +1478,15 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
 		db = db.Where("parent_id = 0")
 	} else {
 		db = db.Where("id IN (?)", depIds)
-		// db = db.Where("parent_id > 0") // 注释后，自己添加OKR时的上级都可评分
 	}
-
 	// 先判断parent_id = 0的顶级负责人，有则直接返回；如果不存在再查询parent_id > 0的子部门负责人
 	if err := db.Session(&core.Session).Where("parent_id = 0").Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
-		if errors.Is(err, core.ErrRecordNotFound) {
-			if err := db.Session(&core.Session).
-				Where("parent_id > 0").
-				Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
-				return nil
-			}
-		} else {
+		return nil
+	}
+	if len(userids) == 0 {
+		if err := db.Session(&core.Session).
+			Where("parent_id > 0").
+			Pluck("DISTINCT owner_userid", &userids).Error; err != nil {
 			return nil
 		}
 	}
