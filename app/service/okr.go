@@ -464,7 +464,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	// KR时间变动时，发送提示消息
 	if keyResult.StartAt != startAt || keyResult.EndAt != endAt {
 		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR周期", interfaces.OkrLogParams{
-			Title:      keyResult.Title,
+			Title:      kr.Title,
 			TimeChange: []string{common.FormatDate2(keyResult.StartAt) + "~" + common.FormatDate2(keyResult.EndAt), common.FormatDate2(startAt) + "~" + common.FormatDate2(endAt)},
 		}); err != nil {
 			return nil, err
@@ -474,7 +474,9 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 
 	// 为KR添加新参与人时，发送提示消息
 	if len(diffParticipant) > 0 {
-		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR参与人", nil); err != nil {
+		if err := s.InsertOkrLogTx(core.DB, keyResult.ParentId, user.Userid, "update", "修改KR参与人", interfaces.OkrLogParams{
+			Title: kr.Title,
+		}); err != nil {
 			return nil, err
 		}
 
@@ -1555,7 +1557,9 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 
 	// 为KR添加新参与人时，发送提示消息
 	if len(diffParticipant) > 0 {
-		if err := s.InsertOkrLogTx(core.DB, kr.ParentId, user.Userid, "update", "修改KR参与人", nil); err != nil {
+		if err := s.InsertOkrLogTx(core.DB, kr.ParentId, user.Userid, "update", "修改KR参与人", interfaces.OkrLogParams{
+			Title: kr.Title,
+		}); err != nil {
 			return nil, err
 		}
 
