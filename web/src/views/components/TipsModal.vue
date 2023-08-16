@@ -1,6 +1,6 @@
 <template >
     <n-modal v-model:show="showModal">
-        <n-card class="w-[420px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="w-[420px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
 
             </template>

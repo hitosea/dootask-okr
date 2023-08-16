@@ -71,7 +71,7 @@
                         <OkrLoading v-if="loadIng"></OkrLoading>
                         <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" @getList="resetGetList" :list="list">
                         </OkrItems>
-                        <OkrNotDatas v-if="!loadIng && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
+                        <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
                         </OkrNotDatas>
                         <OkrLoading v-if="onscrolloading" position="onscroll"></OkrLoading>
                     </div>

@@ -57,7 +57,6 @@
                         <img class="w-80" src="@/assets/images/icon/notData.svg" />
                         <p class="mt-10">{{ $t('暂无数据') }}</p>     
                     </div>
-                     
                 </div>
             </div>
             <template #footer>

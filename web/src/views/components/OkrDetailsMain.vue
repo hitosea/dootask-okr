@@ -125,7 +125,7 @@
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     </div>
                                     <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
-                                        <span class="scale-[0.8333] origin-center">+{{ item.participant.split(',').length - 4 }}</span>
+                                        <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{ item.participant.split(',').length - 4 }}</span>
                                     </div>
                                     <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
                                     <p class="flex-1 text-text-li text-14 min-w-[140px] shrink-0">{{
@@ -135,9 +135,9 @@
                                 <div class="flex items-center gap-6 shrink-0">
                                     <div class="flex items-center cursor-pointer"
                                         @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
-                                        <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                        <n-progress  class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                            color="var(--primary-color)" status="success" :percentage="item.progress" />
+                                            :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
@@ -189,8 +189,8 @@
         <div
             class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] ">
             <div
-                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white pt-[32px] md:pt-0"
-                :class="navActive == 0 ? 'pt-14':''"
+                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white"
+                :class="navActive == 0 ? 'pt-14 md:pt-0':'pt-[32px] md:pt-0'"
                 >
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
@@ -238,7 +238,7 @@
                                             @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
                                             <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                                 :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                                color="var(--primary-color)" status="success" :percentage="item.progress" />
+                                                :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                         </div>
                                         <div v-if="item.confidence == '0'"
@@ -297,12 +297,12 @@
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
                         <div class="md:pl-24 pr-[10px]">
-                            <p class="cursor-pointer"
+                            <p class="cursor-pointer mb-20"
                             v-if="userInfo.userid == detailData.userid"
                                 :class="detailData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
-                            <div class="flex flex-col gap-3 mt-20" v-if="replayList.length">
+                            <div class="flex flex-col gap-3" v-if="replayList.length">
                                 <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList"
                                     @click="handleCheckMultiple(item.id)">
                                     <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
@@ -608,6 +608,7 @@ const handleSchedule = (id, progress, progress_status, score) => {
         return
     }
     if (score > -1) return message.error($t('KR已评分无法操作'))
+    if (detailData.value.completed == '1') return message.error($t('O目标已完成无法操作'))
     if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
     degreeOfCompletionId.value = id
     degreeOfCompletionProgress.value = progress
@@ -894,6 +895,21 @@ const submitSelectAlignment = (e) => {
         .finally(() => {
             loadIng.value = false
         })
+}
+
+//颜色判断
+const colorStatus = (color) => {
+    let result = ''
+    if (color == 1){
+        result = '#8BCF70'
+    }
+    if (color == 2){
+        result = '#FFA25A'
+    }
+    if (color == 3){
+        result = '#FF7070'
+    }
+    return result
 }
 
 // 卸载

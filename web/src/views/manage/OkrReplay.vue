@@ -2,7 +2,7 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
             <div>
-                <OkrNotDatas v-if="items.length == 0 && !loadIng" :msg="$t('暂无复盘')" :types="searchObject !=''"></OkrNotDatas>
+                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :msg="$t('暂无复盘')" :types="searchObject !=''"></OkrNotDatas>
                 <OkrLoading v-if="loadIng"></OkrLoading>
             </div>
             <div v-if="items.length != 0" class="replay">

@@ -1,6 +1,6 @@
 <template >
     <div class="align-target">
-        <div class="a-t-list" v-for="item in dataList">
+        <div class="a-t-list" v-for="item in dataList" v-if="dataList">
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
                 <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">{{ item.prefix
                 }}</span>
@@ -20,13 +20,16 @@
                 </div>
             </div>
 
-            <h3 class="a-t-title cursor-pointer" v-if="!item.align_objective" @click="handleDetail(item.id,item.userid)">{{ item.title }}</h3>
+            <h3 class="a-t-title cursor-pointer" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid)">{{
+                item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
                 <h4 class="a-t-title-s max-w-[90%]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title max-w-[90%] cursor-pointer" @click="handleDetail(item.parent_id,item.userid)" :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
-                    item.title }}</h3>
+                <h3 class="a-t-title max-w-[90%] cursor-pointer" @click="handleDetail(item.parent_id, item.userid)"
+                    :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
+                        item.title }}</h3>
             </div>
-            <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'mr-24':''">
+            <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
+                :class="cancelShow ? 'mr-24' : ''">
                 <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                     :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                     :percentage="item.progress" />
@@ -34,13 +37,20 @@
             </div>
             <n-tooltip trigger="hover" v-if="props.cancelShow">
                 <template #trigger>
-                    <i v-if="props.cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block" @click="alignCancel(item.id)">
+                    <i v-if="props.cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block"
+                        @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>
                 {{ $t('取消对齐') }}
             </n-tooltip>
         </div>
 
+        <div v-else class="flex flex-initial items-center justify-center py-[60px]">
+            <div >
+                <img class="w-80" src="@/assets/images/icon/notData.svg" />
+                <p class="mt-10">{{ $t('暂无数据') }}</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -53,7 +63,7 @@ const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
 
-const emit = defineEmits(['unalign','openDetail'])
+const emit = defineEmits(['unalign', 'openDetail'])
 
 const props = defineProps({
     value: {
@@ -128,8 +138,8 @@ const alignCancel = (itemID) => {
 
 }
 
-const handleDetail = (id,userid)=>{
-    emit('openDetail',id,userid)
+const handleDetail = (id, userid) => {
+    emit('openDetail', id, userid)
 }
 
 watch(() => props.value, (newValue) => {
@@ -172,5 +182,4 @@ defineExpose({
             @apply text-text-tips text-12 flex-auto ml-4 font-normal line-clamp-1;
         }
     }
-}
-</style>
+}</style>

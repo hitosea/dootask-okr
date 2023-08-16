@@ -3,7 +3,7 @@
         <div class="okr-follow-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <OkrItems @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
-            <OkrNotDatas  v-if="!loadIng && list.length == 0" :types="searchObject !=''"></OkrNotDatas>
+            <OkrNotDatas  v-if="!loadIng && !onscrolloading && list.length == 0" :types="searchObject !=''"></OkrNotDatas>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
         </div>
     </n-scrollbar>
