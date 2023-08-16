@@ -209,3 +209,14 @@ func IsEqual(a, b interface{}) bool {
 		return false
 	}
 }
+
+// 去除字符串数组空值
+func ArrayStringRemoveEmpty(arr []string) []string {
+	newArr := make([]string, 0)
+	for _, str := range arr {
+		if str != "" {
+			newArr = append(newArr, str)
+		}
+	}
+	return newArr
+}

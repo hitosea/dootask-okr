@@ -1954,7 +1954,8 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 				if err := core.DB.Model(&model.User{}).Where("userid in (?)", ids).Pluck("nickname", &nicknames).Error; err != nil {
 					return nil
 				}
-				return nicknames
+				// 去除空值
+				return common.ArrayStringRemoveEmpty(nicknames)
 			}(),
 			Prefix: func() string {
 				if obj.ParentId == 0 {
