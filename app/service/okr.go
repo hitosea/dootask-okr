@@ -1104,9 +1104,9 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 	db := core.DB.Table(okrReplayTable + " AS replay").
 		Select("replay.*, okr.visible_range, okr.parent_id").
 		Joins(fmt.Sprintf(`LEFT JOIN %s okr ON replay.okr_id = okr.id`, okrTable)).
-		Where("okr.parent_id = 0").
 		Order("replay.created_at DESC")
 
+	var allWhere []string
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
@@ -1121,7 +1121,8 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
 		}
-		db = db.Where(strings.Join(sql, " OR "))
+		allWhere = append(allWhere, "okr.parent_id = 0")
+		allWhere = append(allWhere, strings.Join(sql, " OR "))
 
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		// 判断是否是普通组员
@@ -1131,7 +1132,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 			// 普通组员的权限
 			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
 			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
-			db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
+			allWhere = append(allWhere, fmt.Sprintf("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d) OR FIND_IN_SET(%d, okr.participant) > 0", user.Userid, user.Userid))
 		} else {
 			// 判断是否是顶级部门负责人
 			var departmentTop model.UserDepartment
@@ -1147,10 +1148,11 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 				}
 
 				if departmentTop.Id == 0 {
-					db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid)
+					allWhere = append(allWhere, fmt.Sprintf("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(%d, okr.participant) > 0", user.Userid))
 				}
 			}
 		}
+		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR replay.userid = ?)", user.Userid)
 	}
 
 	if objective != "" {
