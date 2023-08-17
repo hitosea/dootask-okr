@@ -10,7 +10,6 @@ import (
 	e "dootask-okr/app/utils/error"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"strings"
 
@@ -803,20 +802,17 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 // 1. 显示所在部门（即我可见的）+　我参与的
 func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var (
-		departmentSql  strings.Builder
-		participantSql strings.Builder
-		participantIds []int
-		okrs           []*model.Okr
-		count          int64
-		err            error
-		okrTable       = core.DBTableName(&model.Okr{})
+		okrs     []*model.Okr
+		count    int64
+		err      error
+		okrTable = core.DBTableName(&model.Okr{})
 	)
 
 	// 已取消和已完成的OKR不显示 测试提出的需求
-	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Where("okr.canceled = 0 AND okr.completed = 0").Order("okr.created_at desc")
-	participantDb := core.DB.Table(okrTable + " AS okr2").Where("okr2.canceled = 0 AND okr2.completed = 0").Order("okr2.created_at desc")
+	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").Order("okr.created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
+	var allWhere []string
 	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
@@ -826,39 +822,25 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		if err != nil {
 			return nil, err
 		}
-
 		var sql []string
-		for i, departmentId := range departments {
-			if i > 0 {
-				departmentSql.WriteString(" OR ")
-				participantSql.WriteString(" AND ")
-			}
+		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
-			fmt.Fprintf(&departmentSql, "FIND_IN_SET(%d, okr.department_id) > 0", departmentId)
-			fmt.Fprintf(&participantSql, "FIND_IN_SET(%d, okr2.department_id) = 0", departmentId)
 		}
+		allWhere = append(allWhere, "("+strings.Join(sql, " OR ")+")")
 
-		//查出全部属于我的OKR
-		db = db.Where("okr.userid = ?", user.Userid)
-		db = db.Where("okr.parent_id = 0")
-		if objective != "" {
-			// 部门
-			db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son2 ON okr.id = son2.parent_id`, okrTable))
-			db = db.Where(`(okr.title LIKE ? OR son2.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
-		}
-
-		// 判断是否是普通组员
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
+		// 判断是否是普通组员
 		var department model.UserDepartment
 		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
+			// 普通组员的权限
 			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Or("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
+			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+			allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d))", user.Userid))
 		} else {
 			// 判断是否是顶级部门负责人
 			var departmentTop model.UserDepartment
 			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
-			log.Println("departmentTop", departmentTop)
 			// 判断是否是同级小组负责人
 			var departmentSameLevel []model.UserDepartment
 			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
@@ -868,11 +850,13 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 				for _, department := range departmentSameLevel {
 					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
 				}
+
 				if departmentTop.Id == 0 {
-					db = db.Or("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid)
+					allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")))"))
 				}
 			}
 		}
+		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR okr.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
 	}
 
 	// 标题筛选
@@ -880,27 +864,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		// 部门
 		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son ON okr.id = son.parent_id`, okrTable))
 		db = db.Where(`(okr.title LIKE ? OR son.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
-
-		// 我参与的
-		participantDb = participantDb.Joins(fmt.Sprintf(`LEFT JOIN %s AS parent ON okr2.parent_id = parent.id`, okrTable))
-		participantDb = participantDb.Where(`(okr2.title LIKE ? OR parent.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
 	}
-
-	db = db.Where(departmentSql.String())
-	db = db.Where("okr.parent_id = 0")
-
-	if err = participantDb.
-		Where("FIND_IN_SET(?, okr2.participant) > 0", user.Userid).
-		// Where(participantSql.String()).
-		Pluck("DISTINCT okr2.parent_id", &participantIds).Error; err != nil {
-		return nil, err
-	}
-
-	if len(participantIds) > 0 {
-		db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
-	}
-
-	db = db.Where("okr.canceled = 0 AND okr.completed = 0")
 
 	if err = db.Count(&count).Error; err != nil {
 		return nil, err
