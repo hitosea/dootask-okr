@@ -919,7 +919,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 				for _, department := range departmentSameLevel {
 					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
 				}
-				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+") AND userid = ?)", user.Userid)
+				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND (" + strings.Join(sqlSame, " OR ") + "))")
 			}
 		}
 	} else {
