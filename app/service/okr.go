@@ -10,6 +10,7 @@ import (
 	e "dootask-okr/app/utils/error"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"strings"
 
@@ -71,7 +72,6 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	}
 
 	var participantIds []int
-	participantIds = append(participantIds, user.Userid) // 通知发起/所有KR参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(obj).Error; err != nil {
 			return err
@@ -82,11 +82,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		if err != nil {
 			return err
 		}
-
 		obj.DialogId = dialogId
-		if err := tx.Save(obj).Error; err != nil {
-			return err
-		}
 
 		// 对齐目标
 		if param.AlignObjective != "" {
@@ -108,9 +104,15 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 			obj.KeyResults = append(obj.KeyResults, keyResult)
 			participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
 		}
+		participantIds = common.ArrayUniqueInt(participantIds)
 
 		// 动态日志
 		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "创建OKR", nil); err != nil {
+			return err
+		}
+
+		obj.Participant = common.ArrayImplode(participantIds)
+		if err := tx.Save(obj).Error; err != nil {
 			return err
 		}
 
@@ -122,7 +124,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	}
 
 	// 创建O时（通知发起/所有KR参与人）
-	participantIds = common.ArrayUniqueInt(participantIds)
+	participantIds = append(participantIds, user.Userid) // 通知发起/所有KR参与人
 	if len(participantIds) > 0 {
 		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participantIds) // 新增对话成员
 		go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)            // 推送对话消息
@@ -180,6 +182,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	obj.VisibleRange = param.VisibleRange // 可见范围优先赋值
 	obj.Type = param.Type                 // 类型优先赋值
 	obj.Priority = param.Priority         // 优先级优先赋值
+	obj.ProjectId = param.ProjectId       // 项目优先赋值
 
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -270,7 +273,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 		}
 
 		obj.Title = param.Title
-		obj.ProjectId = param.ProjectId
+		obj.Participant = common.ArrayImplode(participantIds)
 		obj.StartAt = startAt
 		obj.EndAt = endAt
 
@@ -321,7 +324,7 @@ func (s *okrService) CalculateProgressTx(tx *gorm.DB, obj *model.Okr) int {
 	// 更新总目标进度值，kr 进度值相加/kr 数量
 	progress := 0
 	if len(krs) > 0 {
-		progress = int(math.Round(float64(sumProgress) / float64(len(krs))))
+		progress = int(math.Floor(float64(sumProgress) / float64(len(krs))))
 	}
 
 	return progress
@@ -519,7 +522,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	}
 	keyResult.Type = obj.Type
 	keyResult.Priority = obj.Priority
-	keyResult.ProjectId = obj.Id
+	keyResult.ProjectId = obj.ProjectId
 	keyResult.Participant = kr.Participant
 	keyResult.Title = kr.Title
 	keyResult.Confidence = kr.Confidence
@@ -824,32 +827,50 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 			return nil, err
 		}
 
+		var sql []string
 		for i, departmentId := range departments {
 			if i > 0 {
 				departmentSql.WriteString(" OR ")
 				participantSql.WriteString(" AND ")
 			}
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
 			fmt.Fprintf(&departmentSql, "FIND_IN_SET(%d, okr.department_id) > 0", departmentId)
 			fmt.Fprintf(&participantSql, "FIND_IN_SET(%d, okr2.department_id) = 0", departmentId)
 		}
 
+		//查出全部属于我的OKR
+		db = db.Where("okr.userid = ?", user.Userid)
+		db = db.Where("okr.parent_id = 0")
+		if objective != "" {
+			// 部门
+			db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son2 ON okr.id = son2.parent_id`, okrTable))
+			db = db.Where(`(okr.title LIKE ? OR son2.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
+		}
+
 		// 判断是否是普通组员
+		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		var department model.UserDepartment
-		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
+		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
-			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Where("okr.visible_range IN (1, 3) OR okr.userid = ?", user.Userid)
+			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			db = db.Or("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
 		} else {
-			// 判断是否是同级部门负责人
+			// 判断是否是顶级部门负责人
+			var departmentTop model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+			log.Println("departmentTop", departmentTop)
+			// 判断是否是同级小组负责人
 			var departmentSameLevel []model.UserDepartment
-			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
 			if len(departmentSameLevel) > 0 {
-				// 部门负责人可以看到自己所在部门的所有OKR
+				// 小组负责人可以看到自己所在小组的所有OKR
 				var sqlSame []string
 				for _, department := range departmentSameLevel {
 					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
 				}
-				db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR okr.userid = ?", user.Userid)
+				if departmentTop.Id == 0 {
+					db = db.Or("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid)
+				}
 			}
 		}
 	}
@@ -870,7 +891,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 
 	if err = participantDb.
 		Where("FIND_IN_SET(?, okr2.participant) > 0", user.Userid).
-		Where(participantSql.String()).
+		// Where(participantSql.String()).
 		Pluck("DISTINCT okr2.parent_id", &participantIds).Error; err != nil {
 		return nil, err
 	}
@@ -878,6 +899,8 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	if len(participantIds) > 0 {
 		db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
 	}
+
+	db = db.Where("okr.canceled = 0 AND okr.completed = 0")
 
 	if err = db.Count(&count).Error; err != nil {
 		return nil, err
@@ -912,23 +935,32 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		}
 		db = db.Where(strings.Join(sql, " OR "))
 
+		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		// 判断是否是普通组员
 		var department model.UserDepartment
-		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
+		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
-			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?)", user.Userid)
+			// 普通组员的权限
+			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
 		} else {
-			// 判断是否是同级部门负责人
+			// 判断是否是顶级部门负责人
+			var departmentTop model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+			// 判断是否是同级小组负责人
 			var departmentSameLevel []model.UserDepartment
-			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
 			if len(departmentSameLevel) > 0 {
-				// 部门负责人可以看到自己所在部门的所有OKR
+				// 小组负责人可以看到自己所在小组的所有OKR
 				var sqlSame []string
 				for _, department := range departmentSameLevel {
 					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
 				}
-				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND (" + strings.Join(sqlSame, " OR ") + "))")
+
+				if departmentTop.Id == 0 {
+					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
+				}
 			}
 		}
 	} else {
@@ -936,7 +968,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 		var adminUserIds []int
 		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Where("department IS NULL OR department = '' OR department = ',,'").Pluck("userid", &adminUserIds)
 		if len(adminUserIds) > 0 {
-			db = db.Where("userid NOT IN (?)", adminUserIds)
+			db = db.Where("department_id != '' OR userid NOT IN (?)", adminUserIds)
 		}
 	}
 
@@ -1072,6 +1104,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 	db := core.DB.Table(okrReplayTable + " AS replay").
 		Select("replay.*, okr.visible_range, okr.parent_id").
 		Joins(fmt.Sprintf(`LEFT JOIN %s okr ON replay.okr_id = okr.id`, okrTable)).
+		Where("okr.parent_id = 0").
 		Order("replay.created_at DESC")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
@@ -1090,23 +1123,32 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 		}
 		db = db.Where(strings.Join(sql, " OR "))
 
+		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		// 判断是否是普通组员
 		var department model.UserDepartment
-		core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("owner_userid = ?", user.Userid).First(&department)
+		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
 		if department.Id == 0 {
-			// 1.自己发布的 2.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			db = db.Where("okr.visible_range IN (1, 3) OR replay.okr_userid = ?", user.Userid)
+			// 普通组员的权限
+			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+			db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
 		} else {
-			// 判断是否是同级部门负责人
+			// 判断是否是顶级部门负责人
+			var departmentTop model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+			// 判断是否是同级小组负责人
 			var departmentSameLevel []model.UserDepartment
-			core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
 			if len(departmentSameLevel) > 0 {
-				// 部门负责人可以看到自己所在部门的所有OKR
+				// 小组负责人可以看到自己所在小组的所有OKR
 				var sqlSame []string
 				for _, department := range departmentSameLevel {
-					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", department.Id))
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
 				}
-				db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR replay.okr_userid = ?", user.Userid)
+
+				if departmentTop.Id == 0 {
+					db = db.Where("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid)
+				}
 			}
 		}
 	}
@@ -1282,7 +1324,7 @@ func (s *okrService) UpdateProgressAndStatus(user *interfaces.UserInfoResp, para
 		// 更新总目标进度值，kr 进度值相加/kr 数量
 		progress := 0
 		if len(krs) > 0 {
-			progress = int(math.Round(float64(sumProgress) / float64(len(krs))))
+			progress = int(math.Floor(float64(sumProgress) / float64(len(krs))))
 		}
 
 		// 更新总目标的状态是否完成
@@ -1607,7 +1649,34 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 		return nil, err
 	}
 
+	// 更新O的参与人
+	if kr.ParentId > 0 {
+		s.UpdateObjectiveParticipant(kr.ParentId)
+	}
+
 	return kr, nil
+}
+
+// 更新O的参与人
+func (s *okrService) UpdateObjectiveParticipant(okrId int) error {
+	obj, err := s.GetObjectiveByIdWithKeyResults(okrId)
+	if err != nil {
+		return e.New(constant.ErrOkrNoData)
+	}
+
+	// 参与人
+	participantIds := make([]int, 0)
+	for _, kr := range obj.KeyResults {
+		participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
+	}
+	participantIds = common.ArrayUniqueInt(participantIds)
+
+	obj.Participant = common.ArrayImplode(participantIds)
+	if err := core.DB.Save(obj).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // 更新信心指数
