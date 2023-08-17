@@ -879,9 +879,6 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 		db = db.Or("okr.id IN (?)", common.ArrayUniqueInt(participantIds))
 	}
 
-	// 自己的永远存在
-	db = db.Or("okr.parent_id = 0 AND okr.userid = ?", user.Userid)
-
 	if err = db.Count(&count).Error; err != nil {
 		return nil, err
 	}
@@ -1117,9 +1114,6 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 	if objective != "" {
 		db = db.Where("replay.okr_title LIKE ?", "%"+objective+"%")
 	}
-
-	// 自己的永远存在
-	db = db.Or("okr.parent_id = 0 AND replay.okr_userid = ?", user.Userid)
 
 	var count int64
 	if err := db.Count(&count).Error; err != nil {
