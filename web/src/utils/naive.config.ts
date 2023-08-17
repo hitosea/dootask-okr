@@ -25,7 +25,8 @@ const themeOverrides = {
         },
         Card:{
             paddingHuge:"24px 24px 24px",
-            borderRadius:"12px"
+            borderRadius:"12px",
+            titleTextColor:"#303133",
         },
         Form: {
             feedbackHeightMedium: "20px",
@@ -45,28 +46,28 @@ const themeOverrides = {
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
-        common: {
-            primaryColor: "#67a050",
-            primaryColorHover: "#568342",
-            baseColor: "#ffffff",
-            heightMedium: "32px",
-            inputColor:"#F4F5F7",
-            borderColor:"#F4F5F7",
-        },
-        Input: {
-            heightSmall: "30px",
-        },
-        Tag:{
-            borderRadius: "4px",
-            color:"rgba(139, 207, 112, 0.1);",
-            textColor:"#8BCF70",
-            fontSizeMedium:"12px",
-            heightMedium:'20px',
-        },
-        Card:{
-            paddingHuge:"24px 24px 24px",
-            borderRadius:"12px"
-        },
+        // common: {
+        //     primaryColor: "#67a050",
+        //     primaryColorHover: "#568342",
+        //     baseColor: "#ffffff",
+        //     heightMedium: "32px",
+        //     inputColor:"#F4F5F7",
+        //     borderColor:"#F4F5F7",
+        // },
+        // Input: {
+        //     heightSmall: "30px",
+        // },
+        // Tag:{
+        //     borderRadius: "4px",
+        //     color:"rgba(139, 207, 112, 0.1);",
+        //     textColor:"#8BCF70",
+        //     fontSizeMedium:"12px",
+        //     heightMedium:'20px',
+        // },
+        // Card:{
+        //     paddingHuge:"24px 24px 24px",
+        //     borderRadius:"12px"
+        // },
     },
 }
 export default themeOverrides

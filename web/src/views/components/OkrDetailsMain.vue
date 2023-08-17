@@ -476,9 +476,9 @@ const handleNav = (index) => {
 
 // 日志下一页
 const onScrollLogList = (e) => {
-    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+    if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
         // 重新请求数据
-        if (!loadIng.value) {
+        if (!loadIngR.value) {
             logListPage.value++
             handleGetLogList()
         }
@@ -551,7 +551,7 @@ const handleGetLogList = () => {
 
 //复盘下一页
 const onScrollReplayList = (e) => {
-    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+    if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
         // 重新请求数据
         if (!loadIng.value) {
             replayListPage.value++

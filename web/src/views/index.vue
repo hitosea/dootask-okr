@@ -168,7 +168,7 @@ const handleReturn = () => {
         }
 
         h2 {
-            @apply text-title-color text-17 md:text-28 font-normal absolute left-0 right-0 text-center md:relative;
+            @apply text-title-color text-17 md:text-28 font-semibold absolute left-0 right-0 text-center md:relative;
         }
         .title-active{
             @apply hidden md:block;

@@ -13,8 +13,8 @@
                             <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-[#333333]"><b>{{ item.replayName }}</b></span>
-                            <span class="text-[#515a6e] text-12">{{ $t("的目标复盘") }}</span>
+                            <span class="text-[14px] m-[5px] text-title-color"><b>{{ item.replayName }}</b></span>
+                            <span class=" text-text-li text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
                             <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>

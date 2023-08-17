@@ -58,8 +58,6 @@ const getDetail = (item) => {
     detail.value = item
 }
 const handleReturn = () => {
-    console.log(route);
-    
     router.go(-1)
 }
 
