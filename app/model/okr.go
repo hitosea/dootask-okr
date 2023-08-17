@@ -37,6 +37,7 @@ type Okr struct {
 	UpdatedAt      time.Time      `gorm:"autoUpdateTime;comment:更新时间" json:"updated_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index;comment:删除时间" json:"deleted_at" swaggerignore:"true"`
 	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
+	ParentOKr      *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 }

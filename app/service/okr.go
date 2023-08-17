@@ -194,6 +194,12 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 				if okr.Score > -1 || okr.SuperiorScore > -1 {
 					return e.WithDetail(constant.ErrOkrScored, okr.Title, nil)
 				}
+				// 删除kr动态记录
+				if err = s.InsertOkrLogTx(tx, okr.ParentId, user.Userid, "delete", "删除KR", interfaces.OkrLogParams{
+					Title: okr.Title,
+				}); err != nil {
+					return err
+				}
 			}
 			// 删除关键结果
 			if err := tx.Where("id in (?)", diffIds).Delete(&model.Okr{}).Error; err != nil {
@@ -215,6 +221,12 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 				addKr.EndAt = kr.EndAt
 				keyResult, err := s.createKeyResult(tx, &addKr, user, obj)
 				if err != nil {
+					return err
+				}
+				// 新增kr动态记录
+				if err = s.InsertOkrLogTx(tx, obj.Id, user.Userid, "add", "添加KR", interfaces.OkrLogParams{
+					Title: addKr.Title,
+				}); err != nil {
 					return err
 				}
 				// 新增kr时，发送提示消息
@@ -571,7 +583,7 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 // 根据id获取目标
 func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Where("id = ?", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("ParentOKr").Where("id = ?", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -1924,6 +1936,23 @@ func (s *okrService) CancelAlignObjective(userid, okrId, alignOkrId int) error {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return e.New(constant.ErrOkrNoData)
 		}
+		return err
+	}
+
+	// 取消kr对齐目标动态记录
+	okr, err := s.GetObjectiveById(alignOkrId)
+	if err != nil {
+		return err
+	}
+
+	params := interfaces.OkrLogParams{
+		Title: okr.Title,
+	}
+	if okr.ParentOKr != nil {
+		params.ParentTitle = okr.ParentOKr.Title
+	}
+
+	if err = s.InsertOkrLogTx(core.DB, okrId, userid, "delete", "取消对齐目标", params); err != nil {
 		return err
 	}
 

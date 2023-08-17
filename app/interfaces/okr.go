@@ -178,6 +178,7 @@ type OkrUserListReq struct {
 // OKR日志参数
 type OkrLogParams struct {
 	Title                string   `json:"title,omitempty"`                  // 标题
+	ParentTitle          string   `json:"parent_title,omitempty"`           // 父级标题
 	TitleChange          []string `json:"title_change,omitempty"`           // 标题变更
 	ProgressChange       []int    `json:"progress_change,omitempty"`        // 进度变更
 	ProgressStatusChange []string `json:"progress_status_change,omitempty"` // 进度状态变更
