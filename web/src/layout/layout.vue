@@ -1,8 +1,8 @@
 <template>
     <n-layout class="root-layout">
         <router-view />
-    <!-- 新增复盘 -->
-    <AddMultipleDrawer v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultipleDrawer>
+        <!-- 新增复盘 -->
+        <AddMultipleDrawer v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultipleDrawer>
     </n-layout>
 </template>
 
@@ -18,7 +18,6 @@ const userStore = UserStore()
 const loadingBar = useLoadingBar()
 const globalStore = GlobalStore()
 const { addMultipleShow, multipleId,addMultipleData} = globalStore.multipleSetup()
-
 
 //关闭复盘
 const handleCloseMultiple = () => {

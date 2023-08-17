@@ -41,7 +41,7 @@ export const handleMicroData = (router: Router) =>{
                     if( data.path == '/app-vite#' || data.path == '/app-vite#/' ){
                         window.history.back()
                     }else{
-                        router.push(data.path as string)
+                        router.replace(data.path as string)
                     }
                 }
             }

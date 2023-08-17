@@ -25,6 +25,9 @@ export default function createDemoRouter(app, routes) {
     })
 
     router.afterEach(function (to, from) {
+        if(to?.meta?.title && window.eventCenterForAppNameVite?.appName == "micro-app"){
+            document.title = to.meta.title
+        }
         if (!from || to.path !== from.path) {
             if (loadingBarApiRef.value) {
                 loadingBarApiRef.value.finish()

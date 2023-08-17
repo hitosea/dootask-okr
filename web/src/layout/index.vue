@@ -7,7 +7,7 @@
                 <n-notification-provider>
                     <n-dialog-provider>
                         <Result v-if="resultCode > 0" />
-                        <layout v-else v-wechat-title="title"/>
+                        <layout v-else />
                     </n-dialog-provider>
                 </n-notification-provider>
             </n-message-provider>
@@ -25,24 +25,17 @@ import { computed } from "vue"
 import { NLocale } from "naive-ui/es/locales/common/enUS"
 import { NDateLocale } from "naive-ui/es/locales"
 import themeOverrides from "../utils/naive.config"
-import { useRoute } from 'vue-router'
-const route = useRoute()
 const lightThemeOverrides = themeOverrides.lightThemeOverrides
 const darkThemeOverrides = themeOverrides.darkThemeOverrides
 const resultCode = result.code()
 const globalStore = GlobalStore()
 const { themeName, theme } = globalStore.appSetup()
 
-const title = computed(()=>{
-    return route.meta.title
-})
-
 
 const locale = computed((): NLocale => {
     if (globalStore.language == "en") return enUS
     return zhCN
 })
-
 
 const dateLocale = computed((): NDateLocale => {
     if (globalStore.language == "en") return dateEnUS

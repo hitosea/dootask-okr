@@ -10,7 +10,6 @@ export const routes = [
     {
         name: "OkrDetails",
         path: "/",
-        meta: { title:  I18n.global.t('OKR管理')},
         component: Main
     },
     {
