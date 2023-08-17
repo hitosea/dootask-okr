@@ -32,7 +32,7 @@
         </div>
         <div class="sm:flex gap-3 xl:gap-6">
             <div class="p-s-box p-s-two mb-12 sm:mb-0">
-                <div class="percent-box">
+                <div class="percent-box gap-[6px] md:gap-3">
                     <h3>{{ $t('整体完成度') }}</h3>
                     <p>{{ $t('这是你的目标整体完成度。') }}</p>
                 </div>
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="p-s-box p-s-two">
-                <div class="percent-box">
+                <div class="percent-box gap-[6px] md:gap-3">
                     <h3>{{ $t('整体评分') }}</h3>
                     <p>{{ $t('这是你的目标整体获得评分。') }}</p>
                 </div>
@@ -212,7 +212,7 @@ defineExpose({
                 @apply flex flex-col flex-1;
 
                 h3 {
-                    @apply text-12 text-text-tips font-normal;
+                    @apply text-12 text-text-tips font-normal mb-4 md:mb-0;
                 }
 
                 .p-title {
@@ -221,10 +221,10 @@ defineExpose({
             }
 
             .p-s-one-icon {
-                @apply w-56 h-56 rounded-full items-center justify-center;
+                @apply w-36 h-36 md:w-56 md:h-56 rounded-full items-center justify-center;
 
                 i {
-                    @apply text-30;
+                    @apply text-16 md:text-30;
                 }
             }
         }
@@ -234,10 +234,10 @@ defineExpose({
         @apply justify-between items-center;
 
         .percent-box {
-            @apply flex flex-col gap-3;
+            @apply flex flex-col ;
 
             h3 {
-                @apply text-title-color text-18;
+                @apply text-title-color text-16 md:text-18;
             }
 
             p {

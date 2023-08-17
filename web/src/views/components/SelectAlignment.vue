@@ -2,7 +2,10 @@
     <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear" :mask-closable="false">
         <n-card
             class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-[52px] md:top-0 rounded-none rounded-t-xl md:rounded-xl"
-            :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
+            :bordered="false" size="huge" role="dialog" aria-modal="true">
+            <template #header>
+                <h3 class="text-16 md:text-18 text-title-color ">{{ $t('选择对齐目标') }}</h3>
+            </template>
             <template #header-extra>
                 <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
             </template>
@@ -62,7 +65,7 @@
             <template #footer>
                 <div class="button-box">
                     <p>{{ $t('已选：') }}
-                        <span v-if="cities">{{ cities.length }}</span>
+                        <span class=" text-primary-color" v-if="cities">{{ cities.length }}</span>
                         <span v-else>0</span>
                         {{ $t('项') }}
                     </p>
@@ -210,7 +213,7 @@ const pStatus = (p) => {
         }
 
         .span {
-            @apply text-14 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
+            @apply text-12 md:text-14 ml-4 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
         }
 
         .span-1 {
@@ -229,12 +232,13 @@ const pStatus = (p) => {
 }
 
 .button-box {
-    @apply flex items-center justify-between mt-0;
+    @apply flex items-center justify-between mt-0 ;
 }
 :deep(.n-card__content){
     @apply flex-auto flex overflow-hidden;
 }
 :deep(.n-card__footer){
-    @apply flex-initial ;
+    @apply flex-initial pt-12;
+    border-top: solid 1px #F2F2F2;
 }
 </style>

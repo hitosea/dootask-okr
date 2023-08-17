@@ -2,7 +2,7 @@
     <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{'z-index':modalTransferIndex}">
         <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
         <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ edit ? $t('编辑OKR') : $t('添加OKR') }}</h2>
-        <n-icon @click="handleSubmit" class="text-primary-color mr-4 z-[3]" size="20" :component="Checkmark" />
+        <i @click="handleSubmit" class="taskfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
     </div>
     <div class="pt-[76px] pb-16 pl-16 pr-2">
         <AddOkrsMain ref="AddOkrsRef" :edit="edit" :editData="editData" :labelPlacement="'top'" :labelAlign="'left'" @close="handleReturn" @loadIng="(e) => { loadIng = e }">
@@ -11,7 +11,6 @@
 </template>
 <script lang="ts" setup>
 import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
-import { Checkmark } from '@vicons/ionicons5'
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()

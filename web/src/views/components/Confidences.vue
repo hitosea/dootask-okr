@@ -1,6 +1,9 @@
 <template >
     <n-modal v-model:show="show" transform-origin="center" :mask-closable="false">
-        <n-card class="w-[480px] max-w-[90%]" :title="$t('信心指数')" :bordered="false" size="huge" role="dialog" aria-modal="true" >
+        <n-card class="w-[480px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true" >
+            <template #header>
+                <h3 class="text-16 md:text-18 text-title-color ">{{ $t('信心指数') }}</h3>
+            </template>
             <template #header-extra>
                 <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
             </template>

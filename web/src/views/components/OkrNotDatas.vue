@@ -1,5 +1,5 @@
 <template>
-    <div class=" w-full h-full flex mt-[10%] items-center flex-col">
+    <div class=" w-full h-full flex mt-[50%] md:mt-[10%] items-center flex-col">
         <div v-if="props.types">
             <img class="mr-6 -mt-2 w-80" src="@/assets/images/icon/notSearch.svg" />
         </div>

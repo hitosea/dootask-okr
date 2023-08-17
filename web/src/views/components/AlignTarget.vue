@@ -1,14 +1,14 @@
 <template >
     <div class="align-target">
         <div class="a-t-list" v-for="item in dataList" v-if="dataList">
-            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
-                <span class="a-t-tabs w-[22px] h-[14px] bg-[rgba(135,208,104,0.2)] scale-[0.8333]">{{ item.prefix
+            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[1px]">
+                <span class="a-t-tabs w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
                 }}</span>
                 <n-tooltip trigger="hover" v-if="item.alias[0]">
                     <template #trigger>
                         <span v-if="item.alias[0]" class="a-t-tab-b "
                             :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
-                                item.alias[0] }} {{ item.alias.length > 1 ? "+1" : '' }}</span>
+                                item.alias[0] }} {{ item.alias.length > 1 ? '+' + (item.alias.length - 1) : '' }}</span>
                     </template>
                     {{ item.alias.join(',') }}
                 </n-tooltip>
@@ -29,7 +29,7 @@
                         item.title }}</h3>
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
-                :class="cancelShow ? 'mr-24' : ''">
+                :class="cancelShow ? 'md:mr-24' : ''">
                 <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                     :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                     :percentage="item.progress" />
@@ -56,14 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { useMessage, useDialog } from "naive-ui"
+import { useMessage } from "naive-ui"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import InfoModal from "./InfoModal.vue";
 
 
 const loadIng = ref(false)
 const message = useMessage()
-const dialog = useDialog()
 const dataList = ref<any>([])
 const infoShow = ref(false)
 const infoTitle = ref('')
@@ -129,6 +128,7 @@ const handleSubmit = () => {
     getAlignCancel(upData)
         .then(({ msg }) => {
             message.success($t('修改成功'))
+            handleCancel();
             getList();
             emit('unalign', props.id)
         })
@@ -175,7 +175,7 @@ defineExpose({
             @apply flex items-center flex-initial flex-shrink-0 relative;
 
             .a-t-tabs {
-                @apply rounded-full flex items-center justify-center text-12 origin-center leading-3 flex-shrink-0;
+                @apply rounded-full flex items-center justify-center text-12 font-medium leading-3 flex-shrink-0;
             }
 
             .a-t-tab-b {
@@ -184,11 +184,11 @@ defineExpose({
         }
 
         .a-t-title {
-            @apply text-title-color text-14 flex-auto ml-4 line-clamp-1;
+            @apply text-text-li text-left text-14 flex-auto ml-4 line-clamp-1;
         }
 
         .a-t-title-s {
-            @apply text-text-tips text-12 flex-auto ml-4 font-normal line-clamp-1;
+            @apply text-text-tips text-left text-12 flex-auto ml-4 font-normal line-clamp-1;
         }
     }
 }

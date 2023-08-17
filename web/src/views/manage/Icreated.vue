@@ -6,7 +6,7 @@
                     <OkrLoading v-if="loadIng"></OkrLoading>
                     <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng"></OkrItems>
                     <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
-                        <template v-slot:content v-if="props.searchObject == ''">
+                        <template v-slot:content v-if="props.searchObject == '' && !loadIng">
                             <div class="mt-5"><s></s>
                                 <div>
                                     <n-button type="primary" ghost @click="handleAdd">
@@ -49,6 +49,7 @@ const props = defineProps({
 
 watch(() => props.searchObject, (newValue) => {
     clearInterval(searchTime.value)
+    loadIng.value = true
     searchTime.value = setInterval(() => {
         page.value = 1
         getList('search')

@@ -10,7 +10,7 @@
                     :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
                     <div class="replay-item-head">
                         <div>
-                            <span class="replay-item-okr-level scale-[0.8333]" :class="pStatus(item.priority)">{{
+                            <span class="replay-item-okr-level " :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
                             <span class="text-[14px] m-[5px] text-title-color"><b>{{ item.replayName }}</b></span>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex">
                         <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
-                            <div class="replay-item-okr-icon w-[25px] h-[15px]">O</div>
+                            <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
                             <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
                         </div>
                     </div>
@@ -34,8 +34,8 @@
             </div>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
-            <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @close="() => {
-                    okrDetailsShow = false
+            <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @openDetail="openOkrDetail" @close="() => {
+                    okrDetailsShow = false 
                 }
                 "></OkrDetailsModal>
         </div>
@@ -174,7 +174,7 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .okr-replay-main {
-    @apply pt-24 flex flex-col gap-6;
+    @apply pt-16 md:pt-24 flex flex-col;
 }
 
 .replay {
@@ -183,7 +183,7 @@ onMounted(() => {
     @apply flex flex-col gap-3 md:gap-4;
 
     &-item {
-        @apply bg-white rounded-lg h-auto p-24;
+        @apply bg-white rounded-lg h-auto p-16 md:p-24;
 
         &-head {
             @apply flex items-center justify-between text-[#87d068];
@@ -206,7 +206,7 @@ onMounted(() => {
             }
 
             &-level {
-                @apply bg-[#FF7070] text-10 text-white px-6 py-2 rounded-full scale-[0.8333] origin-center;
+                @apply bg-[#FF7070] text-12 md:text-14 font-medium text-white px-6 py-2 rounded-full ;
             }
         }
 

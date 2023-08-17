@@ -3,9 +3,9 @@
         <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ route.query.id == undefined ? $t('添加复盘') :$t('复盘详情') }}</h2>
-            <n-icon v-if="route.query.id == undefined" @click="handleSubmit" class="text-primary-color z-[3] mr-4" size="22" :component="Checkmark" />
+            <i v-if="route.query.id == undefined" @click="handleSubmit" class="taskfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
         </div>
-        <div class="pt-[68px] pb-16 pl-16 pr-16 flex flex-1">
+        <div class="pt-[52px] pb-32 pl-16 pr-16 flex flex-1">
             <AddMultipleMain ref="AddMultipleMainRef" :data="addMultipleData" :multipleId="multipleId"
                 @loadIng="(e) => { loadIng = e }" @close="handleReturn"></AddMultipleMain>
         </div>
@@ -13,7 +13,6 @@
 </template>
 <script setup lang="ts">
 import AddMultipleMain from './components/AddMultipleMain.vue';
-import { Checkmark } from '@vicons/ionicons5'
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()

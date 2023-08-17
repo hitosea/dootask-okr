@@ -13,7 +13,7 @@
                 <div class="okr-title">
                     <div class="okr-title-l">
                         <span class="" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <h3 :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
+                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
                         <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0'"
@@ -251,7 +251,7 @@ onUnmounted(()=>{
                     @apply flex items-start md:items-center gap-1 md:max-w-75p;
 
                     span {
-                        @apply text-14 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
+                        @apply text-12 md:text-14 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {

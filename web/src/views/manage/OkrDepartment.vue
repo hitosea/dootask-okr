@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col h-full">
-        <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center mb-16 mt-24">
+        <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center md:mb-16 md:mt-24">
             <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
                 <div v-if="userInfo == 'admin'" class="mb-2 mr-8 text-text-li whitespace-nowrap">
                     {{ $t('部门') }}
@@ -34,7 +34,7 @@
                 </n-button>
             </div>
             <div
-                class="flex-1 flex items-center mt-16 md:mt-0 mb-16 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
+                class="flex-1 flex items-center mt-12 md:mt-0 mb-12 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
                 <div class=" hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 ">
                     {{ $t('类型') }}
                 </div>
@@ -56,8 +56,8 @@
                     @click="handleClick()">
                     <span class="text-text-li">{{ $t('已完成未评分') }}</span>
                 </n-checkbox>
-                <div @click="active = true" class="flex md:hidden text-14" :class=" searchActive ? 'text-primary-color' : 'text-text-tips'">
-                    <i class="taskfont" >&#xe700;</i>
+                <div @click="active = true" class="flex items-center md:hidden text-14" :class=" searchActive ? 'text-primary-color' : 'text-text-tips'">
+                    <i class="taskfont text-18 mr-4" >&#xe700;</i>
                     {{ $t('筛选') }}
                 </div>
 
@@ -81,19 +81,19 @@
 
             <n-drawer-content>
                 <template #header>
-                    <div class="flex w-full items-center justify-between ">
+                    <div class="flex w-full items-center justify-between text-16 md:text-18">
                         {{ $t('筛选') }}
                         <i class="taskfont text-text-tips" @click="active = false">&#xe6e5;</i>
                     </div>
                 </template>
                 <div class="flex flex-col h-full">
-                    <div v-if="userInfo == 'admin'" class="whitespace-nowrap">
+                    <div v-if="userInfo == 'admin'" class="whitespace-nowrap mb-4">
                         {{ $t('部门') }}
                     </div>
                     <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
                         class=" h-[36px] mr-24" :placeholder="$t('全部')" />
 
-                    <div class=" whitespace-nowrap" :class="userInfo == 'admin' ? 'mt-16' : ''">
+                    <div class=" whitespace-nowrap mb-4" :class="userInfo == 'admin' ? 'mt-16' : ''">
                         {{ $t('负责人') }}
                     </div>
                     <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="h-[36px]" filterable :placeholder="$t('全部')" clearable>
@@ -107,20 +107,20 @@
                         </template> 
                     </n-select>
 
-                    <div class="mt-16 whitespace-nowrap">
+                    <div class="mt-16 whitespace-nowrap mb-4">
                         {{ $t('类型') }}
                     </div>
                     <n-select v-model:value="types" :options="typeList" class="h-[36px] " clearable
                         :placeholder="$t('全部')" />
 
 
-                    <div class="mt-16 whitespace-nowrap">
+                    <div class="mt-16 whitespace-nowrap mb-4">
                         {{ $t('时间') }}
                     </div>
                     <n-date-picker class=" h-[36px] " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
 
-                    <div class="flex justify-between gap-4 mt-auto">
+                    <div class="flex justify-between gap-4 mt-auto border-solid pt-12 border-0  border-t-[1px] border-[#F2F2F2]">
                         <n-button :loading="isloading" strong secondary type="tertiary" class="flex-1" @click="handleReset">
                         {{ $t('重置') }}
                          </n-button>
@@ -278,16 +278,16 @@ const getList = (type) => {
             loadIng.value = false
             isloading.value = false
             onscrolloading.value = false
-            if (serstatic) {
-                data.data ? list.value = data.data : list.value = []
-            }
-            else {
-                if (data.data) {
-                    data.data.map(item => {
-                        list.value.push(item)
-                    })
-                }
-            }
+            // if (serstatic) {
+            //     data.data ? list.value = data.data : list.value = []
+            // }
+            // else {
+            //     if (data.data) {
+            //         data.data.map(item => {
+            //             list.value.push(item)
+            //         })
+            //     }
+            // }
             last_page.value = data.last_page
         })
     }
@@ -405,5 +405,17 @@ defineExpose({
 
 :deep(.n-drawer-header__main) {
     @apply flex-1;
+}
+:deep(.n-checkbox-box__border) {
+    @apply rounded !important;
+}
+:deep(.n-checkbox .n-checkbox-box) {
+    @apply rounded !important;
+}
+:deep(.n-checkbox__label) {
+    @apply pl-4 !important;
+}
+:deep(.n-drawer-body-content-wrapper) {
+    @apply px-16 !important;
 }
 </style>

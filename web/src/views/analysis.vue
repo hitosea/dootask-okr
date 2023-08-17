@@ -4,7 +4,7 @@
             <div class="page-title">
                 <div class="flex items-center">
                     <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
-                    <h2>{{ $t('OKR结果分析') }}</h2>
+                    <h2 class="">{{ $t('OKR结果分析') }}</h2>
                 </div>
             </div>
             <!-- <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
@@ -16,7 +16,7 @@
                     <n-grid x-gap="24" cols="1 600:2 800:3">
 
                         <!-- OKR整体平均完成度 -->
-                        <n-gi class="bg-white mb-20">
+                        <n-gi class="bg-white mb-12 md:mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
                                     <div class="text-16 font-medium">{{ $t('OKR整体平均完成度') }}</div>
@@ -34,14 +34,14 @@
                                         </span>
                                     </div>
                                 </div>
-                                <n-divider class="py-20"/>
+                                <n-divider class="py-8"/>
                                 <div class="list-progress">
                                     <div class="text-16 font-medium">{{ $t('各部门OKR平均完成度') }}</div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
                                     <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
                                         <p class="progress-name">{{item.department_name}}</p>
                                         <n-progress type="line" color="#8BCF70" :percentage="calculatingProgress(item.complete,item.total)">
-                                            <span class="text-[#8BCF70]">{{calculatingProgress(item.complete,item.total)}}%</span>
+                                            <span class="text-[#8BCF70] w-[50px] block text-right">{{calculatingProgress(item.complete,item.total)}}%</span>
                                         </n-progress>
                                     </div>
                                 </div>
@@ -49,7 +49,7 @@
                         </n-gi>
 
                         <!-- OKR评分分布 -->
-                        <n-gi class="bg-white mb-20">
+                        <n-gi class="bg-white mb-12 md:mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
                                     <div class="text-16 font-medium">{{ $t('OKR评分分布') }}</div>
@@ -84,7 +84,7 @@
 
                                     </div>
                                 </div>
-                                <n-divider class="py-20" />
+                                <n-divider class="py-8" />
                                 <div class="list-progress">
                                     <div class="text-16 font-medium">{{ $t('各部门OKR评分分布') }}</div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">{{ $t('暂无数据') }}</div>
@@ -105,7 +105,7 @@
                         </n-gi>
 
                         <!-- OKR评分率 -->
-                        <n-gi class="bg-white mb-20">
+                        <n-gi class="bg-white mb-12 md:mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
                                     <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
@@ -132,7 +132,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <n-divider class="py-20" />
+                                <n-divider class="py-8" />
                                 <div class="list-progress">
                                     <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
                                         <n-tooltip trigger="hover">
@@ -352,7 +352,7 @@ nextTick(() => {
 .page-okr-analysis{
     @apply p-20 h-full w-full bg-page-bg box-border;
     .page-title{
-        @apply pb-24 text-title-color font-normal pt-12;
+        @apply pb-16 md:pb-24 text-title-color font-medium pt-12;
         h2{
             @apply text-28;
         }
@@ -365,7 +365,7 @@ nextTick(() => {
             .pie{
                 height: 150px;
                 width: 150px;
-                @apply m-auto mt-20 mb-20;
+                @apply m-auto mt-20 mb-16 md:mb-20;
                 >div{
                     @apply h-full w-full;
                 }
@@ -410,7 +410,7 @@ nextTick(() => {
                 }
 
                 .collect{
-                    @apply w-50 text-[#8F8F8E];
+                    @apply w-50 text-[#8F8F8E] text-right;
                 }
             }
         }

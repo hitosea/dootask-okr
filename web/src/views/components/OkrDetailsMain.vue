@@ -1,6 +1,6 @@
 <template >
     <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
-        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-12 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive':''">
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive':''">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
@@ -50,8 +50,10 @@
 
             <n-scrollbar  ref="scrollbarRef" class="left-scrollbar">
                 <n-spin class="md:mr-24" :show="false">
-                    <h3 id="detailTop" class=" text-title-color md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
+                    <h3 id="detailTop" class=" relative text-title-color md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
+                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0"
+                    src="@/assets/images/icon/complete.png" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
                         <div class="flex items-center">
@@ -218,16 +220,19 @@
                                 </div>
                                 <div class="flex flex-col justify-between mt-12">
                                     <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <div v-if="showUserSelect">
-                                                <UserSelects :formkey="index" />
-                                            </div>
-                                            <n-avatar v-if="!showUserSelect" round :size="20"
-                                                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                        <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
+                                        <div v-if="showUserSelect">
+                                            <UserSelects :formkey="index" />
+                                        </div>
+                                        <n-avatar v-if="!showUserSelect" round :size="20"
+                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                        </div>
+                                        <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
+                                            <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{ item.participant.split(',').length - 4 }}</span>
                                         </div>
                                         <div class="flex items-center">
-                                            <i class="taskfont text-14 mr-6 text-[#A7ABB5]">&#xe6e8;</i>
-                                            <p class="flex-1 text-text-tips text-14  shrink-0">{{ utils.GoDate(item.end_at
+                                            <i class="taskfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
+                                            <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
                                                 || 0) }}
                                             </p>
                                         </div>
@@ -270,7 +275,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
+                    <div class="text-center mt-24 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
                         :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
                         @unalign="handleUnalign" @openDetail="openDetail">
@@ -284,7 +289,7 @@
                         </div>
                     </div>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
-                        <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList">
+                        <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList" v-if="logList.length">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
                                 <p class="text-14 leading-3 text-primary-color">{{ item.user_nickname }}<span
@@ -294,6 +299,8 @@
                                         class=" font-normal">{{ item.content }}</span></h4>
                             </div>
                         </div>
+                        <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无动态') }}</p>
+                        <p @click="nextLogList" v-if="logListLastPage > logListPage" class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
                         <div class="md:pl-24 pr-[10px]">
@@ -313,6 +320,7 @@
                                 </div>
                             </div>
                             <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无复盘') }}</p>
+                            <p @click="nextReplayList" v-if="replayListLastPage > replayListPage" class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
                         </div>
                     </n-scrollbar>
                 </div>
@@ -485,6 +493,14 @@ const onScrollLogList = (e) => {
     }
 }
 
+// 日志下一页
+const nextLogList = (e) => {
+        if (!loadIngR.value) {
+            logListPage.value++
+            handleGetLogList()
+        }
+}
+
 // 日志列表
 const handleGetLogList = () => {
     if (logListLastPage.value >= logListPage.value) {
@@ -569,6 +585,13 @@ const onScrollReplayList = (e) => {
             handleGetLogList()
         }
     }
+}
+const nextReplayList = (e) => {
+        // 重新请求数据
+        if (!loadIng.value) {
+            replayListPage.value++
+            handleGetLogList()
+        }
 }
 
 // 复盘列表
@@ -993,7 +1016,7 @@ defineExpose({
 }
 
 .span {
-    @apply text-14 text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0;
+    @apply text-12 md:text-14 font-medium text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0;
 }
 
 .span-1 {
@@ -1010,11 +1033,11 @@ defineExpose({
 
 
 .li-nav {
-    @apply list-none cursor-pointer text-text-li opacity-50 text-14 px-4 relative;
+    @apply list-none cursor-pointer text-text-li text-14 px-4 relative;
 }
 
 .li-nav.active {
-    @apply text-primary-color md:text-title-color md:text-16 opacity-100 relative;
+    @apply text-primary-color md:text-title-color md:text-16 opacity-100 relative font-medium;
 }
 
 .li-nav.active::before {

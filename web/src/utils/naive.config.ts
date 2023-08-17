@@ -15,6 +15,7 @@ const themeOverrides = {
             paddingMedium:'11px 36px',
             heightSmall: "32px",
             heightMedium: "36px",
+            fontWeightStrong: "400",
         },
         Input: {
             heightSmall: "30px",
@@ -58,6 +59,9 @@ const themeOverrides = {
         },
         Popover:{
             borderRadius:"8px",
+        },
+        Tabs:{
+            tabFontWeightActive:"500"
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
