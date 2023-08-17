@@ -4,7 +4,7 @@
             class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-[52px] md:top-0 rounded-none rounded-t-xl md:rounded-xl"
             :title="$t('选择对齐目标')" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
-                <n-icon class="cursor-pointer" size="24" :component="Close" @click="handleClose" />
+                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
             </template>
             <div class="flex flex-col flex-1 overflow-hidden">
                 <n-input v-model:value="searchName" placeholder="搜索" :autofocus="false" :on-update:value="searchInput">
@@ -23,7 +23,7 @@
                                         openList.indexOf(index) != -1 ? 'active' : ''
                                         ]
                                         " @click="handleOpen(index, item.key_results)">&#xe745;</i>
-                                    <span class="span scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority
+                                    <span class="span " :class="pStatus(item.priority)">{{ item.priority
                                     }}</span>
                                     <h3 class="text-14 text-title-color font-normal line-clamp-1 ml-4 pr-16">
                                         {{ item.title }}
@@ -67,7 +67,7 @@
                         {{ $t('项') }}
                     </p>
                     <div class="flex items-center gap-4">
-                        <n-button class="hidden md:flex" :loading="loadIng" type="default" @click="handleClose">
+                        <n-button class="hidden md:flex" :loading="loadIng" strong secondary @click="handleClose">
                             {{ $t('取消') }}
                         </n-button>
                         <n-button :loading="loadIng" type="primary" @click="handleSubmit">
@@ -81,7 +81,6 @@
     </n-modal>
 </template>
 <script setup lang="ts">
-import { Close } from "@vicons/ionicons5"
 import { getAlignList } from '@/api/modules/created'
 import utils from "@/utils/utils";
 
@@ -211,7 +210,7 @@ const pStatus = (p) => {
         }
 
         .span {
-            @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
+            @apply text-14 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
         }
 
         .span-1 {

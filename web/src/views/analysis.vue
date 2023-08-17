@@ -14,24 +14,24 @@
                         <n-gi class="bg-white mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
-                                    <div class="text-16">{{ $t('OKR整体平均完成度') }}</div>
+                                    <div class="text-16 font-medium">{{ $t('OKR整体平均完成度') }}</div>
                                     <div class="pie">
                                         <div id="degreeOfCompletion"></div>
                                     </div>
                                     <div class="legend text-center">
                                         <span>
                                             <span class="legend-name">{{ $t('O的数量') }}: </span>
-                                            <span class="font-semibold">{{analyzeDatas.completes.total}}</span>
+                                            <span class=" font-medium">{{analyzeDatas.completes.total}}</span>
                                         </span>
                                         <span>
                                             <span class="legend-name">{{ $t('已完成O') }}:</span>
-                                            <span class="font-semibold">{{analyzeDatas.completes.complete}}</span>
+                                            <span class="font-medium">{{analyzeDatas.completes.complete}}</span>
                                         </span>
                                     </div>
                                 </div>
                                 <n-divider class="py-20"/>
                                 <div class="list-progress">
-                                    <div class="text-16">{{ $t('各部门OKR平均完成度') }}</div>
+                                    <div class="text-16 font-medium">{{ $t('各部门OKR平均完成度') }}</div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
                                     <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
                                         <p class="progress-name">{{item.department_name}}</p>
@@ -47,7 +47,7 @@
                         <n-gi class="bg-white mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
-                                    <div class="text-16">{{ $t('OKR评分分布') }}</div>
+                                    <div class="text-16 font-medium">{{ $t('OKR评分分布') }}</div>
                                     <div class="pie">
                                         <div id="scoreDistribution"></div>
                                     </div>
@@ -56,24 +56,24 @@
                                             <span class="mr-20">
                                                 <p class="dot"></p>
                                                 <span class="legend-name">{{ $t('未评分') }}: </span>
-                                                <span class="font-semibold">{{ analyzeDatas.score.unscored }}</span>
+                                                <span class="font-medium">{{ analyzeDatas.score.unscored }}</span>
                                             </span>
                                             <span>
                                                 <p class="dot ff"></p>
                                                 <span class="legend-name">{{ $t('0-3分') }}: </span>
-                                                <span class="font-semibold">{{ analyzeDatas.score.zero_to_three }}</span>
+                                                <span class="font-medium">{{ analyzeDatas.score.zero_to_three }}</span>
                                             </span>
                                         </div>
                                         <div>
                                             <span>
                                                 <p class="dot fc"></p>
                                                 <span class="legend-name">{{ $t('3-7分') }}: </span>
-                                                <span class="font-semibold">{{ analyzeDatas.score.three_to_seven }}</span>
+                                                <span class="font-medium">{{ analyzeDatas.score.three_to_seven }}</span>
                                             </span>
                                             <span>
                                                 <p class="dot bc"></p>
                                                 <span class="legend-name">{{ $t('7-10分') }}: </span>
-                                                <span class="font-semibold">{{ analyzeDatas.score.seven_to_ten }}</span>
+                                                <span class="font-medium">{{ analyzeDatas.score.seven_to_ten }}</span>
                                             </span>
                                         </div>
 
@@ -81,10 +81,10 @@
                                 </div>
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
-                                    <div class="text-16">{{ $t('各部门OKR评分分布') }}</div>
+                                    <div class="text-16 font-medium">{{ $t('各部门OKR评分分布') }}</div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">{{ $t('暂无数据') }}</div>
                                     <div class="mt-20" v-else v-for="item in analyzeDatas.deptScores">
-                                        <p class="text-[#515A6E]">{{item.department_name}}</p>
+                                        <p class="text-text-li">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
                                                 <p class="bg-[#FF7070]" v-if="item.zero_to_three" :style="{width:calculatingProgress(item.zero_to_three,item.total)+'%'}">{{item.zero_to_three}}{{$t('个')}}</p>
@@ -103,7 +103,7 @@
                         <n-gi class="bg-white mb-20">
                             <div class="list-body">
                                 <div class="echarts-pie">
-                                    <div class="text-16 flex">{{ $t('OKR评分率') }}
+                                    <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
                                         <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300" >
                                             <template #trigger>
                                                 <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
@@ -118,18 +118,18 @@
                                         <span>
                                             <p class="dot"></p>
                                             <span class="legend-name">{{ $t('未完成') }}: </span>
-                                            <span class="font-semibold">{{ analyzeDatas.scoreRate.total - analyzeDatas.scoreRate.complete }}</span>
+                                            <span class="font-medium">{{ analyzeDatas.scoreRate.total - analyzeDatas.scoreRate.complete }}</span>
                                         </span>
                                         <span>
                                             <p class="dot bc"></p>
                                             <span class="legend-name">{{ $t('已完成') }}:</span>
-                                            <span class="font-semibold">{{ analyzeDatas.scoreRate.complete }}</span>
+                                            <span class="font-medium">{{ analyzeDatas.scoreRate.complete }}</span>
                                         </span>
                                     </div>
                                 </div>
                                 <n-divider class="py-20" />
                                 <div class="list-progress">
-                                    <div class="text-16 flex">{{ $t('OKR部门评分占比') }}
+                                    <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
                                         <n-tooltip trigger="hover">
                                             <template #trigger>
                                                 <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
@@ -139,7 +139,7 @@
                                     </div>
                                     <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
                                     <div class="mt-20" v-else v-for="item in analyzeDatas.deptScoreProportion">
-                                        <p class="text-[#515A6E]">{{item.department_name}}</p>
+                                        <p class="text-text-li">{{item.department_name}}</p>
                                         <div class="custom-progres">
                                             <div class="progres">
                                                 <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}{{$t('个')}}</p>
@@ -211,10 +211,19 @@ const loadComplete = () => {
             label: {
                 position: 'center',
                 formatter: () => {
-                    return calculatingProgress(data.complete, data.total) +  '%';
+                    return  '{p|' + calculatingProgress(data.complete, data.total) + '}' + '{span|' + '%' + '}';
                 },
-                fontSize: 24,
-                fontWeight: 'bold'
+                rich: {
+                    p: {
+                        fontSize: 28,
+                        fontWeight: '600'
+                    },
+                    span: {
+                        color: '#515A6E',
+                        fontSize: 24,
+                          fontWeight: '400'
+                    }
+                },
             },
             color: ['#8BCF70', '#bcbfca40'],
             data: [
@@ -338,7 +347,7 @@ nextTick(() => {
 .page-analysis{
     @apply p-24 h-full w-full bg-page-bg box-border;
     .page-title{
-        @apply pb-24 text-title-color text-28 font-normal;
+        @apply pb-24 text-title-color text-28 font-medium;
     }
     .list-body{
         @apply p-24;
@@ -361,7 +370,7 @@ nextTick(() => {
                     @apply mr-20;
                 }
                 span.legend-name{
-                    @apply text-[#515A6E] opacity-50 text-12 mr-5;
+                    @apply text-text-li opacity-50 text-12 mr-5;
                 }
 
                 .dot {
@@ -380,7 +389,7 @@ nextTick(() => {
         }
         .list-progress{
             .progress-name{
-                @apply text-[#515A6E];
+                @apply text-text-li;
             }
             .custom-progres{
                 @apply flex text-center mt-5;

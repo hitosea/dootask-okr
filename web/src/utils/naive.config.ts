@@ -6,15 +6,19 @@ const themeOverrides = {
             primaryColor: "#84C56A",
             primaryColorHover: "#a2d98d",
             heightMedium: "32px",
+            heightLarge: "36px",
             inputColor:"#F4F5F7",
             borderColor:"#F4F5F7",
+            borderRadius:"4px",
         },
         Button:{
             paddingMedium:'11px 36px',
+            heightSmall: "32px",
             heightMedium: "36px",
         },
         Input: {
             heightSmall: "30px",
+            borderRadius: "4px",
         },
         Tag:{
             borderRadius: "4px",
@@ -22,6 +26,8 @@ const themeOverrides = {
             textColor:"#A7ABB5",
             fontSizeMedium:"12px",
             heightMedium:'20px',
+            textColorError:"#F5222D",
+            colorError:"#FFF1FO",
         },
         Card:{
             paddingHuge:"24px 24px 24px",
@@ -29,7 +35,7 @@ const themeOverrides = {
             titleTextColor:"#303133",
         },
         Form: {
-            feedbackHeightMedium: "20px",
+            feedbackHeightMedium: "16px",
             feedbackFontSizeMedium: "12px"
         },
         Dialog:{
@@ -43,6 +49,15 @@ const themeOverrides = {
             borderRadius:'99px',
             sizeMedium:'18px',
             border:'1px solid #B1B3B7',
+        },
+        DataTable:{
+            thColor:"#F8F8F9",
+            thTextColor:"#606266",
+            thPaddingMedium:"8px",
+            tdPaddingMedium:"8px",
+        },
+        Popover:{
+            borderRadius:"8px",
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {

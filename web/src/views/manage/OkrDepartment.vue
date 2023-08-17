@@ -1,16 +1,16 @@
 <template>
     <div class="flex flex-col h-full">
-        <div class="flex justify-between flex-col 2xl:flex-row">
-            <div class="flex-[2] hidden md:flex items-center mb-16 mt-24">
-                <div v-if="userInfo == 'admin'" class=" mb-2 mr-8 whitespace-nowrap">
+        <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center mb-16 mt-24">
+            <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
+                <div v-if="userInfo == 'admin'" class="mb-2 mr-8 text-text-li whitespace-nowrap">
                     {{ $t('部门') }}
                 </div>
                 <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
-                    class="w-[33%] h-[36px] mr-24" :placeholder="$t('全部')" />
-                <div class=" mb-2 mr-8 whitespace-nowrap">
+                    class="w-[33%] mr-16" :placeholder="$t('全部')" />
+                <div class="text-text-li mr-8 whitespace-nowrap">
                     {{ $t('负责人') }}
                 </div>
-                <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="w-[33%] h-[36px]" filterable :placeholder="$t('全部')" clearable>
+                <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="w-[33%]" filterable :placeholder="$t('全部')" clearable>
                     <template #action>
                         <div v-if="principallast_page > principalpage" quaternary class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
                             {{ $t('更多...') }}
@@ -21,13 +21,12 @@
                     </template> 
                 </n-select>
 
-                <div class=" mb-2 mr-8 ml-24 whitespace-nowrap">
+                <div class="text-text-li mr-8 ml-16 whitespace-nowrap">
                     {{ $t('时间') }}
                 </div>
-                <n-date-picker class="w-[33%] h-[36px] " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                <n-date-picker class="w-[33%]  " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                     type="daterange" clearable size="medium" />
-
-                <n-button :loading="isloading" type="primary" class=" mb-4 ml-24 rounded px-16" @click="handleClick()">
+                <n-button :loading="isloading" type="primary" size="small" class="ml-24 rounded px-16" @click="handleClick()">
                     <template #icon>
                         <i class="taskfont" v-if="!(isloading)">&#xe72a;</i>
                     </template>
@@ -36,10 +35,10 @@
             </div>
             <div
                 class="flex-1 flex items-center mt-16 md:mt-0 mb-16 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
-                <div class=" hidden md:block mb-4 mr-12 whitespace-nowrap 2xl:ml-24 ">
+                <div class=" hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 ">
                     {{ $t('类型') }}
                 </div>
-                <div class="mb-4 hidden md:flex">
+                <div class="hidden md:flex">
                     <div @click="handleClick2(null)" :class="types == null ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color':'bg-white border-[#F2F2F2]' " class="rounded px-12 py-6 border-solid border-[1px] cursor-pointer">
                         {{ $t('全部') }}
                     </div>
@@ -53,9 +52,9 @@
                     </div>
                 </div>
 
-                <n-checkbox v-model:checked="completednotrated" class="md:ml-36 rounded whitespace-nowrap mb-2 "
+                <n-checkbox v-model:checked="completednotrated" class="md:ml-16 rounded whitespace-nowrap mb-2 "
                     @click="handleClick()">
-                    <span class="text-text-tips">{{ $t('已完成未评分') }}</span>
+                    <span class="text-text-li">{{ $t('已完成未评分') }}</span>
                 </n-checkbox>
                 <div @click="active = true" class="flex md:hidden text-14" :class=" searchActive ? 'text-primary-color' : 'text-text-tips'">
                     <i class="taskfont" >&#xe700;</i>

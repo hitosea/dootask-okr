@@ -12,14 +12,14 @@
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <span class="scale-[0.8333]" :class="pStatus(item.priority)">{{ item.priority }}</span>
+                        <span class="" :class="pStatus(item.priority)">{{ item.priority }}</span>
                         <h3 :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
                         <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont md:pr-16" v-if="!item.is_follow && item.completed == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
-                        <i class="taskfont okr-title-icon">&#xe671;</i>
+                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="taskfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <div  v-if="item.completed == '1'"
                                 class="flex md:hidden items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer border-primary-color bg-primary-color"
@@ -29,15 +29,15 @@
                     </div>
                 </div>
                 <div class="okr-time">
-                    <i class="taskfont"> &#xe61a;</i>
+                    <i class="taskfont text-[12px]">&#xe6e4;</i>
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
                     <template v-if="item.canceled == '0' && item.completed =='0'">                        
-                        <i class="taskfont" :class="isOverdue(item.end_at) ?'text-[#FF7070]' : ''"> &#xe71d;</i>
-                        <p :class="isOverdue(item.end_at) ?'text-[#FF7070]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                        <i class="taskfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
+                        <p :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
                     </template>
                     <template v-if="item.canceled == '1' || item.completed =='1'">                        
-                        <i class="taskfont" > &#xe71d;</i>
+                        <i class="taskfont text-[12px]" > &#xe6e8;</i>
                         <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
                 </div>
@@ -236,7 +236,7 @@ onUnmounted(()=>{
 </script>
 <style lang="less" scoped>
 .okr-item-main {
-    @apply flex flex-col gap-3 md:gap-6;
+    @apply flex flex-col gap-3 md:gap-4;
 
     .okr-item-box {
         @apply p-16 md:px-24 md:py-32 bg-white rounded-lg flex gap-4 cursor-pointer;
@@ -248,10 +248,10 @@ onUnmounted(()=>{
                 @apply flex justify-between items-start md:items-center;
 
                 .okr-title-l {
-                    @apply flex items-start md:items-center gap-2 md:max-w-75p;
+                    @apply flex items-start md:items-center gap-1 md:max-w-75p;
 
                     span {
-                        @apply text-10 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
+                        @apply text-14 text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {
@@ -267,7 +267,7 @@ onUnmounted(()=>{
                     }
 
                     h3 {
-                        @apply text-title-color text-14 font-normal line-clamp-3 md:line-clamp-1;
+                        @apply text-title-color text-14 font-medium line-clamp-3 md:line-clamp-1 ;
                     }
                 }
 
@@ -289,7 +289,7 @@ onUnmounted(()=>{
             }
 
             .okr-time {
-                @apply hidden md:flex items-center mt-12 text-text-tips;
+                @apply hidden md:flex items-center text-12 mt-4 text-text-tips;
 
                 i {
                     @apply mr-4;
@@ -301,7 +301,7 @@ onUnmounted(()=>{
             }
 
             .kr-list {
-                @apply mt-16 hidden md:flex flex-col gap-5;
+                @apply mt-16 hidden md:flex flex-col gap-4;
 
                 .kr-list-item {
                     @apply flex items-center;
@@ -311,7 +311,7 @@ onUnmounted(()=>{
                     }
 
                     p {
-                        @apply text-title-color text-14 ml-16 truncate;
+                        @apply text-title-color text-14 ml-4 truncate;
                     }
 
                     .kr-list-schedule {
@@ -321,7 +321,7 @@ onUnmounted(()=>{
             }
 
             .align-target {
-                @apply items-start mt-20 text-text-tips text-12 hidden md:flex;
+                @apply items-start mt-12 text-text-tips text-12 hidden md:flex;
             }
         }
     }

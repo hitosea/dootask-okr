@@ -3,7 +3,7 @@
         <div class="flex flex-col shrink-0 h-full">
             <h3 class="text-text-li text-18 font-medium mb-16  hidden md:block">OKR</h3>
             <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false"
-                size="small" style="--n-td-color-hover-modal:#ffffff" />
+                 style="--n-td-color-hover-modal:#ffffff" />
             <div class="flex flex-col md:hidden" v-if="props.data">
                 <h3 class=" text-text-li text-14 font-normal flex justify-between items-center">{{ $t('目标（O）') }} <span
                         class="text-primary-color">{{ props.data.progress }}%</span></h3>

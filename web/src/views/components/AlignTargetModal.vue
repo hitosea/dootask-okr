@@ -4,10 +4,10 @@
             <template #header>
                 {{ $t('对齐目标') }}
                 <i v-if="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid"
-                    class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleOpenSelect">&#xe779;</i>
+                    class="taskfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
             </template>
             <template #header-extra>
-                <n-icon class="cursor-pointer text-[#A7ACB6]" size="24" :component="Close" @click="handleClose" />
+                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
             </template>
             <AlignTarget :value="props.value" :id="props.eidtItem.id" :userid="props.eidtItem.userid"
                 :cancelShow="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid"
@@ -17,7 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import { Close } from "@vicons/ionicons5"
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { UserStore } from '@/store/user'
 

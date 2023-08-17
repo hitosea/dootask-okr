@@ -5,7 +5,7 @@
             <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
             <div class="okr-right">
                 <div class="search-button" @mouseover="()=>{searchShow = true }" @mouseout="()=>{searchShow = false }" :class="searchShow || searchObject? 'search-active' : ''">
-                    <span class="search-button-span" v-show="searchShow || searchObject" >{{ tabsName }}</span>
+                    <span class="search-button-span h-[16px] leading-4" v-show="searchShow || searchObject" >{{ tabsName }}</span>
                     <n-input  v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
                     <i class="taskfont" >&#xe6f8;</i>
                 </div>
@@ -103,7 +103,7 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
-    if(userInfo.identity[0]!='admin' && userInfo.department.length == 0 ) {
+    if(userInfo.identity[0]!='admin'&& userInfo.department && userInfo.department.length == 0 ) {
         tipsContent.value = $t('您当前未加入任何部门，不能发起！')
         showModal.value = true
         return
@@ -178,10 +178,10 @@ const handleReturn = () => {
             @apply flex items-center gap-4 md:gap-6 z-[2];
             .add-button,
             .search-button {
-                @apply bg-bg-manage-menu w-36 h-36 md:w-12 md:h-12 rounded-full flex items-center justify-center cursor-pointer;
+                @apply bg-bg-manage-menu w-36 h-36 rounded-full flex items-center justify-center cursor-pointer;
 
                 i {
-                    @apply text-15 md:text-20 text-emoji-users-color;
+                    @apply text-15 md:text-16 text-emoji-users-color;
                 }
             }
             .search-button{
@@ -191,7 +191,7 @@ const handleReturn = () => {
                 }
 
                 .search-button-span{
-                    @apply text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
+                    @apply  text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
                 }
                 :deep(.n-input){
                     @apply flex-1 bg-transparent border-0;
@@ -201,7 +201,7 @@ const handleReturn = () => {
                 }
             }
             .search-active{
-                @apply w-auto flex-1 md:w-320 px-14;
+                @apply w-auto flex-1 md:w-320 px-10;
                 i{
                     @apply pl-8;
                 }

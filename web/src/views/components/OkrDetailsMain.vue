@@ -50,17 +50,17 @@
 
             <n-scrollbar  ref="scrollbarRef" class="left-scrollbar">
                 <n-spin class="md:mr-24" :show="false">
-                    <h3 id="detailTop" class=" text-title-color md:mt-[28px]  text-18 md:text-24 leading-6 font-normal md:min-h-[40px]">
+                    <h3 id="detailTop" class=" text-title-color md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
                                 <i v-if="detailData.ascription == '2'"
-                                    class="taskfont icon-item text-[#A7ABB5]">&#xe6e4;</i>
-                                <i v-else class="taskfont icon-item text-[#A7ABB5]">&#xe682;</i>
+                                    class="taskfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
+                                <i v-else class="taskfont icon-item text-[#BBBBBB]">&#xe682;</i>
 
-                                <span class="text-[#515A6E] text-[14px] opacity-50"> {{ detailData.ascription == "2" ?
+                                <span class="text-[#BBBBBB] text-[14px] opacity-50"> {{ detailData.ascription == "2" ?
                                     $t('负责人') : $t('部门') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
@@ -71,8 +71,8 @@
 
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#A7ABB5]">&#xe6e8;</i>
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
+                                <i class="taskfont icon-item text-[#BBBBBB]">&#xe6e8;</i>
+                                <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14 flex items-center">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
@@ -87,8 +87,8 @@
 
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#A7ABB5]">&#xe6ec;</i>
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('优先级') }}</span>
+                                <i class="taskfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
+                                <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('优先级') }}</span>
                             </p>
                             <span class="span" :class="pStatus(detailData.priority)">{{ detailData.priority
                             }}</span>
@@ -98,7 +98,7 @@
                         <div class="flex md:hidden items-center" v-if="detailData.score > -1">
                             <p class="flex items-center w-[115px]">
                                 <img class="mr-6 " src="@/assets/images/icon/fen.svg" />
-                                <span class="text-[#515A6E] text-[14px] opacity-50">{{ $t('评分') }}</span>
+                                <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('评分') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
                                 {{ detailData.score }}{{ $t('分') }}
@@ -108,14 +108,14 @@
 
                     <h4 class="hidden md:block text-text-li text-16 font-medium mt-36">KR</h4>
 
-                    <div class="hidden md:flex flex-col mt-20 gap-6 min-h-[60px]">
+                    <div class="hidden md:flex flex-col mt-20 gap-4 min-h-[60px]">
                         <div class="flex flex-col" v-for="(item, index) in detailData.key_results">
                             <div class="flex items-start">
                                 <span class=" text-primary-color text-12 leading-5 mr-8 mt-2 shrink-0">KR{{ index + 1
                                 }}</span>
-                                <h4 class=" text-title-color text-14 font-normal">{{ item.title }}</h4>
+                                <h4 class=" text-title-color text-14 font-normal leading-[20px]">{{ item.title }}</h4>
                             </div>
-                            <div class="flex items-center justify-between mt-8">
+                            <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center mr-24">
                                     <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
                                         <div v-if="showUserSelect">
@@ -128,7 +128,7 @@
                                         <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{ item.participant.split(',').length - 4 }}</span>
                                     </div>
                                     <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-14 min-w-[140px] shrink-0">{{
+                                    <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0">{{
                                         utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                     </p>
                                 </div>
@@ -142,17 +142,17 @@
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                        <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                        <i class="taskfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
                                     <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                        <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
@@ -213,7 +213,7 @@
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg"
                                 v-for="(item, index) in detailData.key_results">
                                 <div class="flex items-center">
-                                    <h4 class=" text-title-color text-15 md:text-14 font-normal line-clamp-1">{{ item.title
+                                    <h4 class=" text-title-color text-15 md:text-14 font-normal text-left">{{ item.title
                                     }}</h4>
                                 </div>
                                 <div class="flex flex-col justify-between mt-12">
@@ -244,19 +244,19 @@
                                         <div v-if="item.confidence == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                            <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                         </div>
                                         <div v-else
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                            <i class="taskfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                         </div>
                                         <div v-if="item.kr_score == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer"
                                             @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                            <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                            <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
@@ -510,6 +510,11 @@ const handleGetLogList = () => {
                 if (item.content.includes('修改对齐目标')) {
                     item.content = $t('修改对齐目标')
                 }
+                if (item.content.includes('取消对齐目标')) {
+                    let parent_title = ''
+                    item.records.parent_title ? parent_title = ' => ' + item.records.parent_title : ''
+                    item.content = $t('取消对齐目标')+ ": "+ item.records.title + parent_title
+                }
                 if (item.content.includes('修改KR标题')) {
                     item.content = $t('修改KR标题') + ": " + item.records.title_change[0] + ' => ' + item.records.title_change[1]
                 }
@@ -533,6 +538,12 @@ const handleGetLogList = () => {
                 }
                 if (item.content.includes('上级打分')) {
                     item.content = $t('上级打分') + ": " + item.records.title
+                }
+                if (item.content.includes('添加KR')) {
+                    item.content = $t('添加KR') + ": " + item.records.title
+                }
+                if (item.content.includes('删除KR')) {
+                    item.content = $t('删除KR') + ": " + item.records.title
                 }
                 logList.value.push(item)
             })
@@ -978,7 +989,7 @@ defineExpose({
 }
 
 .icon-item {
-    @apply text-18 mr-8;
+    @apply text-12 mr-8;
 }
 
 .span {

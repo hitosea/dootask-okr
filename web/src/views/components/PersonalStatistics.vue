@@ -38,9 +38,9 @@
                 </div>
                 <div class="relative w-[150px] h-[67px]">
                     <div class="h-full w-[150px]" id="okrCompletedAndUncompleted"></div>
-                    <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
+                    <h3 class=" absolute text-[24px] text-title-color text-center leading-5 left-0 right-0 bottom-0 font-semibold">
                         {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.completion_sum,
-                            analyzeDatas.okrDegreeOfCompletionAndScore.total) }}%</h3>
+                            analyzeDatas.okrDegreeOfCompletionAndScore.total) }}<span class="text-[20px] font-normal">%</span></h3>
                 </div>
             </div>
             <div class="p-s-box p-s-two">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="relative w-[150px] h-[67px]">
                     <div class="h-full w-[150px]" id="okrDegreeOfCompletionAndScore"></div>
-                    <h3 class=" absolute text-[20px] text-title-color text-center leading-5 left-0 right-0 bottom-0">
+                    <h3 class=" absolute text-[24px] text-title-color text-center leading-5 left-0 right-0 bottom-0 font-semibold">
                         {{ calculating(analyzeDatas.okrDegreeOfCompletionAndScore.score_sum,
                             analyzeDatas.okrDegreeOfCompletionAndScore.score_total, 1) }}</h3>
                 </div>
@@ -216,7 +216,7 @@ defineExpose({
                 }
 
                 .p-title {
-                    @apply text-30 flex flex-1 justify-between;
+                    @apply text-30 flex flex-1 justify-between font-semibold;
                 }
             }
 

@@ -74,13 +74,13 @@
                     <ItemList :edit="props.edit" v-model:value="formValue.project_id" />
                 </n-form-item>
             </n-form>
-            <div>
+            <div class="mt-8 pt-24  border-solid border-0 border-t-[1px] border-[#F4F5F5]">
                 <div class="flex items-center justify-between">
                     <h3 class="text-14 text-text-li font-medium flex items-center">
                         {{ $t('关键KR') }}
-                        <n-popover trigger="hover" placement="right-start" :width="220">
+                        <n-popover class="popover-tips" trigger="click" placement="right-start" :width="220">
                             <template #trigger>
-                                <n-icon class=" cursor-pointer text-text-tips ml-8" size="18"
+                                <n-icon class=" cursor-pointer text-text-tips ml-4" size="18"
                                     :component="AlertCircleOutline" />
                             </template>
                             <div class="">
@@ -508,7 +508,16 @@ defineExpose({
 })
 
 </script>
+
+<style>
+.popover-tips {
+    @apply bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFAE9_100%)] p-24 !important;
+}
+</style>
+
 <style lang="less" scoped>
+
+
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
 }
@@ -518,7 +527,7 @@ defineExpose({
 }
 
 .button-box {
-    @apply flex gap-2 mt-32 flex-initial;
+    @apply flex gap-2 mt-24 flex-initial;
 }
 
 :deep(.n-drawer-header__close) {
@@ -553,14 +562,9 @@ defineExpose({
     @apply bg-[#72A1F7];
 }
 
-.okr-user-selects {
+:deep(.okr-user-selects) {
     @apply w-full bg-none border-none !important;
 }
 
 </style>
 
-<style >
-:deep(.n-popover){
-    padding: 24px !important;
-}
-</style>

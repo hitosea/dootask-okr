@@ -30,7 +30,7 @@
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
                 :class="cancelShow ? 'mr-24' : ''">
-                <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                     :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                     :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
@@ -46,22 +46,29 @@
         </div>
 
         <div v-else class="flex flex-initial items-center justify-center py-[60px]">
-            <div >
+            <div>
                 <img class="w-80" src="@/assets/images/icon/notData.svg" />
                 <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
             </div>
         </div>
+        <InfoModal v-model:show="infoShow" :title="infoTitle" :content="infoContent" @submit="handleSubmit" @close="handleCancel"></InfoModal>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useMessage, useDialog } from "naive-ui"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
+import InfoModal from "./InfoModal.vue";
+
 
 const loadIng = ref(false)
 const message = useMessage()
 const dialog = useDialog()
 const dataList = ref<any>([])
+const infoShow = ref(false)
+const infoTitle = ref('')
+const infoContent = ref('')
+const infoId = ref(0)
 
 const emit = defineEmits(['unalign', 'openDetail'])
 
@@ -107,35 +114,37 @@ const getList = () => {
 }
 
 const alignCancel = (itemID) => {
-    dialog.info({
-        title: $t('提示'),
-        content: $t('你确定要取消对齐吗？'),
-        positiveText: $t('确定'),
-        negativeText: $t('取消'),
-        onPositiveClick: () => {
-            const upData = {
-                okr_id: props.id,
-                align_okr_id: itemID,
-            }
-            loadIng.value = true
-            getAlignCancel(upData)
-                .then(({ msg }) => {
-                    message.success($t('修改成功'))
-                    getList();
-                    emit('unalign', props.id)
-                })
-                .catch(({ msg }) => {
-                    message.error(msg)
-                })
-                .finally(() => {
-                    loadIng.value = false
-                })
-        },
-        onNegativeClick: () => {
-
-        }
-    })
-
+    infoShow.value = true
+    infoTitle.value = $t('取消对齐')
+    infoContent.value = $t('你确定要取消对齐吗？')
+    infoId.value = itemID
+}
+//确定
+const handleSubmit = () => {
+    const upData = {
+        okr_id: props.id,
+        align_okr_id:  infoId.value,
+    }
+    loadIng.value = true
+    getAlignCancel(upData)
+        .then(({ msg }) => {
+            message.success($t('修改成功'))
+            getList();
+            emit('unalign', props.id)
+        })
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+//取消
+const handleCancel = () => {
+    infoShow.value = false
+    infoTitle.value = ''
+    infoContent.value = ''
+    infoId.value = 0
 }
 
 const handleDetail = (id, userid) => {
@@ -157,7 +166,7 @@ defineExpose({
 <style lang="less" scoped>
 .align-target {
 
-    @apply flex flex-col gap-6 w-full;
+    @apply flex flex-col gap-4 w-full;
 
     .a-t-list {
         @apply flex items-center overflow-hidden;
@@ -182,4 +191,5 @@ defineExpose({
             @apply text-text-tips text-12 flex-auto ml-4 font-normal line-clamp-1;
         }
     }
-}</style>
+}
+</style>

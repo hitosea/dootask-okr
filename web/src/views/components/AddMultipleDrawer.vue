@@ -45,7 +45,7 @@ const handleSubmit = () => {
 </script>
 <style lang="less" scoped>
 .button-box {
-    @apply flex gap-2 mt-32 flex-initial;
+    @apply flex gap-2 mt-24 flex-initial;
 }
 
 :deep(.n-scrollbar-content) {

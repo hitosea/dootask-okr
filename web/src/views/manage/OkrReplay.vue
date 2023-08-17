@@ -180,7 +180,7 @@ onMounted(() => {
 .replay {
     width: 100%;
     height: 100%;
-    @apply flex flex-col gap-3 md:gap-5;
+    @apply flex flex-col gap-3 md:gap-4;
 
     &-item {
         @apply bg-white rounded-lg h-auto p-24;
