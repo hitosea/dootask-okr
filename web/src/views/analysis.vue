@@ -1,12 +1,17 @@
 <template>
-    <div class="page-analysis">
+    <div class="page-okr-analysis">
         <div class="h-full flex flex-col">
-            <h2 class="page-title hidden md:block">{{ $t('OKR结果分析') }}</h2>
-            <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
-        <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
-        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR结果分析') }}</h2>
-    </div>
-            <div class="flex overflow-hidden mt-[28px] md:mt-0">
+            <div class="page-title">
+                <div class="flex items-center">
+                    <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
+                    <h2>{{ $t('OKR结果分析') }}</h2>
+                </div>
+            </div>
+            <!-- <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
+                <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe676;</i>
+                <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR结果分析') }}</h2>
+            </div> -->
+            <div class="flex overflow-hidden">
                 <n-scrollbar>
                     <n-grid x-gap="24" cols="1 600:2 800:3">
 
@@ -344,10 +349,13 @@ nextTick(() => {
 </script>
 
 <style lang="less" scoped>
-.page-analysis{
-    @apply p-24 h-full w-full bg-page-bg box-border;
+.page-okr-analysis{
+    @apply p-20 h-full w-full bg-page-bg box-border;
     .page-title{
-        @apply pb-24 text-title-color text-28 font-medium;
+        @apply pb-24 text-title-color font-normal pt-12;
+        h2{
+            @apply text-28;
+        }
     }
     .list-body{
         @apply p-24;
@@ -421,4 +429,15 @@ nextTick(() => {
         @apply text-20 text-text-tips;
     }
 }
+
+// 
+body.window-portrait {
+    .page-okr-analysis{
+        .page-title {
+            @apply pt-0;
+            margin: 4px 0 0 -4px;
+        }
+    }
+}
+
 </style>

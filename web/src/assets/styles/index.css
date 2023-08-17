@@ -29,3 +29,19 @@
     border-bottom:none !important;
     line-height: 1.5 !important;
 }
+
+/* 全局返回按钮 */
+.okr-nav-back{
+    cursor: pointer;
+    padding-right: 8px;
+    color: #636468;
+}
+.okr-nav-back .taskfont{
+    font-size: 26px;
+} 
+.okr-nav-back.portrait{
+    display: none;
+} 
+body.window-portrait .okr-nav-back{
+    display: block;
+}

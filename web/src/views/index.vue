@@ -1,16 +1,20 @@
 <template >
     <div class="page-okr">
         <div class="okr-title">
-            <i @click="handleReturn" class="taskfont icon-return">&#xe704;</i>
-            <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
+            <div  class="flex items-center">
+                <div class="okr-nav-back" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
+                <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
+            </div>
             <div class="okr-right">
                 <div class="search-button" @mouseover="()=>{searchShow = true }" @mouseout="()=>{searchShow = false }" :class="searchShow || searchObject? 'search-active' : ''">
-                    <span class="search-button-span h-[16px] leading-4" v-show="searchShow || searchObject" >{{ tabsName }}</span>
+                    <span class="search-button-span" v-show="searchShow || searchObject" >{{ tabsName }}</span>
                     <n-input  v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
-                    <i class="taskfont" >&#xe6f8;</i>
+                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search" ></i>
+                    <i v-else class="taskfont" >&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
-                    <i class="taskfont">&#xe6f2;</i>
+                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-md-add"></i>
+                    <i v-else class="taskfont">&#xe6f2;</i>
                 </div>
             </div>
         </div>
@@ -61,6 +65,8 @@ import OkrDepartment from './manage/OkrDepartment.vue';
 import { useRouter ,useRoute } from 'vue-router'
 import { UserStore } from '@/store/user'
 import TipsModal from '@/views/components/TipsModal.vue';
+
+const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const userInfo = UserStore().info
 const router = useRouter()
@@ -158,17 +164,17 @@ const handleReturn = () => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col p-16 md:p-24 bg-page-bg;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg py-20 px-16;
 
     .okr-title {
-        @apply flex justify-between items-center mb-8 md:mb-14 relative;
+        @apply h-42 flex justify-between items-center relative mt-12 mb-14 ml-4;
 
         .icon-return{
             @apply block md:hidden mr-16 text-20 z-[2];
         }
 
         h2 {
-            @apply text-title-color text-17 md:text-28 font-semibold absolute left-0 right-0 text-center md:relative;
+            @apply text-title-color text-28 font-semibold;
         }
         .title-active{
             @apply hidden md:block;
@@ -178,10 +184,10 @@ const handleReturn = () => {
             @apply flex items-center gap-4 md:gap-6 z-[2];
             .add-button,
             .search-button {
-                @apply bg-bg-manage-menu w-36 h-36 rounded-full flex items-center justify-center cursor-pointer;
+                @apply bg-[#f2f3f5] w-36 h-36 rounded-full flex items-center justify-center cursor-pointer;
 
                 i {
-                    @apply text-15 md:text-16 text-emoji-users-color;
+                    @apply text-20 text-emoji-users-color;
                 }
             }
             .search-button{
@@ -191,7 +197,7 @@ const handleReturn = () => {
                 }
 
                 .search-button-span{
-                    @apply  text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
+                    @apply text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
                 }
                 :deep(.n-input){
                     @apply flex-1 bg-transparent border-0;
@@ -201,7 +207,7 @@ const handleReturn = () => {
                 }
             }
             .search-active{
-                @apply w-auto flex-1 md:w-320 px-10;
+                @apply w-auto flex-1 md:w-320 px-14;
                 i{
                     @apply pl-8;
                 }
@@ -228,4 +234,13 @@ const handleReturn = () => {
             }
         }
     }
-}</style>
+}
+// 
+body.window-portrait {
+    .page-okr{
+        .okr-title {
+            margin: 4px 0 14px 0;
+        }
+    }
+}
+</style>

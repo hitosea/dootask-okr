@@ -143,7 +143,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp) (*[]inte
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
-			Order("b.total desc")
+			Order("SUM(b.total) desc")
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}
@@ -220,7 +220,7 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 			`).
 			Where("dept.parent_id = 0").
 			Group("dept.id").
-			Order("total desc")
+			Order("SUM(b.okr_total) desc")
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
 		}
