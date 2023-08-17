@@ -1122,7 +1122,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
 		}
 		allWhere = append(allWhere, "okr.parent_id = 0")
-		allWhere = append(allWhere, strings.Join(sql, " OR "))
+		allWhere = append(allWhere, "("+strings.Join(sql, " OR ")+")")
 
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		// 判断是否是普通组员
@@ -1132,7 +1132,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 			// 普通组员的权限
 			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
 			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
-			allWhere = append(allWhere, fmt.Sprintf("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d) OR FIND_IN_SET(%d, okr.participant) > 0", user.Userid, user.Userid))
+			allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d))", user.Userid))
 		} else {
 			// 判断是否是顶级部门负责人
 			var departmentTop model.UserDepartment
@@ -1148,11 +1148,11 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 				}
 
 				if departmentTop.Id == 0 {
-					allWhere = append(allWhere, fmt.Sprintf("okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(%d, okr.participant) > 0", user.Userid))
+					allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")))"))
 				}
 			}
 		}
-		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR replay.userid = ?)", user.Userid)
+		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR replay.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
 	}
 
 	if objective != "" {
