@@ -21,11 +21,13 @@
                     </template>
                 </n-select>
 
-                <div class="text-text-li mr-8 ml-16 whitespace-nowrap">
-                    {{ $t('时间') }}
+                <div class="text-text-li mr-8 ml-16 whitespace-nowrap">{{ $t('时间') }}</div>
+                <div v-if="showDatePickers" class="w-[33%]" >
+                    <DatePickers />
                 </div>
-                <n-date-picker class="w-[33%]  " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                <n-date-picker v-else class="w-[33%]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                     type="daterange" clearable size="medium" />
+
                 <n-button :loading="isloading" type="primary" size="small" class="ml-24 rounded px-16" @click="handleClick()">
                     <template #icon>
                         <i class="taskfont" v-if="!(isloading)">&#xe72a;</i>
@@ -77,6 +79,7 @@
                 </n-scrollbar>
             </div>
         </div>
+
         <n-drawer v-model:show="active" default-height="60vh" placement="bottom" resizable>
 
             <n-drawer-content>
@@ -117,8 +120,10 @@
                     <div class="mt-16 whitespace-nowrap mb-4">
                         {{ $t('时间') }}
                     </div>
-                    <n-date-picker class=" h-[36px] " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                    <DatePickers v-if="showDatePickers"/>
+                    <n-date-picker v-else class=" h-[36px] " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
+
 
                     <div class="flex justify-between gap-4 mt-auto border-solid pt-12 border-0  border-t-[1px] border-[#F2F2F2]">
                         <n-button :loading="isloading" strong secondary type="tertiary" class="flex-1" @click="handleReset">
@@ -146,6 +151,7 @@ import utils from '@/utils/utils'
 import { UserStore } from '@/store/user'
 import OkrLoading from '../components/OkrLoading.vue'
 
+const datePickerApps = ref([])
 const active = ref(false)
 const loadIng = ref(false)
 const isloading = ref(false)
@@ -160,12 +166,14 @@ const list = ref([])
 const departmentsvalue = ref(null)
 const principalvalue = ref(null)
 const types = ref(null);
-const daterange = ref(null)
+const daterange = ref([])
 const completednotrated = ref(false)
 const searchTime = ref(null)
 const keyWord = ref('')
 
 const emit = defineEmits(['edit'])
+
+const showDatePickers = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const departments = ref([
     { label: $t('全部'), value: null },
@@ -193,6 +201,15 @@ watch(() => props.searchObject, (newValue) => {
         clearInterval(searchTime.value)
     }, 300)
 }, { deep: true })
+
+watch(() => active.value, (newValue) => {
+    if(newValue){
+        loadDatePickers()
+    }else{
+        unmountDatePickerApps()
+    }
+})
+
 
 const searchActive = computed(()=>{
     return departmentsvalue.value != null || principalvalue.value  != null || types.value  != null ||  daterange.value  != null
@@ -267,11 +284,11 @@ const getList = (type) => {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id: departmentsvalue.value,
-            end_at: daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[1] / 1000) : null,
+            end_at: daterange.value[1] ?  (showDatePickers ? daterange.value[1] + ' 00:00:00' : utils.formatDate('Y-m-d 00:00:00', daterange.value[1] / 1000)) : '',
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
-            start_at: daterange.value ? utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000) : null,
+            start_at: daterange.value[0] ? (showDatePickers ? daterange.value[0] + ' 00:00:00' : utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000)) : '',
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
         }
@@ -388,11 +405,65 @@ const onScroll = (e) => {
     }
 }
 
+// 加载时间组件
+const loadDatePickers = () => {
+    nextTick(() => {
+        if (!window.Vues || !showDatePickers) return false;
+        unmountDatePickerApps()
+        document.querySelectorAll('datepickers').forEach(e => {
+            let app = new window.Vues.Vue({
+                el: document.querySelector('DatePickers'),
+                store: window.Vues.store,
+                render: (h: any) => {
+                    return h(window.Vues?.components?.DatePicker, {
+                        class: "okr-app-date-pickers",
+                        props: {
+                            editable: false,
+                            placeholder: $t("选择时间范围"),
+                            format: "yyyy-MM-dd",
+                            type:"daterange",
+                            placement: "bottom-end",
+                            confirm: true,
+                        },
+                        on: {
+                            "on-change": (e: any) => {
+                                daterange.value = e
+                            }
+                        }
+                    })
+                }
+            });
+            datePickerApps.value.push(app); 
+        })
+    })
+}
+// 卸载时间组件
+const unmountDatePickerApps = () => {
+    if(datePickerApps.value){
+        datePickerApps.value.forEach(app => {
+            app.$el.replaceWith(document.createElement("DatePickers"));
+            app.$destroy()
+        })
+        datePickerApps.value = [];
+    }
+}
+
+// 重载
+window.addEventListener('resize', function () {
+    loadDatePickers()
+})
+
+// 卸载
+window.addEventListener('apps-unmount', function () {
+    unmountDatePickerApps()
+})
 
 onMounted(() => {
     init()
+    loadDatePickers()
     getList('search')
 })
+
 defineExpose({
     upData,
     getList,

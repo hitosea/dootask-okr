@@ -47,9 +47,9 @@
                     </n-radio-group>
                 </n-form-item>
 
-
                 <n-form-item :label="$t('周期')" path="time">
-                    <n-date-picker class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
+                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]"> <DatePickers type="cycle" /></div>
+                    <n-date-picker v-else class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
                 </n-form-item>
 
@@ -120,7 +120,8 @@
                                 </n-form-item-gi>
 
                                 <n-form-item-gi :span="4" :label="$t('时间')" path="time">
-                                    <n-date-picker class="w-full" v-model:value="item.time" type="daterange" clearable
+                                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]"> <DatePickers type="time" :formkey="index"/></div>
+                                    <n-date-picker v-else class="w-full" v-model:value="item.time" type="daterange" clearable
                                         size="medium" />
                                 </n-form-item-gi>
 
@@ -180,8 +181,9 @@ const formRef = ref()
 const formRefs = ref()
 const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
+const datePickerApps = ref([])
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
-
+const showDatePickers = computed(() => window.Vues?.components?.DatePicker ? 1 : 0)
 
 const props = defineProps({
     edit: {
@@ -334,8 +336,8 @@ const handleSubmit = () => {
                 title: formKRValue.value[index].title,
                 confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
                 participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
-                start_at: utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
-                end_at: utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
+                start_at: showDatePickers ? (formKRValue.value[index].time[0] + ' 00:00:00') : utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
+                end_at: showDatePickers ? (formKRValue.value[index].time[1] + ' 00:00:00') : utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
             })
         }
         const upData = {
@@ -345,8 +347,8 @@ const handleSubmit = () => {
             priority: formValue.value.priority,
             ascription: formValue.value.ascription,
             visible_range: formValue.value.visible_range,
-            start_at: utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
-            end_at: utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
+            start_at: showDatePickers ? (formValue.value.time[0] + ' 00:00:00') : utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
+            end_at: showDatePickers ? (formValue.value.time[1] + ' 00:00:00') : utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
             align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
             project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
             key_results: keyResults,
@@ -418,6 +420,18 @@ const loadUserSelects = () => {
         })
     })
 }
+// 卸载时间组件
+const unmountUserSelectsApps = () => {
+    if(userSelectApps.value){
+        userSelectApps.value.forEach(app => {
+            let dom = document.createElement("UserSelects")
+            dom.setAttribute('formkey',app._vnode.data.formkey)
+            app.$el.replaceWith(dom);
+            app.$destroy()
+        })
+        userSelectApps.value = [];
+    }
+}
 
 // 清除数据
 const handleClear = () => {
@@ -455,20 +469,17 @@ const handleAddKr = () => {
         },
     )
     loadUserSelects()
+    loadDatePickers()
 }
 
 // 删除kr
 const handleRemoveKr = (index) => {
     if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
-    userSelectApps.value.forEach(app => {
-        let dom = document.createElement("UserSelects")
-        dom.setAttribute('formkey',app._vnode.data.formkey)
-        app.$el.replaceWith(dom);
-        app.$destroy()
-    })
-    userSelectApps.value = [];
+    unmountUserSelectsApps()
+    unmountDatePickerApps()
     loadUserSelects()
+    loadDatePickers()
 }
 
 // 对齐目标
@@ -476,22 +487,80 @@ const handleGoal = () => {
     selectAlignmentShow.value = true
 }
 
+
+// 加载时间组件
+const loadDatePickers = () => {
+    nextTick(() => {
+        if (!window.Vues || !showDatePickers) return false;
+        document.querySelectorAll('datepickers').forEach(e => {
+            let type = e.getAttribute('type');
+            let item = formKRValue.value[e.getAttribute('formkey')];
+            let app = new window.Vues.Vue({
+                el: document.querySelector('DatePickers'),
+                store: window.Vues.store,
+                render: (h: any) => {
+                    return h(window.Vues?.components?.DatePicker, {
+                        class: "okr-app-date-pickers",
+                        type: type,
+                        formkey: e.getAttribute('formkey'),
+                        props: {
+                            value: type == 'cycle' ? formValue.value.time || '' : item.time || '',
+                            editable: false,
+                            placeholder: $t("选择时间范围"),
+                            format: "yyyy-MM-dd",
+                            type:"daterange",
+                            placement: "top-end",
+                            confirm: true,
+                        },
+                        on: {
+                            "on-change": (value: any) => {
+                                if(type == 'cycle'){
+                                    formValue.value.time = value;
+                                }else{
+                                    item.time = value;
+                                }
+                            }
+                        }
+                    })
+                }
+            });
+            datePickerApps.value.push(app); 
+        })
+    })
+}
+// 卸载时间组件
+const unmountDatePickerApps = () => {
+    if(datePickerApps.value){
+        datePickerApps.value.forEach(app => {
+            let dom = document.createElement("DatePickers")
+            dom.setAttribute('formkey',app._vnode.data.formkey)
+            dom.setAttribute('type',app._vnode.data.type)
+            app.$el.replaceWith(dom);
+            app.$destroy()
+        })
+        datePickerApps.value = [];
+    }
+}
+
+// 卸载
+window.addEventListener('apps-unmount', function () {
+    closeDrawer()
+})
+
 // 关闭Drawer
 const closeDrawer = () => {
     handleClear()
-    userSelectApps.value.forEach(app => app.$destroy())
+    unmountUserSelectsApps()
+    unmountDatePickerApps()
     emit('close')
 }
 
 // 显示
 const showDrawer = () => {
     loadUserSelects()
+    loadDatePickers()
 }
 
-// 卸载
-window.addEventListener('apps-unmount', function () {
-    userSelectApps.value.forEach(app => app.$destroy())
-})
 
 //判断初始化归属
 nextTick(()=>{
@@ -499,7 +568,6 @@ nextTick(()=>{
         formValue.value.ascription = 2
     }
 })
-
 
 defineExpose({
     handleSubmit,
