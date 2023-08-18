@@ -316,7 +316,7 @@
                         <p @click="nextLogList" v-if="logListLastPage > logListPage"
                             class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
                     </n-scrollbar>
-                    <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
+                    <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" >
                         <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid"
                                 :class="detailData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
@@ -334,7 +334,7 @@
                             </div>
                             <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无复盘') }}</p>
                             <p @click="nextReplayList" v-if="replayListLastPage > replayListPage"
-                                class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}
+                                class="text-12 mt-20 mb-20 text-text-tips text-center ">{{ $t('点击加载更多') }}
                             </p>
                         </div>
                     </n-scrollbar>
@@ -595,20 +595,21 @@ const handleGetLogList = () => {
 }
 
 //复盘下一页
-const onScrollReplayList = (e) => {
-    if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
-        // 重新请求数据
-        if (!loadIng.value) {
-            replayListPage.value++
-            handleGetLogList()
-        }
-    }
-}
+// const onScrollReplayList = (e) => {
+//     if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
+//         // 重新请求数据
+//         if (!loadIng.value) {
+//             replayListPage.value ++
+//             handleGetReplayList()
+//         }
+//     }
+// }
+
 const nextReplayList = (e) => {
     // 重新请求数据
     if (!loadIng.value) {
-        replayListPage.value++
-        handleGetLogList()
+        replayListPage.value ++
+        handleGetReplayList()
     }
 }
 
@@ -793,7 +794,7 @@ const openDetail = (id, userid) => {
         AlignTargetRef.value.getList()
         loadDialogWrappers();
         if (window.innerWidth < 768) {
-            navActive.value = 4
+            navActive.value = 3
         }
         else {
             navActive.value = 0
@@ -820,7 +821,7 @@ const loadDialogWrappers = () => {
                 }, [h("div", { slot: "head" })])
             }
         });
-        
+
     })
 }
 

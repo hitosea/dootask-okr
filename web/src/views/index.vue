@@ -68,14 +68,11 @@ import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
 import { useRouter, useRoute } from 'vue-router'
-import { UserStore } from '@/store/user'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
-const userInfo = UserStore().info
-const setUserInfo = UserStore().setUserInfo
 const router = useRouter()
 const route = useRoute()
 const ICreatedRef = ref(null)
@@ -118,17 +115,18 @@ const handleEdit = (data) => {
 const handleAdd = () => {
     getUserInfo()
         .then(({ data }) => {
-            setUserInfo(data)
-            if (userInfo.identity[0] != 'admin' && userInfo.department && userInfo.department.length == 0) {
+            if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
                 tipsContent.value = $t('您当前未加入任何部门，不能发起！')
                 showModal.value = true
                 return
             }
-            if (window.innerWidth < 768) {
+            else{
+                if (window.innerWidth < 768) {
                 router.push('/addOkr')
-            }
-            else {
-                addShow.value = true
+                }
+                else {
+                    addShow.value = true
+                }
             }
         })
         .catch()

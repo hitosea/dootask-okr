@@ -137,7 +137,7 @@
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
-                                    </UserList>    
+                                    </UserList>
                                 </n-form-item-gi>
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
                                     <n-input-number class="w-full" :max="100" :min="0" :precision="0"
@@ -312,17 +312,17 @@ const handleSubmit = () => {
         formRefs.value?.forEach(element => {
             element.validate((errors) => {
                 if (errors) {
-                    const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error') 
+                    const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
                     errorList[0].scrollIntoView({
                         block:'center',
                         behavior:'smooth',
                     })
                     return false;
-                } 
+                }
             })
         });
         if (errors) {
-            const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error') 
+            const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
                 errorList[0].scrollIntoView({
                     block:'center',
                     behavior:'smooth',
@@ -524,7 +524,7 @@ const loadDatePickers = () => {
                     })
                 }
             });
-            datePickerApps.value.push(app); 
+            datePickerApps.value.push(app);
         })
     })
 }
@@ -639,6 +639,9 @@ defineExpose({
 
 :deep(.okr-user-selects) {
     @apply w-full bg-none border-none !important;
+}
+:deep(.n-radio__dot) {
+    box-shadow: inset #dddddd 0 0 0 1px;
 }
 
 </style>

@@ -44,15 +44,15 @@ if (route.query.data != undefined) {
     userid.value = Number(route.query.userid)
 }
 
-const openDetail = (id, userid) => {
+const openDetail = (Id, userId) => {
     router.replace({
-        path: '/okrDetails',
         query: {
-            data: id,
-            userid: userid,
+            data: Id,
+            userid: userId,
         },
     })
-    location.reload(); 
+    id.value = Id
+    userid.value = userId
 }
 
 const getDetail = (item) => {
