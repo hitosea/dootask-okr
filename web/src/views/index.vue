@@ -164,10 +164,10 @@ const handleReturn = () => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg py-20 px-16;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg py-20 px-20;
 
     .okr-title {
-        @apply h-42 flex justify-between items-center relative mt-12 mb-14 ml-4;
+        @apply h-42 flex justify-between items-center relative mt-12 mb-14;
 
         .icon-return{
             @apply block md:hidden mr-16 text-20 z-[2];
@@ -239,7 +239,7 @@ const handleReturn = () => {
 body.window-portrait {
     .page-okr{
         .okr-title {
-            margin: 4px 0 14px 0;
+            margin: 4px 0 14px -4px;
         }
     }
 }
