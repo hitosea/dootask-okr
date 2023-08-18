@@ -1844,7 +1844,10 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 
 		// 获取所有顶级部门名称
 		for _, department := range topLevelDepartments {
-			alias = append(alias, department.Name)
+			// 是自己为顶级部门负责人时才显示
+			if department.OwnerUserid == userid && department.ParentId == 0 {
+				alias = append(alias, department.Name)
+			}
 		}
 
 		return alias
