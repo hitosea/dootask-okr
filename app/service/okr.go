@@ -1853,10 +1853,14 @@ func (s *okrService) getOwningAlias(ascription int, userid int, departmentId str
 	// 获取用户名称
 	if userid > 0 && ascription == 2 {
 		var user model.User
-		if err := core.DB.Model(&model.User{}).Where("userid = ?", userid).Find(&user).Error; err != nil {
+		if err := core.DB.Unscoped().Model(&model.User{}).Where("userid = ?", userid).Find(&user).Error; err != nil {
 			return nil
 		}
-		alias = []string{user.GetNickname()}
+		if user.Userid > 0 {
+			alias = []string{user.GetNickname()}
+		} else {
+			alias = []string{"用户已删除"}
+		}
 	}
 
 	return alias
