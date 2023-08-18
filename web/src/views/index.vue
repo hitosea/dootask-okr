@@ -93,13 +93,12 @@ const showModal = ref(false)
 const tipsContent = ref('')
 
 watch(route,(newValue)=>{
-        nextTick(()=>{
-            if(newValue.query.active == undefined && OkrFollowRef.value != null){
-                OkrFollowRef.value.getList('search')
-            }
-        })
-
-})
+    nextTick(()=>{
+        if(newValue.query.active == undefined && OkrFollowRef.value != null){
+            OkrFollowRef.value.getList('search')
+        }
+    })
+},{immediate:true})
 
 if (route.query.active == undefined) {
     router.replace({ query: { active: tabsName.value } })

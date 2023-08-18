@@ -3,7 +3,7 @@
         <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
-            <n-popover placement="bottom-end"  :show="showPopover">
+            <n-popover placement="bottom-end"  :show="showPopover" :z-index="modalTransferIndex">
                 <template #trigger>
                     <i @click="showPopover = !showPopover" class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
@@ -59,7 +59,7 @@ const getDetail = (item) => {
     detail.value = item
 }
 const handleReturn = () => {
-    router.go(-1)  
+    router.go(-1)
 }
 
 const handleEdit = () => {

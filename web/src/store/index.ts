@@ -30,6 +30,7 @@ export const GlobalStore = defineStore({
         addMultipleData: null,
         okrEditData: null,
         okrEdit: false,
+        doubleSkip: null,
     }),
     actions: {
         async init() {

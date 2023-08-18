@@ -212,7 +212,7 @@ watch(() => active.value, (newValue) => {
 
 
 const searchActive = computed(()=>{
-    return departmentsvalue.value != null || principalvalue.value  != null || types.value  != null ||  daterange.value  != null
+    return departmentsvalue.value != null || principalvalue.value  != null || types.value  != null ||  daterange.value.length  != 0
 })
 
 const getUser = (keyword) => {
@@ -433,7 +433,7 @@ const loadDatePickers = () => {
                     })
                 }
             });
-            datePickerApps.value.push(app); 
+            datePickerApps.value.push(app);
         })
     })
 }

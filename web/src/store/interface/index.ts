@@ -25,6 +25,7 @@ export interface GlobalState {
     addMultipleData: any
     okrEditData: any
     okrEdit: boolean
+    doubleSkip: any
 }
 
 export interface UserState {
