@@ -1,6 +1,6 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" :mask-closable="false"
-        @after-leave="closeDrawer" :z-index="13">
+        @after-leave="closeDrawer" :z-index="13" :trap-focus="false">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
             @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="()=>{  emit('getList') }" @upData="(id)=>{ emit('upData',id) }"
