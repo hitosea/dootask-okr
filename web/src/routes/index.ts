@@ -11,11 +11,9 @@ export default function createDemoRouter(app, routes) {
     })
 
     router.beforeEach(function (to, from, next) {
-
         if(to.query.token){
             UserStore().setToken(to.query.token)
         }
-
         if (!from || to.path !== from.path) {
             if (loadingBarApiRef.value) {
                 loadingBarApiRef.value.start()

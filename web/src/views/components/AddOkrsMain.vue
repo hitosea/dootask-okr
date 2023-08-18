@@ -338,7 +338,7 @@ const handleSubmit = () => {
                 confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
                 participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
                 start_at: utils.TimeHandle(formKRValue.value[index].time[0]),
-                end_at: utils.TimeHandle(formKRValue.value[index].time[1]),
+                end_at: utils.TimeHandle(formKRValue.value[index].time[1],2),
             })
         }
         const upData = {
@@ -349,7 +349,7 @@ const handleSubmit = () => {
             ascription: formValue.value.ascription,
             visible_range: formValue.value.visible_range,
             start_at: utils.TimeHandle(formValue.value.time[0]),
-            end_at: utils.TimeHandle(formValue.value.time[1]),
+            end_at: utils.TimeHandle(formValue.value.time[1],2),
             align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
             project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
             key_results: keyResults,

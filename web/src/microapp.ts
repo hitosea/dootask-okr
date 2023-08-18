@@ -39,7 +39,7 @@ export const handleMicroData = (router: Router) =>{
                 // 当基座下发path时进行跳转
                 if (data.path) {
                     if( data.path == '/app-vite#' || data.path == '/app-vite#/' ){
-                        window.history.back()
+                        router.back()
                     }else{
                         router.replace(data.path as string)
                     }

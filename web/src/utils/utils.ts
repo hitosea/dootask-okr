@@ -1,5 +1,6 @@
 import localforage from "localforage"
 import webTs from "./web"
+import { type } from '../../auto-imports';
 localforage.config({ name: 'DooTask', storeName: 'common' })
 const utils = {
     /**
@@ -455,14 +456,14 @@ const utils = {
      * @param v
      * @returns {string}
      */
-    TimeHandle (time:any)  {
+    TimeHandle (time:any,type:number):string  {
         if(!time){
             return "";
         }
         if( typeof time == 'number' ){
             return utils.formatDate('Y-m-d 00:00:00', time / 1000)
         }
-        return utils.formatDate('Y-m-d',time) + ' 00:00:00'
+        return utils.formatDate('Y-m-d',time) + (type == 2 ? ' 23:59:00' : ' 00:00:00')
     },
 
     /**

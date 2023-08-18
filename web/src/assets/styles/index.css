@@ -9,6 +9,13 @@
     padding: 0;
 }
 
+/* 刷新按钮 */
+.okr-app-refresh i{
+    font-size: 20px;
+    cursor: pointer;
+    padding:0 10px;
+}
+
 /* 时间组件 */
 .okr-date-picker-waps{
     width: 100%;

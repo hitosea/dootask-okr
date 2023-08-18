@@ -4,7 +4,8 @@
             <div class="page-title">
                 <div class="flex items-center">
                     <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
-                    <h2 class="">{{ $t('OKR结果分析') }}</h2>
+                    <h2>{{ $t('OKR结果分析') }}</h2>
+                    <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="taskfont">&#xe6ae;</i></div>
                 </div>
             </div>
             <!-- <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
@@ -17,143 +18,149 @@
 
                         <!-- OKR整体平均完成度 -->
                         <n-gi class="bg-white mb-12 md:mb-20">
-                            <div class="list-body">
-                                <div class="echarts-pie">
-                                    <div class="text-16 font-medium">{{ $t('OKR整体平均完成度') }}</div>
-                                    <div class="pie">
-                                        <div id="degreeOfCompletion"></div>
+                            <n-spin :show="loadIng" size="small">
+                                <div class="list-body">
+                                    <div class="echarts-pie">
+                                        <div class="text-16 font-medium">{{ $t('OKR整体平均完成度') }}</div>
+                                        <div class="pie">
+                                            <div id="degreeOfCompletion"></div>
+                                        </div>
+                                        <div class="legend text-center">
+                                            <span>
+                                                <span class="legend-name">{{ $t('O的数量') }}: </span>
+                                                <span class=" font-medium">{{analyzeDatas.completes.total}}</span>
+                                            </span>
+                                            <span>
+                                                <span class="legend-name">{{ $t('已完成O') }}:</span>
+                                                <span class="font-medium">{{analyzeDatas.completes.complete}}</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="legend text-center">
-                                        <span>
-                                            <span class="legend-name">{{ $t('O的数量') }}: </span>
-                                            <span class=" font-medium">{{analyzeDatas.completes.total}}</span>
-                                        </span>
-                                        <span>
-                                            <span class="legend-name">{{ $t('已完成O') }}:</span>
-                                            <span class="font-medium">{{analyzeDatas.completes.complete}}</span>
-                                        </span>
+                                    <n-divider class="py-8"/>
+                                    <div class="list-progress">
+                                        <div class="text-16 font-medium">{{ $t('各部门OKR平均完成度') }}</div>
+                                        <div class="text-14 text-center py-50" v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
+                                        <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
+                                            <p class="progress-name max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
+                                            <n-progress type="line" color="#8BCF70" :percentage="calculatingProgress(item.complete,item.total)">
+                                                <span class="text-[#8BCF70] w-[50px] block text-right">{{calculatingProgress(item.complete,item.total)}}%</span>
+                                            </n-progress>
+                                        </div>
                                     </div>
                                 </div>
-                                <n-divider class="py-8"/>
-                                <div class="list-progress">
-                                    <div class="text-16 font-medium">{{ $t('各部门OKR平均完成度') }}</div>
-                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
-                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
-                                        <p class="progress-name max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
-                                        <n-progress type="line" color="#8BCF70" :percentage="calculatingProgress(item.complete,item.total)">
-                                            <span class="text-[#8BCF70] w-[50px] block text-right">{{calculatingProgress(item.complete,item.total)}}%</span>
-                                        </n-progress>
-                                    </div>
-                                </div>
-                            </div>
+                            </n-spin>
                         </n-gi>
 
                         <!-- OKR评分分布 -->
                         <n-gi class="bg-white mb-12 md:mb-20">
-                            <div class="list-body">
-                                <div class="echarts-pie">
-                                    <div class="text-16 font-medium">{{ $t('OKR评分分布') }}</div>
-                                    <div class="pie">
-                                        <div id="scoreDistribution"></div>
-                                    </div>
-                                    <div class="legend text-center flex items-center justify-between flex-wrap">
-                                
-                                            <span class=" block">
-                                                <p class="dot"></p>
-                                                <span class="legend-name">{{ $t('未评分') }}: </span>
-                                                <span class="font-medium">{{ analyzeDatas.score.unscored }}</span>
-                                            </span>
-                                            <span class="block">
-                                                <p class="dot ff"></p>
-                                                <span class="legend-name">{{ $t('0-3分') }}: </span>
-                                                <span class="font-medium">{{ analyzeDatas.score.zero_to_three }}</span>
-                                            </span>
-                                   
-                                            <span class="block">
-                                                <p class="dot fc"></p>
-                                                <span class="legend-name">{{ $t('3-7分') }}: </span>
-                                                <span class="font-medium">{{ analyzeDatas.score.three_to_seven }}</span>
-                                            </span>
+                            <n-spin :show="loadIng" size="small">
+                                <div class="list-body">
+                                    <div class="echarts-pie">
+                                        <div class="text-16 font-medium">{{ $t('OKR评分分布') }}</div>
+                                        <div class="pie">
+                                            <div id="scoreDistribution"></div>
+                                        </div>
+                                        <div class="legend text-center flex items-center justify-between flex-wrap">
+                                    
+                                                <span class=" block">
+                                                    <p class="dot"></p>
+                                                    <span class="legend-name">{{ $t('未评分') }}: </span>
+                                                    <span class="font-medium">{{ analyzeDatas.score.unscored }}</span>
+                                                </span>
+                                                <span class="block">
+                                                    <p class="dot ff"></p>
+                                                    <span class="legend-name">{{ $t('0-3分') }}: </span>
+                                                    <span class="font-medium">{{ analyzeDatas.score.zero_to_three }}</span>
+                                                </span>
+                                    
+                                                <span class="block">
+                                                    <p class="dot fc"></p>
+                                                    <span class="legend-name">{{ $t('3-7分') }}: </span>
+                                                    <span class="font-medium">{{ analyzeDatas.score.three_to_seven }}</span>
+                                                </span>
 
-                                            <span class="block">
-                                                <p class="dot bc"></p>
-                                                <span class="legend-name">{{ $t('7-10分') }}: </span>
-                                                <span class="font-medium">{{ analyzeDatas.score.seven_to_ten }}</span>
-                                            </span>
-                                   
+                                                <span class="block">
+                                                    <p class="dot bc"></p>
+                                                    <span class="legend-name">{{ $t('7-10分') }}: </span>
+                                                    <span class="font-medium">{{ analyzeDatas.score.seven_to_ten }}</span>
+                                                </span>
+                                    
+                                        </div>
                                     </div>
-                                </div>
-                                <n-divider class="py-8" />
-                                <div class="list-progress">
-                                    <div class="text-16 font-medium">{{ $t('各部门OKR评分分布') }}</div>
-                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">{{ $t('暂无数据') }}</div>
-                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptScores">
-                                        <p class="text-text-li max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
-                                        <div class="custom-progres">
-                                            <div class="progres">
-                                                <p class="bg-[#FF7070]" v-if="item.zero_to_three" :style="{width:calculatingProgress(item.zero_to_three,item.total)+'%'}">{{item.zero_to_three}}</p>
-                                                <p class="bg-[#FC984B]" v-if="item.three_to_seven" :style="{width:calculatingProgress(item.three_to_seven,item.total)+'%'}">{{item.three_to_seven}}</p>
-                                                <p class="bg-[#8BCF70]" v-if="item.seven_to_ten" :style="{width:calculatingProgress(item.seven_to_ten,item.total)+'%'}">{{item.seven_to_ten}}</p>
-                                                <p class="bg-[#E0E1E4]" v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}</p>
+                                    <n-divider class="py-8" />
+                                    <div class="list-progress">
+                                        <div class="text-16 font-medium">{{ $t('各部门OKR评分分布') }}</div>
+                                        <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">{{ $t('暂无数据') }}</div>
+                                        <div class="mt-20" v-else v-for="item in analyzeDatas.deptScores">
+                                            <p class="text-text-li max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
+                                            <div class="custom-progres">
+                                                <div class="progres">
+                                                    <p class="bg-[#FF7070]" v-if="item.zero_to_three" :style="{width:calculatingProgress(item.zero_to_three,item.total)+'%'}">{{item.zero_to_three}}</p>
+                                                    <p class="bg-[#FC984B]" v-if="item.three_to_seven" :style="{width:calculatingProgress(item.three_to_seven,item.total)+'%'}">{{item.three_to_seven}}</p>
+                                                    <p class="bg-[#8BCF70]" v-if="item.seven_to_ten" :style="{width:calculatingProgress(item.seven_to_ten,item.total)+'%'}">{{item.seven_to_ten}}</p>
+                                                    <p class="bg-[#E0E1E4]" v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}</p>
+                                                </div>
+                                                <div class="collect">{{item.total}}{{$t('个')}}</div>
                                             </div>
-                                            <div class="collect">{{item.total}}{{$t('个')}}</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </n-spin>
                         </n-gi>
 
                         <!-- OKR评分率 -->
                         <n-gi class="bg-white mb-12 md:mb-20">
-                            <div class="list-body">
-                                <div class="echarts-pie">
-                                    <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
-                                        <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300" >
-                                            <template #trigger>
-                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
-                                            </template>
-                                            <p class="max-w-[300px]">{{$t('已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR')}}</p>
-                                        </n-tooltip>
+                            <n-spin :show="loadIng" size="small">
+                                <div class="list-body">
+                                    <div class="echarts-pie">
+                                        <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
+                                            <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300" >
+                                                <template #trigger>
+                                                    <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
+                                                </template>
+                                                <p class="max-w-[300px]">{{$t('已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR')}}</p>
+                                            </n-tooltip>
+                                        </div>
+                                        <div class="pie">
+                                            <div id="scoreRatingRate"></div>
+                                        </div>
+                                        <div class="legend text-center">
+                                            <span>
+                                                <p class="dot"></p>
+                                                <span class="legend-name">{{ $t('未完成') }}: </span>
+                                                <span class="font-medium">{{ analyzeDatas.scoreRate.total - analyzeDatas.scoreRate.complete }}</span>
+                                            </span>
+                                            <span>
+                                                <p class="dot bc"></p>
+                                                <span class="legend-name">{{ $t('已完成') }}:</span>
+                                                <span class="font-medium">{{ analyzeDatas.scoreRate.complete }}</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="pie">
-                                        <div id="scoreRatingRate"></div>
-                                    </div>
-                                    <div class="legend text-center">
-                                        <span>
-                                            <p class="dot"></p>
-                                            <span class="legend-name">{{ $t('未完成') }}: </span>
-                                            <span class="font-medium">{{ analyzeDatas.scoreRate.total - analyzeDatas.scoreRate.complete }}</span>
-                                        </span>
-                                        <span>
-                                            <p class="dot bc"></p>
-                                            <span class="legend-name">{{ $t('已完成') }}:</span>
-                                            <span class="font-medium">{{ analyzeDatas.scoreRate.complete }}</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <n-divider class="py-8" />
-                                <div class="list-progress">
-                                    <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
-                                        <n-tooltip trigger="hover">
-                                            <template #trigger>
-                                                <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
-                                            </template>
-                                            {{$t('各个部门完成OKR评分的所占比例')}}
-                                        </n-tooltip>
-                                    </div>
-                                    <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
-                                    <div class="mt-20" v-else v-for="item in analyzeDatas.deptScoreProportion">
-                                        <p class="text-text-li max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
-                                        <div class="custom-progres">
-                                            <div class="progres">
-                                                <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}</p>
-                                                <p class="bg-[#E0E1E4]" v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}</p>
+                                    <n-divider class="py-8" />
+                                    <div class="list-progress">
+                                        <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
+                                            <n-tooltip trigger="hover">
+                                                <template #trigger>
+                                                    <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
+                                                </template>
+                                                {{$t('各个部门完成OKR评分的所占比例')}}
+                                            </n-tooltip>
+                                        </div>
+                                        <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScoreProportion?.length == 0">{{ $t('暂无数据') }}</div>
+                                        <div class="mt-20" v-else v-for="item in analyzeDatas.deptScoreProportion">
+                                            <p class="text-text-li max-w-[calc(100%-50px)] line-clamp-1">{{item.department_name}}</p>
+                                            <div class="custom-progres">
+                                                <div class="progres">
+                                                    <p class="bg-[#8BCF70]" v-if="item.already_reviewed" :style="{width:calculatingProgress(item.already_reviewed,item.total)+'%'}">{{item.already_reviewed}}</p>
+                                                    <p class="bg-[#E0E1E4]" v-if="item.unscored" :style="{width:calculatingProgress(item.unscored,item.total)+'%'}">{{item.unscored}}</p>
+                                                </div>
+                                                <div class="collect">{{ item.total }}{{$t('个')}}</div>
                                             </div>
-                                            <div class="collect">{{ item.total }}{{$t('个')}}</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </n-spin>
                         </n-gi>
 
                     </n-grid>
@@ -169,6 +176,7 @@ import * as http from "../api/modules/analysis";
 import {  useRouter } from 'vue-router';
 
 const router = useRouter()
+const loadIng = ref(false)
 
 // 总提数据
 const analyzeDatas = ref({
@@ -321,6 +329,7 @@ const handleReturn = () => {
 
 // 获取数据
 const getData = () => {
+    loadIng.value = true;
     // OKR整体平均完成度
     http.getAnalyzeComplete().then(({ data }) => {
         analyzeDatas.value.completes = data
@@ -345,6 +354,9 @@ const getData = () => {
     http.getAnalyzeDeptScoreProportion().then(({ data }) => {
         analyzeDatas.value.deptScoreProportion = data
     })
+    setTimeout(()=>{
+        loadIng.value = false;
+    },300)
 }
 
 // 加载

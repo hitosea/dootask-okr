@@ -4,6 +4,7 @@
             <div class="flex items-center">
                 <div class="okr-nav-back" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
+                <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="taskfont">&#xe6ae;</i></div>
             </div>
             <div class="okr-right">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
@@ -72,7 +73,7 @@ import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
-
+const loadIng = ref(false)
 const router = useRouter()
 const route = useRoute()
 const ICreatedRef = ref(null)
@@ -104,6 +105,26 @@ const changeTabs = (e) => {
     router.replace({ query: { active: e } })
 }
 
+const reLoadList = () => {
+    loadIng.value = true;
+    //重新获取列表
+   if (tabsName.value == $t('我创建的') ) {
+        ICreatedRef.value.resetGetList('search')
+    }
+    else if (tabsName.value == $t('我参与的')) {
+        OkrParticipantRef.value.resetGetList('search')
+    }
+    else if (tabsName.value == $t('部门OKR')) {
+        OkrDepartmentRef.value.resetGetList('search')
+    }
+    else if (tabsName.value == $t('我关注的')) {
+        OkrFollowRef.value.resetGetList('search')
+    }
+    setTimeout(()=>{
+        loadIng.value = false;
+    },300)
+}
+
 //编辑
 const handleEdit = (data) => {
     addShow.value = true
@@ -122,7 +143,7 @@ const handleAdd = () => {
             }
             else{
                 if (window.innerWidth < 768) {
-                router.push('/addOkr')
+                    router.push('/addOkr')
                 }
                 else {
                     addShow.value = true

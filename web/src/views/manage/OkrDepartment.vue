@@ -284,7 +284,7 @@ const getList = (type) => {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id: departmentsvalue.value,
-            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1]) : '',
+            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1],2) : '',
             objective: props.searchObject,
             page: page.value,
             page_size: 10,

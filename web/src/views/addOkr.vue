@@ -19,13 +19,10 @@ import { GlobalStore } from '@/store';
 const router = useRouter()
 const loadIng = ref(false)
 
-
 const AddOkrsRef = ref(null)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 const globalStore = GlobalStore()
 const { okrEditData, okrEdit } = globalStore.okrSetup()
-
-
 
 //提交
 const handleSubmit = () => {
