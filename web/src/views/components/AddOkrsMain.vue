@@ -170,7 +170,7 @@ import utils from "@/utils/utils";
 import { UserStore } from '@/store/user'
 import { AlertCircleOutline } from '@vicons/ionicons5'
 
-const emit = defineEmits(['close', 'loadIng'])
+const emit = defineEmits(['close', 'loadIng','submit'])
 
 const departmentOwner = UserStore().info.department_owner
 
@@ -362,6 +362,7 @@ const handleSubmit = () => {
                 .then(({ msg }) => {
                     message.success($t('修改成功'))
                     emit('close', 2, formValue.value.id)
+                    emit('submit')
                 })
                 .catch(({ msg }) => {
                     message.error(msg)
@@ -375,6 +376,7 @@ const handleSubmit = () => {
                 .then(({ msg }) => {
                     message.success($t('添加成功'))
                     emit('close', 1)
+                    emit('submit')
                 })
                 .catch(({ msg }) => {
                     message.error(msg)
@@ -547,6 +549,7 @@ const closeDrawer = () => {
     handleClear()
     unmountUserSelectsApps()
     unmountDatePickerApps()
+    emit('close')
 }
 
 // 显示

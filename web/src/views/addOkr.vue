@@ -7,7 +7,7 @@
     </div>
     <div class="pt-[76px] pb-16 pl-16 pr-2">
         <AddOkrsMain ref="AddOkrsRef" :edit="okrEdit" :editData="okrEditData" :labelPlacement="'top'" :labelAlign="'left'"
-            @close="handleReturn" @loadIng="(e) => { loadIng = e }">
+            @submit="handleReturn" @loadIng="(e) => { loadIng = e }">
         </AddOkrsMain>
     </div>
 </template>
