@@ -16,6 +16,7 @@ type UserInfoResp struct {
 	NicknameOriginal string   `json:"nickname_original"` // 昵称原始值
 	TaskDialogId     int      `json:"task_dialog_id"`    // 任务对话框id
 	CreatedAt        string   `json:"created_at"`        // 创建时间
+	DepartmentOwner  bool     `json:"department_owner"`  // 是否是部门负责人 false-不是 true-是
 }
 
 // 用户基础信息
