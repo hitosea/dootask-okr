@@ -1,8 +1,16 @@
 import localforage from "localforage"
 import webTs from "./web"
-import { type } from '../../auto-imports';
 localforage.config({ name: 'DooTask', storeName: 'common' })
 const utils = {
+
+    /**
+     * 简单判断IPv4地址
+     * @param value
+     */
+    apiUrl(url: string) {
+        return window.$ && window.$.apiUrl ? window.$.apiUrl(url) : url
+    },
+
     /**
      * 简单判断IPv4地址
      * @param value
@@ -456,7 +464,7 @@ const utils = {
      * @param v
      * @returns {string}
      */
-    TimeHandle (time:any,type:number):string  {
+    TimeHandle (time:any,type:number=1):string  {
         if(!time){
             return "";
         }

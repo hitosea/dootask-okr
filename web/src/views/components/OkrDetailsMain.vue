@@ -50,7 +50,7 @@
             </div>
 
             <n-scrollbar ref="scrollbarRef" class="left-scrollbar">
-                <n-spin class="md:mr-24" :show="false">
+                <div class="md:mr-24">
                     <h3 id="detailTop"
                         class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
@@ -192,7 +192,7 @@
                         </AlignTarget>
                     </div>
 
-                </n-spin>
+                </div>
             </n-scrollbar>
         </div>
 

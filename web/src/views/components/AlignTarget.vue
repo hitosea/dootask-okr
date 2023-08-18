@@ -45,9 +45,9 @@
             </n-tooltip>
         </div>
 
-        <div v-else class="flex flex-initial items-center justify-center py-[60px]">
+        <div v-else class="flex flex-initial items-center justify-center">
             <div>
-                <img class="w-80" src="@/assets/images/icon/notData.svg" />
+                <img class="w-60" src="@/assets/images/icon/notData.svg" />
                 <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
             </div>
         </div>
