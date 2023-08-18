@@ -3,7 +3,7 @@
         <div class="okr-follow-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
             <OkrItems @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
-            <OkrNotDatas  v-if="!loadIng && !onscrolloading && list.length == 0" :loadIng="loadIng" :types="searchObject !=''"></OkrNotDatas>
+            <OkrNotDatas  v-if="!loadIng && !onscrolloading && list.length == 0" :types="searchObject !=''"></OkrNotDatas>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
         </div>
     </n-scrollbar>
@@ -34,7 +34,6 @@ const props = defineProps({
 
 watch(() => props.searchObject, (newValue) => {
     clearInterval(searchTime.value)
-    loadIng.value = true
     searchTime.value = setInterval(() => {
         page.value = 1
         getList('search')

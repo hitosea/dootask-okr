@@ -59,7 +59,7 @@ const getDetail = (item) => {
     detail.value = item
 }
 const handleReturn = () => {
-    router.go(-1)
+    router.go(-1)  
 }
 
 const handleEdit = () => {

@@ -34,8 +34,9 @@ const handleReturn = () => {
         state.okrEditData = null
         state.okrEdit = false
     })
-    router.back()
+      router.go(-1)
 }
+
 nextTick(() => {
     AddOkrsRef.value.showDrawer()
 })
