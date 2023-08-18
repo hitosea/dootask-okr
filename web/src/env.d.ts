@@ -11,6 +11,7 @@ declare const $t: any
 
 declare interface Window {
     systemInfo: any
+    $: any
     $t: any
     width: any
     height: any
