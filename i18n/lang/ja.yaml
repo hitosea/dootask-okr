@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: キー結果タイトルは空にしてはいけま�
 ErrOkrKrScoreNotComplete: KRレーティング未完了です
 ErrOkrNoData: データは検索できませんでした
 ErrOkrNoDepartment: 現在、どの部門にも所属していないので、発議することはできません!
+ErrOkrNoViewPermission: 当面は閲覧権限がありません。
 ErrOkrOwnerNotCancel: 担当者のみの取り扱いとなります
 ErrOkrOwnerNotScore: 担当者採点なしです
 ErrOkrOwnerScored: この採点は担当者の上司が行います。

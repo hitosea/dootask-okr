@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: The key result header cannot be empty
 ErrOkrKrScoreNotComplete: KR score is not complete
 ErrOkrNoData: No data is queried
 ErrOkrNoDepartment: You are not currently in any department and cannot be initiated!
+ErrOkrNoViewPermission: Currently there is no view permission
 ErrOkrOwnerNotCancel: Responsible person only
 ErrOkrOwnerNotScore: Person in charge not rated
 ErrOkrOwnerScored: This rating is scored by the supervisor of the person in charge

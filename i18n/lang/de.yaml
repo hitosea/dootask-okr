@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: Die prioritätsergebnisse stehen nicht Leer
 ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
 ErrOkrNoData: Die verwandten daten wurden nicht entwendet
 ErrOkrNoDepartment: Sie sind noch nicht aktiv in einer abteilung!
+ErrOkrNoViewPermission: Dies kann nicht autorisiert werden
 ErrOkrOwnerNotCancel: Nur mitarbeiter
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.
 ErrOkrOwnerScored: Diese beurteilung wird Von der abteilungsleiter der direktoren vorgenommen

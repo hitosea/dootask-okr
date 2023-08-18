@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: Judul hasil kritis tidak bisa kosong
 ErrOkrKrScoreNotComplete: KR rating tidak lengkap
 ErrOkrNoData: Tak ada data relevan yang ditemukan
 ErrOkrNoDepartment: Anda saat ini tidak bergabung dengan divisi manapun, tidak bisa memulai!
+ErrOkrNoViewPermission: Tak ada akses sementara
 ErrOkrOwnerNotCancel: Hanya orang yang bertanggung jawab
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
 ErrOkrOwnerScored: Nilai ini dinilai oleh atasan orang yang bertanggung jawab

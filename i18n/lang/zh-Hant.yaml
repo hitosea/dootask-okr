@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: 關鍵結果標題不能爲空
 ErrOkrKrScoreNotComplete: KR評分未完成
 ErrOkrNoData: 沒有查詢到相關數據
 ErrOkrNoDepartment: 您當前未加入任何部門，不能發起！
+ErrOkrNoViewPermission: 當前暫無查看權限
 ErrOkrOwnerNotCancel: 僅限負責人操作
 ErrOkrOwnerNotScore: 負責人未評分
 ErrOkrOwnerScored: 此評分由負責人的上級進行評分

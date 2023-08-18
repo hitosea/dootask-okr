@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: 关键结果标题不能为空
 ErrOkrKrScoreNotComplete: KR评分未完成
 ErrOkrNoData: 没有查询到相关数据
 ErrOkrNoDepartment: 您当前未加入任何部门，不能发起！
+ErrOkrNoViewPermission: 当前暂无查看权限
 ErrOkrOwnerNotCancel: 仅限负责人操作
 ErrOkrOwnerNotScore: 负责人未评分
 ErrOkrOwnerScored: 此评分由负责人的上级进行评分

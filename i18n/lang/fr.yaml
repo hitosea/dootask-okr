@@ -22,6 +22,7 @@ ErrOkrKeyResultTitleEmpty: Le titre des résultats clés ne peut pas être vide
 ErrOkrKrScoreNotComplete: KR score non terminé
 ErrOkrNoData: Aucune donnée n’a été consultée
 ErrOkrNoDepartment: Vous n’êtes actuellement affilié à aucun département et ne pouvez pas initier!
+ErrOkrNoViewPermission: Aucune autorisation de visionnement pour le moment
 ErrOkrOwnerNotCancel: Opération réservée aux personnes responsables
 ErrOkrOwnerNotScore: Responsable non évalué
 ErrOkrOwnerScored: Cette note a été notée par le supérieur de la personne responsable

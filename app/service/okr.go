@@ -1167,6 +1167,11 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 		return nil, err
 	}
 
+	// 仅参与人可见
+	// if !common.InArrayInt(user.Userid, common.ExplodeInt(",", obj.Participant, true)) {
+	// 	return nil, e.New(constant.ErrOkrNoViewPermission)
+	// }
+
 	// KR总评分
 	for _, kr := range obj.KeyResults {
 		krScore := s.getKrScore(kr)
