@@ -89,9 +89,9 @@
                                 <p class="text-12 text-title-color mt-12">{{ $t('示例') }}</p>
                                 <p class="text-12 text-text-li">{{ $t('将客户续约率从70%提高到90%') }}</p>
 
-                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
+                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4" :src="utils.apiUrl('/assets/images/icon/addIcon1.svg')" />{{ $t('至少包含1个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" :src="utils.apiUrl('/assets/images/icon/addIcon1.svg')" />{{ $t('不建议超过5个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" :src="utils.apiUrl('/assets/images/icon/addIcon2.svg')" />{{ $t('关键成功定量可衡量') }}</p>
                             </div>
                         </n-popover>
                     </h3>

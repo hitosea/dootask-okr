@@ -40,13 +40,13 @@
                     <i class="taskfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
 
                     <div v-if="detailData.score > -1" class="flex items-center cursor-pointer">
-                        <img class="mr-8" src="@/assets/images/icon/fen.svg" />
+                        <img class="mr-8" :src="utils.apiUrl('/assets/images/icon/fen.svg')" />
                         <p class=" text-title-color text-12">{{ detailData.score }}{{ $t('分') }}
                         </p>
                     </div>
                 </div>
                 <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] "
-                    src="@/assets/images/icon/complete.png" />
+                    :src="utils.apiUrl('/assets/images/icon/complete.svg')" />
             </div>
 
             <n-scrollbar ref="scrollbarRef" class="left-scrollbar">
@@ -55,7 +55,7 @@
                         class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
                         <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
-                            src="@/assets/images/icon/complete.png" />
+                        :src="utils.apiUrl('/assets/images/icon/complete.svg')" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
                         <div class="flex items-center">
@@ -102,7 +102,7 @@
 
                         <div class="flex md:hidden items-center" v-if="detailData.score > -1">
                             <p class="flex items-center w-[115px]">
-                                <img class="mr-6 " src="@/assets/images/icon/fen.svg" />
+                                <img class="mr-6" :src="utils.apiUrl('/assets/images/icon/fen.svg')" />
                                 <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('评分') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
@@ -166,7 +166,7 @@
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                        <img class="mr-6 -mt-2" :src="utils.apiUrl('/assets/images/icon/fen.svg')" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                         </p>
                                     </div>
@@ -278,7 +278,7 @@
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
                                             @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                            <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                            <img class="mr-6 -mt-2" :src="utils.apiUrl('/assets/images/icon/fen.svg')" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                             </p>
                                         </div>
