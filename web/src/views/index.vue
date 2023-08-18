@@ -119,8 +119,6 @@ const handleAdd = () => {
     getUserInfo()
         .then(({ data }) => {
             setUserInfo(data)
-            console.log(userInfo);
-
             if (userInfo.identity[0] != 'admin' && userInfo.department && userInfo.department.length == 0) {
                 tipsContent.value = $t('您当前未加入任何部门，不能发起！')
                 showModal.value = true
@@ -187,7 +185,7 @@ const handleReturn = () => {
         @apply h-42 flex justify-between items-center relative mt-12 mb-14;
 
         .icon-return {
-            @apply block md: hidden mr-16 text-20 z-[2];
+            @apply block md:hidden mr-16 text-20 z-[2];
         }
 
         h2 {
@@ -195,11 +193,11 @@ const handleReturn = () => {
         }
 
         .title-active {
-            @apply hidden md: block;
+            @apply hidden md:block;
         }
 
         .okr-right {
-            @apply flex items-center gap-4 md: gap-6 z-[2];
+            @apply flex items-center gap-4 md:gap-6 z-[2];
 
             .add-button,
             .search-button {
@@ -235,7 +233,7 @@ const handleReturn = () => {
             }
 
             .search-active {
-                @apply w-auto flex-1 md: w-320 px-14;
+                @apply w-auto flex-1 md:w-320 px-14;
 
                 i {
                     @apply pl-8;
