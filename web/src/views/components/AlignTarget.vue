@@ -47,7 +47,7 @@
 
         <div v-else class="flex flex-initial items-center justify-center">
             <div>
-                <img class="w-[60px]" src="@/assets/images/icon/notData.svg" />
+                <img class="w-[60px]" :src="utils.apiUrl(notDataSvg)" />
                 <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
             </div>
         </div>
@@ -59,6 +59,9 @@
 import { useMessage } from "naive-ui"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import InfoModal from "./InfoModal.vue";
+import utils from "@/utils/utils";
+import notDataSvg from "@/assets/images/icon/notData.svg";
+
 
 const loadIng = ref(false)
 const message = useMessage()

@@ -40,7 +40,7 @@
                     <i class="taskfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
 
                     <div v-if="detailData.score > -1" class="flex items-center cursor-pointer">
-                        <img class="mr-8" src="@/assets/images/icon/fen.svg" />
+                        <img class="mr-8" :src="utils.apiUrl(fenSvg)" />
                         <p class=" text-title-color text-12">{{ detailData.score }}{{ $t('分') }}
                         </p>
                     </div>
@@ -102,7 +102,7 @@
 
                         <div class="flex md:hidden items-center" v-if="detailData.score > -1">
                             <p class="flex items-center w-[115px]">
-                                <img class="mr-6" src="@/assets/images/icon/fen.svg" />
+                                <img class="mr-6" :src="utils.apiUrl(fenSvg)" />
                                 <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('评分') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
@@ -166,7 +166,7 @@
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                        <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                        <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                         </p>
                                     </div>
@@ -278,7 +278,7 @@
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
                                             @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                            <img class="mr-6 -mt-2" src="@/assets/images/icon/fen.svg" />
+                                            <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                             </p>
                                         </div>
@@ -384,6 +384,8 @@ import { GlobalStore } from '@/store';
 import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
+import fenSvg from '@/assets/images/icon/fen.svg';
+
 
 const userInfo = UserStore().info
 const router = useRouter()

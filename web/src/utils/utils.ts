@@ -8,7 +8,6 @@ const utils = {
      * @param value
      */
     apiUrl(url: string) {
-        url = '/apps/okr/src' + url;
         return window.$ && window.$.apiUrl ? window.$.apiUrl('..' + url) : url
     },
 
