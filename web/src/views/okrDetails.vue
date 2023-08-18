@@ -3,9 +3,9 @@
         <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
-            <n-popover placement="bottom-end" trigger="click">
+            <n-popover placement="bottom-end"  :show="showPopover">
                 <template #trigger>
-                    <i class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
+                    <i @click="showPopover = !showPopover" class="taskfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
                 <div class="flex flex-col">
                     <p class="py-8" @click="handleEdit" v-if="userInfo.userid == detail.userid && detail.canceled == '0' && detail.completed == '0'"> {{ $t('编辑') }}</p>
@@ -15,7 +15,7 @@
                 </div>
             </n-popover>
         </div>
-        <div class="pt-[52px] pb-16 flex-1 min-h-full">
+        <div class="pt-[52px] pb-16 flex-1 min-h-full overflow-hidden">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="true" :id="id" @isFollow="(e) => { is_follow = e }"
                 @canceled="(e) => { cancel = e }" @openDetail="openDetail" @getDetail="getDetail"></OkrDetailsMain>
         </div>
@@ -35,6 +35,7 @@ const userid = ref(null)
 const detail = ref<any>({})
 const OkrDetailsMainRef = ref(null)
 const is_follow = ref(false)
+const showPopover = ref(false)
 const cancel = ref(0)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 
@@ -43,15 +44,15 @@ if (route.query.data != undefined) {
     userid.value = Number(route.query.userid)
 }
 
-
 const openDetail = (id, userid) => {
-    router.push({
+    router.replace({
         path: '/okrDetails',
         query: {
             data: id,
             userid: userid,
         },
     })
+    location.reload(); 
 }
 
 const getDetail = (item) => {
@@ -63,14 +64,17 @@ const handleReturn = () => {
 
 const handleEdit = () => {
     OkrDetailsMainRef.value.handleEdit()
+    showPopover.value = false
 }
 
 const handleCancel = () => {
     OkrDetailsMainRef.value.handleCancel()
+    showPopover.value = false
 }
 
 const handleFollowOkr = () => {
     OkrDetailsMainRef.value.handleFollowOkr()
+    showPopover.value = false
 }
 
 

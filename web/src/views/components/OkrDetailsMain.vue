@@ -52,7 +52,7 @@
             <n-scrollbar ref="scrollbarRef" class="left-scrollbar">
                 <n-spin class="md:mr-24" :show="false">
                     <h3 id="detailTop"
-                        class=" relative text-text-li md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
+                        class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
                         <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
                             src="@/assets/images/icon/complete.png" />
@@ -123,8 +123,9 @@
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center mr-24">
                                     <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                        <div v-if="showUserSelect">
-                                            <UserSelects :formkey="index" />
+                                        <div v-if="showUserSelect" class="relative">
+                                            <div v-if="userInfo.userid != detailData.userid || detailData.canceled =='1'|| detailData.completed =='1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
+                                            <UserSelects class=" relative z-[1]" :formkey="index" />
                                         </div>
                                         <n-avatar v-if="!showUserSelect" round :size="20"
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
@@ -220,23 +221,26 @@
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg"
                                 v-for="(item, index) in detailData.key_results">
                                 <div class="flex items-center">
-                                    <h4 class=" text-title-color text-15 md:text-14 font-normal text-left">{{ item.title
+                                    <h4 class=" text-title-color text-15 md:text-14 font-normal text-left break-all">{{ item.title
                                     }}</h4>
                                 </div>
                                 <div class="flex flex-col justify-between mt-12">
                                     <div class="flex items-center justify-between">
-                                        <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                            <div v-if="showUserSelect">
-                                                <UserSelects :formkey="index" />
+                                        <div  class="flex items-center">
+                                            <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
+                                                <div v-if="showUserSelect" class="relative">
+                                                    <div v-if="userInfo.userid != detailData.userid || detailData.canceled =='1'|| detailData.completed =='1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
+                                                    <UserSelects class=" relative z-[1]" :formkey="index" />
+                                                </div>
+                                                <n-avatar v-if="!showUserSelect" round :size="20"
+                                                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                             </div>
-                                            <n-avatar v-if="!showUserSelect" round :size="20"
-                                                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                        </div>
-                                        <div v-if="item.participant.split(',').length > 4"
-                                            class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
-                                            <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
-                                                item.participant.split(',').length - 4 }}</span>
-                                        </div>
+                                            <div v-if="item.participant.split(',').length > 4"
+                                                class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ml-6">
+                                                <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
+                                                    item.participant.split(',').length - 4 }}</span>
+                                            </div>
+                                         </div>
                                         <div class="flex items-center">
                                             <i class="taskfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
                                             <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
@@ -283,7 +287,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center mt-24 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
+                    <div class="overflow-hidden mt-24 md:mt-0 px-16 md:px-0 " v-if="navActive == 4">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
                             :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
                             @unalign="handleUnalign" @openDetail="openDetail">
@@ -301,7 +305,7 @@
                             v-if="logList.length">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
-                                <p class="text-14 leading-[14px] text-primary-color">{{ item.user_nickname }}<span
+                                <p class="text-14 leading-[16px] text-primary-color">{{ item.user_nickname }}<span
                                         class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
                                         }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
@@ -741,6 +745,7 @@ const handleCloseMarks = (type) => {
     markShow.value = false
     if (type == 1) {
         getDetail('')
+        emit('getList')
     }
 }
 
@@ -786,8 +791,13 @@ const openDetail = (id, userid) => {
         scrollbarRef.value.scrollTo({top: 0})
         getDetail('')
         AlignTargetRef.value.getList()
-        navActive.value = 0
         loadDialogWrappers();
+        if (window.innerWidth < 768) {
+            navActive.value = 4
+        }
+        else {
+            navActive.value = 0
+        }
     })
 }
 
@@ -876,7 +886,6 @@ const loadUserSelects = () => {
                 render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
-                        
                         formkey: index,
                         props: {
                             value: (item.participant).split(',').map(h => Number(h)),
@@ -970,7 +979,7 @@ const submitSelectAlignment = (e) => {
 //颜色判断
 const colorStatus = (color) => {
     let result = ''
-    if (color == 1) {
+    if (color == 1 || color == 0) {
         result = '#8BCF70'
     }
     if (color == 2) {

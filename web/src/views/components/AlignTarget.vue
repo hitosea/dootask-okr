@@ -20,11 +20,11 @@
                 </div>
             </div>
 
-            <h3 class="a-t-title cursor-pointer" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid)">{{
+            <h3 class="a-t-title cursor-pointer w-[10px]" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid)">{{
                 item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
-                <h4 class="a-t-title-s max-w-[90%]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title max-w-[90%] cursor-pointer" @click="handleDetail(item.parent_id, item.userid)"
+                <h4 class="a-t-title-s md:max-w-[90%]">{{ item.align_objective }}</h4>
+                <h3 class="a-t-title md:max-w-[90%] cursor-pointer" @click="handleDetail(item.parent_id, item.userid)"
                     :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
                         item.title }}</h3>
             </div>
@@ -152,7 +152,7 @@ const handleCancel = () => {
 //颜色判断
 const colorStatus = (color) => {
     let result = ''
-    if (color == 1) {
+    if (color == 1 || color == 0) {
         result = '#8BCF70'
     }
     if (color == 2) {
@@ -183,7 +183,7 @@ defineExpose({
 <style lang="less" scoped>
 .align-target {
 
-    @apply flex flex-col gap-4 w-full;
+    @apply flex flex-col gap-4 w-full overflow-hidden;
 
     .a-t-list {
         @apply flex items-center overflow-hidden;
@@ -201,7 +201,7 @@ defineExpose({
         }
 
         .a-t-title {
-            @apply text-text-li text-left text-14 flex-auto ml-4 line-clamp-1 font-medium ;
+            @apply text-text-li text-left text-14 flex-auto ml-4 truncate font-medium;
         }
 
         .a-t-title-s {
