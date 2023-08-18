@@ -278,16 +278,16 @@ const getList = (type) => {
             loadIng.value = false
             isloading.value = false
             onscrolloading.value = false
-            // if (serstatic) {
-            //     data.data ? list.value = data.data : list.value = []
-            // }
-            // else {
-            //     if (data.data) {
-            //         data.data.map(item => {
-            //             list.value.push(item)
-            //         })
-            //     }
-            // }
+            if (serstatic) {
+                data.data ? list.value = data.data : list.value = []
+            }
+            else {
+                if (data.data) {
+                    data.data.map(item => {
+                        list.value.push(item)
+                    })
+                }
+            }
             last_page.value = data.last_page
         })
     }

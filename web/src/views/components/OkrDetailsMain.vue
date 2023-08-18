@@ -44,7 +44,7 @@
                         </p>
                     </div>
                 </div>
-                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px]"
+                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] "
                     src="@/assets/images/icon/complete.png" />
             </div>
 
@@ -52,7 +52,7 @@
                 <n-spin class="md:mr-24" :show="false">
                     <h3 id="detailTop" class=" relative text-title-color md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
-                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0"
+                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
                     src="@/assets/images/icon/complete.png" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
