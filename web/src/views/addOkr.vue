@@ -1,7 +1,7 @@
 <template >
     <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalTransferIndex }">
         <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe704;</i>
-        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ edit ? $t('编辑OKR') :
+        <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ okrEdit ? $t('编辑OKR') :
             $t('添加OKR') }}</h2>
         <i @click="handleSubmit" class="taskfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
     </div>
@@ -18,7 +18,7 @@ import { GlobalStore } from '@/store';
 
 const router = useRouter()
 const loadIng = ref(false)
-const edit = ref(false)
+
 
 const AddOkrsRef = ref(null)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1

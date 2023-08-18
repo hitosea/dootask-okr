@@ -1,28 +1,27 @@
 <template >
-        <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
-            <div class="i-created-main">
-                <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''" ></PersonalStatistics>
-                <div>
-                    <OkrLoading v-if="loadIng"></OkrLoading>
-                    <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng"></OkrItems>
-                    <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
-                        <template v-slot:content v-if="props.searchObject == '' && !loadIng">
-                            <div class="mt-5"><s></s>
-                                <div>
-                                    <n-button type="primary" ghost @click="handleAdd">
-                                        <i class="taskfont mr-5">&#xe731;</i>
-                                        {{ $t('创建OKR') }}
-                                    </n-button>
-                                </div>
+    <n-scrollbar :on-scroll="onScroll" ref="scrollbarRef">
+        <div class="i-created-main">
+            <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''"></PersonalStatistics>
+            <div>
+                <OkrLoading v-if="loadIng"></OkrLoading>
+                <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList"
+                    v-if="list.length != 0 && !loadIng"></OkrItems>
+                <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
+                    <template v-slot:content v-if="props.searchObject == '' && !loadIng">
+                        <div class="mt-5"><s></s>
+                            <div>
+                                <n-button type="primary" ghost @click="handleAdd">
+                                    <i class="taskfont mr-5">&#xe731;</i>
+                                    {{ $t('创建OKR') }}
+                                </n-button>
                             </div>
-                        </template>
-                    </OkrNotDatas>
-                    <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
-                </div>
+                        </div>
+                    </template>
+                </OkrNotDatas>
+                <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             </div>
-        </n-scrollbar>
-
-
+        </div>
+    </n-scrollbar>
 </template>
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
@@ -57,24 +56,24 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-const emit = defineEmits(['edit','add'])
+const emit = defineEmits(['edit', 'add'])
 
-const resetGetList = ()=>{
+const resetGetList = () => {
     page.value = 1
     getList('search')
 }
 
 const getList = (type) => {
-    let serstatic =  type == 'search' ? true : false
+    let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
         const data = {
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
         }
-        if (serstatic){
+        if (serstatic) {
             loadIng.value = true
-        }else if ( type == 'onscrollsearch' ){
+        } else if (type == 'onscrollsearch') {
             onscrolloading.value = true
         }
         getMyList(data).then(({ data }) => {
@@ -88,7 +87,9 @@ const getList = (type) => {
                     list.value.push(item)
                 })
             }
-            PersonalStatisticsRef.value?.getData()
+            if (props.searchObject == '') {
+                PersonalStatisticsRef.value?.getData()
+            }
             last_page.value = data.last_page
         })
     }
@@ -113,7 +114,9 @@ const upData = (id) => {
             getOkrDetail(upData)
                 .then(({ data }) => {
                     list.value[index] = data
-                    PersonalStatisticsRef.value.getData()
+                    if (props.searchObject == '') {
+                        PersonalStatisticsRef.value?.getData()
+                    }
                 })
                 .catch()
                 .finally(() => {
@@ -127,7 +130,7 @@ const onScroll = (e) => {
     if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
         // 重新请求数据
         if (!onscrolloading.value && !loadIng.value) {
-            if(last_page.value > page.value){
+            if (last_page.value > page.value) {
                 page.value++
                 getList('onscrollsearch')
             }

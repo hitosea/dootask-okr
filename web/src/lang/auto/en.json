@@ -313,5 +313,12 @@
     "我关注的": "My concerns",
     "更多...": "More...",
     "已经到底了": "It's over",
-    "引导页": "Guide pages"
+    "引导页": "Guide pages",
+    "已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR": "The proportion of OKRs that have been graded. In an OKR, both the person in charge and the superior have completed the grades before they can be counted as OKRs that have been graded.",
+    "暂无动态": "No news yet",
+    "点击加载更多": "Click to load more",
+    "取消对齐目标": "unalign target",
+    "删除KR": "Delete KR",
+    "取消关注": "unsubscribe",
+    "关注目标": "focus on target"
 }

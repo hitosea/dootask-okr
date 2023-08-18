@@ -313,5 +313,12 @@
     "我关注的": "je suis concerné",
     "更多...": "Plus...",
     "已经到底了": "C'est fini",
-    "引导页": "Pages-guides"
+    "引导页": "Pages-guides",
+    "已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR": "La proportion d'OKR qui ont été notés. Dans un OKR, la personne responsable et le supérieur ont terminé les notes avant de pouvoir être comptés comme des OKR qui ont été notés.",
+    "暂无动态": "Pas encore de nouvelles",
+    "点击加载更多": "Cliquez pour charger plus",
+    "取消对齐目标": "cible non alignée",
+    "删除KR": "Supprimer KR",
+    "取消关注": "Se désabonner",
+    "关注目标": "se concentrer sur la cible"
 }

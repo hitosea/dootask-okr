@@ -276,4 +276,8 @@ defineExpose({
 })
 
 </script>
-<style lang="less" scoped></style>
+<style lang="less" >
+.n-base-select-option__content{
+    @apply text-12 md:text-14;
+}
+</style>

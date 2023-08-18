@@ -876,13 +876,14 @@ const loadUserSelects = () => {
                 render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
+                        
                         formkey: index,
                         props: {
                             value: (item.participant).split(',').map(h => Number(h)),
                             title: $t('选择参与人'),
                             border: false,
                             avatarSize: 20,
-                            addIcon: false,
+                            addIcon: item.participant.length == 0 ,
                             disable: userInfo.userid != detailData.value.userid || detailData.value.key_results[index].score > -1 || detailData.value.key_results[index].superior_score > -1
                         },
                         on: {
