@@ -538,7 +538,7 @@ const handleGetLogList = () => {
                     item.content = $t('修改KR周期') + ": "+ item.records.title + ' [ ' + item.records.time_change[0] + ' => ' + item.records.time_change[1]+ ' ]'
                 }
                 if (item.content.includes('修改KR参与人')) {
-                    item.content = $t('修改KR参与人')+ ": " + item.records?.title 
+                    item.content = $t('修改KR参与人')+ ": " + item.records?.title
                 }
                 if (item.content.includes('修改KR进度')) {
                     item.content = $t('修改KR进度') + ": " + item.records.title + ' [ ' + item.records.progress_change[0] + '%' + ' => ' + item.records.progress_change[1] + '%' + ' ]'
@@ -622,7 +622,10 @@ const handleEdit = () => {
     if (window.innerWidth < 768) {
         router.push({
             path: '/addOkr',
-            query: { data: JSON.stringify(detailData.value) },
+        })
+        globalStore.$patch((state) => {
+            state.okrEditData = detailData.value
+            state.okrEdit = true
         })
     }
     else {
@@ -696,10 +699,10 @@ const handleMark = (id, scores, superior_score, progress) => {
         score.value = scores
         superiorScore.value = superior_score
         if (userInfo.userid == detailData.value.userid && scores < 0) {
-            inputShow.value = true                   
+            inputShow.value = true
         }
         if (userInfo.userid == detailData.value.userid && scores > -1) {
-            inputShow.value = false  
+            inputShow.value = false
         }
         if (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && superior_score < 0) {
             inputShow.value = true
@@ -708,7 +711,7 @@ const handleMark = (id, scores, superior_score, progress) => {
             inputShow.value = false
         }
         if (scores > -1 && superior_score > -1) {
-            inputShow.value = false     
+            inputShow.value = false
         }
         markShow.value = true
     }else{
@@ -795,7 +798,9 @@ const handleAddMultiple = () => {
     if (window.innerWidth < 768) {
         router.push({
             path: '/addMultiple',
-            query: { data: JSON.stringify(detailData.value) },
+        })
+        globalStore.$patch((state) => {
+            state.addMultipleData = detailData.value
         })
     }
     else {
@@ -811,12 +816,13 @@ const handleAddMultiple = () => {
 //查看复盘
 const handleCheckMultiple = (id) => {
     if (window.innerWidth < 768) {
+
         router.push({
             path: '/addMultiple',
-            query: {
-                data: JSON.stringify(detailData.value),
-                id: id || 0,
-            },
+        })
+        globalStore.$patch((state) => {
+            state.addMultipleData = detailData.value
+            state.multipleId = id
         })
     }
     else {
@@ -992,7 +998,7 @@ onMounted(() => {
 })
 
 onUnmounted(()=>{
-    clearInterval(nowInterval.value); 
+    clearInterval(nowInterval.value);
 })
 
 defineExpose({

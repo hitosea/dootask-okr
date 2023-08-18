@@ -44,7 +44,8 @@ const themeOverrides = {
             borderRadius:"16px",
         },
         Radio:{
-            dotColorDisabled:'#C0C0C0'
+            dotColorDisabled:'#C0C0C0',
+
         },
         Checkbox:{
             borderRadius:'99px',

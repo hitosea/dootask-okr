@@ -14,22 +14,16 @@
 <script setup lang="ts">
 import AddMultipleMain from './components/AddMultipleMain.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { GlobalStore } from '@/store';
 
 const route = useRoute()
 const router = useRouter()
 const loadIng = ref(false)
-const multipleId = ref(0)
-const addMultipleData = ref({})
+
 const AddMultipleMainRef = ref(null)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
-
-if (route.query.data != undefined) {
-    addMultipleData.value = JSON.parse(route.query.data as string)
-}
-
-if (route.query.id !=undefined){
-    multipleId.value = Number(route.query.id)
-}
+const globalStore = GlobalStore()
+const {  multipleId,addMultipleData } = globalStore.multipleSetup()
 
 //提交
 const handleSubmit = () => {

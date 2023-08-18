@@ -28,6 +28,8 @@ export const GlobalStore = defineStore({
         addMultipleShow: false,
         multipleId: 0,
         addMultipleData: null,
+        okrEditData: null,
+        okrEdit: false,
     }),
     actions: {
         async init() {
@@ -64,6 +66,16 @@ export const GlobalStore = defineStore({
                 }),
                 theme: computed(() => {
                     return this.themeName === "dark" ? darkTheme : null;
+                }),
+            };
+        },
+        okrSetup() {
+            return {
+                okrEditData: computed(() => {
+                    return this.okrEditData;
+                }),
+                okrEdit: computed(() => {
+                    return this.okrEdit;
                 }),
             };
         },

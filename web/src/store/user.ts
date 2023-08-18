@@ -17,6 +17,8 @@ export const UserStore = defineStore({
             userIsAdmin: false,
             identity:[],
             userid:0,
+            department_owner:null,
+            department:null,
         },
     }),
     actions: {

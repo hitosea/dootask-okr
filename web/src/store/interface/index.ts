@@ -14,9 +14,6 @@ export interface GlobalState {
     language: string
     themeName: string
     timer: object
-    windowOrientation: any
-    windowLandscape: any
-    windowPortrait: any
     windowActive: any
     windowScrollY: number
     keyboardType: any
@@ -26,6 +23,8 @@ export interface GlobalState {
     addMultipleShow: any
     multipleId: number
     addMultipleData: any
+    okrEditData: any
+    okrEdit: boolean
 }
 
 export interface UserState {

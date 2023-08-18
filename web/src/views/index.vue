@@ -1,16 +1,18 @@
 <template >
     <div class="page-okr">
         <div class="okr-title">
-            <div  class="flex items-center">
+            <div class="flex items-center">
                 <div class="okr-nav-back" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
             </div>
             <div class="okr-right">
-                <div class="search-button" @mouseover="()=>{searchShow = true }" @mouseout="()=>{searchShow = false }" :class="searchShow || searchObject? 'search-active' : ''">
-                    <span class="search-button-span" v-show="searchShow || searchObject" >{{ tabsName }}</span>
-                    <n-input  v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject" :placeholder="$t('请输入目标 (O)')" />
-                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search" ></i>
-                    <i v-else class="taskfont" >&#xe6f8;</i>
+                <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
+                    :class="searchShow || searchObject ? 'search-active' : ''">
+                    <span class="search-button-span" v-show="searchShow || searchObject">{{ tabsName }}</span>
+                    <n-input v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject"
+                        :placeholder="$t('请输入目标 (O)')" />
+                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="taskfont">&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
                     <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-md-add"></i>
@@ -22,17 +24,20 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的')" :name="$t('我创建的')">
                     <div class="okr-scrollbar">
-                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"></Icreated>
+                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd">
+                        </Icreated>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('我参与的')" :name="$t('我参与的')">
                     <div class="okr-scrollbar">
-                        <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject"  @edit="handleEdit" ></OkrParticipant>
+                        <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit">
+                        </OkrParticipant>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" :name="$t('部门OKR')">
                     <div class="okr-scrollbar">
-                        <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"></OkrDepartment>
+                        <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit">
+                        </OkrDepartment>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('我关注的')" :name="$t('我关注的')">
@@ -62,13 +67,15 @@ import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
-import { useRouter ,useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { UserStore } from '@/store/user'
 import TipsModal from '@/views/components/TipsModal.vue';
+import { getUserInfo } from '@/api/modules/user'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const userInfo = UserStore().info
+const setUserInfo = UserStore().setUserInfo
 const router = useRouter()
 const route = useRoute()
 const ICreatedRef = ref(null)
@@ -89,15 +96,15 @@ const tipsContent = ref('')
 
 if (route.query.active == undefined) {
     router.replace({ query: { active: tabsName.value } })
-}else{
+} else {
     tabsName.value = route.query.active
 }
 
-const changeTabs = (e)=>{
+const changeTabs = (e) => {
     searchObject.value = ''
     searchShow.value = false
     tabsName.value = e
-    router.replace({ query: { active:e } })
+    router.replace({ query: { active: e } })
 }
 
 //编辑
@@ -109,45 +116,55 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
-    if(userInfo.identity[0]!='admin'&& userInfo.department && userInfo.department.length == 0 ) {
-        tipsContent.value = $t('您当前未加入任何部门，不能发起！')
-        showModal.value = true
-        return
-    }
-    if (window.innerWidth < 768) {
-        router.push('/addOkr')
-    }
-    else{
-        addShow.value = true
-    }
+    getUserInfo()
+        .then(({ data }) => {
+            setUserInfo(data)
+            console.log(userInfo);
+
+            if (userInfo.identity[0] != 'admin' && userInfo.department && userInfo.department.length == 0) {
+                tipsContent.value = $t('您当前未加入任何部门，不能发起！')
+                showModal.value = true
+                return
+            }
+            if (window.innerWidth < 768) {
+                router.push('/addOkr')
+            }
+            else {
+                addShow.value = true
+            }
+        })
+        .catch()
+        .finally(() => {
+
+        })
 }
 
-const handleClose = (e,id) => {
+const handleClose = (e, id) => {
     //重新获取列表
-    if(tabsName.value == $t('我创建的') && e == 1){
-        ICreatedRef.value.resetGetList('search')   
+    if (tabsName.value == $t('我创建的') && e == 1) {
+        ICreatedRef.value.resetGetList('search')
     }
-    else if(tabsName.value == $t('我参与的') && e == 1){
+    else if (tabsName.value == $t('我参与的') && e == 1) {
         OkrParticipantRef.value.resetGetList('search')
     }
-    else if(tabsName.value == $t('部门OKR') && e == 1){
+    else if (tabsName.value == $t('部门OKR') && e == 1) {
         OkrDepartmentRef.value.resetGetList('search')
     }
-    else if(tabsName.value == $t('我关注的') && e == 1){
+    else if (tabsName.value == $t('我关注的') && e == 1) {
         OkrFollowRef.value.resetGetList('search')
     }
 
     //更新单条数据
-    if(tabsName.value == $t('我创建的') && e == 2){
-        ICreatedRef.value.upData(id)      
+    if (tabsName.value == $t('我创建的') && e == 2) {
+        ICreatedRef.value.upData(id)
     }
-    else if(tabsName.value == $t('我参与的') && e == 2){
+    else if (tabsName.value == $t('我参与的') && e == 2) {
         OkrParticipantRef.value.upData(id)
     }
-    else if(tabsName.value == $t('部门OKR') && e == 2){
+    else if (tabsName.value == $t('部门OKR') && e == 2) {
         OkrDepartmentRef.value.upData(id)
     }
-    else if(tabsName.value == $t('我关注的') && e == 2){
+    else if (tabsName.value == $t('我关注的') && e == 2) {
         OkrFollowRef.value.upData(id)
     }
 
@@ -169,19 +186,21 @@ const handleReturn = () => {
     .okr-title {
         @apply h-42 flex justify-between items-center relative mt-12 mb-14;
 
-        .icon-return{
-            @apply block md:hidden mr-16 text-20 z-[2];
+        .icon-return {
+            @apply block md: hidden mr-16 text-20 z-[2];
         }
 
         h2 {
             @apply text-title-color text-28 font-semibold;
         }
-        .title-active{
-            @apply hidden md:block;
+
+        .title-active {
+            @apply hidden md: block;
         }
 
-        .okr-right{
-            @apply flex items-center gap-4 md:gap-6 z-[2];
+        .okr-right {
+            @apply flex items-center gap-4 md: gap-6 z-[2];
+
             .add-button,
             .search-button {
                 @apply bg-[#f2f3f5] w-36 h-36 rounded-full flex items-center justify-center cursor-pointer;
@@ -190,25 +209,35 @@ const handleReturn = () => {
                     @apply text-20 text-emoji-users-color;
                 }
             }
-            .search-button{
+
+            .search-button {
                 @apply flex items-center;
-                i,span{
+
+                i,
+                span {
                     @apply flex-initial;
                 }
 
-                .search-button-span{
+                .search-button-span {
                     @apply text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
                 }
-                :deep(.n-input){
+
+                :deep(.n-input) {
                     @apply flex-1 bg-transparent border-0;
-                    .n-input__border,.n-input__state-border,.n-input__border:focus,.n-input__state-border:focus{
-                        @apply  border-0 shadow-none;
+
+                    .n-input__border,
+                    .n-input__state-border,
+                    .n-input__border:focus,
+                    .n-input__state-border:focus {
+                        @apply border-0 shadow-none;
                     }
                 }
             }
-            .search-active{
-                @apply w-auto flex-1 md:w-320 px-14;
-                i{
+
+            .search-active {
+                @apply w-auto flex-1 md: w-320 px-14;
+
+                i {
                     @apply pl-8;
                 }
             }
@@ -235,9 +264,10 @@ const handleReturn = () => {
         }
     }
 }
-// 
+
+//
 body.window-portrait {
-    .page-okr{
+    .page-okr {
         .okr-title {
             margin: 4px 0 14px -4px;
         }

@@ -18,7 +18,7 @@
                         <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
                             {{ $t('已经到底了') }}
                         </div>
-                    </template> 
+                    </template>
                 </n-select>
 
                 <div class="text-text-li mr-8 ml-16 whitespace-nowrap">
@@ -70,7 +70,7 @@
                         <OkrLoading v-if="loadIng"></OkrLoading>
                         <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit" @getList="resetGetList" :list="list">
                         </OkrItems>
-                        <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
+                        <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :loadIng="loadIng" :msg="$t('暂无OKR')" :types="searchObject !='' || loadingstatus ">
                         </OkrNotDatas>
                         <OkrLoading v-if="onscrolloading" position="onscroll"></OkrLoading>
                     </div>
@@ -104,7 +104,7 @@
                             <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
                                 {{ $t('已经到底了') }}
                             </div>
-                        </template> 
+                        </template>
                     </n-select>
 
                     <div class="mt-16 whitespace-nowrap mb-4">
@@ -186,6 +186,7 @@ const props = defineProps({
 
 watch(() => props.searchObject, (newValue) => {
     clearInterval(searchTime.value)
+    loadIng.value = true
     searchTime.value = setInterval(() => {
         page.value = 1
         getList('search')
@@ -208,7 +209,7 @@ const getUser = (keyword) => {
         page_size: 20,
         keyword: keyword,
     }
-    
+
     getUserList(sendata).then(({ data }) => {
         if ( keyword == '' ) {
             principal.value = ([
@@ -234,7 +235,7 @@ const getUser = (keyword) => {
         }
         principallast_page.value = data.last_page
     })
-    
+
 }
 
 const init = () => {
@@ -255,7 +256,7 @@ const resetGetList = ()=>{
 }
 
 const getList = (type) => {
-    
+
     let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
         if (serstatic) {

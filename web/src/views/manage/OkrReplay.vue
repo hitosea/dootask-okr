@@ -2,7 +2,7 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
             <div>
-                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :msg="$t('暂无复盘')" :types="searchObject !=''"></OkrNotDatas>
+                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')" :types="searchObject !=''"></OkrNotDatas>
                 <OkrLoading v-if="loadIng"></OkrLoading>
             </div>
             <div v-if="items.length != 0" class="replay">
@@ -35,7 +35,7 @@
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
             <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @openDetail="openOkrDetail" @close="() => {
-                    okrDetailsShow = false 
+                    okrDetailsShow = false
                 }
                 "></OkrDetailsModal>
         </div>
@@ -72,6 +72,7 @@ const props = defineProps({
 
 watch(() => props.searchObject, (newValue) => {
     clearInterval(searchTime.value)
+    loadIng.value = true
     searchTime.value = setInterval(() => {
         page.value = 1
         getData('search')
