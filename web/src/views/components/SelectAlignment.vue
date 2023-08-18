@@ -213,7 +213,7 @@ const pStatus = (p) => {
         }
 
         .span {
-            @apply text-12 md:text-14 ml-4 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
+            @apply text-12 ml-4 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 shrink-0;
         }
 
         .span-1 {

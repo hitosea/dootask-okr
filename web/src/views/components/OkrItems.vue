@@ -16,9 +16,9 @@
                         <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0'"
+                        <i class="taskfont okr-title-star" v-if="item.is_follow"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="taskfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <div  v-if="item.completed == '1'"
@@ -31,7 +31,7 @@
                 <div class="okr-time">
                     <i class="taskfont text-[12px]">&#xe6e4;</i>
                     <p>{{ item.alias.join(',') }}</p>
-                    <div class="w-1 bg-[#F2F3F5] mx-12 h-full"></div>
+                    <div class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
                     <template v-if="item.canceled == '0' && item.completed =='0'">                        
                         <i class="taskfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
                         <p :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
@@ -60,7 +60,7 @@
                         <div class="kr-list-item" v-if="index < 3">
                             <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
                             <p class="max-w-[70%]">{{ childItem.title }}</p>
-                            <div class="kr-list-schedule">
+                            <div class="kr-list-schedule w-[60px]">
                                 <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
                                     :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                     color="var(--primary-color)" status="success" :percentage="childItem.progress" />
@@ -251,7 +251,7 @@ onUnmounted(()=>{
                     @apply flex items-start md:items-center gap-1 md:max-w-75p;
 
                     span {
-                        @apply text-12 md:text-14 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
+                        @apply text-12 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {
@@ -315,7 +315,7 @@ onUnmounted(()=>{
                     }
 
                     .kr-list-schedule {
-                        @apply ml-auto flex items-center;
+                        @apply ml-auto flex items-center justify-start;
                     }
                 }
             }

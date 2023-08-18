@@ -78,7 +78,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="text-14 text-text-li font-medium flex items-center">
                         {{ $t('关键KR') }}
-                        <n-popover class="popover-tips" trigger="click" placement="right-start" :width="220">
+                        <n-popover class="popover-tips" trigger="hover" placement="right-start" :width="220">
                             <template #trigger>
                                 <n-icon class=" cursor-pointer text-text-tips ml-4" size="18"
                                     :component="AlertCircleOutline" />
@@ -101,7 +101,7 @@
                     </div>
                 </div>
 
-                <div v-for="(item, index) in formKRValue" class="border-[1px] border-solid border-[#F2F2F2] mt-16 rounded">
+                <div v-for="(item, index) in formKRValue" class="border-[1px] border-solid border-[#F2F2F2] mt-12 rounded">
                     <div
                         class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                         <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
@@ -547,7 +547,7 @@ defineExpose({
 }
 
 .span {
-    @apply text-14 text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0;
+    @apply text-14 text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0 font-medium;
 }
 
 .span-1 {

@@ -1,7 +1,7 @@
 <template >
     <div class="align-target">
         <div class="a-t-list" v-for="item in dataList" v-if="dataList">
-            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[1px]">
+            <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
                 <span class="a-t-tabs w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
                 }}</span>
                 <n-tooltip trigger="hover" v-if="item.alias[0]">
@@ -31,7 +31,7 @@
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
                 :class="cancelShow ? 'md:mr-24' : ''">
                 <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
-                    :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
+                    :offset-degree="180" :stroke-width="15" :color="colorStatus(item.progress_status)" status="success"
                     :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
             </div>
@@ -139,12 +139,29 @@ const handleSubmit = () => {
             loadIng.value = false
         })
 }
+
+
 //取消
 const handleCancel = () => {
     infoShow.value = false
     infoTitle.value = ''
     infoContent.value = ''
     infoId.value = 0
+}
+
+//颜色判断
+const colorStatus = (color) => {
+    let result = ''
+    if (color == 1) {
+        result = '#8BCF70'
+    }
+    if (color == 2) {
+        result = '#FFA25A'
+    }
+    if (color == 3) {
+        result = '#FF7070'
+    }
+    return result
 }
 
 const handleDetail = (id, userid) => {
@@ -184,7 +201,7 @@ defineExpose({
         }
 
         .a-t-title {
-            @apply text-text-li text-left text-14 flex-auto ml-4 line-clamp-1;
+            @apply text-text-li text-left text-14 flex-auto ml-4 line-clamp-1 font-medium ;
         }
 
         .a-t-title-s {

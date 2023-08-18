@@ -58,5 +58,9 @@ const openDetail = (id, userid) => {
 
 </script>
 
-<style lang="less" ></style>
+<style lang="less" scoped>
+:deep(.n-card__content){
+    @apply pb-32;
+}
+</style>
 

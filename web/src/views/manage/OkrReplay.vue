@@ -207,7 +207,7 @@ onMounted(() => {
             }
 
             &-level {
-                @apply bg-[#FF7070] text-12 md:text-14 font-medium text-white px-6 py-2 rounded-full ;
+                @apply bg-[#FF7070] text-12  font-medium text-white px-6 py-2 rounded-full ;
             }
         }
 

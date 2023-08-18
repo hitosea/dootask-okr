@@ -1,6 +1,7 @@
 <template >
     <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
-        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive':''">
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0"
+            :class="navActive == 0 ? 'navActive' : ''">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
@@ -48,12 +49,13 @@
                     src="@/assets/images/icon/complete.png" />
             </div>
 
-            <n-scrollbar  ref="scrollbarRef" class="left-scrollbar">
+            <n-scrollbar ref="scrollbarRef" class="left-scrollbar">
                 <n-spin class="md:mr-24" :show="false">
-                    <h3 id="detailTop" class=" relative text-title-color md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
+                    <h3 id="detailTop"
+                        class=" relative text-text-li md:mt-[24px]  text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
                         <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
-                    src="@/assets/images/icon/complete.png" />
+                            src="@/assets/images/icon/complete.png" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
                         <div class="flex items-center">
@@ -66,7 +68,7 @@
                                     $t('负责人') : $t('部门') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
-                                {{ detailData.alias && detailData.alias[0] }}
+                                {{ detailData.alias && detailData.alias.join(',') }}
                             </p>
                         </div>
 
@@ -79,10 +81,11 @@
                             <p class="flex-1 text-text-li text-14 flex items-center">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
                                     utils.GoDate(detailData.end_at || 0) }}</span>
-                             <template v-if="detailData.completed == '0' && detailData.end_at">
-                                <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i class="taskfont text-14 mr-4">&#xe71d;</i>{{expiresFormat(detailData.end_at)}}</n-tag>
-                                <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{$t('超期未完成')}}</n-tag>
-                             </template>
+                                <template v-if="detailData.completed == '0' && detailData.end_at">
+                                    <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i
+                                            class="taskfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
+                                    <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
+                                </template>
                             </p>
 
                         </div>
@@ -92,7 +95,7 @@
                                 <i class="taskfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
                                 <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('优先级') }}</span>
                             </p>
-                            <span class="span" :class="pStatus(detailData.priority)">{{ detailData.priority
+                            <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority
                             }}</span>
                         </div>
 
@@ -113,9 +116,9 @@
                     <div class="hidden md:flex flex-col mt-20 gap-4 min-h-[60px]">
                         <div class="flex flex-col" v-for="(item, index) in detailData.key_results">
                             <div class="flex items-start">
-                                <span class=" text-primary-color text-12 leading-5 mr-8 mt-2 shrink-0">KR{{ index + 1
+                                <span class=" text-primary-color text-12 leading-[20px] mr-8 shrink-0">KR{{ index + 1
                                 }}</span>
-                                <h4 class=" text-title-color text-14 font-normal leading-[20px]">{{ item.title }}</h4>
+                                <h4 class=" text-text-li text-14 font-normal leading-[20px]">{{ item.title }}</h4>
                             </div>
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center mr-24">
@@ -126,35 +129,38 @@
                                         <n-avatar v-if="!showUserSelect" round :size="20"
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     </div>
-                                    <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
-                                        <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{ item.participant.split(',').length - 4 }}</span>
+                                    <div v-if="item.participant.split(',').length > 4"
+                                        class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
+                                        <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
+                                            item.participant.split(',').length - 4 }}</span>
                                     </div>
-                                    <i class="taskfont icon-item ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0">{{
+                                    <i class="taskfont mr-4 text-14 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
+                                    <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">{{
                                         utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                     </p>
                                 </div>
                                 <div class="flex items-center gap-6 shrink-0">
                                     <div class="flex items-center cursor-pointer"
                                         @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
-                                        <n-progress  class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                        <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                            :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
+                                            :color="colorStatus(item.progress_status)" status="success"
+                                            :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
+                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
+                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
                                     <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                        <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
+                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer"
@@ -178,7 +184,8 @@
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true" :userid="detailData.userid"
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
+                            :userid="detailData.userid"
                             :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
                             @unalign="handleUnalign" @openDetail="openDetail">
                         </AlignTarget>
@@ -190,10 +197,8 @@
 
         <div
             class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] ">
-            <div
-                class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white"
-                :class="navActive == 0 ? 'pt-14 md:pt-0':'pt-[32px] md:pt-0'"
-                >
+            <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white"
+                :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
@@ -221,14 +226,16 @@
                                 <div class="flex flex-col justify-between mt-12">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                        <div v-if="showUserSelect">
-                                            <UserSelects :formkey="index" />
+                                            <div v-if="showUserSelect">
+                                                <UserSelects :formkey="index" />
+                                            </div>
+                                            <n-avatar v-if="!showUserSelect" round :size="20"
+                                                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                         </div>
-                                        <n-avatar v-if="!showUserSelect" round :size="20"
-                                            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                        </div>
-                                        <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
-                                            <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{ item.participant.split(',').length - 4 }}</span>
+                                        <div v-if="item.participant.split(',').length > 4"
+                                            class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
+                                            <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
+                                                item.participant.split(',').length - 4 }}</span>
                                         </div>
                                         <div class="flex items-center">
                                             <i class="taskfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
@@ -241,9 +248,10 @@
                                         class="flex mt-16 py-8 shrink-0 border-solid border-0 border-t-[1px] border-[#F2F3F5]">
                                         <div class="flex items-center justify-center cursor-pointer flex-1 border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
-                                            <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
+                                            <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
                                                 :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                                :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
+                                                :color="colorStatus(item.progress_status)" status="success"
+                                                :percentage="item.progress" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                         </div>
                                         <div v-if="item.confidence == '0'"
@@ -277,8 +285,8 @@
                     </div>
                     <div class="text-center mt-24 md:mt-0 px-16 md:px-0" v-if="navActive == 4">
                         <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
-                        :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
-                        @unalign="handleUnalign" @openDetail="openDetail">
+                            :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
+                            @unalign="handleUnalign" @openDetail="openDetail">
                         </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
@@ -289,10 +297,11 @@
                         </div>
                     </div>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
-                        <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList" v-if="logList.length">
+                        <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList"
+                            v-if="logList.length">
                             <n-avatar round :size="28" class="mr-8 shrink-0" :src="item.user_avatar" />
                             <div class="flex flex-col gap-3">
-                                <p class="text-14 leading-3 text-primary-color">{{ item.user_nickname }}<span
+                                <p class="text-14 leading-[14px] text-primary-color">{{ item.user_nickname }}<span
                                         class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
                                         }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
@@ -300,12 +309,12 @@
                             </div>
                         </div>
                         <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无动态') }}</p>
-                        <p @click="nextLogList" v-if="logListLastPage > logListPage" class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
+                        <p @click="nextLogList" v-if="logListLastPage > logListPage"
+                            class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" :on-scroll="onScrollReplayList">
                         <div class="md:pl-24 pr-[10px]">
-                            <p class="cursor-pointer mb-20"
-                            v-if="userInfo.userid == detailData.userid"
+                            <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid"
                                 :class="detailData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
@@ -320,7 +329,9 @@
                                 </div>
                             </div>
                             <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无复盘') }}</p>
-                            <p @click="nextReplayList" v-if="replayListLastPage > replayListPage" class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
+                            <p @click="nextReplayList" v-if="replayListLastPage > replayListPage"
+                                class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}
+                            </p>
                         </div>
                     </n-scrollbar>
                 </div>
@@ -416,7 +427,7 @@ const inputShow = ref(false)
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 
-const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList','openDetail','getDetail'])
+const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList', 'openDetail', 'getDetail'])
 
 const props = defineProps({
     show: {
@@ -470,6 +481,9 @@ const handleFollowOkr = () => {
 //
 const handleNav = (index) => {
     navActive.value = index
+    if (navActive.value == 0 && window.innerWidth < 768) {
+        loadDialogWrappers()
+    }
     if (navActive.value == 1) {
         logListPage.value = 1
         logList.value = []
@@ -495,10 +509,10 @@ const onScrollLogList = (e) => {
 
 // 日志下一页
 const nextLogList = (e) => {
-        if (!loadIngR.value) {
-            logListPage.value++
-            handleGetLogList()
-        }
+    if (!loadIngR.value) {
+        logListPage.value++
+        handleGetLogList()
+    }
 }
 
 // 日志列表
@@ -529,16 +543,16 @@ const handleGetLogList = () => {
                 if (item.content.includes('取消对齐目标')) {
                     let parent_title = ''
                     item.records.parent_title ? parent_title = ' => ' + item.records.parent_title : ''
-                    item.content = $t('取消对齐目标')+ ": "+ item.records.title + parent_title
+                    item.content = $t('取消对齐目标') + ": " + item.records.title + parent_title
                 }
                 if (item.content.includes('修改KR标题')) {
                     item.content = $t('修改KR标题') + ": " + item.records.title_change[0] + ' => ' + item.records.title_change[1]
                 }
                 if (item.content.includes('修改KR周期')) {
-                    item.content = $t('修改KR周期') + ": "+ item.records.title + ' [ ' + item.records.time_change[0] + ' => ' + item.records.time_change[1]+ ' ]'
+                    item.content = $t('修改KR周期') + ": " + item.records.title + ' [ ' + item.records.time_change[0] + ' => ' + item.records.time_change[1] + ' ]'
                 }
                 if (item.content.includes('修改KR参与人')) {
-                    item.content = $t('修改KR参与人')+ ": " + item.records?.title
+                    item.content = $t('修改KR参与人') + ": " + item.records?.title
                 }
                 if (item.content.includes('修改KR进度')) {
                     item.content = $t('修改KR进度') + ": " + item.records.title + ' [ ' + item.records.progress_change[0] + '%' + ' => ' + item.records.progress_change[1] + '%' + ' ]'
@@ -587,11 +601,11 @@ const onScrollReplayList = (e) => {
     }
 }
 const nextReplayList = (e) => {
-        // 重新请求数据
-        if (!loadIng.value) {
-            replayListPage.value++
-            handleGetLogList()
-        }
+    // 重新请求数据
+    if (!loadIng.value) {
+        replayListPage.value++
+        handleGetLogList()
+    }
 }
 
 // 复盘列表
@@ -657,6 +671,7 @@ const handleSchedule = (id, progress, progress_status, score) => {
 const handleCloseDedree = (type) => {
     if (type == 1) {
         getDetail('')
+        AlignTargetRef.value.getList()
         emit('upData', detailData.value.id)
     }
     degreeOfCompletionId.value = 0
@@ -692,7 +707,7 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress) => {
-    if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined) ) {
+    if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
         markId.value = id
@@ -714,7 +729,7 @@ const handleMark = (id, scores, superior_score, progress) => {
             inputShow.value = false
         }
         markShow.value = true
-    }else{
+    } else {
         message.error($t('仅负责人和负责人上级可以操作！'))
     }
 }
@@ -759,12 +774,20 @@ const handleUnalign = () => {
 }
 
 // 点击对齐目标跳转
-const openDetail = (id,userid) => {
-    emit('openDetail', id,userid)
-    nextTick(()=>{
+const openDetail = (id, userid) => {
+    emit('openDetail', id, userid)
+    userSelectApps.value.forEach(app => {
+        let dom = document.createElement("UserSelects")
+        dom.setAttribute('formkey',app._vnode.data.formkey)
+        app.$el.replaceWith(dom);
+        app.$destroy()
+    })
+    nextTick(() => {
+        scrollbarRef.value.scrollTo({top: 0})
         getDetail('')
         AlignTargetRef.value.getList()
-        document.getElementById('detailTop').scrollIntoView({behavior:'smooth',block:'center'})
+        navActive.value = 0
+        loadDialogWrappers();
     })
 }
 
@@ -772,7 +795,10 @@ const openDetail = (id,userid) => {
 const loadDialogWrappers = () => {
     nextTick(() => {
         if (!window.Vues) return false;
-        dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
+        if(dialogWrappersApp.value){
+            dialogWrappersApp.value.$el.replaceWith(document.createElement("DialogWrappers"));
+            dialogWrappersApp.value.$destroy()
+        }
         dialogWrappersApp.value = new window.Vues.Vue({
             el: document.querySelector('DialogWrappers'),
             store: window.Vues.store,
@@ -784,6 +810,7 @@ const loadDialogWrappers = () => {
                 }, [h("div", { slot: "head" })])
             }
         });
+        
     })
 }
 
@@ -801,6 +828,7 @@ const handleAddMultiple = () => {
         })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
+            state.multipleId = 0
         })
     }
     else {
@@ -839,7 +867,7 @@ const handleCheckMultiple = (id) => {
 const loadUserSelects = () => {
     nextTick(() => {
         if (!window.Vues) return false;
-        document.querySelectorAll('UserSelects').forEach(e => {
+        document.querySelectorAll('userselects').forEach(e => {
             let index = e.getAttribute('formkey')
             let item = detailData.value.key_results[e.getAttribute('formkey')];
             let app = new window.Vues.Vue({
@@ -848,6 +876,7 @@ const loadUserSelects = () => {
                 render: (h: any) => {
                     return h(window.Vues?.components?.UserSelect, {
                         class: "okr-user-selects",
+                        formkey: index,
                         props: {
                             value: (item.participant).split(',').map(h => Number(h)),
                             title: $t('选择参与人'),
@@ -902,7 +931,7 @@ const participantChange = (item, index) => {
 //超期判断
 const within24Hours = (date) => {
     let time = utils.GoDateHMS(date)
-    return  Number(utils.Date(time, true)) - nowTime.value < 86400
+    return Number(utils.Date(time, true)) - nowTime.value < 86400
 }
 
 const expiresFormat = (date) => {
@@ -940,13 +969,13 @@ const submitSelectAlignment = (e) => {
 //颜色判断
 const colorStatus = (color) => {
     let result = ''
-    if (color == 1){
+    if (color == 1) {
         result = '#8BCF70'
     }
-    if (color == 2){
+    if (color == 2) {
         result = '#FFA25A'
     }
-    if (color == 3){
+    if (color == 3) {
         result = '#FF7070'
     }
     return result
@@ -954,10 +983,8 @@ const colorStatus = (color) => {
 
 // 卸载
 window.addEventListener('apps-unmount', function () {
-    dialogWrappersApp.value && dialogWrappersApp.value.$destroy()
-    userSelectApps.value.forEach(app => app.$destroy())
+    closeDrawer()
 })
-
 
 // 关闭
 const closeDrawer = () => {
@@ -981,7 +1008,9 @@ watch(() => props.show, (newValue) => {
 watch(() => detailData.value.dialog_id, (newValue) => {
     if (newValue) {
         loadUserSelects()
-        loadDialogWrappers()
+        if (window.innerWidth >= 768) {
+            loadDialogWrappers()
+        }
     }
 }, { immediate: true })
 
@@ -997,7 +1026,7 @@ onMounted(() => {
     }, 1000);
 })
 
-onUnmounted(()=>{
+onUnmounted(() => {
     clearInterval(nowInterval.value);
 })
 
@@ -1010,19 +1039,20 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
-.navActive{
+.navActive {
     @apply hidden md:flex;
 }
+
 .icon-title {
     @apply text-16 cursor-pointer;
 }
 
 .icon-item {
-    @apply text-12 mr-8;
+    @apply text-16 mr-8;
 }
 
 .span {
-    @apply text-12 md:text-14 font-medium text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0;
+    @apply text-12 font-medium text-white px-6 py-4 rounded-full flex items-center leading-3 shrink-0;
 }
 
 .span-1 {
@@ -1043,7 +1073,7 @@ defineExpose({
 }
 
 .li-nav.active {
-    @apply text-primary-color md:text-title-color md:text-16 opacity-100 relative font-medium;
+    @apply text-primary-color md:text-text-li md:text-16 opacity-100 relative font-medium;
 }
 
 .li-nav.active::before {

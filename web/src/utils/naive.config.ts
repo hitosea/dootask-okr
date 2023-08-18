@@ -62,7 +62,11 @@ const themeOverrides = {
             borderRadius:"8px",
         },
         Tabs:{
-            tabFontWeightActive:"500"
+            tabFontWeightActive:"500",
+            tabTextColorLine:"#606266",
+        },
+        Drawer:{
+            bodyPadding:"16px 24px 24px 24px",
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
