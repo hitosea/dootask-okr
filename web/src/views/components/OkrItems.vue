@@ -32,11 +32,11 @@
                     <i class="taskfont text-[12px]">&#xe6e4;</i>
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
-                    <template v-if="item.canceled == '0' && item.completed =='0'">                        
+                    <template v-if="item.canceled == '0' && item.completed =='0'">
                         <i class="taskfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
                         <p :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
                     </template>
-                    <template v-if="item.canceled == '1' || item.completed =='1'">                        
+                    <template v-if="item.canceled == '1' || item.completed =='1'">
                         <i class="taskfont text-[12px]" > &#xe6e8;</i>
                         <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
@@ -63,7 +63,7 @@
                             <div class="kr-list-schedule w-[60px]">
                                 <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
                                     :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                    color="var(--primary-color)" status="success" :percentage="childItem.progress" />
+                                    :color="colorStatus(childItem.progress_status)" status="success" :percentage="childItem.progress" />
                                 {{ childItem.progress }}%
                             </div>
                         </div>
@@ -157,7 +157,7 @@ const handleOpenDetail = (id,userid) => {
     if (window.innerWidth < 768) {
         router.push({
             path: '/okrDetails',
-            query: { 
+            query: {
                 data: id,
                 userid:userid,
              },
@@ -218,6 +218,21 @@ const expiresFormat = (date) => {
     return webTs.countDownFormat(timestamp, nowTime.value)
 }
 
+//颜色判断
+const colorStatus = (color) => {
+    let result = ''
+    if (color == 1 || color == 0) {
+        result = '#8BCF70'
+    }
+    if (color == 2) {
+        result = '#FFA25A'
+    }
+    if (color == 3) {
+        result = '#FF7070'
+    }
+    return result
+}
+
 const isOverdue = (end_at) => {
     let time = utils.GoDateHMS(end_at)
     return Number(utils.Date(time, true)) < nowTime.value;
@@ -230,7 +245,7 @@ onMounted(() => {
 })
 
 onUnmounted(()=>{
-    clearInterval(nowInterval.value); 
+    clearInterval(nowInterval.value);
 })
 
 </script>
