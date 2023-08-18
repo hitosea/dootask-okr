@@ -547,7 +547,6 @@ const closeDrawer = () => {
     handleClear()
     unmountUserSelectsApps()
     unmountDatePickerApps()
-    emit('close')
 }
 
 // 显示

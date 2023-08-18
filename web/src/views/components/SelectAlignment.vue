@@ -1,7 +1,7 @@
 <template >
     <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear" :mask-closable="false">
         <n-card
-            class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-[52px] md:top-0 rounded-none rounded-t-xl md:rounded-xl"
+            class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-[26px] my-0 md:top-0 rounded-none rounded-t-xl md:rounded-xl"
             :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header>
                 <h3 class="text-16 md:text-18 text-title-color ">{{ $t('选择对齐目标') }}</h3>
