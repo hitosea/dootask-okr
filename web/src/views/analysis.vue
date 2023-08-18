@@ -116,7 +116,7 @@
                                         <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
                                             <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300" >
                                                 <template #trigger>
-                                                    <img class="ml-8 w-15" :src="utils.apiUrl('/assets/images/icon/tips.svg')"/>
+                                                    <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
                                                 </template>
                                                 <p class="max-w-[300px]">{{$t('已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR')}}</p>
                                             </n-tooltip>
@@ -142,7 +142,7 @@
                                         <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
                                             <n-tooltip trigger="hover">
                                                 <template #trigger>
-                                                    <img class="ml-8 w-15" :src="utils.apiUrl('/assets/images/icon/tips.svg')"/>
+                                                    <img class="ml-8 w-15" src="@/assets/images/icon/tips.svg" />
                                                 </template>
                                                 {{$t('各个部门完成OKR评分的所占比例')}}
                                             </n-tooltip>
@@ -174,7 +174,6 @@
 import * as echarts from 'echarts';
 import * as http from "../api/modules/analysis";
 import {  useRouter } from 'vue-router';
-import utils from '@/utils/utils'
 
 const router = useRouter()
 const loadIng = ref(false)

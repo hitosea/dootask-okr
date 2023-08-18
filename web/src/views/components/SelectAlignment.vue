@@ -53,11 +53,11 @@
                 </n-checkbox-group>
                 <div v-else class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
-                        <img class="w-80" :src="utils.apiUrl('/assets/images/icon/notSearch.svg')" />
+                        <img class="w-80" src="@/assets/images/icon/notSearch.svg" />
                         <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果1') }}</p>     
                     </div>
                     <div v-if="searchName =='' && okrList.length ==0">
-                        <img class="w-80" :src="utils.apiUrl('/assets/images/icon/notData.svg')" />
+                        <img class="w-80" src="@/assets/images/icon/notData.svg" />
                         <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>     
                     </div>
                 </div>
