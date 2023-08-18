@@ -715,6 +715,7 @@ const handleMark = (id, scores, superior_score, progress) => {
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
+        if (scores < 0 && detailData.value.superior_user?.indexOf(userInfo.userid) != -1) return message.error($t('负责人未评分'))
         markId.value = id
         score.value = scores
         superiorScore.value = superior_score
@@ -840,6 +841,7 @@ const handleAddMultiple = () => {
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.multipleId = 0
+            state.doubleSkip = true
         })
     }
     else {
@@ -862,6 +864,7 @@ const handleCheckMultiple = (id) => {
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.multipleId = id
+            state.doubleSkip = true
         })
     }
     else {
@@ -1019,6 +1022,7 @@ watch(() => props.show, (newValue) => {
     }
 }, { immediate: true })
 
+
 watch(() => detailData.value.dialog_id, (newValue) => {
     if (newValue) {
         loadUserSelects()
@@ -1028,13 +1032,20 @@ watch(() => detailData.value.dialog_id, (newValue) => {
     }
 }, { immediate: true })
 
-nextTick(() => {
-    if (window.innerWidth < 768) {
-        navActive.value = 3
-    }
-})
+
 
 onMounted(() => {
+    nextTick(() => {
+    if (window.innerWidth < 768 && !globalStore.doubleSkip) {
+        navActive.value = 3
+    }
+    if(window.innerWidth < 768 && globalStore.doubleSkip){
+        globalStore.$patch((state) => {
+            state.doubleSkip = false
+            navActive.value = 2
+        })
+    }
+})
     nowInterval.value = setInterval(() => {
         nowTime.value = utils.Time();
     }, 1000);

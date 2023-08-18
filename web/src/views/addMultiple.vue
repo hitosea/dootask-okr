@@ -24,8 +24,6 @@ const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex
 const globalStore = GlobalStore()
 const {  multipleId,addMultipleData } = globalStore.multipleSetup()
 
-console.log(multipleId);
-
 //提交
 const handleSubmit = () => {
     if (loadIng.value) return;

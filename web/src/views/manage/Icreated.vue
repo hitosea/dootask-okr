@@ -117,6 +117,9 @@ const upData = (id) => {
                     if (props.searchObject == '') {
                         PersonalStatisticsRef.value?.getData()
                     }
+                    if(list.value[index].completed == 1 ){
+                        resetGetList();
+                    }
                 })
                 .catch()
                 .finally(() => {
