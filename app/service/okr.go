@@ -1584,13 +1584,8 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 		return nil, err
 	}
 
-	// 去掉Participant中的0
-	if strings.Contains(param.Participant, "0,") {
-		param.Participant = strings.Trim(param.Participant, "0,")
-	}
-
 	oldParticipant := common.ExplodeInt(",", kr.Participant, true)
-	newParticipant := common.ExplodeInt(",", param.Participant, true)
+	newParticipant := common.ArrayRemove(common.ExplodeInt(",", param.Participant, true), 0)
 	diffParticipant := common.ArrayDifferenceProcessing(newParticipant, oldParticipant)
 
 	// 为KR添加新参与人时，发送提示消息
