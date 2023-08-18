@@ -40,7 +40,7 @@ export default defineConfig(({ command, mode }) => {
             vue({
                 template: {
                     compilerOptions: {
-                        isCustomElement: (tag) => tag.includes('DialogWrappers') || tag.includes('UserSelects'),
+                        isCustomElement: (tag) => tag.includes('DialogWrappers') || tag.includes('UserSelects') || tag.includes('DatePickers') ,
                     }
                 }
             }),

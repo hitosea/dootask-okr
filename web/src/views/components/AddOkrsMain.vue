@@ -182,8 +182,8 @@ const formRefs = ref()
 const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
 const datePickerApps = ref([])
-const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
-const showDatePickers = computed(() => window.Vues?.components?.DatePicker ? 1 : 0)
+const showUserSelect = ref(window.Vues?.components?.UserSelect ? 1 : 0)
+const showDatePickers = ref(window.Vues?.components?.DatePicker ? 1 : 0)
 
 const props = defineProps({
     edit: {
@@ -305,6 +305,7 @@ const submitSelectAlignment = (e) => {
     formValue.value.align_objective = e
 }
 
+
 //提交
 const handleSubmit = () => {
     formRef.value?.validate((errors) => {
@@ -336,8 +337,8 @@ const handleSubmit = () => {
                 title: formKRValue.value[index].title,
                 confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
                 participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
-                start_at: showDatePickers ? (formKRValue.value[index].time[0] + ' 00:00:00') : utils.formatDate('Y-m-d 00:00:00', formKRValue.value[index].time[0] / 1000),
-                end_at: showDatePickers ? (formKRValue.value[index].time[1] + ' 00:00:00') : utils.formatDate('Y-m-d 23:59:59', formKRValue.value[index].time[1] / 1000),
+                start_at: utils.TimeHandle(formKRValue.value[index].time[0]),
+                end_at: utils.TimeHandle(formKRValue.value[index].time[1]),
             })
         }
         const upData = {
@@ -347,8 +348,8 @@ const handleSubmit = () => {
             priority: formValue.value.priority,
             ascription: formValue.value.ascription,
             visible_range: formValue.value.visible_range,
-            start_at: showDatePickers ? (formValue.value.time[0] + ' 00:00:00') : utils.formatDate('Y-m-d 00:00:00', formValue.value.time[0] / 1000),
-            end_at: showDatePickers ? (formValue.value.time[1] + ' 00:00:00') : utils.formatDate('Y-m-d 23:59:59', formValue.value.time[1] / 1000),
+            start_at: utils.TimeHandle(formValue.value.time[0]),
+            end_at: utils.TimeHandle(formValue.value.time[1]),
             align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
             project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
             key_results: keyResults,
@@ -487,7 +488,6 @@ const handleGoal = () => {
     selectAlignmentShow.value = true
 }
 
-
 // 加载时间组件
 const loadDatePickers = () => {
     nextTick(() => {
@@ -504,7 +504,7 @@ const loadDatePickers = () => {
                         type: type,
                         formkey: e.getAttribute('formkey'),
                         props: {
-                            value: type == 'cycle' ? formValue.value.time || '' : item.time || '',
+                            value: ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h:any)=>utils.TimeHandle(h)),
                             editable: false,
                             placeholder: $t("选择时间范围"),
                             format: "yyyy-MM-dd",
@@ -542,11 +542,6 @@ const unmountDatePickerApps = () => {
     }
 }
 
-// 卸载
-window.addEventListener('apps-unmount', function () {
-    closeDrawer()
-})
-
 // 关闭Drawer
 const closeDrawer = () => {
     handleClear()
@@ -557,16 +552,29 @@ const closeDrawer = () => {
 
 // 显示
 const showDrawer = () => {
-    loadUserSelects()
-    loadDatePickers()
+
 }
 
+// 卸载
+window.addEventListener('apps-unmount', function () {
+    closeDrawer()
+})
 
-//判断初始化归属
-nextTick(()=>{
-    if(!departmentOwner){
-        formValue.value.ascription = 2
-    }
+onBeforeUnmount(() => {
+    closeDrawer()
+})
+
+onMounted(() => {
+    nextTick(()=>{
+        //判断初始化归属
+        if(!departmentOwner){
+            formValue.value.ascription = 2
+        }
+        showUserSelect.value = window.Vues?.components?.UserSelect ? 1 : 0
+        showDatePickers.value = window.Vues?.components?.UserSelect ? 1 : 0
+        loadUserSelects()
+        loadDatePickers()
+    })
 })
 
 defineExpose({
@@ -574,7 +582,6 @@ defineExpose({
     closeDrawer,
     showDrawer,
 })
-
 </script>
 
 <style>

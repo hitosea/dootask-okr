@@ -22,7 +22,7 @@
                 </n-select>
 
                 <div class="text-text-li mr-8 ml-16 whitespace-nowrap">{{ $t('时间') }}</div>
-                <div v-if="showDatePickers" class="w-[33%]" >
+                <div v-if="showDatePickers" class="okr-date-picker-waps" style="width: 30%;">
                     <DatePickers />
                 </div>
                 <n-date-picker v-else class="w-[33%]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
@@ -120,8 +120,8 @@
                     <div class="mt-16 whitespace-nowrap mb-4">
                         {{ $t('时间') }}
                     </div>
-                    <DatePickers v-if="showDatePickers"/>
-                    <n-date-picker v-else class=" h-[36px] " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                    <div v-if="showDatePickers" class="okr-date-picker-waps"><DatePickers /></div>
+                    <n-date-picker v-else class="h-[36px]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
 
 
@@ -272,8 +272,8 @@ const resetGetList = ()=>{
     getList('search')
 }
 
-const getList = (type) => {
 
+const getList = (type) => {
     let serstatic = type == 'search' ? true : false
     if (last_page.value >= page.value || serstatic) {
         if (serstatic) {
@@ -284,11 +284,11 @@ const getList = (type) => {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id: departmentsvalue.value,
-            end_at: daterange.value[1] ?  (showDatePickers ? daterange.value[1] + ' 00:00:00' : utils.formatDate('Y-m-d 00:00:00', daterange.value[1] / 1000)) : '',
+            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1]) : '',
             objective: props.searchObject,
             page: page.value,
             page_size: 10,
-            start_at: daterange.value[0] ? (showDatePickers ? daterange.value[0] + ' 00:00:00' : utils.formatDate('Y-m-d 00:00:00', daterange.value[0] / 1000)) : '',
+            start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0]) : '',
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
         }
@@ -455,6 +455,10 @@ window.addEventListener('resize', function () {
 
 // 卸载
 window.addEventListener('apps-unmount', function () {
+    unmountDatePickerApps()
+})
+
+onBeforeUnmount(() => {
     unmountDatePickerApps()
 })
 

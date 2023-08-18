@@ -448,6 +448,23 @@ const utils = {
         format = format.replace(/s/g, utils.zeroFill(dateObj.getSeconds(), 2))
         return format
     },
+
+    /**
+     * 时间处理
+     * @param format
+     * @param v
+     * @returns {string}
+     */
+    TimeHandle (time:any)  {
+        if(!time){
+            return "";
+        }
+        if( typeof time == 'number' ){
+            return utils.formatDate('Y-m-d 00:00:00', time / 1000)
+        }
+        return utils.formatDate('Y-m-d',time) + ' 00:00:00'
+    },
+
     /**
      * 接口返回时间转正常格式
      * @param format

@@ -995,6 +995,9 @@ const colorStatus = (color) => {
 window.addEventListener('apps-unmount', function () {
     closeDrawer()
 })
+onBeforeUnmount(() => {
+    closeDrawer()
+})
 
 // 关闭
 const closeDrawer = () => {
