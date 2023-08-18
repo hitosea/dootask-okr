@@ -624,7 +624,7 @@ func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string, 
 	var objs []*model.Okr
 	db := core.DB.Preload("KeyResults").Where("userid = ?", user.Userid).Where("parent_id = 0").Order("canceled,completed asc, created_at desc")
 	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+		objective = common.SearchTextFilter(objective)
 		db = db.Where("title LIKE ?", "%"+objective+"%")
 	}
 
@@ -770,7 +770,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 		).Order("canceled,completed asc, created_at desc")
 
 	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+		objective = common.SearchTextFilter(objective)
 		db = db.Where("title LIKE ?", "%"+objective+"%")
 	}
 
@@ -863,7 +863,7 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 
 	// 标题筛选
 	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+		objective = common.SearchTextFilter(objective)
 		// 部门
 		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son ON okr.id = son.parent_id`, okrTable))
 		db = db.Where(`(okr.title LIKE ? OR son.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
@@ -962,7 +962,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	// 目标筛选
 	objective := param.Objective
 	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+		objective = common.SearchTextFilter(objective)
 		db = db.Where("title LIKE ?", "%"+objective+"%")
 	}
 
@@ -1034,8 +1034,7 @@ func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective stri
 		Where("f.userid = ?", user.Userid).
 		Order("o.canceled,o.completed asc, f.created_at desc")
 
-	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+	if common.SearchTextFilter(objective) != "" {
 		db = db.Where("o.title LIKE ?", "%"+objective+"%")
 	}
 
@@ -1125,7 +1124,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 	}
 
 	if objective != "" {
-		objective = strings.ReplaceAll(objective, "%", "\\%")
+		objective = common.SearchTextFilter(objective)
 		db = db.Where("replay.okr_title LIKE ?", "%"+objective+"%")
 	}
 

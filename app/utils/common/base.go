@@ -203,3 +203,10 @@ func CardFormat(str string) string {
 	}
 	return str[0:3] + "***" + str[len(str)-1:]
 }
+
+// 搜索文本过滤
+func SearchTextFilter(str string) string {
+	str = strings.TrimSpace(str)
+	str = strings.ReplaceAll(str, "%", "\\%")
+	return str
+}
