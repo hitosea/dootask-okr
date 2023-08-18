@@ -451,17 +451,36 @@ const getDetail = (type) => {
     getOkrDetail({
         id: props.id,
     }).then(({ data }) => {
-        detailData.value = data
-        emit('isFollow', detailData.value.is_follow)
-        emit('getDetail', detailData.value)
-        emit('canceled', detailData.value.canceled)
+        detailData.value = type == 'first' ? data : {}
+        if( type != 'first'  ){
+            nextTick(() => {
+                detailData.value = data
+                emit('isFollow', detailData.value.is_follow)
+                emit('getDetail', detailData.value)
+                emit('canceled', detailData.value.canceled)
+                if( navActive.value == 2){
+                    replayListPage.value = 1
+                    replayList.value = []
+                    handleGetReplayList()
+                }
+            })
+        }else{
+            emit('isFollow', detailData.value.is_follow)
+            emit('getDetail', detailData.value)
+            emit('canceled', detailData.value.canceled)
+            if( navActive.value == 2){
+                replayListPage.value = 1
+                replayList.value = []
+                handleGetReplayList()
+            }
+        }
     })
-        .catch(({ msg }) => {
-            message.error(msg)
-        })
-        .finally(() => {
-            if (type == 'first') loadIng.value = false
-        })
+    .catch(({ msg }) => {
+        message.error(msg)
+    })
+    .finally(() => {
+        if (type == 'first') loadIng.value = false
+    })
 }
 
 // 关注
@@ -892,12 +911,12 @@ const loadUserSelects = () => {
                         class: "okr-user-selects",
                         formkey: index,
                         props: {
-                            value: (item.participant).split(',').map(h => Number(h)),
+                            value: ((item.participant).split(',').map(h => Number(h) )).filter(value => value !== 0),
                             title: $t('选择参与人'),
                             border: false,
                             avatarSize: 20,
                             addIcon: item.participant.length == 0 ,
-                            disable: userInfo.userid != detailData.value.userid || detailData.value.key_results[index].score > -1 || detailData.value.key_results[index].superior_score > -1
+                            // disable: userInfo.userid != detailData.value.userid || detailData.value.key_results[index].score > -1 || detailData.value.key_results[index].superior_score > -1
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {
@@ -999,6 +1018,7 @@ const colorStatus = (color) => {
 window.addEventListener('apps-unmount', function () {
     closeDrawer()
 })
+
 onBeforeUnmount(() => {
     closeDrawer()
 })

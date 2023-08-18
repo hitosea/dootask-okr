@@ -112,7 +112,7 @@ const handleSubmit = () => {
             message.error(msg)
         })
         .finally(() => {
-            emit('close', 1,)
+            emit('close', 1)
             loadIng.value = false
         })
 }
