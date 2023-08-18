@@ -7,13 +7,12 @@ import createDemoRouter from "./routes"
 import "./assets/styles/index.css"
 import directives from "@/directives/index"
 import { handleMicroData,fixBugForVueRouter4 } from "./microapp"
-import VueWechatTitle from 'vue-wechat-title';  
+
 
 window.isEEUiApp = window && window.navigator && /eeui/i.test(window.navigator.userAgent)
 
 const app = createApp(App)
 const route = createDemoRouter(app, routes)
-app.use(VueWechatTitle)
 app.use(route)
 app.use(I18n)
 app.use(pinia)
