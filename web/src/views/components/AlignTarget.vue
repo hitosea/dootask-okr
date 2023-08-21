@@ -30,7 +30,7 @@
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
                 :class="cancelShow ? 'md:mr-24' : ''">
-                <n-progress class="-mt-6 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
                     :offset-degree="180" :stroke-width="15" :color="colorStatus(item.progress_status)" status="success"
                     :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>

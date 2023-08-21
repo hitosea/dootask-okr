@@ -35,9 +35,9 @@
                     <i v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
                         class="okrfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
 
-                    <i class="okrfont text-[#FFD023] cursor-pointer" v-if="detailData.is_follow"
+                    <i class="okrfont text-[#FFD023] cursor-pointer text-16" v-if="detailData.is_follow"
                         @click.stop="handleFollowOkr">&#xe683;</i>
-                    <i class="okrfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
+                    <i class="okrfont text-[#A7ACB6] cursor-pointer text-16" v-else @click.stop="handleFollowOkr">&#xe679;</i>
 
                     <div v-if="detailData.score > -1" class="flex items-center cursor-pointer">
                         <img class="mr-8" :src="utils.apiUrl(fenSvg)" />
@@ -149,7 +149,7 @@
                                 <div class="flex items-center  shrink-0 min-w-[200px]">
                                     <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
-                                        <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
+                                        <n-progress class="-mt-10 mr-[6px]" style="width: 15px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                             :color="colorStatus(item.progress_status)" status="success"
                                             :percentage="item.progress" />

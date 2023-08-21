@@ -50,18 +50,18 @@
                 <div class="hidden md:flex">
                     <div @click="handleClick2(null)"
                         :class="types == null ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color' : 'bg-white border-[#F2F2F2]'"
-                        class="rounded px-12 py-6 border-solid border-[1px] cursor-pointer">
+                        class="rounded px-12 py-4 border-solid border-[1px] cursor-pointer">
                         {{ $t('全部') }}
                     </div>
                     <div class="flex ml-4">
                         <div @click="handleClick2(1)"
                             :class="types == '1' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color z-[2]' : 'bg-white border-[#F2F2F2]'"
-                            class="rounded-l px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                            class="rounded-l px-12 py-4 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
                             {{ $t('承诺型') }}
                         </div>
                         <div @click="handleClick2(2)"
                             :class="types == '2' ? 'bg-[rgba(139,207,112,0.05)] border-[#8BCF70] text-primary-color' : 'bg-white border-[#F2F2F2]'"
-                            class="-ml-1 rounded-r px-12 py-6 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
+                            class="-ml-1 rounded-r px-12 py-4 border-solid border-[1px] border-[#F2F2F2] bg-white cursor-pointer">
                             {{ $t('挑战型') }}
                         </div>
                     </div>
