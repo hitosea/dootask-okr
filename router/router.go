@@ -52,6 +52,11 @@ func Init(c *gin.Context) {
 		c.FileFromFS("dist"+assets, http.FS(web.Assets))
 		return
 	}
+	if strings.HasPrefix(urlPath, "/apps/okr/src/assets") {
+		assets := strings.Replace(urlPath, "/apps/okr/src/assets", "/assets", -1)
+		c.FileFromFS("src"+assets, http.FS(web.SrcAssets))
+		return
+	}
 	if strings.HasSuffix(urlPath, "/favicon.ico") {
 		c.FileFromFS("/favicon.ico", http.FS(web.Favicon))
 		return
