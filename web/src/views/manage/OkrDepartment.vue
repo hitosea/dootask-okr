@@ -38,7 +38,7 @@
                 <n-button :loading="isloading" type="primary" size="small" class="ml-24 rounded px-16"
                     @click="handleClick()">
                     <template #icon>
-                        <i class="taskfont" v-if="!(isloading)">&#xe72a;</i>
+                        <i class="okrfont" v-if="!(isloading)">&#xe72a;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -73,7 +73,7 @@
                 </n-checkbox>
                 <div @click="active = true" class="flex items-center md:hidden text-14"
                     :class="searchActive ? 'text-primary-color' : 'text-text-tips'">
-                    <i class="taskfont text-18 mr-4">&#xe700;</i>
+                    <i class="okrfont text-18 mr-4">&#xe700;</i>
                     {{ $t('筛选') }}
                 </div>
 
@@ -102,7 +102,7 @@
                 <template #header>
                     <div class="flex w-full items-center justify-between text-16 md:text-18">
                         {{ $t('筛选') }}
-                        <i class="taskfont text-text-tips" @click="active = false">&#xe6e5;</i>
+                        <i class="okrfont text-text-tips" @click="active = false">&#xe6e5;</i>
                     </div>
                 </template>
                 <div class="flex flex-col h-full">

@@ -7,12 +7,12 @@
                 <h3 class="text-16 md:text-18 text-title-color ">{{ $t('选择对齐目标') }}</h3>
             </template>
             <template #header-extra>
-                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
+                <i class="okrfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
             </template>
             <div class="flex flex-col flex-1 overflow-hidden">
                 <n-input v-model:value="searchName" placeholder="搜索" :autofocus="false" :on-update:value="searchInput">
                     <template #prefix>
-                        <i class="taskfont"> &#xe6f8;</i>
+                        <i class="okrfont"> &#xe6f8;</i>
                     </template>
                 </n-input>
 
@@ -22,7 +22,7 @@
                             <div class="align-okr" v-for="(item, index) in okrList">
                                 <div class="object-field ">
                                     <n-checkbox :value="item.id" />
-                                    <i class="taskfont" :class="[item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer',
+                                    <i class="okrfont" :class="[item.key_results == null ? 'text-[#ededed] cursor-not-allowed' : 'text-text-tips cursor-pointer',
                                         openList.indexOf(index) != -1 ? 'active' : ''
                                         ]
                                         " @click="handleOpen(index, item.key_results)">&#xe745;</i>

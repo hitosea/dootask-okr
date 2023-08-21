@@ -2,7 +2,7 @@
     <div class="align-target">
         <div class="a-t-list" v-for="item in dataList" v-if="dataList">
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
-                <span class="a-t-tabs w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
+                <span class="a-t-tabs text-[#8BCF70] w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
                 }}</span>
                 <n-tooltip trigger="hover" v-if="item.alias[0]">
                     <template #trigger>
@@ -37,7 +37,7 @@
             </div>
             <n-tooltip trigger="hover" v-if="props.cancelShow">
                 <template #trigger>
-                    <i v-if="props.cancelShow" class="taskfont cursor-pointer text-text-tips ml-auto hidden md:block"
+                    <i v-if="props.cancelShow" class="okrfont cursor-pointer text-text-tips ml-auto hidden md:block"
                         @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>

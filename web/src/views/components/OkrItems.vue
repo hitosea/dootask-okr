@@ -16,10 +16,10 @@
                         <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
+                        <i class="okrfont okr-title-star" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
-                        <i class="taskfont okr-title-icon text-[16px]">&#xe671;</i>
+                        <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="okrfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <div  v-if="item.completed == '1'"
                                 class="flex md:hidden items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer border-primary-color bg-primary-color"
@@ -29,15 +29,15 @@
                     </div>
                 </div>
                 <div class="okr-time">
-                    <i class="taskfont text-[12px]">&#xe6e4;</i>
+                    <i class="okrfont text-[12px]">&#xe6e4;</i>
                     <p>{{ item.alias.join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
                     <template v-if="item.canceled == '0' && item.completed =='0'">
-                        <i class="taskfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
+                        <i class="okrfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
                         <p :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
                     </template>
                     <template v-if="item.canceled == '1' || item.completed =='1'">
-                        <i class="taskfont text-[12px]" > &#xe6e8;</i>
+                        <i class="okrfont text-[12px]" > &#xe6e8;</i>
                         <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
                 </div>
@@ -45,7 +45,7 @@
                 <div class="okr-time-web">
                     <n-avatar round :size="24" :src="item.user_avatar" />
                     <div class="flex items-center text-12">
-                        <i class="taskfont text-14 mr-6">&#xe671;</i>
+                        <i class="okrfont text-14 mr-6">&#xe671;</i>
                         <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <n-progress class="-mt-7 mr-[6px]" style="width: 14px; " type="circle" :show-indicator="false"
                             :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"

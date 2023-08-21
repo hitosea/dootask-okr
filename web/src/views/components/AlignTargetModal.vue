@@ -4,10 +4,10 @@
             <template #header>
                 {{ $t('对齐目标') }}
                 <i v-if="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid"
-                    class="taskfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
+                    class="okrfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
             </template>
             <template #header-extra>
-                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
+                <i class="okrfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
             </template>
             <AlignTarget :value="props.value" :id="props.eidtItem.id" :userid="props.eidtItem.userid"
                 :cancelShow="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid"

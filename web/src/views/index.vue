@@ -2,9 +2,9 @@
     <div class="page-okr">
         <div class="okr-title">
             <div class="flex items-center">
-                <div class="okr-nav-back" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
+                <div class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
-                <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="taskfont">&#xe6ae;</i></div>
+                <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
             <div class="okr-right">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
@@ -13,11 +13,11 @@
                     <n-input v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject"
                         :placeholder="$t('请输入目标 (O)')" />
                     <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search"></i>
-                    <i v-else class="taskfont">&#xe6f8;</i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
                     <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-md-add"></i>
-                    <i v-else class="taskfont">&#xe6f2;</i>
+                    <i v-else class="okrfont">&#xe6f2;</i>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@
                         <div class="mt-5"><s></s>
                             <div>
                                 <n-button type="primary" ghost @click="handleAdd">
-                                    <i class="taskfont mr-5">&#xe731;</i>
+                                    <i class="okrfont mr-5">&#xe731;</i>
                                     {{ $t('创建OKR') }}
                                 </n-button>
                             </div>

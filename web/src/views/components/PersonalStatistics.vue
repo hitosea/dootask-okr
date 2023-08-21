@@ -7,12 +7,12 @@
                     <div class="p-title">
                         <span>{{ analyzeDatas.okrCompletedAndUncompleted.uncompleted }}</span>
                         <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)] shrink-0  flex xl:hidden">
-                            <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
+                            <i class="okrfont text-[#72A1F7]">&#xe6ff;</i>
                         </div>
                     </div>
                 </div>
                 <div class="p-s-one-icon bg-[rgba(114,161,247,0.2)] shrink-0  hidden xl:flex">
-                    <i class="taskfont text-[#72A1F7]">&#xe6ff;</i>
+                    <i class="okrfont text-[#72A1F7]">&#xe6ff;</i>
                 </div>
             </div>
             <div class="p-s-one-box">
@@ -21,12 +21,12 @@
                     <div class="p-title ">
                         <span>{{ analyzeDatas.okrCompletedAndUncompleted.completed }}</span>
                         <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)] shrink-0 flex xl:hidden">
-                            <i class="taskfont text-[#87D068]">&#xe707;</i>
+                            <i class="okrfont text-[#87D068]">&#xe707;</i>
                         </div>
                     </div>
                 </div>
                 <div class=" p-s-one-icon p-s-one-icon-2 bg-[rgba(135,208,104,0.2)] shrink-0 hidden xl:flex">
-                    <i class="taskfont text-[#87D068]">&#xe707;</i>
+                    <i class="okrfont text-[#87D068]">&#xe707;</i>
                 </div>
             </div>
         </div>

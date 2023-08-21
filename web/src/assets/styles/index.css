@@ -1,5 +1,5 @@
 
-@import 'taskfont.css';
+@import 'okrfont.css';
 @import 'dark.css';
 @import 'light.css';
 @import 'tailwind.css';
@@ -47,7 +47,7 @@
     padding-right: 8px;
     color: #636468;
 }
-.okr-nav-back .taskfont{
+.okr-nav-back .okrfont{
     font-size: 26px;
 } 
 .okr-nav-back.portrait{

@@ -8,13 +8,13 @@
                 <h3 class=" text-text-li text-14 font-normal flex justify-between items-center">{{ $t('目标（O）') }} <span
                         class="text-primary-color">{{ props.data.progress }}%</span></h3>
                 <div
-                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 text-15 text-title-color font-normal">
+                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 text-15 text-text-li font-normal">
                     {{ props.data.title }}
                 </div>
                 <h3 class="mt-16 text-text-li text-14 font-medium flex justify-between items-center ">{{ $t('关键KR') }}</h3>
                 <div v-for="(item, index) in tableData"
                     class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 ">
-                    <h3 class="text-15 text-title-color font-normal"><span class="mr-4 text-12 text-text-tips">KR{{ index +
+                    <h3 class="text-15 text-text-li font-normal"><span class="mr-8 text-12 text-text-tips">KR{{ index +
                         1 }}</span>{{ item.KR }}</h3>
                     <div class="mt-12 flex items-center">
                         <p class="text-12 text-text-li flex-1 border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{
@@ -40,7 +40,7 @@
                 <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea"
                     maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')" />
                 <p class="mt-6 md:mt-8" v-else v-html="review"></p>
-                <h3 class="mt-8 md:mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
+                <h3 class="mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
                 <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
                     maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')" />
                 <p class="mt-6 md:mt-8" v-else v-html="problem"></p>

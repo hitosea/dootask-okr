@@ -3,13 +3,13 @@
         <div class="h-full flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
-                    <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="taskfont">&#xe676;</i></div>
+                    <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                     <h2>{{ $t('OKR结果分析') }}</h2>
-                    <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="taskfont">&#xe6ae;</i></div>
+                    <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
             </div>
             <!-- <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
-                <i @click="handleReturn" class="taskfont icon-return z-[2]">&#xe676;</i>
+                <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
                 <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR结果分析') }}</h2>
             </div> -->
             <div class="flex overflow-hidden">

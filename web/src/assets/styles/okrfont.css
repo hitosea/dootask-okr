@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'okrfont';  /* Project id 2583385 */
+    src: url('./okrfont/iconfont.woff2') format('woff2'),
+    url('./okrfont/iconfont.woff') format('woff'),
+    url('./okrfont/iconfont.ttf') format('truetype');
+}
+
+.okrfont {
+    font-family: "okrfont", "serif" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

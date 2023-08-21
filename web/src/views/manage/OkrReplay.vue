@@ -18,7 +18,7 @@
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
                             <span class="mr-[10px]">{{ item.isActive == true ? $t("收起") : $t("展开") }}</span>
-                            <i class="replay-item-head-icon taskfont">&#xe705;</i>
+                            <i class="replay-item-head-icon okrfont">&#xe705;</i>
                         </div>
                     </div>
                     <div class="flex">

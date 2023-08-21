@@ -33,11 +33,11 @@
                 </div>
                 <div class="flex items-center gap-6">
                     <i v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
-                        class="taskfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
+                        class="okrfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
 
-                    <i class="taskfont text-[#FFD023] cursor-pointer" v-if="detailData.is_follow"
+                    <i class="okrfont text-[#FFD023] cursor-pointer" v-if="detailData.is_follow"
                         @click.stop="handleFollowOkr">&#xe683;</i>
-                    <i class="taskfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
+                    <i class="okrfont text-[#A7ACB6] cursor-pointer" v-else @click.stop="handleFollowOkr">&#xe679;</i>
 
                     <div v-if="detailData.score > -1" class="flex items-center cursor-pointer">
                         <img class="mr-8" :src="utils.apiUrl(fenSvg)" />
@@ -61,8 +61,8 @@
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
                                 <i v-if="detailData.ascription == '2'"
-                                    class="taskfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
-                                <i v-else class="taskfont icon-item text-[#BBBBBB]">&#xe682;</i>
+                                    class="okrfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
+                                <i v-else class="okrfont icon-item text-[#BBBBBB]">&#xe682;</i>
 
                                 <span class="text-[#BBBBBB] text-[14px]"> {{ detailData.ascription == "2" ?
                                     $t('负责人') : $t('部门') }}</span>
@@ -75,7 +75,7 @@
 
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#BBBBBB]">&#xe6e8;</i>
+                                <i class="okrfont icon-item text-[#BBBBBB]">&#xe6e8;</i>
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('起止时间') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14 flex items-center">
@@ -83,7 +83,7 @@
                                     utils.GoDate(detailData.end_at || 0) }}</span>
                                 <template v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
                                     <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i
-                                            class="taskfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
+                                            class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
                                 </template>
                             </p>
@@ -92,7 +92,7 @@
 
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
-                                <i class="taskfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
+                                <i class="okrfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('优先级') }}</span>
                             </p>
                             <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority
@@ -136,13 +136,13 @@
                                             item.participant.split(',').length - 4 }}</span>
                                     </div>
                                     <template v-if="!isOverdue(item) || detailData.completed == '1' || detailData.canceled == '1'">
-                                        <i class="taskfont mr-4 text-12 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
+                                        <i class="okrfont mr-4 text-12 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
                                         <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">{{
                                             utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                         </p>
                                     </template>
                                     <template v-if="isOverdue(item) && detailData.completed == '0' && detailData.canceled == '0'">
-                                        <i class="taskfont mr-4 text-12 ml-24 " :class="isOverdue(item) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
+                                        <i class="okrfont mr-4 text-12 ml-24 " :class="isOverdue(item) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
                                        <p :class="isOverdue(item) ?'text-[#ED4014] text-12' : ''">{{ expiresFormat(item.end_at) }}</p>
                                     </template>
                                 </div>
@@ -157,17 +157,17 @@
                                     </div>
                                     <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
+                                        <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
-                                        <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
+                                        <i class="okrfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
                                     <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                        <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                        <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
                                     <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
@@ -186,7 +186,7 @@
                     <h4 class="hidden md:block text-text-li text-16 font-medium mb-12">
                         {{ $t('对齐目标') }}
                         <i v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
-                            class="taskfont text-16 cursor-pointer text-[#A7ABB5]"
+                            class="okrfont text-16 cursor-pointer text-[#A7ABB5]"
                             @click="() => { selectAlignmentShow = true }">&#xe779;</i>
                     </h4>
 
@@ -218,7 +218,7 @@
                     <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                     </li>
                 </ul>
-                <i class="taskfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block" @click="closeModal">&#xe6e5;</i>
+                <i class="okrfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
@@ -242,13 +242,13 @@
                                                     src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                             </div>
                                             <div v-if="item.participant.split(',').length > 4"
-                                                class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ml-6">
+                                                class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 " :class="item.participant.split(',').length == 4 ? 'ml-6':''">
                                                 <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
                                                     item.participant.split(',').length - 4 }}</span>
                                             </div>
                                          </div>
                                         <div class="flex items-center">
-                                            <i class="taskfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
+                                            <i class="okrfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
                                             <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
                                                 || 0) }}
                                             </p>
@@ -267,19 +267,19 @@
                                         <div v-if="item.confidence == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
+                                            <i class="okrfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                         </div>
                                         <div v-else
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="taskfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
+                                            <i class="okrfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                         </div>
                                         <div v-if="item.kr_score == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer"
                                             @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                            <i class="taskfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
+                                            <i class="okrfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
@@ -326,7 +326,7 @@
                         <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid"
                                 :class="detailData.score < 0 ? 'text-text-tips opacity-50' : 'text-primary-color'"
-                                @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
+                                @click="handleAddMultiple"> <i class="okrfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
                             <div class="flex flex-col gap-3" v-if="replayList.length">
                                 <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList"
