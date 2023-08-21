@@ -321,5 +321,7 @@
     "删除KR": "Delete KR",
     "取消关注": "unsubscribe",
     "关注目标": "focus on target",
-    "选择时间范围": "select time range"
+    "选择时间范围": "select time range",
+    "负责人未评分": "Responsible person not rated",
+    "没有找到匹配的结果1": "No matching results found 1"
 }

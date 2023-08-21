@@ -2,10 +2,10 @@
     <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
     <div class="replay-details">
         <div class="replay-details-title">{{ $t("回顾") }}</div>
-        <h3 class="mt-12 text-text-li text-20 font-normal flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
-        <p class="text-title-color text-14" v-html="review"></p>
-        <h3 class="mt-16 text-text-li text-20 font-normal flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
-        <p class="text-title-color text-14" v-html="problem"></p>
+        <h3 class="mb-8 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
+        <p class="text-text-li text-14" v-html="review"></p>
+        <h3 class="mt-16 mb-8 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
+        <p class="text-text-li text-14" v-html="problem"></p>
     </div>
 </template>
 
@@ -255,7 +255,7 @@ const columns = ref<DataTableColumn[]>([
 <style lang="less" scoped>
 .replay-details {
     &-title {
-        @apply mt-10 py-10 text-18 text-[#515A6E];
+        @apply mt-10 py-12 text-18 text-[#515A6E] font-medium;
     }
 }
 </style>

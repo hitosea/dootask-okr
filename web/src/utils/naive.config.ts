@@ -37,7 +37,8 @@ const themeOverrides = {
         },
         Form: {
             feedbackHeightMedium: "16px",
-            feedbackFontSizeMedium: "12px"
+            feedbackFontSizeMedium: "12px",
+            labelTextColor:"#606266",
         },
         Dialog:{
             padding:"24px",
@@ -45,7 +46,7 @@ const themeOverrides = {
         },
         Radio:{
             dotColorDisabled:'#C0C0C0',
-
+            textColor:"#606266",
         },
         Checkbox:{
             borderRadius:'99px',

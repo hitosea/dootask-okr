@@ -40,7 +40,7 @@ export const routes = [
     {
         name: "addMultiple",
         path: "/addMultiple",
-        meta: { title:  I18n.global.t('添加/编辑复盘')},
+        meta: { title:  I18n.global.t('复盘添加/详情')},
         component: addMultiple
     }
 ];

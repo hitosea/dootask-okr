@@ -17,7 +17,7 @@
                         </n-input-number>
                     </n-form-item>
                     <n-form-item :label="$t('状态')" class="">
-                        <div class="flex items-center  gap-3">
+                        <div class="flex items-center  gap-6">
                             <div class="flex items-center gap-2 cursor-pointer " @click="()=>{ formValue.progress_status = 1 }">
                                 <div class="border-[1px] border-solid border-[#8BCF70] rounded-full w-[16px] h-[16px] relative">
                                     <div v-if="formValue.progress_status == 1" class="absolute bg-[#8BCF70] w-[10px] h-[10px] rounded-full top-2 left-2"></div>

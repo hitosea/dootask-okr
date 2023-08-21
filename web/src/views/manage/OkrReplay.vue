@@ -13,7 +13,7 @@
                             <span class="replay-item-okr-level " :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-title-color"><b>{{ item.replayName }}</b></span>
+                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b>{{ item.replayName }}</b></span>
                             <span class=" text-text-li text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
@@ -24,7 +24,7 @@
                     <div class="flex">
                         <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
                             <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
-                            <div class="text-[#515A6E] text-14">{{ item.okrName }}</div>
+                            <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okrName }}</div>
                         </div>
                     </div>
                     <div class="replay-item-body" v-if="item.isActive">

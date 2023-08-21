@@ -5,7 +5,7 @@
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover v-if="detailData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual">
+                    <n-popover v-if="detailData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="showPopover = false">
                         <template #trigger>
                             <div @click="showPopover = !showPopover" v-if="detailData.completed == '0'"
                                 class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
@@ -81,7 +81,7 @@
                             <p class="flex-1 text-text-li text-14 flex items-center">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
                                     utils.GoDate(detailData.end_at || 0) }}</span>
-                                <template v-if="detailData.completed == '0' && detailData.end_at">
+                                <template v-if="detailData.completed == '0' && detailData.completed == '0' && detailData.end_at">
                                     <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i
                                             class="taskfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
@@ -135,13 +135,19 @@
                                         <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
                                             item.participant.split(',').length - 4 }}</span>
                                     </div>
-                                    <i class="taskfont mr-4 text-14 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
-                                    <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">{{
-                                        utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
-                                    </p>
+                                    <template v-if="!isOverdue(item) || detailData.completed == '1' || detailData.canceled == '1'">
+                                        <i class="taskfont mr-4 text-12 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
+                                        <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">{{
+                                            utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
+                                        </p>
+                                    </template>
+                                    <template v-if="isOverdue(item) && detailData.completed == '0' && detailData.canceled == '0'">
+                                        <i class="taskfont mr-4 text-12 ml-24 " :class="isOverdue(item) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
+                                       <p :class="isOverdue(item) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                                    </template>
                                 </div>
-                                <div class="flex items-center gap-6 shrink-0">
-                                    <div class="flex items-center cursor-pointer"
+                                <div class="flex items-center  shrink-0 min-w-[200px] ml-[36px]">
+                                    <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
                                         <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
                                             :show-indicator="false" :offset-degree="180" :stroke-width="15"
@@ -149,22 +155,22 @@
                                             :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
-                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer"
+                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-end "
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer"
+                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
-                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer"
+                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer"
+                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
                                         <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
@@ -736,7 +742,7 @@ const handleMark = (id, scores, superior_score, progress) => {
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
-        if (scores < 0 && detailData.value.superior_user?.indexOf(userInfo.userid) != -1) return message.error($t('负责人未评分'))
+        if (scores < 0 && detailData.value.superior_user != null && detailData.value.superior_user?.indexOf(userInfo.userid) != -1) return message.error($t('负责人未评分'))
         markId.value = id
         score.value = scores
         superiorScore.value = superior_score
@@ -785,7 +791,7 @@ const handleCancel = () => {
         id: detailData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
-        emit('getList')
+        emit('upData', detailData.value.id)
         getDetail('')
     })
         .catch(ResultDialog)
@@ -974,8 +980,8 @@ const expiresFormat = (date) => {
 }
 
 
-const isOverdue = (detailData) => {
-    let time = utils.GoDateHMS(detailData.end_at)
+const isOverdue = (item) => {
+    let time = utils.GoDateHMS(item.end_at)
     return Number(utils.Date(time, true)) < nowTime.value;
 }
 
@@ -1015,6 +1021,7 @@ const colorStatus = (color) => {
     }
     return result
 }
+
 
 // 卸载
 window.addEventListener('apps-unmount', function () {

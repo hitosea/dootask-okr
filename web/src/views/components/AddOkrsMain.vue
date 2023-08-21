@@ -508,7 +508,7 @@ const loadDatePickers = () => {
                         props: {
                             value: ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h:any)=>utils.TimeHandle(h)),
                             editable: false,
-                            placeholder: $t("选择时间范围"),
+                            placeholder: $t("请选择时间"),
                             format: "yyyy-MM-dd",
                             type:"daterange",
                             placement: "top-end",

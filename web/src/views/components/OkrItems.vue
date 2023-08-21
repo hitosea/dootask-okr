@@ -60,7 +60,7 @@
                         <div class="kr-list-item" v-if="index < 3">
                             <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
                             <p class="max-w-[70%]">{{ childItem.title }}</p>
-                            <div class="kr-list-schedule w-[60px]">
+                            <div class="kr-list-schedule w-[60px] text-text-li">
                                 <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
                                     :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                     :color="colorStatus(childItem.progress_status)" status="success" :percentage="childItem.progress" />
@@ -282,7 +282,7 @@ onUnmounted(()=>{
                     }
 
                     h3 {
-                        @apply text-title-color text-14 font-medium line-clamp-3 md:line-clamp-1 ;
+                        @apply text-text-li text-14 font-medium line-clamp-3 md:line-clamp-1 ;
                     }
                 }
 
@@ -326,7 +326,7 @@ onUnmounted(()=>{
                     }
 
                     p {
-                        @apply text-title-color text-14 ml-4 truncate;
+                        @apply text-text-li text-14 ml-4 truncate;
                     }
 
                     .kr-list-schedule {
