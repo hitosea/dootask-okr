@@ -4,7 +4,7 @@
             <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''"></PersonalStatistics>
             <div>
                 <OkrLoading v-if="loadIng"></OkrLoading>
-                <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList"
+                <OkrItems :list="sortList" @upData="upData" @edit="handleEdit" @getList="resetGetList"
                     v-if="list.length != 0 && !loadIng"></OkrItems>
                 <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
                     <template v-slot:content v-if="props.searchObject == '' && !loadIng">
@@ -29,6 +29,8 @@ import OkrItems from '@/views/components/OkrItems.vue'
 import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
+import utils from '@/utils/utils'
+
 
 const loadIng = ref(false)
 const onscrolloading = ref(false)
@@ -55,6 +57,23 @@ watch(() => props.searchObject, (newValue) => {
         clearInterval(searchTime.value)
     }, 300)
 }, { deep: true })
+
+const sortList = computed(()=>{
+    let sortListResult = []
+    sortListResult = list.value.sort((a,b)=>{
+        if(Number(utils.Date(a.created_at, true)) > Number(utils.Date(b.created_at, true)) ) {
+            return -1
+        }
+        if( a.completed > 0){
+            return 1
+        }
+        if( a.canceled > 0){
+            return 1
+        }
+        return 0
+    })
+    return sortListResult
+})
 
 const emit = defineEmits(['edit', 'add'])
 
@@ -117,9 +136,9 @@ const upData = (id) => {
                     if (props.searchObject == '') {
                         PersonalStatisticsRef.value?.getData()
                     }
-                    if(list.value[index].completed == 1 ){
-                        resetGetList();
-                    }
+                    // if(list.value[index].completed == 1 ){
+                    //     resetGetList();
+                    // }
                 })
                 .catch()
                 .finally(() => {
