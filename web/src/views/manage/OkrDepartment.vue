@@ -512,10 +512,6 @@ defineExpose({
     @apply rounded !important;
 }
 
-:deep(.n-checkbox__label) {
-    @apply pl-4 !important;
-}
-
 :deep(.n-drawer-body-content-wrapper) {
     @apply px-16 !important;
 }
