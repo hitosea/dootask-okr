@@ -469,9 +469,17 @@ const utils = {
             return "";
         }
         if( typeof time == 'number' ){
-            return utils.formatDate('Y-m-d 00:00:00', time / 1000)
+            time = utils.formatDate('Y-m-d H:i:s', time / 1000)
         }
-        return utils.formatDate('Y-m-d',time) + (type == 2 ? ' 23:59:00' : ' 00:00:00')
+        if( (time + '').split(" ").length == 1){
+            time = time + (type == 1 ? ' 23:59:00' : ' 00:00:00')
+        }else if(time.indexOf("00:00") != -1 && time.indexOf("00:00:00") == -1){
+            time = time.replace('00:00', type == 1 ? '23:59:00' : '00:00:00');
+        }
+        if((time + '').split(":").length == 2){
+            time = time + ':00'
+        }
+        return time.replace(/\//g,'-') 
     },
 
     /**

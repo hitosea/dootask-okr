@@ -338,7 +338,7 @@ const handleSubmit = () => {
                 confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
                 participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
                 start_at: utils.TimeHandle(formKRValue.value[index].time[0]),
-                end_at: utils.TimeHandle(formKRValue.value[index].time[1],2),
+                end_at: utils.TimeHandle(formKRValue.value[index].time[1],1),
             })
         }
         const upData = {
@@ -349,7 +349,7 @@ const handleSubmit = () => {
             ascription: formValue.value.ascription,
             visible_range: formValue.value.visible_range,
             start_at: utils.TimeHandle(formValue.value.time[0]),
-            end_at: utils.TimeHandle(formValue.value.time[1],2),
+            end_at: utils.TimeHandle(formValue.value.time[1],1),
             align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
             project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
             key_results: keyResults,
@@ -500,26 +500,32 @@ const loadDatePickers = () => {
             let app = new window.Vues.Vue({
                 el: document.querySelector('DatePickers'),
                 store: window.Vues.store,
-                render: (h: any) => {
+                data() {
+                    return {
+                        value : ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h:any,key:number)=>utils.TimeHandle(h,key))
+                    }
+                },
+                render: function(h: any) {
                     return h(window.Vues?.components?.DatePicker, {
                         class: "okr-app-date-pickers",
                         type: type,
                         formkey: e.getAttribute('formkey'),
                         props: {
-                            value: ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h:any)=>utils.TimeHandle(h)),
+                            value: this.value,
                             editable: false,
                             placeholder: $t("请选择时间"),
-                            format: "yyyy-MM-dd",
-                            type:"daterange",
+                            format: "yyyy/MM/dd HH:mm",
+                            type:"datetimerange",
                             placement: "top-end",
                             confirm: true,
                         },
                         on: {
                             "on-change": (value: any) => {
+                                this.value = value.map((h:any,key:number)=>utils.TimeHandle(h,key))
                                 if(type == 'cycle'){
-                                    formValue.value.time = value;
+                                    formValue.value.time = this.value;
                                 }else{
-                                    item.time = value;
+                                    item.time = this.value;
                                 }
                             }
                         }
