@@ -2,19 +2,19 @@
     <div class="flex flex-col h-full">
         <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center md:mb-16 md:mt-24">
             <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
-                <div class="flex-1 flex items-center overflow-hidden">
-                    <div v-if="userInfo == 'admin'" class="mb-2 mr-8 text-text-li whitespace-nowrap">
+                <div class="flex-1 flex items-center overflow-hidden" v-if="userInfo == 'admin'">
+                    <div  class="mb-2 mr-8 text-text-li whitespace-nowrap">
                         {{ $t('部门') }}
                     </div>
-                    <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
+                    <n-select  v-model:value="departmentsvalue" :options="departments" clearable
                         class="mr-16 flex-1 overflow-hidden" :placeholder="$t('全部')" />
                 </div>
 
-                <div class="flex-1 flex items-center overflow-hidden">
+                <div class=" flex items-center overflow-hidden" :class="userInfo == 'admin' ? 'flex-1' :'' ">
                     <div class="text-text-li mr-8 whitespace-nowrap">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="flex-1 overflow-hidden"
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="flex-1 max-w-[225px] overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principallast_page > principalpage" quaternary
@@ -27,12 +27,12 @@
                         </template>
                     </n-select>
                 </div>
-                <div class="flex-1 flex items-center">
+                <div class="flex items-center" :class="userInfo == 'admin' ? 'flex-1' :'' ">
                     <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
-                    <div v-if="showDatePickers" class="okr-date-picker-waps">
+                    <div v-if="showDatePickers" class="okr-date-picker-waps max-w-[225px]">
                         <DatePickers />
                     </div>
-                    <n-date-picker v-else class="" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                    <n-date-picker v-else class="max-w-[225px]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
                 </div>
                 <n-button :loading="isloading" type="primary" size="small" class="ml-24 rounded px-16"

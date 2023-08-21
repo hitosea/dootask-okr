@@ -280,4 +280,7 @@ defineExpose({
 .n-base-select-option__content{
     @apply text-12 md:text-14;
 }
+.n-data-table .n-data-table-th{
+    @apply bg-[#F8F8F9];
+}
 </style>

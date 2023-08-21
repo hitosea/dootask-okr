@@ -16,9 +16,9 @@
                         <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="taskfont okr-title-star" v-if="item.is_follow"
+                        <i class="taskfont okr-title-star" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="taskfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="taskfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <div  v-if="item.completed == '1'"
@@ -44,10 +44,10 @@
 
                 <div class="okr-time-web">
                     <n-avatar round :size="24" :src="item.user_avatar" />
-                    <div class="flex items-center">
-                        <i class="taskfont mr-6">&#xe671;</i>
-                        <p class="mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
-                        <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
+                    <div class="flex items-center text-12">
+                        <i class="taskfont text-14 mr-6">&#xe671;</i>
+                        <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
+                        <n-progress class="-mt-7 mr-[6px]" style="width: 14px; " type="circle" :show-indicator="false"
                             :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
                             :percentage="item.progress" />
                         {{ item.progress }}%
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                     </template>
-                    <div v-if="item.key_results && item.key_results.length > 3" class=" text-14 text-primary-color">KR(+{{ item.key_results.length - 3 }})</div>
+                    <div v-if="item.key_results && item.key_results.length > 3" class=" text-12 text-primary-color ml-[2px]">KR(+{{ item.key_results.length - 3 }})</div>
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
                     <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count

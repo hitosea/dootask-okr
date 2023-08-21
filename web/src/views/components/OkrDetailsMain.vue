@@ -64,7 +64,7 @@
                                     class="taskfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
                                 <i v-else class="taskfont icon-item text-[#BBBBBB]">&#xe682;</i>
 
-                                <span class="text-[#BBBBBB] text-[14px] opacity-50"> {{ detailData.ascription == "2" ?
+                                <span class="text-[#BBBBBB] text-[14px]"> {{ detailData.ascription == "2" ?
                                     $t('负责人') : $t('部门') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
@@ -76,12 +76,12 @@
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
                                 <i class="taskfont icon-item text-[#BBBBBB]">&#xe6e8;</i>
-                                <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('起止时间') }}</span>
+                                <span class="text-[#BBBBBB] text-[14px]">{{ $t('起止时间') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14 flex items-center">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
                                     utils.GoDate(detailData.end_at || 0) }}</span>
-                                <template v-if="detailData.completed == '0' && detailData.completed == '0' && detailData.end_at">
+                                <template v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
                                     <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i
                                             class="taskfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
@@ -93,7 +93,7 @@
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
                                 <i class="taskfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
-                                <span class="text-[#BBBBBB] text-[14px] opacity-50">{{ $t('优先级') }}</span>
+                                <span class="text-[#BBBBBB] text-[14px]">{{ $t('优先级') }}</span>
                             </p>
                             <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority
                             }}</span>
@@ -123,7 +123,7 @@
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center mr-24">
                                     <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                        <div v-if="showUserSelect && detailData.completed == '0' && detailData.canceled == '0'" class="relative">
+                                        <div v-if="showUserSelect  && detailData.completed == '0' && detailData.canceled == '0' || item.participant!=''" class="relative">
                                             <div v-if="userInfo.userid != detailData.userid || detailData.canceled =='1'|| detailData.completed =='1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
                                             <UserSelects class=" relative z-[1]" :formkey="index" />
                                         </div>
@@ -143,10 +143,10 @@
                                     </template>
                                     <template v-if="isOverdue(item) && detailData.completed == '0' && detailData.canceled == '0'">
                                         <i class="taskfont mr-4 text-12 ml-24 " :class="isOverdue(item) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
-                                       <p :class="isOverdue(item) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                                       <p :class="isOverdue(item) ?'text-[#ED4014] text-12' : ''">{{ expiresFormat(item.end_at) }}</p>
                                     </template>
                                 </div>
-                                <div class="flex items-center  shrink-0 min-w-[200px] ml-[36px]">
+                                <div class="flex items-center  shrink-0 min-w-[200px]">
                                     <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
                                         <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
@@ -155,22 +155,22 @@
                                             :percentage="item.progress" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
                                     </div>
-                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-end "
+                                    <div v-if="item.confidence == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
+                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleConfidence(item.id, item.confidence, item.score)">
                                         <i class="taskfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
-                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
+                                    <div v-if="item.kr_score == '0'" class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
                                         <i class="taskfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-end flex-1"
+                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
                                         @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
                                         <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                         <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
@@ -325,7 +325,7 @@
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2" >
                         <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid"
-                                :class="detailData.score < 0 ? 'text-text-tips' : 'text-primary-color'"
+                                :class="detailData.score < 0 ? 'text-text-tips opacity-50' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="taskfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
                             <div class="flex flex-col gap-3" v-if="replayList.length">
@@ -338,7 +338,6 @@
                                     </p>
                                 </div>
                             </div>
-                            <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无复盘') }}</p>
                             <p @click="nextReplayList" v-if="replayListLastPage > replayListPage"
                                 class="text-12 mt-20 mb-20 text-text-tips text-center ">{{ $t('点击加载更多') }}
                             </p>

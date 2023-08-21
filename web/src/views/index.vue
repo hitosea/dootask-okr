@@ -9,7 +9,7 @@
             <div class="okr-right">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
                     :class="searchShow || searchObject ? 'search-active' : ''">
-                    <span class="search-button-span" v-show="searchShow || searchObject">{{ tabsName }}</span>
+                    <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ tabsName }}</span>
                     <n-input v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject"
                         :placeholder="$t('请输入目标 (O)')" />
                     <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search"></i>
@@ -244,7 +244,7 @@ const handleReturn = () => {
                 }
 
                 .search-button-span {
-                    @apply text-14 text-emoji-users-color pr-8 border-solid border-0 border-r border-text-tips;
+                    @apply text-14  text-emoji-users-color pr-8 border-solid border-0 border-r;
                 }
 
                 :deep(.n-input) {
