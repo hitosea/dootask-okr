@@ -5,7 +5,7 @@
             <div>
                 <OkrLoading v-if="loadIng"></OkrLoading>
                 <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList"
-                    v-show="list.length != 0 && !loadIng"></OkrItems>
+                    v-if="list.length != 0 && !loadIng"></OkrItems>
                 <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
                     <template v-slot:content v-if="props.searchObject == '' && !loadIng">
                         <div class="mt-5"><s></s>

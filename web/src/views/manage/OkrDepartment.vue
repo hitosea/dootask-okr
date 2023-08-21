@@ -43,7 +43,7 @@
                     {{ $t('搜索') }}
                 </n-button>
             </div>
-            <div class="flex-1 flex items-center mt-12 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
+            <div class="flex-1 flex items-center mt-16 mb-16 md:mb-0 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
                 <div class="hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 text-text-li">
                     {{ $t('类型') }}
                 </div>
