@@ -59,20 +59,14 @@ watch(() => props.searchObject, (newValue) => {
 }, { deep: true })
 
 const sortList = computed(()=>{
-    let sortListResult = []
-    sortListResult = list.value.sort((a,b)=>{
-        if(Number(utils.Date(a.created_at, true)) > Number(utils.Date(b.created_at, true)) ) {
-            return -1
+    return list.value.sort((a,b)=>{
+        return -1;
+    }).sort((a,b)=>{
+        if( a.completed > 0 || a.canceled > 0){
+            return b.completed - a.completed
         }
-        if( a.completed > 0){
-            return 1
-        }
-        if( a.canceled > 0){
-            return 1
-        }
-        return 0
+        return -1
     })
-    return sortListResult
 })
 
 const emit = defineEmits(['edit', 'add'])

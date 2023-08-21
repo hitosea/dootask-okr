@@ -85,7 +85,7 @@
                     <div class="okr-department-main">
                         <OkrLoading v-if="loadIng"></OkrLoading>
                         <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit"
-                            @getList="resetGetList" :list="list">
+                            @getList="resetGetList" :list="sortList">
                         </OkrItems>
                         <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :loadIng="loadIng"
                             :msg="$t('暂无OKR')" :types="searchObject != '' || loadingstatus">
@@ -231,6 +231,16 @@ watch(() => active.value, (newValue) => {
     }
 })
 
+const sortList = computed(()=>{
+    return list.value.sort((a,b)=>{
+        return -1;
+    }).sort((a,b)=>{
+        if( a.completed > 0 || a.canceled > 0){
+            return b.completed - a.completed
+        }
+        return -1
+    })
+})
 
 const searchActive = computed(() => {
     return departmentsvalue.value != null || principalvalue.value != null || types.value != null || daterange.value.length != 0
