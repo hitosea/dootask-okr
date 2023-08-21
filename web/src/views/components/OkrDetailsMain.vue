@@ -258,7 +258,7 @@
                                         class="flex mt-16 py-8 shrink-0 border-solid border-0 border-t-[1px] border-[#F2F3F5]">
                                         <div class="flex items-center justify-center cursor-pointer flex-1 border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleSchedule(item.id, item.progress, item.progress_status, item.score)">
-                                            <n-progress class="-mt-10 mr-[6px]" style="width: 16px; " type="circle"
+                                            <n-progress class="-mt-7 mr-[6px]" style="width: 16px; " type="circle"
                                                 :show-indicator="false" :offset-degree="180" :stroke-width="15"
                                                 :color="colorStatus(item.progress_status)" status="success"
                                                 :percentage="item.progress" />
@@ -267,19 +267,19 @@
                                         <div v-if="item.confidence == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="okrfont mr-6 text-12 text-[#A7ABB5]">&#xe67c;</i>
+                                            <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67c;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('信心') }}</p>
                                         </div>
                                         <div v-else
                                             class="flex flex-1 items-center justify-center cursor-pointer border-solid border-0 border-r-[1px] border-[#F2F3F5]"
                                             @click="handleConfidence(item.id, item.confidence, item.score)">
-                                            <i class="okrfont mr-6 text-12 text-[#FFA25A]">&#xe674;</i>
+                                            <i class="okrfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                         </div>
                                         <div v-if="item.kr_score == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer"
                                             @click="handleMark(item.id, item.score, item.superior_score, item.progress)">
-                                            <i class="okrfont mr-6 text-12 text-[#A7ABB5]">&#xe67d;</i>
+                                            <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"

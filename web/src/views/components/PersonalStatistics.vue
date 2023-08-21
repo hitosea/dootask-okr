@@ -216,7 +216,7 @@ defineExpose({
                 }
 
                 .p-title {
-                    @apply text-30 flex flex-1 justify-between font-semibold;
+                    @apply text-28 md:text-30 flex flex-1 justify-between items-center font-semibold;
                 }
             }
 

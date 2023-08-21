@@ -122,6 +122,6 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .okr-participant-main {
-    @apply pt-24 flex flex-col gap-6;
+    @apply pt-16 md:pt-24 flex flex-col gap-6;
 }
 </style>

@@ -12,8 +12,7 @@
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <span class="" :class="pStatus(item.priority)">{{ item.priority }}</span>
-                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''">{{ item.title }}</h3>
+                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
                         <i class="okrfont okr-title-star" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
@@ -263,10 +262,10 @@ onUnmounted(()=>{
                 @apply flex justify-between items-start md:items-center;
 
                 .okr-title-l {
-                    @apply flex items-start md:items-center gap-1 md:max-w-75p;
+                    @apply md:max-w-75p w-full;
 
                     span {
-                        @apply text-12 font-medium text-white px-6 py-2 rounded-full origin-center flex items-center leading-3 mt-3 md:mt-0;
+                        @apply  text-12 mr-4 font-medium text-white px-6 py-0 rounded-full origin-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {
@@ -282,7 +281,7 @@ onUnmounted(()=>{
                     }
 
                     h3 {
-                        @apply text-text-li text-14 font-medium line-clamp-3 md:line-clamp-1 ;
+                        @apply text-text-li text-14  font-normal md:font-medium line-clamp-3 md:line-clamp-1 overflow-hidden;
                     }
                 }
 

@@ -96,23 +96,23 @@
             </div>
         </div>
 
-        <n-drawer v-model:show="active" default-height="60vh" placement="bottom" resizable>
+        <n-drawer v-model:show="active" default-height="454px" placement="bottom" resizable>
 
-            <n-drawer-content>
+            <n-drawer-content class="screen-d">
                 <template #header>
-                    <div class="flex w-full items-center justify-between text-16 md:text-18">
+                    <div class="flex w-full items-center justify-between text-text-li text-16 md:text-18">
                         {{ $t('筛选') }}
                         <i class="okrfont text-text-tips" @click="active = false">&#xe6e5;</i>
                     </div>
                 </template>
                 <div class="flex flex-col h-full">
-                    <div v-if="userInfo == 'admin'" class="whitespace-nowrap mb-4">
+                    <div v-if="userInfo == 'admin'" class="whitespace-nowrap text-text-li mb-4">
                         {{ $t('部门') }}
                     </div>
                     <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
                         class=" h-[36px] mr-24" :placeholder="$t('全部')" />
 
-                    <div class=" whitespace-nowrap mb-4" :class="userInfo == 'admin' ? 'mt-16' : ''">
+                    <div class=" whitespace-nowrap text-text-li mb-4" :class="userInfo == 'admin' ? 'mt-16' : ''">
                         {{ $t('负责人') }}
                     </div>
                     <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="h-[36px]"
@@ -128,14 +128,14 @@
                         </template>
                     </n-select>
 
-                    <div class="mt-16 whitespace-nowrap mb-4">
+                    <div class="mt-16 whitespace-nowrap mb-4 text-text-li">
                         {{ $t('类型') }}
                     </div>
                     <n-select v-model:value="types" :options="typeList" class="h-[36px] " clearable
                         :placeholder="$t('全部')" />
 
 
-                    <div class="mt-16 whitespace-nowrap mb-4">
+                    <div class="mt-16 whitespace-nowrap mb-4 text-text-li">
                         {{ $t('时间') }}
                     </div>
                     <div v-if="showDatePickers" class="okr-date-picker-waps">
@@ -518,5 +518,10 @@ defineExpose({
 
 :deep(.n-drawer-body-content-wrapper) {
     @apply px-16 !important;
+}
+.screen-d{
+    :deep(.n-drawer-header){
+        @apply px-16;
+    }
 }
 </style>

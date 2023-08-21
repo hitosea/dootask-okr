@@ -206,7 +206,7 @@ const handleReturn = () => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg py-20 px-20;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg  px-16 py-20 md:px-20;
 
     .okr-title {
         @apply h-42 flex justify-between items-center relative mt-12 mb-14;

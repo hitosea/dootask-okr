@@ -153,6 +153,6 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .i-created-main {
-    @apply relative pt-24 flex flex-col gap-3 md:gap-4;
+    @apply relative pt-16 md:pt-24 flex flex-col gap-3 md:gap-4;
 }
 </style>

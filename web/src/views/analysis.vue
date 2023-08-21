@@ -170,6 +170,7 @@
                                             </span>
                                         </div>
                                     </div>
+                            
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
@@ -411,7 +412,7 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-okr-analysis {
-    @apply p-20 h-full w-full bg-page-bg box-border;
+    @apply px-16 py-20  md:p-20 h-full w-full bg-page-bg box-border;
 
     .page-title {
         @apply pb-16 md:pb-24 text-title-color font-medium pt-12;
@@ -425,8 +426,6 @@ nextTick(() => {
         @apply p-24;
 
         .echarts-pie {
-            height: 250px;
-
             .pie {
                 height: 150px;
                 width: 150px;
