@@ -123,7 +123,7 @@
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center mr-24">
                                     <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                        <div v-if="showUserSelect" class="relative">
+                                        <div v-if="showUserSelect && detailData.completed == '0' && detailData.canceled == '0'" class="relative">
                                             <div v-if="userInfo.userid != detailData.userid || detailData.canceled =='1'|| detailData.completed =='1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
                                             <UserSelects class=" relative z-[1]" :formkey="index" />
                                         </div>
@@ -234,7 +234,7 @@
                                     <div class="flex items-center justify-between">
                                         <div  class="flex items-center">
                                             <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
-                                                <div v-if="showUserSelect" class="relative">
+                                                <div v-if="showUserSelect && detailData.completed == '0' && detailData.canceled == '0'" class="relative">
                                                     <div v-if="userInfo.userid != detailData.userid || detailData.canceled =='1'|| detailData.completed =='1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
                                                     <UserSelects class=" relative z-[1]" :formkey="index" />
                                                 </div>
@@ -774,7 +774,6 @@ const handleCloseMarks = (type) => {
     markShow.value = false
     if (type == 1) {
         getDetail('')
-        emit('getList')
     }
 }
 
@@ -923,8 +922,7 @@ const loadUserSelects = () => {
                             title: $t('选择参与人'),
                             border: false,
                             avatarSize: 20,
-                            addIcon: item.participant.length == 0 ,
-                            // disable: userInfo.userid != detailData.value.userid || detailData.value.key_results[index].score > -1 || detailData.value.key_results[index].superior_score > -1
+                            addIcon: ((item.participant).split(',').map(h => Number(h) )).filter(value => value !== 0).length == 0 ,
                         },
                         on: {
                             "on-show-change": (show: any, values: any) => {

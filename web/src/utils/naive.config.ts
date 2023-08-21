@@ -10,6 +10,7 @@ const themeOverrides = {
             inputColor:"#F4F5F7",
             borderColor:"#F4F5F7",
             borderRadius:"4px",
+            textColor2:"#606266",
         },
         Button:{
             paddingMedium:'11px 36px',
