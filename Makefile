@@ -33,7 +33,9 @@ monitor:
 	lsof -i :5567 | grep node | awk '{print $$2}' | xargs kill -9
 	cd web && nohup npm run dev > ../output.log >&1 & cd ../ 
 	${HOME}/go/bin/fresh -c ./fresh.conf
-
+	
+translate:
+	cd web && npm run translate && cd ../
 
 # 提示 fresh: No such file or directory 时解決辦法
 # go install github.com/pilu/fresh@latest
