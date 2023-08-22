@@ -6,3 +6,4 @@ main
 /tmp/
 /public/uploads/
 .env
+output.log

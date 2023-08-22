@@ -30,7 +30,9 @@ build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go main
 
 monitor:
-	$(shell ${HOME}/go/bin/fresh -c ./fresh.conf)
+	lsof -i :5567 | grep node | awk '{print $$2}' | xargs kill -9
+	cd web && nohup npm run dev > ../output.log >&1 & cd ../ 
+	${HOME}/go/bin/fresh -c ./fresh.conf
 
 
 # 提示 fresh: No such file or directory 时解決辦法
