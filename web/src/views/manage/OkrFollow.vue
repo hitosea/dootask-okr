@@ -50,11 +50,11 @@ const resetGetList = ()=>{
 
 const getList = (type) => {
     let serstatic =  type == 'search' ? true  : false
-    if (last_page.value >= page.value || serstatic || type == 'upData') {
+    if (last_page.value >= page.value || serstatic || type == 'updata') {
         const data = {
             objective: props.searchObject,
-            page: type == 'upData' ? 1 : page.value,
-            page_size: type == 'upData' ?  page.value * 20 : 20,
+            page: type == 'updata' ? 1 : page.value,
+            page_size: type == 'updata' ?  page.value * 20 : 20,
         }
         if ( serstatic ){
             loadIng.value = true
@@ -63,7 +63,7 @@ const getList = (type) => {
         }
         getFollowList(data).then(({ data }) => {
             loadIng.value = false
-            if ( serstatic || type == 'upData') {
+            if ( serstatic || type == 'updata') {
                 list.value = data.data || []
             } else {
                 (data.data || []).map(item => {
