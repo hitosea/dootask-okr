@@ -14,7 +14,7 @@
                     <div class="text-text-li mr-8 whitespace-nowrap">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="flex-1 max-w-[225px] overflow-hidden"
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" :class="userInfo == 'admin' ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principallast_page > principalpage" quaternary
@@ -27,15 +27,17 @@
                         </template>
                     </n-select>
                 </div>
+
                 <div class="flex items-center" :class="userInfo == 'admin' ? 'flex-1' :'' ">
                     <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
-                    <div v-if="showDatePickers" class="okr-date-picker-waps max-w-[225px]">
+                    <div v-if="showDatePickers" :class="userInfo == 'admin' ? '' :'max-w-[225px] ' " class="okr-date-picker-waps ">
                         <DatePickers />
                     </div>
-                    <n-date-picker v-else class="max-w-[225px]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                    <n-date-picker v-else :class="userInfo == 'admin' ? '' :'max-w-[225px] ' " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
                 </div>
-                <n-button :loading="isloading" type="primary" size="small" class="ml-24 rounded px-16"
+                
+                <n-button :loading="isloading" type="primary" size="small" class="ml-16 rounded px-16"
                     @click="handleClick()">
                     <template #icon>
                         <i class="okrfont" v-if="!(isloading)">&#xe72a;</i>
@@ -43,7 +45,7 @@
                     {{ $t('搜索') }}
                 </n-button>
             </div>
-            <div class="flex-1 flex items-center mt-16 mb-16 md:mb-0 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
+            <div class="flex-1 flex items-center mt-16 mb-12 md:mb-0 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
                 <div class="hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 text-text-li">
                     {{ $t('类型') }}
                 </div>
@@ -96,7 +98,7 @@
             </div>
         </div>
 
-        <n-drawer v-model:show="active" default-height="454px" placement="bottom" resizable>
+        <n-drawer v-model:show="active" default-height="442px" placement="bottom" resizable>
 
             <n-drawer-content class="screen-d">
                 <template #header>
@@ -110,12 +112,12 @@
                         {{ $t('部门') }}
                     </div>
                     <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments" clearable
-                        class=" h-[36px] mr-24" :placeholder="$t('全部')" />
+                        class="mr-24" :placeholder="$t('全部')" />
 
                     <div class=" whitespace-nowrap text-text-li mb-4" :class="userInfo == 'admin' ? 'mt-16' : ''">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="h-[36px]"
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class=""
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principallast_page > principalpage" quaternary
@@ -131,7 +133,7 @@
                     <div class="mt-16 whitespace-nowrap mb-4 text-text-li">
                         {{ $t('类型') }}
                     </div>
-                    <n-select v-model:value="types" :options="typeList" class="h-[36px] " clearable
+                    <n-select v-model:value="types" :options="typeList" class="" clearable
                         :placeholder="$t('全部')" />
 
 

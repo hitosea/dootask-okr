@@ -4,7 +4,7 @@
             <PersonalStatistics ref="PersonalStatisticsRef" v-if="props.searchObject == ''"></PersonalStatistics>
             <div>
                 <OkrLoading v-if="loadIng"></OkrLoading>
-                <OkrItems :list="sortList" @upData="upData" @edit="handleEdit" @getList="resetGetList"
+                <OkrItems :list="list" @upData="upData" @edit="handleEdit" @getList="resetGetList"
                     v-if="list.length != 0 && !loadIng"></OkrItems>
                 <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :types="props.searchObject != ''">
                     <template v-slot:content v-if="props.searchObject == '' && !loadIng">
@@ -29,7 +29,6 @@ import OkrItems from '@/views/components/OkrItems.vue'
 import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
-import utils from '@/utils/utils'
 
 
 const loadIng = ref(false)
@@ -58,16 +57,7 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-const sortList = computed(()=>{
-    return list.value.sort((a,b)=>{
-        return -1;
-    }).sort((a,b)=>{
-        if( a.completed > 0 || a.canceled > 0){
-            return b.completed - a.completed
-        }
-        return -1
-    })
-})
+
 
 const emit = defineEmits(['edit', 'add'])
 

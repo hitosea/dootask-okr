@@ -15,7 +15,7 @@
                         <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="okrfont okr-title-star" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
+                        <i class="okrfont okr-title-star text-[16px]" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
                         <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="okrfont okr-title-icon text-[16px]">&#xe671;</i>

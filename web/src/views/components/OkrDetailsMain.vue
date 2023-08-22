@@ -73,19 +73,19 @@
                         </div>
 
 
-                        <div class="flex items-center">
-                            <p class="flex items-center w-[115px]">
-                                <i class="okrfont icon-item text-[#BBBBBB]">&#xe6e8;</i>
+                        <div class="flex md:items-center">
+                            <p class="flex md:items-center w-[115px]">
+                                <i class="okrfont icon-item text-[#BBBBBB] -mt-2">&#xe6e8;</i>
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('起止时间') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14 flex items-center">
+                            <p class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
                                     utils.GoDate(detailData.end_at || 0) }}</span>
-                                <template v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
-                                    <n-tag class="ml-4" v-if="within24Hours(detailData.end_at)" type="info"><i
+                                <div class="" v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
+                                    <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i
                                             class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
-                                </template>
+                                </div>
                             </p>
 
                         </div>
@@ -227,7 +227,7 @@
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg"
                                 v-for="(item, index) in detailData.key_results">
                                 <div class="flex items-center">
-                                    <h4 class=" text-title-color text-15 md:text-14 font-normal text-left break-all">{{ item.title
+                                    <h4 class=" text-text-li text-14 font-normal text-left break-all">{{ item.title
                                     }}</h4>
                                 </div>
                                 <div class="flex flex-col justify-between mt-12">

@@ -37,7 +37,7 @@
             </div>
             <n-tooltip trigger="hover" v-if="props.cancelShow">
                 <template #trigger>
-                    <i v-if="props.cancelShow" class="okrfont cursor-pointer text-text-tips ml-auto hidden md:block"
+                    <i v-if="props.cancelShow" class="okrfont cursor-pointer text-[#A7ABB5] ml-auto hidden md:block"
                         @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>
