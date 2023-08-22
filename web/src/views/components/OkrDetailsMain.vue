@@ -524,6 +524,13 @@ const handleNav = (index) => {
         replayList.value = []
         handleGetReplayList()
     }
+    if (navActive.value == 3) {
+        
+        nextTick(()=>{
+            loadUserSelects()
+        })
+
+    }
 }
 
 // 日志下一页
