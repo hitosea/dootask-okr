@@ -20,6 +20,31 @@ const utils = {
     },
 
     /**
+     * 列表排序
+     * @param value
+     */
+     listSort(list: any) {
+        let arr = list.map((h:object)=>JSON.stringify(h)).map((h:string)=>JSON.parse(h)).sort((a,b)=>{
+            if (a.canceled === 1) {
+                return 1;
+            } else if (b.canceled === 1) {
+                return -1;
+            } else if (a.completed !== 1 && a.canceled !== 1 && b.completed === 1 && b.canceled === 1) {
+                return 1;
+            } else if (a.completed === 1 && a.canceled === 1 && b.completed !== 1 && b.canceled !== 1) {
+                return -1;
+            } else if (a.completed === 1 && b.completed !== 1) {
+                return 1;
+            } else if (a.completed !== 1 && b.completed === 1 ) {
+                return -1;
+            } else {
+                return Number(utils.Date(utils.GoDateHMS(b.created_at),true)) - Number(utils.Date(utils.GoDateHMS(a.created_at),true));
+            }
+        })
+        return Array.from(new Set(arr.map((h:object)=>JSON.stringify(h)))).map((h:string)=>JSON.parse(h));
+    },
+
+    /**
      * 判断是否为空
      * @param name
      */

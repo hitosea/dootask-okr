@@ -26,9 +26,10 @@
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getMyList } from '@/api/modules/okrList'
+import { getMyList, getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
+import utils from '@/utils/utils'
 
 const loadIng = ref(false)
 const onscrolloading = ref(false)
@@ -64,12 +65,12 @@ const resetGetList = () => {
 }
 
 const getList = (type) => {
-    let serstatic = type == 'search'  ? true : false
-    if (last_page.value >= page.value || serstatic || type == 'upData') {
+    let serstatic = type == 'search' ? true : false
+    if (last_page.value >= page.value || serstatic  || type == 'updata') {
         const data = {
             objective: props.searchObject,
-            page: type == 'upData' ? 1 : page.value,
-            page_size: type == 'upData' ?  page.value * 20 : 20,
+            page: type == 'updata' ? 1 : page.value,
+            page_size: type == 'updata' ?  page.value * 20 : 20,
         }
         if (serstatic) {
             loadIng.value = true
@@ -79,7 +80,7 @@ const getList = (type) => {
         getMyList(data).then(({ data }) => {
             onscrolloading.value = false
             loadIng.value = false
-            if (serstatic || type == 'upData') {
+            if (serstatic  || type == 'updata') {
                 list.value = data.data || []
             }
             else {
@@ -106,7 +107,17 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    getList('upData')
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            getOkrDetail({id}).then(({ data }) => {
+                list.value[index] = data
+                if (props.searchObject == '') {
+                    PersonalStatisticsRef.value?.getData()
+                }
+                list.value = utils.listSort(list.value)
+            })
+        }
+    })
 }
 
 const onScroll = (e) => {

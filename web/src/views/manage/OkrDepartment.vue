@@ -166,6 +166,7 @@
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getDepartmentOkrList } from '@/api/modules/department'
+import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import { getDepartmentList } from '@/api/modules/department'
 import { getUserList } from '@/api/modules/created'
@@ -296,7 +297,7 @@ const resetGetList = () => {
 
 const getList = (type) => {
     let serstatic = type == 'search' ? true : false
-    if (last_page.value >= page.value || serstatic || type == 'upData') {
+    if (last_page.value >= page.value || serstatic || type == 'updata') {
         if (serstatic) {
             loadIng.value = true
         } else if (type == 'onscrollsearch') {
@@ -307,8 +308,8 @@ const getList = (type) => {
             department_id: departmentsvalue.value,
             end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1], 2) : '',
             objective: props.searchObject,
-            page: type == 'upData' ? 1 : page.value,
-            page_size: type == 'upData' ?  page.value * 20 : 20,
+            page: type == 'updata' ? 1 : page.value,
+            page_size: type == 'updata' ?  page.value * 20 : 20,
             start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0]) : '',
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
@@ -317,7 +318,7 @@ const getList = (type) => {
             loadIng.value = false
             isloading.value = false
             onscrolloading.value = false
-            if (serstatic || type == 'upData') {
+            if (serstatic || type == 'updata') {
                 data.data ? list.value = data.data : list.value = []
             }
             else {
@@ -395,7 +396,14 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    getList('upData')
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            getOkrDetail({id}).then(({ data }) => {
+                list.value[index] = data
+                list.value = utils.listSort(list.value)
+            })
+        }
+    })
 }
 
 

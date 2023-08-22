@@ -11,8 +11,10 @@
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getFollowList } from '@/api/modules/follow'
+import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
+import utils from '@/utils/utils'
 
 
 const emit = defineEmits(['edit'])
@@ -80,7 +82,14 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id, type) => {
-    getList('upData')
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            getOkrDetail({id}).then(({ data }) => {
+                list.value[index] = data
+                list.value = utils.listSort(list.value)
+            })
+        }
+    })
 }
 
 const onScroll = (e) => {

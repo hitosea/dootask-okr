@@ -11,8 +11,10 @@
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getParticipantList  } from '@/api/modules/participant'
+import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
+import utils from '@/utils/utils'
 
 const emit = defineEmits(['edit'])
 
@@ -48,11 +50,11 @@ const resetGetList = ()=>{
 
 const getList = (type) => {
     let serstatic =  type == 'search' ? true : false
-    if (last_page.value >= page.value || serstatic || type == 'upData') {
+    if (last_page.value >= page.value || serstatic || type == 'updata') {
         const data = {
             objective: props.searchObject,
-            page: type == 'upData' ? 1 : page.value,
-            page_size: type == 'upData' ?  page.value * 20 : 20,
+            page: type == 'updata' ? 1 : page.value,
+            page_size: type == 'updata' ?  page.value * 20 : 20,
         }
         if (serstatic){
             loadIng.value = true
@@ -61,7 +63,7 @@ const getList = (type) => {
         }
         getParticipantList(data).then(({ data }) => {
             loadIng.value = false
-            if ( serstatic || type == 'upData' ) {
+            if ( serstatic || type == 'updata' ) {
                 list.value = data.data || []
             } else {
                 (data.data || []).map(item => {
@@ -80,7 +82,14 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    getList('upData')
+    list.value.map((item, index) => {
+        if (item.id == id) {
+            getOkrDetail({id}).then(({ data }) => {
+                list.value[index] = data
+                list.value = utils.listSort(list.value)
+            })
+        }
+    })
 }
 
 const onScroll = (e) => {
