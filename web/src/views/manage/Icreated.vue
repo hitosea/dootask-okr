@@ -26,10 +26,9 @@
 <script lang="ts" setup>
 import PersonalStatistics from '@/views/components/PersonalStatistics.vue'
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getMyList, getOkrDetail } from '@/api/modules/okrList'
+import { getMyList } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
-
 
 const loadIng = ref(false)
 const onscrolloading = ref(false)
@@ -57,8 +56,6 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-
-
 const emit = defineEmits(['edit', 'add'])
 
 const resetGetList = () => {
@@ -67,12 +64,12 @@ const resetGetList = () => {
 }
 
 const getList = (type) => {
-    let serstatic = type == 'search' ? true : false
-    if (last_page.value >= page.value || serstatic) {
+    let serstatic = type == 'search'  ? true : false
+    if (last_page.value >= page.value || serstatic || type == 'upData') {
         const data = {
             objective: props.searchObject,
-            page: page.value,
-            page_size: 10,
+            page: type == 'upData' ? 1 : page.value,
+            page_size: type == 'upData' ?  page.value * 20 : 20,
         }
         if (serstatic) {
             loadIng.value = true
@@ -82,7 +79,7 @@ const getList = (type) => {
         getMyList(data).then(({ data }) => {
             onscrolloading.value = false
             loadIng.value = false
-            if (serstatic) {
+            if (serstatic || type == 'upData') {
                 list.value = data.data || []
             }
             else {
@@ -109,27 +106,7 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            const upData = {
-                id: id,
-            }
-            getOkrDetail(upData)
-                .then(({ data }) => {
-                    list.value[index] = data
-                    if (props.searchObject == '') {
-                        PersonalStatisticsRef.value?.getData()
-                    }
-                    // if(list.value[index].completed == 1 ){
-                    //     resetGetList();
-                    // }
-                })
-                .catch()
-                .finally(() => {
-
-                })
-        }
-    })
+    getList('upData')
 }
 
 const onScroll = (e) => {

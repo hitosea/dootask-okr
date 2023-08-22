@@ -2,7 +2,7 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-follow-main">
             <OkrLoading v-if="loadIng"></OkrLoading>
-            <OkrItems @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng" :list="sortList"></OkrItems>
+            <OkrItems @upData="upData" @edit="handleEdit" @getList="resetGetList" v-if="list.length != 0 && !loadIng" :list="list"></OkrItems>
             <OkrNotDatas  v-if="!loadIng && !onscrolloading && list.length == 0" :types="searchObject !=''"></OkrNotDatas>
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
         </div>
@@ -11,7 +11,6 @@
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
 import { getFollowList } from '@/api/modules/follow'
-import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import OkrLoading from '../components/OkrLoading.vue'
 
@@ -42,17 +41,6 @@ watch(() => props.searchObject, (newValue) => {
 }, { deep: true })
 
 
-const sortList = computed(()=>{
-    return list.value.sort((a,b)=>{
-        return -1;
-    }).sort((a,b)=>{
-        if( a.completed > 0 || a.canceled > 0){
-            return b.completed - a.completed
-        }
-        return -1
-    })
-})
-
 const resetGetList = ()=>{
     page.value = 1
     getList('search')
@@ -60,21 +48,20 @@ const resetGetList = ()=>{
 
 const getList = (type) => {
     let serstatic =  type == 'search' ? true  : false
-    if (last_page.value >= page.value || serstatic ) {
+    if (last_page.value >= page.value || serstatic || type == 'upData') {
         const data = {
             objective: props.searchObject,
-            page: page.value,
-            page_size: 10,
+            page: type == 'upData' ? 1 : page.value,
+            page_size: type == 'upData' ?  page.value * 20 : 20,
         }
         if ( serstatic ){
             loadIng.value = true
         }else if ( type == 'onscrollsearch' ){
             onscrolloading.value = true
         }
-        loadIng.value = true
         getFollowList(data).then(({ data }) => {
             loadIng.value = false
-            if ( serstatic ) {
+            if ( serstatic || type == 'upData') {
                 list.value = data.data || []
             } else {
                 (data.data || []).map(item => {
@@ -93,27 +80,7 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id, type) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            const upData = {
-                id: id,
-            }
-            getOkrDetail(upData)
-                .then(({ data }) => {
-                    list.value[index] = data
-                    if (type == 'FollowOkr') {
-                        list.value.map((item, index) => {
-                            if (item.id == id) {
-                                list.value.splice(index, 1)
-                            }
-                        })
-                    }
-                })
-                .catch()
-                .finally(() => {
-                })
-        }
-    })
+    getList('upData')
 }
 
 const onScroll = (e) => {

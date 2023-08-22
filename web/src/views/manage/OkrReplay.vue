@@ -108,7 +108,7 @@ const getData = (type) => {
         const data = {
             objective: props.searchObject,
             page: page.value,
-            page_size: 10,
+            page_size: 20,
         }
         if (serstatic) {
             loadIng.value = true

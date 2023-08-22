@@ -87,7 +87,7 @@
                     <div class="okr-department-main">
                         <OkrLoading v-if="loadIng"></OkrLoading>
                         <OkrItems v-if="list.length != 0 && !loadIng" @upData="upData" @edit="handleEdit"
-                            @getList="resetGetList" :list="sortList">
+                            @getList="resetGetList" :list="list">
                         </OkrItems>
                         <OkrNotDatas v-if="!loadIng && !onscrolloading && list.length == 0" :loadIng="loadIng"
                             :msg="$t('暂无OKR')" :types="searchObject != '' || loadingstatus">
@@ -168,7 +168,6 @@ import OkrItems from '@/views/components/OkrItems.vue'
 import { getDepartmentOkrList } from '@/api/modules/department'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import { getDepartmentList } from '@/api/modules/department'
-import { getOkrDetail } from '@/api/modules/okrList'
 import { getUserList } from '@/api/modules/created'
 import utils from '@/utils/utils'
 import { UserStore } from '@/store/user'
@@ -231,17 +230,6 @@ watch(() => active.value, (newValue) => {
     } else {
         unmountDatePickerApps()
     }
-})
-
-const sortList = computed(()=>{
-    return list.value.sort((a,b)=>{
-        return -1;
-    }).sort((a,b)=>{
-        if( a.completed > 0 || a.canceled > 0){
-            return b.completed - a.completed
-        }
-        return -1
-    })
 })
 
 const searchActive = computed(() => {
@@ -308,7 +296,7 @@ const resetGetList = () => {
 
 const getList = (type) => {
     let serstatic = type == 'search' ? true : false
-    if (last_page.value >= page.value || serstatic) {
+    if (last_page.value >= page.value || serstatic || type == 'upData') {
         if (serstatic) {
             loadIng.value = true
         } else if (type == 'onscrollsearch') {
@@ -319,8 +307,8 @@ const getList = (type) => {
             department_id: departmentsvalue.value,
             end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1], 2) : '',
             objective: props.searchObject,
-            page: page.value,
-            page_size: 10,
+            page: type == 'upData' ? 1 : page.value,
+            page_size: type == 'upData' ?  page.value * 20 : 20,
             start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0]) : '',
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
@@ -329,15 +317,13 @@ const getList = (type) => {
             loadIng.value = false
             isloading.value = false
             onscrolloading.value = false
-            if (serstatic) {
+            if (serstatic || type == 'upData') {
                 data.data ? list.value = data.data : list.value = []
             }
             else {
-                if (data.data) {
-                    data.data.map(item => {
-                        list.value.push(item)
-                    })
-                }
+                (data.data || []).map(item => {
+                    list.value.push(item)
+                })
             }
             last_page.value = data.last_page
         })
@@ -409,20 +395,7 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            const upData = {
-                id: id,
-            }
-            getOkrDetail(upData)
-                .then(({ data }) => {
-                    list.value[index] = data
-                })
-                .catch()
-                .finally(() => {
-                })
-        }
-    })
+    getList('upData')
 }
 
 
