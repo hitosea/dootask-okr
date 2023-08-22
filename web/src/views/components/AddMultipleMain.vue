@@ -5,13 +5,13 @@
             <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false"
                  style="--n-td-color-hover-modal:#ffffff" />
             <div class="flex flex-col md:hidden pt-24 md:pt-0" v-if="props.data">
-                <h3 class=" text-text-li text-14 font-normal flex justify-between items-center">{{ $t('目标（O）') }} <span
+                <h3 class=" text-text-li text-14 font-normal md:font-medium flex justify-between items-center">{{ $t('目标（O）') }} <span
                         class="text-primary-color">{{ props.data.progress }}%</span></h3>
                 <div
                     class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 text-14 text-text-li font-normal">
                     {{ props.data.title }}
                 </div>
-                <h3 class="mt-16 text-text-li text-14 font-medium flex justify-between items-center ">{{ $t('关键KR') }}</h3>
+                <h3 class="mt-16 text-text-li text-14 font-normal md:font-medium flex justify-between items-center ">{{ $t('关键KR') }}</h3>
                 <div v-for="(item, index) in tableData"
                     class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 ">
                     <h3 class="text-15 text-text-li font-normal"><span class="mr-8 text-12 text-[#515a6E] opacity-50">KR{{ index +
