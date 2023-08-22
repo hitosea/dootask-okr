@@ -10,7 +10,7 @@
                     :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
                     <div class="replay-item-head">
                         <div>
-                            <span class="replay-item-okr-level " :class="pStatus(item.priority)">{{
+                            <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.priority)">{{
                                 item.priority
                             }}</span>
                             <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ item.replayName }}</b></span>
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="replay-item-okr cursor-pointer" @click.stop="openOkrDetail(item.id)">
+                        <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]" @click.stop="openOkrDetail(item.id)">
                             <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
                             <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okrName }}</div>
                         </div>
@@ -197,8 +197,6 @@ onMounted(() => {
         }
 
         &-okr {
-            background: #f4f5f7;
-            padding: 6px 16px;
             @apply mt-10 h-auto flex rounded-lg items-center;
 
             &-icon {
@@ -207,7 +205,7 @@ onMounted(() => {
             }
 
             &-level {
-                @apply bg-[#FF7070] text-12  font-medium text-white px-6 py-2 rounded-full ;
+                @apply bg-[#FF7070] text-12 font-medium text-white px-6 rounded-full;
             }
         }
 

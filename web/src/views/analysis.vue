@@ -28,7 +28,7 @@
                                         <div class="legend text-center">
                                             <span>
                                                 <span class="legend-name">{{ $t('O的数量') }}: </span>
-                                                <span class=" font-medium text-12">{{ analyzeDatas.completes.total }}</span>
+                                                <span class=" font-medium text-center text-12">{{ analyzeDatas.completes.total }}</span>
                                             </span>
                                             <span>
                                                 <span class="legend-name">{{ $t('已完成O') }}:</span>
@@ -306,12 +306,14 @@ const loadScoreDistribute = () => {
                 rich: {
                     p: {
                         fontSize: 22,
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        textAlign:'center',
                     },
                     span: {
                         color: '#515A6E',
                         fontSize: 12,
                         opacity: 0.5,
+                        textAlign:'center',
                     }
                 },
                 fontSize: 20,

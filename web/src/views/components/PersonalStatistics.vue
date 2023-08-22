@@ -196,7 +196,7 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .personal-statistics {
-    @apply flex-col xl:flex-row flex gap-3 xl:gap-4 ;
+    @apply flex-col 2xl:flex-row flex gap-3 xl:gap-4 ;
 
     .p-s-box {
         @apply flex-1 bg-white rounded-lg p-16 md:px-24 md:py-30 flex;
