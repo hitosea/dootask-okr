@@ -493,13 +493,14 @@ const utils = {
         if(!time){
             return "";
         }
+        time = time.replace(/\T/g,' ').replace(/\Z/g,'')
         if( typeof time == 'number' ){
             time = utils.formatDate('Y-m-d H:i:s', time / 1000)
         }
         if( (time + '').split(" ").length == 1){
             time = time + (type == 1 ? ' 23:59:00' : ' 00:00:00')
         }else if(time.indexOf("00:00") != -1 && time.indexOf("00:00:00") == -1){
-            time = time.replace('00:00', type == 1 ? '23:59:00' : '00:00:00');
+            time = time.replace(' 00:00', type == 1 ? ' 23:59:00' : ' 00:00:00');
         }
         if((time + '').split(":").length == 2){
             time = time + ':00'

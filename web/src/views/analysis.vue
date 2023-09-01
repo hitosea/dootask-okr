@@ -255,6 +255,9 @@ const widthWindow = computed(() => {
 // OKR整体平均完成度
 const completeEcharts = ref(null);
 const loadComplete = () => {
+    if(!document.getElementById('degreeOfCompletion')){
+        return;
+    }
     let data = analyzeDatas.value.completes;
     completeEcharts.value = completeEcharts.value || echarts.init(document.getElementById('degreeOfCompletion'));
     completeEcharts.value.setOption({
@@ -291,6 +294,9 @@ const loadComplete = () => {
 // OKR整体平均完成度
 const scoreDistributeEcharts = ref(null);
 const loadScoreDistribute = () => {
+    if(!document.getElementById('scoreDistribution')){
+        return;
+    }
     let data = analyzeDatas.value.score
     scoreDistributeEcharts.value = scoreDistributeEcharts.value || echarts.init(document.getElementById('scoreDistribution'));
     scoreDistributeEcharts.value.setOption({
@@ -333,6 +339,9 @@ const loadScoreDistribute = () => {
 // OKR整体平均完成度
 const scoreScoreRate = ref(null);
 const loadScoreRate = () => {
+    if(!document.getElementById('scoreRatingRate')){
+        return;
+    }
     let data = analyzeDatas.value.scoreRate
     scoreScoreRate.value = scoreScoreRate.value || echarts.init(document.getElementById('scoreRatingRate'));
     scoreScoreRate.value.setOption({

@@ -1,14 +1,18 @@
 <template >
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id,item.userid)" v-for="(item) in props.list">
-            <n-progress class=" hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''" style="width: 52px;"
-                :color="item.canceled == '1' ? '#A7ABB5' : 'var(--primary-color)'"
-                indicator-text-color="var(--primary-color)" type="circle" :percentage="item.progress" :offset-degree="180"
-                :stroke-width="8">
-                <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span
-                        class="text-12">%</span></p>
-                <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
-            </n-progress>
+
+            <div class="okr-item-progress hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
+                <n-progress  
+                    :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'"
+                    indicator-text-color="#87D068" type="circle" :percentage="item.progress" :offset-degree="180"
+                    :stroke-width="8">
+                    <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
+                    <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
+                </n-progress> 
+            </div>
+            
+
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
@@ -337,6 +341,13 @@ onUnmounted(()=>{
             .align-target {
                 @apply items-start mt-12 text-text-tips text-12 hidden md:flex;
             }
+        }
+    }
+
+    .okr-item-progress{
+        width: 52px;
+        .n-progress--circle{
+            width: 100% !important;
         }
     }
 }

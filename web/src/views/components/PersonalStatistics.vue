@@ -100,8 +100,10 @@ const completeEcharts = ref(null);
 const scoreEcharts = ref(null);
 const loadComplete = () => {
     let data = analyzeDatas.value.okrDegreeOfCompletionAndScore
-
     // 整体完成度饼图
+    if(!document.getElementById('okrCompletedAndUncompleted')){
+        return;
+    }
     const completeness = data.completion_sum / (data.total || 1)
     completeEcharts.value = completeEcharts.value || echarts.init(document.getElementById('okrCompletedAndUncompleted'));
     completeEcharts.value.setOption({
@@ -145,6 +147,9 @@ const loadComplete = () => {
         ]
     });
     // 整体评分饼图
+    if(!document.getElementById('okrDegreeOfCompletionAndScore')){
+        return;
+    }
     const averageScore = data.score_sum / (data.score_total || 1)
     scoreEcharts.value = scoreEcharts.value || echarts.init(document.getElementById('okrDegreeOfCompletionAndScore'));
     scoreEcharts.value.setOption({

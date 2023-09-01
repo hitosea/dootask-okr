@@ -8,8 +8,13 @@ import I18n from "@/lang/index"
 
 export const routes = [
     {
+        name: "/",
+        path: '/',
+        component: Index
+    },
+    {
         name: "OkrDetails",
-        path: "/",
+        path: '/:catchAll(.*)',
         component: Main
     },
     {

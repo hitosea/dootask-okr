@@ -1,12 +1,13 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { ref } from "vue";
 import { UserStore } from "@/store/user"
 
 export const loadingBarApiRef = ref(null)
 
 export default function createDemoRouter(app, routes) {
+
     const router = createRouter({
-        history: createWebHashHistory(),
+        history: window.eventCenterForAppNameVite.appName == 'okr-details' ? createWebHistory() :  createWebHashHistory(),
         routes
     })
 

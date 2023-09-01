@@ -13,6 +13,7 @@ declare interface Window {
     systemInfo: any
     $: any
     $t: any
+    $A: any
     width: any
     height: any
     isEEUiApp: any,

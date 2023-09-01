@@ -438,6 +438,7 @@ const loadDatePickers = () => {
                             type: "daterange",
                             placement: "bottom-end",
                             confirm: true,
+                            options: {shortcuts: window.$A ? window.$A.timeOptionShortcuts() : []}
                         },
                         on: {
                             "on-change": (e: any) => {

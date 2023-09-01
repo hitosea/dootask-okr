@@ -40,10 +40,8 @@ export const GlobalStore = defineStore({
             }
         },
         openOkrDetails(id) {
-            this.okrDetail = {
-                show: true,
-                id: id
-            }
+            this.okrDetail = { show: false, id: id  }
+            this.okrDetail = { show: true, id: id }
         },
         setLoading() {
             this.isLoading++

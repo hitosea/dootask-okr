@@ -236,10 +236,16 @@ watch(() => props.edit, (newValue) => {
         formKRValue.value = utils.cloneJSON(props.editData.key_results)
         if (formValue.value.project_id == 0) formValue.value.project_id = null
         props.editData.key_results.map((item, index) => {
-            formKRValue.value[index].time = [Date.parse(item.start_at), Date.parse(item.end_at)]
+            formKRValue.value[index].time = [
+                utils.TimeHandle(item.start_at),
+                utils.TimeHandle(item.end_at,1),
+            ]
             formKRValue.value[index].participant = item.participant.split(",").map(Number)
         })
-        formValue.value.time = [Date.parse(props.editData.start_at), Date.parse(props.editData.end_at)]
+        formValue.value.time = [
+            utils.TimeHandle(props.editData.start_at),
+            utils.TimeHandle(props.editData.end_at,1),
+        ]
     }
 }, { immediate: true })
 
@@ -518,6 +524,7 @@ const loadDatePickers = () => {
                             type:"datetimerange",
                             placement: "top-end",
                             confirm: true,
+                            options: {shortcuts: window.$A ? window.$A.timeOptionShortcuts() : []}
                         },
                         on: {
                             "on-change": (value: any) => {
