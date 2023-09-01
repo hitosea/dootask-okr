@@ -7,7 +7,7 @@ export const loadingBarApiRef = ref(null)
 export default function createDemoRouter(app, routes) {
 
     const router = createRouter({
-        history: window.eventCenterForAppNameVite.appName == 'okr-details' ? createWebHistory() :  createWebHashHistory(),
+        history: window.eventCenterForAppNameVite?.appName == 'okr-details' ? createWebHistory() :  createWebHashHistory(),
         routes
     })
 
