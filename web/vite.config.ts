@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import vitePluginFileCopy from 'vite-plugin-file-copy';
 import * as path from 'path';
 
 export default defineConfig(({ command, mode }) => {
@@ -87,6 +88,10 @@ export default defineConfig(({ command, mode }) => {
                     },
                 }
             })() as any,
+            vitePluginFileCopy([{
+                src: path.resolve(__dirname, 'src/assets/styles/okrfont'),
+                dest: path.resolve(__dirname, 'dist/assets/styles/okrfont')
+            }]),
         ],
         build: {
             chunkSizeWarningLimit: 3000

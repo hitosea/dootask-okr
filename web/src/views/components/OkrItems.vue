@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="okr-time-web">
-                    <n-avatar round :size="24" :src="item.user_avatar" />
+                    <n-avatar round :size="24" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl) " />
                     <div class="flex items-center text-12">
                         <i class="okrfont text-14 mr-6">&#xe671;</i>
                         <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
@@ -111,6 +111,7 @@ import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import { GlobalStore } from '@/store'
 
+const globalStore = GlobalStore()
 const userInfo = UserStore().info
 const router = useRouter()
 const alignTargetShow = ref(false)
@@ -160,7 +161,7 @@ const pStatus = (p) => {
 const handleOpenDetail = (id,userid) => {
     if (window.innerWidth < 768) {
         router.push({
-            path: GlobalStore().baseRoute + '/okrDetails',
+            path: globalStore.baseRoute + '/okrDetails',
             query: {
                 data: id,
                 userid:userid,

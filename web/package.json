@@ -25,6 +25,7 @@
         "quill-mention-hi": "^3.1.0-1",
         "tinymce": "^5.10.7",
         "ts-node": "^10.9.1",
+        "vite-plugin-file-copy": "^1.0.0",
         "vue": "^3.2.47",
         "vue-auto-translate": "^1.1.12"
     },

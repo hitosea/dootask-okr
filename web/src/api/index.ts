@@ -5,7 +5,6 @@ import {ResultData} from "./interface/base";
 import {CODE} from "./constant";
 
 const config = {
-    baseURL: import.meta.env.VITE_API_URL as string || GlobalStore().baseUrl || '/apps/okr/api/v1' , // 所有的请求地址前缀部分
     timeout: 60000, // 请求超时时间毫秒
     withCredentials: true, // 异步请求携带cookie
     headers: {
@@ -29,8 +28,8 @@ class RequestHttp {
          */
         this.service.interceptors.request.use(
             function (config) {
-                const userInfo = JSON.parse(localStorage.getItem("UserState"))
-                config.headers.Token = userInfo?.info?.token
+                config.baseURL = GlobalStore().baseUrl + '/apps/okr/api/v1' 
+                config.headers.Token = JSON.parse(localStorage.getItem("UserState"))?.info?.token
                 config.headers.Language = localStorage.getItem("lang")
                 return config
             },
