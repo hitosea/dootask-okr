@@ -6,6 +6,7 @@ import { UserStore } from "@/store/user"
 const initGlobaStore = (data:any) => {
     const globalStore = GlobalStore()
     const userStore = UserStore()
+    globalStore.setBaseUrl(data.url)
     globalStore.setThemeName(data.theme == 'auto' ? 'light' : data.theme)
     globalStore.setLanguage(data.languages?.languageType)
     globalStore.setVues(data.vues)

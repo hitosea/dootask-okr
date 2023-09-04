@@ -10,6 +10,8 @@ export interface WsMsg {
 }
 
 export interface GlobalState {
+    baseUrl: string
+    baseRoute: string
     isLoading: number
     language: string
     themeName: string

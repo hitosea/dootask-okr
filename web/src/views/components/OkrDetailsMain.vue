@@ -673,7 +673,7 @@ const handleGetReplayList = () => {
 const handleEdit = () => {
     if (window.innerWidth < 768) {
         router.push({
-            path: '/addOkr',
+            path: globalStore.baseRoute + '/addOkr',
         })
         globalStore.$patch((state) => {
             state.okrEditData = detailData.value
@@ -868,7 +868,7 @@ const handleAddMultiple = () => {
     if (detailData.value.score < 0) return message.error($t('KR评分未完成'))
     if (window.innerWidth < 768) {
         router.push({
-            path: '/addMultiple',
+            path: globalStore.baseRoute + '/addMultiple',
         })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
@@ -889,9 +889,8 @@ const handleAddMultiple = () => {
 //查看复盘
 const handleCheckMultiple = (id) => {
     if (window.innerWidth < 768) {
-
         router.push({
-            path: '/addMultiple',
+            path: globalStore.baseRoute + '/addMultiple',
         })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value

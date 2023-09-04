@@ -1,13 +1,15 @@
 <template>
-    <h1 class="text-center mt-[12%]">欢迎使用okr子系统</h1>
-    <div class="text-center mt-[20px]">
-        <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
-        <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
-    </div>
-    <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close" @openDetail="handleOpenDetail">
-    </OkrDetailsModal>
 
-    <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
+    <div v-if="show">
+        <h1 class="text-center mt-[12%]">欢迎使用okr子系统</h1>
+        <div class="text-center mt-[20px]">
+            <router-link to="/list" class="mr-[10px]">前往Okr列表</router-link> |
+            <router-link to="/analysis" class="ml-[10px]">前往Okr汇总</router-link>
+        </div>
+    </div>
+
+    <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close" @openDetail="handleOpenDetail" />
+    <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose" />
 </template>
 
 <script lang="ts" setup>
@@ -21,10 +23,14 @@ const router = useRouter()
 const okrDetailsShow = ref(false)
 const globalStore = GlobalStore()
 
+const show = ref(false)
 const addShow = ref(false)
 const edit = ref(false)
 let editData = {}
 
+setTimeout(()=>{
+    show.value = true   
+},1000);
 
 //编辑
 const handleEdit = (data) => {
@@ -34,13 +40,12 @@ const handleEdit = (data) => {
     editData = data
 }
 
-
 // 监听打开
 watch(() => globalStore.okrDetail, (newValue) => {
     if (newValue.show) {
         if (window.innerWidth < 910) {
             router.push({
-                path: '/okrDetails',
+                path: globalStore.baseRoute + '/okrDetails',
                 query: { data: globalStore.okrDetail.id },
             })
         }
@@ -57,7 +62,7 @@ watch(() => globalStore.okrDetail, (newValue) => {
 const handleOpenDetail = (id)=>{
     if (window.innerWidth < 910) {
             router.push({
-                path: '/okrDetails',
+                path: globalStore.baseRoute + '/okrDetails',
                 query: { data: id },
             })
         }

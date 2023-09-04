@@ -1,13 +1,26 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { ref } from "vue";
 import { UserStore } from "@/store/user"
+import { GlobalStore } from "@/store"
+import Index from '../views/index.vue'
+import Main from '../views/main.vue'
 
 export const loadingBarApiRef = ref(null)
 
 export default function createDemoRouter(app, routes) {
 
+    const isDetails = window.eventCenterForAppNameVite?.appName == 'okr-details' ? true : false
+    const isElectron = !!(window && window.process && window.process?.type);
+    const isEEUiApp = window && window.navigator && /eeui/i.test(window.navigator.userAgent);
+
+    routes.push({
+        name: '/:catchAll(.*)',
+        path: '/:catchAll(.*)',
+        component: isDetails ? Main : Index
+    })
+
     const router = createRouter({
-        history: window.eventCenterForAppNameVite?.appName == 'okr-details' ? createWebHistory() :  createWebHashHistory(),
+        history: isElectron || isEEUiApp ? createWebHashHistory() :  createWebHistory(),
         routes
     })
 
@@ -27,6 +40,7 @@ export default function createDemoRouter(app, routes) {
         if(to?.meta?.title && window.eventCenterForAppNameVite?.appName == "micro-app"){
             document.title = to.meta.title
         }
+        GlobalStore().setBaseRoute(to.params?.catchAll || '')
         if (!from || to.path !== from.path) {
             if (loadingBarApiRef.value) {
                 loadingBarApiRef.value.finish()

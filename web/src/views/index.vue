@@ -71,6 +71,7 @@ import OkrDepartment from './manage/OkrDepartment.vue';
 import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
+import { GlobalStore } from '@/store'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const loadIng = ref(false)
@@ -101,16 +102,22 @@ watch(route,(newValue)=>{
 },{immediate:true})
 
 if (route.query.active == undefined) {
-    router.replace({ query: { active: tabsName.value } })
+    router.replace({ 
+        path: route.path,
+        query: { active: tabsName.value }
+    })
 } else {
-    tabsName.value = route.query.active
+    tabsName.value = route.query.active + ''
 }
 
 const changeTabs = (e) => {
     searchObject.value = ''
     searchShow.value = false
     tabsName.value = e
-    router.replace({ query: { active: e } })
+    router.replace({ 
+        path: route.path,
+        query: { active: e }
+    })
 }
 
 const reLoadList = () => {
@@ -151,7 +158,7 @@ const handleAdd = () => {
             }
             else{
                 if (window.innerWidth < 768) {
-                    router.push('/addOkr')
+                    router.push(GlobalStore().baseRoute + '/addOkr')
                 }
                 else {
                     addShow.value = true

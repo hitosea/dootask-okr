@@ -1,6 +1,9 @@
 import localforage from "localforage"
 import webTs from "./web"
+import { GlobalStore } from "@/store"
+
 localforage.config({ name: 'DooTask', storeName: 'common' })
+
 const utils = {
 
     /**
@@ -8,7 +11,7 @@ const utils = {
      * @param value
      */
     apiUrl(url: string) {
-        return window.$ && window.$.apiUrl ? window.$.apiUrl('..' + url) : url
+        return GlobalStore().baseUrl + url
     },
 
     /**

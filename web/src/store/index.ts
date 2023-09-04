@@ -5,12 +5,12 @@ import { ConfigProviderProps, createDiscreteApi, darkTheme, useOsTheme } from "n
 import { GlobalState } from "./interface"
 import piniaPersistConfig from "./config/pinia-persist"
 import { I18nGlobal } from "@/lang"
-import utils from "@/utils/utils"
-
 
 export const GlobalStore = defineStore({
     id: "GlobalState",
     state: (): GlobalState => ({
+        baseUrl: "",
+        baseRoute: "",
         isLoading: 0,
         language: "zh",
         themeName: "",
@@ -42,6 +42,14 @@ export const GlobalStore = defineStore({
         openOkrDetails(id) {
             this.okrDetail = { show: false, id: id  }
             this.okrDetail = { show: true, id: id }
+        },
+        setBaseUrl(url) {
+            this.baseUrl = url
+        },
+        setBaseRoute(route) {
+            if(route){
+                this.baseRoute = '/' + route
+            }
         },
         setLoading() {
             this.isLoading++

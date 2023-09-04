@@ -109,6 +109,7 @@ import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
 import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
+import { GlobalStore } from '@/store'
 
 const userInfo = UserStore().info
 const router = useRouter()
@@ -159,11 +160,11 @@ const pStatus = (p) => {
 const handleOpenDetail = (id,userid) => {
     if (window.innerWidth < 768) {
         router.push({
-            path: '/okrDetails',
+            path: GlobalStore().baseRoute + '/okrDetails',
             query: {
                 data: id,
                 userid:userid,
-             },
+            },
         })
     }
     else {

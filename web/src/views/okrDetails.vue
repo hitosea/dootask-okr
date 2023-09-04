@@ -46,6 +46,7 @@ if (route.query.data != undefined) {
 
 const openDetail = (Id, userId) => {
     router.replace({
+        path: route.path,
         query: {
             data: Id,
             userid: userId,

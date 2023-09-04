@@ -50,6 +50,7 @@ import * as http from "../../api/modules/replay"
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import OkrLoading from '../components/OkrLoading.vue'
 import { useRouter } from 'vue-router'
+import { GlobalStore } from '@/store'
 
 const router = useRouter()
 const addMultipleShow = ref(false)
@@ -157,7 +158,7 @@ const openOkrDetail = (id) => {
 
     if (window.innerWidth < 768) {
         router.push({
-            path: '/okrDetails',
+            path: GlobalStore().baseRoute + '/okrDetails',
             query: { data: id },
         })
     }
