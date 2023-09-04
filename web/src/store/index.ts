@@ -44,7 +44,9 @@ export const GlobalStore = defineStore({
             this.okrDetail = { show: true, id: id }
         },
         setBaseUrl(url) {
-            this.baseUrl = url
+            if(url){
+                this.baseUrl = (new URL(url)).origin
+            }
         },
         setBaseRoute(route) {
             if(route){
