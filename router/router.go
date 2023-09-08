@@ -17,6 +17,12 @@ import (
 
 func Init(c *gin.Context) {
 	common.SetGlobalContext(c)
+	//
+	c.Header("Access-Control-Allow-Origin", c.GetHeader("Origin"))
+	c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Token, X-Xsrf-Token, Language")
+	c.Header("Access-Control-Allow-Credentials", "true")
+	//
 	urlPath := strings.Replace(c.Request.URL.Path, "/microapp/okr/api/v1/", "/api/v1/", -1)
 	urlPath = strings.Replace(c.Request.URL.Path, "/manage/apps/okr/api/v1/", "/api/v1/", -1)
 	urlPath = strings.Replace(c.Request.URL.Path, "/apps/okr/api/v1/", "/api/v1/", -1)
