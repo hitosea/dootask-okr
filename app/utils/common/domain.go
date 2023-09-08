@@ -38,5 +38,5 @@ func ReplaceDomainPath(domain string, path string) string {
 	u.Scheme = ""
 	u.Hostname()
 	// 返回替换后的 URL
-	return fmt.Sprintf("%s%s", domain, u.String())
+	return fmt.Sprintf("%s/%s", domain, u.String())
 }
