@@ -496,10 +496,11 @@ const utils = {
         if(!time){
             return "";
         }
-        time = time.replace(/\T/g,' ').replace(/\Z/g,'')
+        time = time.replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,'')
         if( typeof time == 'number' ){
             time = utils.formatDate('Y-m-d H:i:s', time / 1000)
         }
+
         if( (time + '').split(" ").length == 1){
             time = time + (type == 1 ? ' 23:59:00' : ' 00:00:00')
         }else if(time.indexOf("00:00") != -1 && time.indexOf("00:00:00") == -1){
