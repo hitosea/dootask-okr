@@ -45,6 +45,9 @@ export const GlobalStore = defineStore({
         },
         setBaseUrl(url) {
             if(url){
+                if(url.indexOf('http://127.0.0.1:5567') !== -1){
+                    url = 'http://127.0.0.1:5566'
+                }
                 this.baseUrl = (new URL(url)).origin
             }
         },
