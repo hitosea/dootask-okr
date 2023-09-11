@@ -1038,11 +1038,15 @@ onBeforeUnmount(() => {
 
 // 关闭
 const closeDrawer = () => {
-    dialogWrappersApp.value && dialogWrappersApp.value.$destroy();
-    navActive.value = 0
-    detailData.value = {};
-    loadIng.value = true;
-    userSelectApps.value.forEach(app => app.$destroy())
+    dialogWrappersApp.value && (dialogWrappersApp.value.$children[0].allMsgs = []);
+    setTimeout(()=>{
+        dialogWrappersApp.value && dialogWrappersApp.value.$destroy() && (dialogWrappersApp.value = null);
+        navActive.value = 0
+        detailData.value = {};
+        loadIng.value = true;
+        userSelectApps.value.forEach(app => app.$destroy())
+    },100)
+
 }
 
 const pStatus = (p) => {
