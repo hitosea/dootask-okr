@@ -9,7 +9,7 @@
             <div class="okr-right">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
                     :class="searchShow || searchObject ? 'search-active' : ''">
-                    <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ tabsName }}</span>
+                    <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ inputName }}</span>
                     <n-input v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject"
                         :placeholder="$t('请输入目标 (O)')" />
                     <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search"></i>
@@ -109,6 +109,24 @@ if (route.query.active == undefined) {
 } else {
     tabsName.value = route.query.active + ''
 }
+
+const inputName = computed(()=>{
+    if(tabsName.value == 'MyCreated'){
+        return $t('我创建的')
+    }
+    if(tabsName.value == 'MInvolvement'){
+        return $t('我参与的')
+    }
+    if(tabsName.value == 'Departmental'){
+        return $t('部门OKR')
+    }
+    if(tabsName.value == 'MyConcerns'){
+        return $t('我关注的')
+    }
+    if(tabsName.value == 'Review'){
+        return $t('OKR复盘')
+    }
+})
 
 const changeTabs = (e) => {
     searchObject.value = ''
