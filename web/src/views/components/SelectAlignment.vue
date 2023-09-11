@@ -1,5 +1,5 @@
 <template >
-    <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear" :mask-closable="false">
+    <n-modal v-model:show="props.value" transform-origin="center" :on-after-leave="handleClear"  @after-enter="showModal" :mask-closable="false">
         <n-card
             class="max-w-[640px] w-full h-[calc(100vh-52px)] md:h-auto top-[26px] my-0 md:top-0 rounded-none rounded-t-xl md:rounded-xl"
             :bordered="false" size="huge" role="dialog" aria-modal="true">
@@ -141,6 +141,19 @@ const handleClear = () => {
     last_page.value = 999999
     page.value = 1
     searchName.value = ''
+    document.removeEventListener('keydown', handleKeydown);
+}
+
+const showModal = () => {
+    document.addEventListener('keydown', handleKeydown);
+}
+
+// ESC
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        // 执行ESC键按下时的逻辑
+        emit('close')
+    }
 }
 
 const handleClose = () => {

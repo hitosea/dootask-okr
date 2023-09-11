@@ -1,5 +1,5 @@
 <template >
-    <n-modal v-model:show="props.value" transform-origin="center" :mask-closable="false">
+    <n-modal v-model:show="props.value" transform-origin="center" :mask-closable="false"  :on-after-leave="closeDrawer" @after-enter="showDrawer">
         <n-card class="w-[640px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header>
                 {{ $t('对齐目标') }}
@@ -44,6 +44,22 @@ const handleOpenSelect = () => {
 
 const handleClose = () => {
     emit('close')
+}
+
+const closeDrawer = () => {
+    document.removeEventListener('keydown', handleKeydown);
+}
+
+const showDrawer = () => {
+    document.addEventListener('keydown', handleKeydown);
+}
+
+// ESC
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        // 执行ESC键按下时的逻辑
+        emit('close')
+    }
 }
 
 // 取消

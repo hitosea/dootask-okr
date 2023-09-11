@@ -1,6 +1,6 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" :mask-closable="false"
-        @after-leave="closeDrawer" :z-index="13" :trap-focus="false">
+        @after-leave="closeDrawer" @after-enter="showDrawer" :z-index="13" :trap-focus="false">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
             @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="()=>{  emit('getList') }" @upData="(id)=>{ emit('upData',id) }"
@@ -32,8 +32,20 @@ const props = defineProps({
 // 关闭
 const closeDrawer = () => {
     OkrDetailsMainRef.value.closeDrawer()
+    document.removeEventListener('keydown', handleKeydown);
+}
+// 打开
+const showDrawer = () => {
+    document.addEventListener('keydown', handleKeydown);
 }
 
+// ESC
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        // 执行ESC键按下时的逻辑
+        emit('close')
+    }
+}
 
 const getDetail = (type) => {
     OkrDetailsMainRef.value.getDetail(type)

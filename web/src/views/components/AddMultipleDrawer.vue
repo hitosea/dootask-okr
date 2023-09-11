@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" :z-index="13" :mask-closable="false"
+    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="13" :mask-closable="false"
         :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
@@ -36,6 +36,19 @@ const emit = defineEmits(['close'])
 
 const closeDrawer = () => {
     AddMultipleMainRef.value.closeDrawer()
+    document.removeEventListener('keydown', handleKeydown);
+}
+
+const showDrawer = () => {
+    document.addEventListener('keydown', handleKeydown);
+}
+
+// ESC
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        // 执行ESC键按下时的逻辑
+        emit('close')
+    }
 }
 
 const handleSubmit = () => {

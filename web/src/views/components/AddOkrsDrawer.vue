@@ -1,6 +1,7 @@
 <template >
-    <n-drawer v-model:show="show" @after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;" :trap-focus="false">
+    <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
+        :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
+        :trap-focus="false">
         <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
                 <div class=" flex-auto overflow-hidden">
@@ -44,13 +45,23 @@ const handleSubmit = () => {
 
 // 关闭Drawer
 const closeDrawer = () => {
-    AddOkrsRef.value.closeDrawer()
+    document.removeEventListener('keydown', handleKeydown);
 }
 
 // 显示
 const showDrawer = () => {
     AddOkrsRef.value.showDrawer()
+    document.addEventListener('keydown', handleKeydown);
 }
+
+// ESC
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        // 执行ESC键按下时的逻辑
+        AddOkrsRef.value.closeDrawer()
+    }
+}
+
 
 </script>
 <style lang="less" scoped>
