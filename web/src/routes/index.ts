@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 import { ref } from "vue";
 import { UserStore } from "@/store/user"
 import { GlobalStore } from "@/store"
-import Index from '../views/index.vue'
+import Empty from '../views/empty.vue'
 import Main from '../views/main.vue'
 
 export const loadingBarApiRef = ref(null)
@@ -16,7 +16,7 @@ export default function createDemoRouter(app, routes) {
     routes.push({
         name: '/:catchAll(.*)',
         path: '/:catchAll(.*)',
-        component: isDetails ? Main : Index
+        component: isDetails ? Main : Empty
     })
 
     const router = createRouter({
