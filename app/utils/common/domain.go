@@ -3,6 +3,7 @@ package common
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,5 +39,9 @@ func ReplaceDomainPath(domain string, path string) string {
 	u.Scheme = ""
 	u.Hostname()
 	// 返回替换后的 URL
-	return fmt.Sprintf("%s/%s", domain, u.String())
+	if strings.HasSuffix(domain, "/") || strings.HasPrefix(u.String(), "/") {
+		return fmt.Sprintf("%s%s", domain, u.String())
+	} else {
+		return fmt.Sprintf("%s/%s", domain, u.String())
+	}
 }
