@@ -46,6 +46,11 @@ const handleSubmit = () => {
 // 关闭Drawer
 const closeDrawer = () => {
     document.removeEventListener('keydown', handleKeydown);
+    // 监听浏览器关闭事件
+    window.addEventListener("beforeunload", function(event) {
+        event.preventDefault(); // 阻止默认的浏览器行为
+        event.returnValue = ""; // 设置一个空字符串，以便在现代浏览器中显示确认消息
+    });
 }
 
 // 显示
@@ -56,8 +61,8 @@ const showDrawer = () => {
 
 // ESC
 const handleKeydown = (event) => {
-    if (event.key === 'Escape') {
-        // 执行ESC键按下时的逻辑
+    if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
+        event.preventDefault(); // 阻止默认的浏览器行为
         AddOkrsRef.value.closeDrawer()
     }
 }

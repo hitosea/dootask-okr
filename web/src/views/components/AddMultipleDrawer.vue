@@ -45,8 +45,8 @@ const showDrawer = () => {
 
 // ESC
 const handleKeydown = (event) => {
-    if (event.key === 'Escape') {
-        // 执行ESC键按下时的逻辑
+    if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
+        event.preventDefault(); // 阻止默认的浏览器行为
         emit('close')
     }
 }
