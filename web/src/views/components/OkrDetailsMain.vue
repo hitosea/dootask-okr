@@ -434,7 +434,6 @@ const markId = ref(0)
 const score = ref(0)
 const superiorScore = ref(0)
 const inputShow = ref(false)
-const refreshList = ref(false)
 
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
@@ -499,7 +498,7 @@ const handleFollowOkr = () => {
     }).then(({ msg }) => {
         message.success($t('操作成功'))
         emit('upData', detailData.value.id)
-        detailData.value.is_follow = !detailData.value.is_follow
+        getDetail('')
     })
         .catch(({ msg }) => {
             message.error(msg)
@@ -708,14 +707,9 @@ const handleSchedule = (id, progress, progress_status, score) => {
 }
 
 //关闭进度
-const handleCloseDedree = (type,id,progress,progress_status) => {
+const handleCloseDedree = (type) => {
     if (type == 1) {
-        detailData.value.key_results.map((item,index)=>{
-            if(item.id == id){    
-                detailData.value.key_results[index].progress = progress
-                detailData.value.key_results[index].progress_status = progress_status
-            }
-        })
+        getDetail('')
         AlignTargetRef.value.getList()
         emit('upData', detailData.value.id)
     }
@@ -741,16 +735,12 @@ const handleConfidence = (id, confidences, score) => {
 }
 
 //关闭信心
-const handleCloseConfidenes = (type,id,confidences) => {
+const handleCloseConfidenes = (type) => {
     confidencesId.value = 0
     confidence.value = 0
     confidenceShow.value = false
     if (type == 1) {
-        detailData.value.key_results.map((item,index)=>{
-            if(item.id == id){    
-                detailData.value.key_results[index].confidence = confidences
-            }
-        })
+        getDetail('')
     }
 }
 
@@ -807,8 +797,8 @@ const handleCancel = () => {
         id: detailData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
-        detailData.value.canceled = !detailData.value.canceled
         emit('upData', detailData.value.id)
+        getDetail('')
     })
         .catch(ResultDialog)
         .finally(() => {
@@ -819,7 +809,6 @@ const handleCancel = () => {
 
 // 取消
 const handleUnalign = () => {
-    refreshList.value = true
     emit('upData', detailData.value.id)
     getDetail('')
 }
@@ -849,6 +838,7 @@ const openDetail = (id, userid) => {
 
 // 加载聊天组件
 const loadDialogWrappers = () => {
+    dialogWrappersApp.value && (dialogWrappersApp.value.$children[0].allMsgs = [])
     nextTick(() => {
         if (!window.Vues) return false;
         if(dialogWrappersApp.value){
@@ -866,7 +856,6 @@ const loadDialogWrappers = () => {
                 }, [h("div", { slot: "head" })])
             }
         });
-
     })
 }
 
@@ -1011,7 +1000,6 @@ const submitSelectAlignment = (e) => {
     alignUpdate(upData)
         .then(({ msg }) => {
             message.success($t('修改成功'))
-            refreshList.value = true
             emit('upData', detailData.value.id)
             getDetail('')
             AlignTargetRef.value.getList()
@@ -1052,13 +1040,13 @@ onBeforeUnmount(() => {
 // 关闭
 const closeDrawer = () => {
     dialogWrappersApp.value && (dialogWrappersApp.value.$children[0].allMsgs = []);
-    setTimeout(()=>{
+    nextTick(() => {
         dialogWrappersApp.value && dialogWrappersApp.value.$destroy() && (dialogWrappersApp.value = null);
         navActive.value = 0
         detailData.value = {};
         loadIng.value = true;
         userSelectApps.value.forEach(app => app.$destroy())
-    },100)
+    })
 
 }
 
@@ -1074,14 +1062,14 @@ watch(() => props.show, (newValue) => {
 
 
 watch(() => detailData.value.dialog_id, (newValue) => {
-    if (newValue ) {
+    if (newValue) {
         loadUserSelects()
-        if (window.innerWidth >= 768 && refreshList.value == false) {
+        if (window.innerWidth >= 768) {
             loadDialogWrappers()
         }
-        refreshList.value = false
     }
 }, { immediate: true })
+
 
 
 onMounted(() => {
