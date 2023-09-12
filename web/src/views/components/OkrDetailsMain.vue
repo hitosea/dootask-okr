@@ -434,6 +434,7 @@ const markId = ref(0)
 const score = ref(0)
 const superiorScore = ref(0)
 const inputShow = ref(false)
+const refreshList = ref(false)
 
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
@@ -498,6 +499,7 @@ const handleFollowOkr = () => {
     }).then(({ msg }) => {
         message.success($t('操作成功'))
         emit('upData', detailData.value.id)
+        refreshList.value = true
         getDetail('')
     })
         .catch(({ msg }) => {
@@ -510,6 +512,7 @@ const handleFollowOkr = () => {
 
 //
 const handleNav = (index) => {
+
     navActive.value = index
     if (navActive.value == 0 && window.innerWidth < 768) {
         loadDialogWrappers()
@@ -708,6 +711,7 @@ const handleSchedule = (id, progress, progress_status, score) => {
 //关闭进度
 const handleCloseDedree = (type) => {
     if (type == 1) {
+        refreshList.value = true
         getDetail('')
         AlignTargetRef.value.getList()
         emit('upData', detailData.value.id)
@@ -796,6 +800,7 @@ const handleCancel = () => {
         id: detailData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
+        refreshList.value = true
         emit('upData', detailData.value.id)
         getDetail('')
     })
@@ -808,6 +813,7 @@ const handleCancel = () => {
 
 // 取消
 const handleUnalign = () => {
+    refreshList.value = true
     emit('upData', detailData.value.id)
     getDetail('')
 }
@@ -999,6 +1005,7 @@ const submitSelectAlignment = (e) => {
     alignUpdate(upData)
         .then(({ msg }) => {
             message.success($t('修改成功'))
+            refreshList.value = true
             emit('upData', detailData.value.id)
             getDetail('')
             AlignTargetRef.value.getList()
@@ -1061,14 +1068,14 @@ watch(() => props.show, (newValue) => {
 
 
 watch(() => detailData.value.dialog_id, (newValue) => {
-    if (newValue) {
+    if (newValue && refreshList.value == false) {
         loadUserSelects()
         if (window.innerWidth >= 768) {
             loadDialogWrappers()
         }
+        refreshList.value = false
     }
 }, { immediate: true })
-
 
 
 onMounted(() => {
