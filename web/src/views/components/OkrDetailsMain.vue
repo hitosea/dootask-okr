@@ -499,8 +499,7 @@ const handleFollowOkr = () => {
     }).then(({ msg }) => {
         message.success($t('操作成功'))
         emit('upData', detailData.value.id)
-        refreshList.value = true
-        getDetail('')
+        detailData.value.is_follow = !detailData.value.is_follow
     })
         .catch(({ msg }) => {
             message.error(msg)
@@ -709,10 +708,14 @@ const handleSchedule = (id, progress, progress_status, score) => {
 }
 
 //关闭进度
-const handleCloseDedree = (type) => {
+const handleCloseDedree = (type,id,progress,progress_status) => {
     if (type == 1) {
-        refreshList.value = true
-        getDetail('')
+        detailData.value.key_results.map((item,index)=>{
+            if(item.id == id){    
+                detailData.value.key_results[index].progress = progress
+                detailData.value.key_results[index].progress_status = progress_status
+            }
+        })
         AlignTargetRef.value.getList()
         emit('upData', detailData.value.id)
     }
@@ -738,12 +741,16 @@ const handleConfidence = (id, confidences, score) => {
 }
 
 //关闭信心
-const handleCloseConfidenes = (type) => {
+const handleCloseConfidenes = (type,id,confidences) => {
     confidencesId.value = 0
     confidence.value = 0
     confidenceShow.value = false
     if (type == 1) {
-        getDetail('')
+        detailData.value.key_results.map((item,index)=>{
+            if(item.id == id){    
+                detailData.value.key_results[index].confidence = confidences
+            }
+        })
     }
 }
 
@@ -800,9 +807,8 @@ const handleCancel = () => {
         id: detailData.value.id,
     }).then(({ msg }) => {
         message.success($t('修改成功'))
-        refreshList.value = true
+        detailData.value.canceled = !detailData.value.canceled
         emit('upData', detailData.value.id)
-        getDetail('')
     })
         .catch(ResultDialog)
         .finally(() => {
@@ -1068,9 +1074,9 @@ watch(() => props.show, (newValue) => {
 
 
 watch(() => detailData.value.dialog_id, (newValue) => {
-    if (newValue && refreshList.value == false) {
+    if (newValue ) {
         loadUserSelects()
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 768 && refreshList.value == false) {
             loadDialogWrappers()
         }
         refreshList.value = false

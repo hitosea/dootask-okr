@@ -80,7 +80,7 @@ const handleSubmit = () => {
         })
         .catch(ResultDialog)
         .finally(() => {
-            emit('close',1)
+            emit('close',1,props.id,formValue.value.confidence)
             loadIng.value = false
         })
 }
