@@ -519,8 +519,7 @@ const utils = {
      * @returns {string}
      */
     GoDate(format) {
-        // 创建一个Date对象
-        const dateObj = new Date(format);
+        const dateObj = new Date((format || '').replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,''));
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
@@ -535,7 +534,7 @@ const utils = {
      * @returns {string}
      */
     GoDateHMS(format) {
-        const dateObj = new Date(format);
+        const dateObj = new Date((format || '').replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,''));
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
