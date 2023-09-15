@@ -141,20 +141,11 @@ const handleClear = () => {
     last_page.value = 999999
     page.value = 1
     searchName.value = ''
-    document.removeEventListener('keydown', handleKeydown);
 }
 
 const showModal = () => {
-    document.addEventListener('keydown', handleKeydown);
 }
 
-// ESC
-const handleKeydown = (event) => {
-    if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
-        event.preventDefault(); // 阻止默认的浏览器行为
-        emit('close')
-    }
-}
 
 const handleClose = () => {
     emit('close')

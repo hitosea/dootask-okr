@@ -8,7 +8,6 @@ import "./assets/styles/index.css"
 import directives from "@/directives/index"
 import { handleMicroData,fixBugForVueRouter4 } from "./microapp"
 
-
 window.isEEUiApp = window && window.navigator && /eeui/i.test(window.navigator.userAgent)
 
 const app = createApp(App)
@@ -17,7 +16,6 @@ app.use(route)
 app.use(I18n)
 app.use(pinia)
 app.use(directives)
-
 
 GlobalStore().init().then(() => {
     route.isReady().then(() => {
@@ -30,13 +28,13 @@ GlobalStore().init().then(() => {
     })
 })
 
-
 // 监听卸载操作
+const appNameVite = window.eventCenterForAppNameVite;
 window.addEventListener('apps-unmount', function () {
     app.unmount()
-    window.eventCenterForAppNameVite?.clearDataListener()
+    appNameVite?.clearDataListener()
 })
 window.addEventListener('unmount', function () {
     app.unmount()
-    window.eventCenterForAppNameVite?.clearDataListener()
+    appNameVite?.clearDataListener()
 })

@@ -10,6 +10,7 @@ export interface WsMsg {
 }
 
 export interface GlobalState {
+    appName: string
     baseUrl: string
     baseRoute: string
     isLoading: number
@@ -27,7 +28,8 @@ export interface GlobalState {
     addMultipleData: any
     okrEditData: any
     okrEdit: boolean
-    doubleSkip: any
+    doubleSkip: any,
+    modalList: Array<any>
 }
 
 export interface UserState {

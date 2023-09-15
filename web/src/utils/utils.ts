@@ -613,11 +613,11 @@ const utils = {
         return 0;
     },
     /**
- * 相当于 intval
- * @param str
- * @param fixed
- * @returns {number}
- */
+     * 相当于 intval
+     * @param str
+     * @param fixed
+     * @returns {number}
+     */
     runNum(str, fixed = null) {
         let _s = Number(str);
         if (_s + "" === "NaN") {
@@ -1037,7 +1037,24 @@ const utils = {
         }
     },
 
-
+    // 关闭最后的窗口
+    closeLastModel(iss=true) {
+        let is = false;
+        let closeBtnClasss = ['.n-close','.n-drawer-header__close .n-base-icon','.n-card-header__extra .n-icon'];
+        let containers = [...document.querySelectorAll('.n-modal-container,.n-drawer-container')].reverse()
+        for(let i = 0; i < containers.length; i++) {
+            if (containers[i].querySelector('.n-modal-mask') || containers[i].querySelector('.n-drawer-mask')) {
+                closeBtnClasss.forEach(c=>{
+                    if(containers[i].querySelector(c)){
+                        is = true;
+                        iss && containers[i].querySelector(c).click();
+                    }
+                });
+                break;
+            }
+        }
+        return is;
+    },
 
 }
 

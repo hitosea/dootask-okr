@@ -202,10 +202,10 @@ const webTs = {
         return text;
     },
     /**
- * 格式化时间
- * @param date
- * @returns {*|string}
- */
+     * 格式化时间
+     * @param date
+     * @returns {*|string}
+     */
     formatTime(date) {
         let now = utils.Time(),
             time = Number(utils.Date(date, true)),
@@ -278,11 +278,11 @@ const webTs = {
     },
 
     /**
- * 倒计时格式
- * @param date
- * @param nowTime
- * @returns {string|*}
- */
+     * 倒计时格式
+     * @param date
+     * @param nowTime
+     * @returns {string|*}
+     */
     countDownFormat(date, nowTime) {         
         let time = Math.round(new Date(date).getTime() / 1000) - nowTime;
         if (time < 86400 * 7 && time > 0) {

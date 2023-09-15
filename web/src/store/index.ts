@@ -9,12 +9,15 @@ import { I18nGlobal } from "@/lang"
 export const GlobalStore = defineStore({
     id: "GlobalState",
     state: (): GlobalState => ({
+        appName: "",
         baseUrl: "",
         baseRoute: "",
         isLoading: 0,
         language: "zh",
         themeName: "",
         timer: {},
+        // 
+        modalList: [],
         // 浏览器窗口方向
         windowActive: true,
         windowScrollY: 0,
@@ -38,6 +41,9 @@ export const GlobalStore = defineStore({
             if (["light", "dark"].indexOf(this.themeName) === -1) {
                 this.themeName = useOsTheme().value;
             }
+        },
+        setAppName(val) {
+            this.appName = val
         },
         openOkrDetails(id) {
             this.okrDetail = { show: false, id: id  }

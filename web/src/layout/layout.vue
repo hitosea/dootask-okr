@@ -12,6 +12,7 @@ import { useLoadingBar } from 'naive-ui'
 import { loadingBarApiRef } from "../routes";
 import { UserStore } from "../store/user";
 import { GlobalStore } from '@/store';
+import utils from '@/utils/utils';
 import AddMultipleDrawer from '@/views/components/AddMultipleDrawer.vue';
 
 const userStore = UserStore()
@@ -39,7 +40,13 @@ onMounted(() => {
     loadingBarApiRef.value = loadingBar
     loadingBar.finish()
     window.addEventListener('scroll', windowScrollListener);
+    window.addEventListener('keydown', handleKeydown);
+})
 
+
+onActivated(() => {
+    window.removeEventListener('scroll', windowScrollListener);
+    window.removeEventListener('keydown', handleKeydown);
 })
 
 const windowScrollListener = () => {
@@ -48,19 +55,13 @@ const windowScrollListener = () => {
     })
 }
 
-const otherEvents = () => {
-    // 非客户端监听窗口激活
-    const hiddenProperty = 'hidden' in document ? 'hidden' : 'webkitHidden' in document ? 'webkitHidden' : 'mozHidden' in document ? 'mozHidden' : '';
-    const visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-    document.addEventListener(visibilityChangeEvent, () => {
-        globalStore.$patch((state) => {
-            state.windowActive = !document[hiddenProperty]
-        })
-    });
+const handleKeydown = (event) => {
+    if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
+        event.preventDefault(); // 阻止默认的浏览器行为
+        utils.closeLastModel()
+    }
 }
 
-
-otherEvents()
 </script>
 <style lang="less" scoped>
 .root-layout {

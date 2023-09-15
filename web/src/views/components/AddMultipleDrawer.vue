@@ -36,19 +36,9 @@ const emit = defineEmits(['close'])
 
 const closeDrawer = () => {
     AddMultipleMainRef.value.closeDrawer()
-    document.removeEventListener('keydown', handleKeydown);
 }
 
 const showDrawer = () => {
-    document.addEventListener('keydown', handleKeydown);
-}
-
-// ESC
-const handleKeydown = (event) => {
-    if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
-        event.preventDefault(); // 阻止默认的浏览器行为
-        emit('close')
-    }
 }
 
 const handleSubmit = () => {
