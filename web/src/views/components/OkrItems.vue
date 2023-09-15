@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="okr-time-web">
-                    <n-avatar round :size="24" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl) " />
+                    <n-avatar round :size="24" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/') " />
                     <div class="flex items-center text-12">
                         <i class="okrfont text-14 mr-6">&#xe671;</i>
                         <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>

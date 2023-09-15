@@ -309,7 +309,7 @@
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList"
                             v-if="logList.length">
-                            <n-avatar round :size="28" class="mr-8 shrink-0" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl) " />
+                            <n-avatar round :size="28" class="mr-8 shrink-0" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/') " />
                             <div class="flex flex-col gap-3">
                                 <p class="text-14 leading-[16px] text-primary-color">{{ item.user_nickname }}<span
                                         class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
