@@ -35,7 +35,6 @@ watch(
     { immediate: true }
 )
 
-
 onMounted(() => {
     loadingBarApiRef.value = loadingBar
     loadingBar.finish()
@@ -43,8 +42,7 @@ onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
 })
 
-
-onActivated(() => {
+onUnmounted(() => {
     window.removeEventListener('scroll', windowScrollListener);
     window.removeEventListener('keydown', handleKeydown);
 })
@@ -57,8 +55,9 @@ const windowScrollListener = () => {
 
 const handleKeydown = (event) => {
     if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {
-        event.preventDefault(); // 阻止默认的浏览器行为
-        utils.closeLastModel()
+        if(utils.closeLastModel()){
+            event.preventDefault(); // 阻止默认的浏览器行为
+        }
     }
 }
 
