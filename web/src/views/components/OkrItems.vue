@@ -3,15 +3,15 @@
         <div class="okr-item-box" @click="handleOpenDetail(item.id,item.userid)" v-for="(item) in props.list">
 
             <div class="okr-item-progress hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
-                <n-progress  
+                <n-progress
                     :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'"
                     indicator-text-color="#87D068" type="circle" :percentage="item.progress" :offset-degree="180"
                     :stroke-width="8">
                     <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
                     <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
-                </n-progress> 
+                </n-progress>
             </div>
-            
+
 
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
@@ -218,7 +218,7 @@ const handleEdit = (data) => {
 
 //时间
 const expiresFormat = (date) => {
-    const Dates = new Date(date);
+    const Dates = new Date(utils.TimeHandle(date));
     const timestamp = Dates.getTime();
     return webTs.countDownFormat(timestamp, nowTime.value)
 }
