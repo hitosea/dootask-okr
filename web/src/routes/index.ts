@@ -29,9 +29,9 @@ export default function createDemoRouter(app, routes) {
             UserStore().setToken(to.query.token)
         }
         if (!from || to.path !== from.path) {
-            if (loadingBarApiRef.value) {
-                loadingBarApiRef.value.start()
-            }
+            // if (loadingBarApiRef.value) {
+            //     loadingBarApiRef.value.start()
+            // }
         }
         next()
     })
@@ -42,9 +42,9 @@ export default function createDemoRouter(app, routes) {
         }
         GlobalStore().setBaseRoute(to.params?.catchAll || '')
         if (!from || to.path !== from.path) {
-            if (loadingBarApiRef.value) {
-                loadingBarApiRef.value.finish()
-            }
+            // if (loadingBarApiRef.value) {
+            //     loadingBarApiRef.value.finish()
+            // }
         }
     })
 
