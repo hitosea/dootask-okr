@@ -3,6 +3,8 @@ package database
 import (
 	"dootask-okr/app/core"
 	"dootask-okr/database/migrations"
+	"dootask-okr/database/seeders"
+	"os"
 
 	"github.com/go-gormigrate/gormigrate/v2"
 )
@@ -34,6 +36,16 @@ func Init() error {
 		migrations.AddTableOkrLogRecord,
 		migrations.AddTableOkrReplayProblem,
 	})
+
+	// 演示数据
+	if os.Getenv("DEMO_DATA") == "true" {
+		seeders.SeedOkrTable()
+		seeders.SeedOkrLogTable()
+		seeders.SeedOkrFollowTable()
+		seeders.SeedOkrAlignTable()
+		seeders.SeedOkrReplayTable()
+		seeders.SeedOkrReplayHistoryTable()
+	}
 
 	if err := m.Migrate(); err != nil {
 		return err

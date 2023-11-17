@@ -1176,6 +1176,20 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 		return nil, err
 	}
 
+	// 如果会话id为空，则再次请求(兼容演示数据)
+	if obj.DialogId == 0 {
+		participant := common.ExplodeInt(",", obj.Participant, true)
+		if len(participant) > 0 {
+			dialogId, err := DootaskService.DialogOkrAdd(obj, user.Token)
+			if err != nil {
+				return nil, err
+			}
+			obj.DialogId = dialogId
+			core.DB.Save(obj)
+			go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participant) // 新增对话成员
+		}
+	}
+
 	// 仅参与人可见
 	// if !common.InArrayInt(user.Userid, common.ExplodeInt(",", obj.Participant, true)) {
 	// 	return nil, e.New(constant.ErrOkrNoViewPermission)
