@@ -2,6 +2,7 @@ package database
 
 import (
 	"dootask-okr/app/core"
+	"dootask-okr/app/model"
 	"dootask-okr/database/migrations"
 	"dootask-okr/database/seeders"
 	"os"
@@ -24,6 +25,8 @@ func Init() error {
 		db = db.Set("gorm:table_options", "CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
 	}
 
+	one := db.Migrator().HasTable(&model.Okr{})
+
 	m := gormigrate.New(db, options, []*gormigrate.Migration{
 		migrations.AddTableOkr,
 		migrations.AddTableOkrFollow,
@@ -37,18 +40,31 @@ func Init() error {
 		migrations.AddTableOkrReplayProblem,
 	})
 
-	// 演示数据
-	if os.Getenv("DEMO_DATA") == "true" {
-		seeders.SeedOkrTable()
-		seeders.SeedOkrLogTable()
-		seeders.SeedOkrFollowTable()
-		seeders.SeedOkrAlignTable()
-		seeders.SeedOkrReplayTable()
-		seeders.SeedOkrReplayHistoryTable()
-	}
-
 	if err := m.Migrate(); err != nil {
 		return err
+	}
+
+	two := db.Migrator().HasTable(&model.Okr{})
+	IsInitOkrEmpty := false
+	if !one && two {
+		IsInitOkrEmpty = true
+	}
+
+	// 演示数据
+	if os.Getenv("DEMO_DATA") == "true" && IsInitOkrEmpty {
+		if _, err := os.Stat(".cache/demo_data"); os.IsNotExist(err) {
+			seeders.SeedOkrTable()
+			seeders.SeedOkrLogTable()
+			seeders.SeedOkrFollowTable()
+			seeders.SeedOkrAlignTable()
+			seeders.SeedOkrReplayTable()
+			seeders.SeedOkrReplayHistoryTable()
+
+			_, err := os.Create(".cache/demo_data")
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
