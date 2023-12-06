@@ -2,6 +2,7 @@ package command
 
 import (
 	"dootask-okr/app/core"
+	"dootask-okr/app/job/timer"
 	"dootask-okr/app/utils/common"
 	"dootask-okr/config"
 	"dootask-okr/database"
@@ -56,6 +57,8 @@ var rootCommand = &cobra.Command{
 			common.PrintError(fmt.Sprintf("数据库初始化失败: %s", err.Error()))
 			os.Exit(1)
 		}
+		// 初始化定时任务
+		timer.InitCron()
 		//
 		common.PrintSuccess("启动成功")
 	},

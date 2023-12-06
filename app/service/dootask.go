@@ -2,6 +2,7 @@ package service
 
 import (
 	"dootask-okr/app/constant"
+	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
@@ -144,19 +145,24 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 	params["link_id"] = okr.Id
 	userids := []int{okr.Userid}
 
-	// // 当okr有部门时，添加部门负责人
-	// if okr.DepartmentId != "" {
-	// 	departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
-	// 	if len(departmentIds) > 0 {
-	// 		// 获取部门负责人userid
-	// 		var ownerids []int
-	// 		err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Pluck("owner_userid", &ownerids).Error
-	// 		if err != nil {
-	// 			return 0, err
-	// 		}
-	// 		userids = common.ArrayUniqueInt(append(userids, ownerids...))
-	// 	}
-	// }
+	// 当okr有部门时，添加部门负责人
+	if okr.DepartmentId != "" {
+		departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
+		if len(departmentIds) > 0 {
+			// 获取部门负责人userid
+			var UserDepartmentOwner []model.UserDepartment
+			var ownerids []int
+			err := core.DB.Model(&model.UserDepartment{}).Preload("OwnerUser").Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
+			if err != nil {
+				return 0, err
+			}
+			for _, v := range UserDepartmentOwner {
+				ownerids = append(ownerids, v.OwnerUser.Userid)
+				s.DialogOkrPush(okr, token, 11, []int{v.OwnerUser.Userid})
+			}
+			userids = common.ArrayUniqueInt(append(userids, ownerids...))
+		}
+	}
 
 	//
 	params["userids"] = userids
@@ -209,28 +215,45 @@ func (s dootaskService) DialogGroupDeluser(token string, dialogId int, userids [
 func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, userids []int) error {
 	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/dialog/okr/push")
 
-	oHtml := ""
-	krHtml := ""
+	var oHtml string
+	var krHtml string
+	var userNickname string
 	if okr.ParentId == 0 {
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.Id, okr.Title)
 	} else {
-		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.ParentTitle)
+		if okr.User != nil {
+			userNickname = fmt.Sprintf("<span class=\"mention okr\">#%v</span>", okr.User.Nickname)
+		} else {
+			userNickname = "<span class=\"mention okr\">#Unknown User</span>"
+		}
+		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.ParentOKr.Title)
 		krHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.Title)
 	}
 	text := ""
 	switch mold {
 	case 1:
-		text = fmt.Sprintf("您有新的OKR %v", oHtml) //创建O时（通知发起/所有KR参与人）
+		text = fmt.Sprintf("您有新的OKR %v", oHtml) // 创建O时（通知发起/所有KR参与人）
 	case 2:
-		text = fmt.Sprintf("您参与的OKR %v 目标有变动", oHtml) //O目标变动（通知此O内所有KR参与人）
+		text = fmt.Sprintf("您参与的OKR %v 目标有变动", oHtml) // O目标变动（通知此O内所有KR参与人）
 	case 3:
-		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 有变动", oHtml, krHtml) //KR变动（非删除-通知此KR所有参与人）
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 有变动", oHtml, krHtml) // KR变动（非删除-通知此KR所有参与人）
 	case 4:
-		text = fmt.Sprintf("您有新的OKR %v 中的KR %v", oHtml, krHtml) //为KR添加新参与人（仅通知新的参与人）
+		text = fmt.Sprintf("您有新的OKR %v 中的KR %v", oHtml, krHtml) // 为KR添加新参与人（仅通知新的参与人）
 	case 5:
-		text = fmt.Sprintf("您参与的OKR %v 周期已修改", oHtml) //O时间变动（通知此O内所有KR参与人）
+		text = fmt.Sprintf("您参与的OKR %v 周期已修改", oHtml) // O时间变动（通知此O内所有KR参与人）
 	case 6:
-		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 时间已修改", oHtml, krHtml) //KR时间变动（通知此KR所有参与人）
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 时间已修改", oHtml, krHtml) // KR时间变动（通知此KR所有参与人）
+	case 7:
+		text = fmt.Sprintf("您负责的OKR %v 即将超时", oHtml) // O还有一个小时到期（通知发起人）
+	case 8:
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 即将超时", oHtml, krHtml) // KR还有一个小时到期（通知此KR参与人）
+	case 9:
+		text = fmt.Sprintf("您负责的OKR %v 已经超时", oHtml) // O已超时（通知发起人）
+	case 10:
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 已经超时", oHtml, krHtml) // KR已超时（通知此KR参与人）
+	case 11:
+		text = fmt.Sprintf("您的成员 %v 有新的OKR %v", userNickname, oHtml) // 成员发起OKR（通知上级，只通知一级）
+
 	}
 	// 循环推送
 	for _, userid := range userids {

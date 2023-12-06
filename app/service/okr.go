@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -72,7 +73,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 	var participantIds []int
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(obj).Error; err != nil {
+		if err := tx.Create(obj).Preload("User").Error; err != nil {
 			return err
 		}
 
@@ -232,7 +233,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 					return err
 				}
 				// 新增kr时，发送提示消息
-				keyResult.ParentTitle = obj.Title
+				// keyResult.ParentTitle = obj.Title
 				go DootaskService.DialogOkrPush(keyResult, user.Token, 4, common.ExplodeInt(",", kr.Participant, true))
 				obj.KeyResults = append(obj.KeyResults, keyResult)
 			} else {
@@ -461,7 +462,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	}
 
 	// 父级目标标题
-	keyResult.ParentTitle = obj.Title
+	// keyResult.ParentTitle = obj.Title
 
 	oldParticipant := common.ExplodeInt(",", keyResult.Participant, true)
 	newParticipant := common.ExplodeInt(",", kr.Participant, true)
@@ -601,7 +602,7 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 // 根据id获取是关键结果的目标
 func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Where("id = ? and parent_id > 0", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("ParentOKr").Where("id = ? and parent_id > 0", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -613,7 +614,7 @@ func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 // 根据id获取目标及其关键结果
 func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("ParentOKr").Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -1616,11 +1617,11 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 
 		addDiffParticipant := common.ArrayDifferenceAddProcessing(newParticipant, oldParticipant)
 		if len(addDiffParticipant) > 0 {
-			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
-			if err != nil {
-				return nil, e.New(constant.ErrOkrNoData)
-			}
-			kr.ParentTitle = obj.Title
+			// obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			// if err != nil {
+			// 	return nil, e.New(constant.ErrOkrNoData)
+			// }
+			// kr.ParentTitle = obj.Title
 			go DootaskService.DialogGroupAdduser(user.Token, kr.DialogId, addDiffParticipant) // 新增对话成员
 			go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
 		}
@@ -2148,4 +2149,52 @@ func (s *okrService) GetDepartmentSearch(page, pageSize int) (*interfaces.Pagina
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, departments), nil
+}
+
+// 定时任务：消息通知
+func (s *okrService) OkrNotice() {
+	s.okrOExpiringNotice()
+	s.okrKRExpiringNotice()
+	s.okrOExpiredNotice()
+	s.okrKRExpiredNotice()
+}
+
+// O还有一个小时到期（通知发起人）
+func (s *okrService) okrOExpiringNotice() {
+	obj := s.getOkrObjects("completed = 0 AND canceled = 0 AND parent_id = 0 AND end_at > ? AND end_at <= ?", time.Now(), time.Now().Add(time.Hour*1))
+	for _, item := range obj {
+		go DootaskService.DialogOkrPush(item, "", 7, []int{item.Userid})
+	}
+}
+
+// KR还有一个小时到期（通知参与人）
+func (s *okrService) okrKRExpiringNotice() {
+	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at > ? AND end_at <= ?", time.Now(), time.Now().Add(time.Hour*1))
+	for _, item := range obj {
+		participantIds := common.ExplodeInt(",", item.Participant, true)
+		go DootaskService.DialogOkrPush(item, "", 8, participantIds)
+	}
+}
+
+// O已到期（通知发起人）
+func (s *okrService) okrOExpiredNotice() {
+	obj := s.getOkrObjects("completed = 0 AND canceled = 0 AND parent_id = 0 AND end_at <= ?", time.Now())
+	for _, item := range obj {
+		go DootaskService.DialogOkrPush(item, "", 9, []int{item.Userid})
+	}
+}
+
+// KR已到期（通知参与人）
+func (s *okrService) okrKRExpiredNotice() {
+	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at <= ?", time.Now())
+	for _, item := range obj {
+		participantIds := common.ExplodeInt(",", item.Participant, true)
+		go DootaskService.DialogOkrPush(item, "", 10, participantIds)
+	}
+}
+
+func (s *okrService) getOkrObjects(condition string, args ...interface{}) []*model.Okr {
+	var obj []*model.Okr
+	core.DB.Model(&model.Okr{}).Preload("ParentOKr").Where(condition, args...).Find(&obj)
+	return obj
 }

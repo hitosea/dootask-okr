@@ -40,6 +40,7 @@ type Okr struct {
 	ParentOKr      *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
+	User           *User          `gorm:"ForeignKey:Userid" json:"user,omitempty"`
 }
 
 var (
