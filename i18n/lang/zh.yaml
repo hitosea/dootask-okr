@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: 是否已完成未评分参数错误
 ErrOkrKeyResultAtLeastOne: 至少有一条关键结果
 ErrOkrKeyResultTitleEmpty: 关键结果标题不能为空
 ErrOkrKrScoreNotComplete: KR评分未完成
+ErrOkrKrTimeInvalid: KR时间需在O时间范围内
 ErrOkrNoData: 没有查询到相关数据
 ErrOkrNoDepartment: 您当前未加入任何部门，不能发起！
+ErrOkrNoPermission: 无OKR权限
 ErrOkrNoViewPermission: 当前暂无查看权限
 ErrOkrOwnerNotCancel: 仅限负责人操作
 ErrOkrOwnerNotScore: 负责人未评分

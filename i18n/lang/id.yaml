@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak di
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
 ErrOkrKeyResultTitleEmpty: Judul hasil kritis tidak bisa kosong
 ErrOkrKrScoreNotComplete: KR rating tidak lengkap
+ErrOkrKrTimeInvalid: KR waktu harus berada dalam O waktu
 ErrOkrNoData: Tak ada data relevan yang ditemukan
 ErrOkrNoDepartment: Anda saat ini tidak bergabung dengan divisi manapun, tidak bisa memulai!
+ErrOkrNoPermission: Tidak ada akses OKR
 ErrOkrNoViewPermission: Tak ada akses sementara
 ErrOkrOwnerNotCancel: Hanya orang yang bertanggung jawab
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.

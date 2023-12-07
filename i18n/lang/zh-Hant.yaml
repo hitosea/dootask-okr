@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: 是否已完成未評分參數錯誤
 ErrOkrKeyResultAtLeastOne: 至少有一條關鍵結果
 ErrOkrKeyResultTitleEmpty: 關鍵結果標題不能爲空
 ErrOkrKrScoreNotComplete: KR評分未完成
+ErrOkrKrTimeInvalid: KR時間需在O時間範圍內
 ErrOkrNoData: 沒有查詢到相關數據
 ErrOkrNoDepartment: 您當前未加入任何部門，不能發起！
+ErrOkrNoPermission: 無OKR權限
 ErrOkrNoViewPermission: 當前暫無查看權限
 ErrOkrOwnerNotCancel: 僅限負責人操作
 ErrOkrOwnerNotScore: 負責人未評分

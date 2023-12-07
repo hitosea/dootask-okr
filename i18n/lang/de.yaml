@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
 ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis
 ErrOkrKeyResultTitleEmpty: Die prioritätsergebnisse stehen nicht Leer
 ErrOkrKrScoreNotComplete: Die infrarot-analyse ist noch nicht fertig
+ErrOkrKrTimeInvalid: Die KR ist in der zone Von O * -zeit
 ErrOkrNoData: Die verwandten daten wurden nicht entwendet
 ErrOkrNoDepartment: Sie sind noch nicht aktiv in einer abteilung!
+ErrOkrNoPermission: Hier darf man sich nicht einmischen
 ErrOkrNoViewPermission: Dies kann nicht autorisiert werden
 ErrOkrOwnerNotCancel: Nur mitarbeiter
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.

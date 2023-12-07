@@ -40,7 +40,7 @@ type Okr struct {
 	ParentOKr      *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
-	User           *User          `gorm:"ForeignKey:Userid" json:"user,omitempty"`
+	User           *User          `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
 }
 
 var (
@@ -59,6 +59,8 @@ var (
 		0: "正常",
 		1: "已取消",
 	}
+	SelfScoreWeight     = 30 // 个人评分权重30
+	SuperiorScoreWeight = 70 // 上级评分权重70
 )
 
 // 获取所有部门ids

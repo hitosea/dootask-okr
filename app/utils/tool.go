@@ -9,7 +9,6 @@ import (
 
 // GetStructList 获取包下面所有结构体  pkgName 要遍历的包名  pkgPath 包的相对路径
 func GetStructList(pkgName string, pkgPath string) {
-	fmt.Println("........test")
 	//pkgName := "model" // 要遍历的包名
 	// 解析包中所有源代码文件
 	fset := token.NewFileSet()

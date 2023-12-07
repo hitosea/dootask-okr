@@ -73,12 +73,14 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 
 	var participantIds []int
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(obj).Preload("User").Error; err != nil {
+		if err := tx.Create(obj).Error; err != nil {
 			return err
 		}
 
 		// 创建对话
-		dialogId, err := DootaskService.DialogOkrAdd(obj, user.Token)
+		var objDialog *model.Okr
+		tx.Preload("User").Where("id = ?", obj.Id).First(&objDialog)
+		dialogId, err := DootaskService.DialogOkrAdd(objDialog, user.Token)
 		if err != nil {
 			return err
 		}
@@ -126,8 +128,8 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	// 创建O时（通知发起/所有KR参与人）
 	participantIds = append(participantIds, user.Userid) // 通知发起/所有KR参与人
 	if len(participantIds) > 0 {
-		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participantIds) // 新增对话成员
-		go DootaskService.DialogOkrPush(obj, user.Token, 1, participantIds)            // 推送对话消息
+		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participantIds)             // 新增对话成员
+		go DootaskService.DialogOkrPush(obj, user.Token, 1, common.ArrayUniqueInt(participantIds)) // 推送对话消息
 	}
 
 	return obj, nil
@@ -209,6 +211,33 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 				return err
 			}
 		}
+
+		// O目标变动时，发送提示消息
+		var oTitleVariation bool
+		if obj.Title != param.Title {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标标题", interfaces.OkrLogParams{
+				TitleChange: []string{obj.Title, param.Title},
+			}); err != nil {
+				return err
+			}
+			oTitleVariation = true
+		}
+
+		// O时间变动时，发送提示消息
+		var oTimeVariation bool
+		if obj.StartAt != startAt || obj.EndAt != endAt {
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标周期", interfaces.OkrLogParams{
+				TimeChange: []string{common.FormatDate2(obj.StartAt) + "~" + common.FormatDate2(obj.EndAt), common.FormatDate2(startAt) + "~" + common.FormatDate2(endAt)},
+			}); err != nil {
+				return err
+			}
+			oTimeVariation = true
+		}
+
+		obj.Title = param.Title // 标题优先赋值
+		obj.StartAt = startAt   // 开始时间优先赋值
+		obj.EndAt = endAt       // 结束时间优先赋值
+
 		obj.KeyResults = nil
 		for _, kr := range param.KeyResults {
 			// 去掉kr.Participant中的0或0,
@@ -246,36 +275,19 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 			}
 			participantIds = append(participantIds, common.ExplodeInt(",", kr.Participant, true)...)
 		}
+		participantIds = common.ArrayUniqueInt(participantIds)
 
 		// O目标变动时，发送提示消息
-		participantIds = common.ArrayUniqueInt(participantIds)
-		if obj.Title != param.Title {
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标标题", interfaces.OkrLogParams{
-				TitleChange: []string{obj.Title, param.Title},
-			}); err != nil {
-				return err
-			}
-			if len(participantIds) > 0 {
-				go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
-			}
+		if oTitleVariation && len(participantIds) > 0 {
+			go DootaskService.DialogOkrPush(obj, user.Token, 2, participantIds)
 		}
 
 		// O时间变动时，发送提示消息
-		if obj.StartAt != startAt || obj.EndAt != endAt {
-			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "修改O目标周期", interfaces.OkrLogParams{
-				TimeChange: []string{common.FormatDate2(obj.StartAt) + "~" + common.FormatDate2(obj.EndAt), common.FormatDate2(startAt) + "~" + common.FormatDate2(endAt)},
-			}); err != nil {
-				return err
-			}
-			if len(participantIds) > 0 {
-				go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
-			}
+		if oTimeVariation && len(participantIds) > 0 {
+			go DootaskService.DialogOkrPush(obj, user.Token, 5, participantIds)
 		}
 
-		obj.Title = param.Title
 		obj.Participant = common.ArrayImplode(participantIds)
-		obj.StartAt = startAt
-		obj.EndAt = endAt
 
 		// 重新计算总目标进度值
 		progress := s.CalculateProgressTx(tx, obj)
@@ -383,6 +395,11 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		return nil, e.New(constant.ErrOkrTimeFormat)
 	}
 
+	// KR时间不能大于O时间
+	if obj.StartAt.After(startAt) || obj.EndAt.Before(endAt) {
+		return nil, e.New(constant.ErrOkrKrTimeInvalid)
+	}
+
 	// 开始时间不能大于结束时间，请重新选择合适的时间段
 	if startAt.After(endAt) {
 		return nil, e.New(constant.ErrOkrTimeInvalid)
@@ -441,6 +458,11 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	endAt, err := common.ParseTime(kr.EndAt)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrTimeFormat)
+	}
+
+	// KR时间不能大于O时间
+	if obj.StartAt.After(startAt) || obj.EndAt.Before(endAt) {
+		return nil, e.New(constant.ErrOkrKrTimeInvalid)
 	}
 
 	// 开始时间不能大于结束时间，请重新选择合适的时间段
@@ -691,12 +713,12 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 	return obj
 }
 
-// KR总评分 KR评分=【自评*40%+上级评分*60%】
+// KR总评分 KR评分=【自评*30%+上级评分*70%】
 func (s *okrService) getKrScore(obj *model.Okr) float64 {
 	if obj.Score == -1 || obj.SuperiorScore == -1 {
 		return 0
 	}
-	return math.Round((obj.Score*0.4+obj.SuperiorScore*0.6)*10) / 10
+	return math.Round((obj.Score*float64(model.SelfScoreWeight/100)+obj.SuperiorScore*float64(model.SuperiorScoreWeight/100))*10) / 10
 }
 
 // O总评分 O的评分=所有KR总分之和/KR数量
@@ -1177,6 +1199,11 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 		return nil, err
 	}
 
+	// 仅负责人、参与人查看
+	if !s.hasPermission(user, obj) {
+		return nil, e.New(constant.ErrOkrNoPermission)
+	}
+
 	// 如果会话id为空，则再次请求(兼容演示数据)
 	if obj.DialogId == 0 {
 		participant := common.ExplodeInt(",", obj.Participant, true)
@@ -1190,11 +1217,6 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 			go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participant) // 新增对话成员
 		}
 	}
-
-	// 仅参与人可见
-	// if !common.InArrayInt(user.Userid, common.ExplodeInt(",", obj.Participant, true)) {
-	// 	return nil, e.New(constant.ErrOkrNoViewPermission)
-	// }
 
 	// KR总评分
 	for _, kr := range obj.KeyResults {
@@ -1210,6 +1232,29 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	s.GetObjectiveExt(objResp, obj.KeyResults, user)
 
 	return objResp, nil
+}
+
+// 是否有权限查看
+func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr) bool {
+	if user.Userid == obj.Userid || obj.VisibleRange == 1 {
+		return true
+	}
+
+	participantIds := common.ExplodeInt(",", obj.Participant, true)
+	if common.InArrayInt(user.Userid, participantIds) {
+		return true
+	}
+
+	if obj.VisibleRange == 3 {
+		departmentIds := common.ExplodeInt(",", obj.DepartmentId, true)
+		for _, deptId := range departmentIds {
+			if common.InArrayInt(deptId, user.Department) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 // 关注或取消关注目标

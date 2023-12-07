@@ -44,6 +44,8 @@ var (
 	ErrOkrNoDepartment            = "ErrOkrNoDepartment"            //您当前未加入任何部门，不能发起！
 	ErrOkrReplayLengthInvalid     = "ErrOkrReplayLengthInvalid"     //内容过长，请限制在255个字符以内
 	ErrOkrNoViewPermission        = "ErrOkrNoViewPermission"        //当前暂无查看权限
+	ErrOkrNoPermission            = "ErrOkrNoPermission"            //无OKR权限
+	ErrOkrKrTimeInvalid           = "ErrOkrKrTimeInvalid"           //KR时间需在O时间范围内
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

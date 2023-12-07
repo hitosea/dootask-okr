@@ -14,7 +14,7 @@ type UserDepartment struct {
 	CreatedAt        time.Time       `json:"created_at"`
 	UpdatedAt        time.Time       `json:"updated_at"`
 	ParentDepartment *UserDepartment `gorm:"ForeignKey:ParentId" json:"parent_department,omitempty"`
-	OwnerUser        *User           `gorm:"ForeignKey:OwnerUserid" json:"owner_user,omitempty"`
+	OwnerUser        *User           `gorm:"ForeignKey:OwnerUserid;References:Userid" json:"owner_user,omitempty"`
 }
 
 var UserDepartmentModel = UserDepartment{}

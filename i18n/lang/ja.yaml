@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: 未採点パラメータエラーが完了して�
 ErrOkrKeyResultAtLeastOne: 少なくとも1つの重要な結果があります
 ErrOkrKeyResultTitleEmpty: キー結果タイトルは空にしてはいけません。
 ErrOkrKrScoreNotComplete: KRレーティング未完了です
+ErrOkrKrTimeInvalid: KR時間はO時間範囲でなければなりません
 ErrOkrNoData: データは検索できませんでした
 ErrOkrNoDepartment: 現在、どの部門にも所属していないので、発議することはできません!
+ErrOkrNoPermission: OKRの権限はありません
 ErrOkrNoViewPermission: 当面は閲覧権限がありません。
 ErrOkrOwnerNotCancel: 担当者のみの取り扱いとなります
 ErrOkrOwnerNotScore: 担当者採点なしです

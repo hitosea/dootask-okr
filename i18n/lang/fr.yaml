@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé
 ErrOkrKeyResultTitleEmpty: Le titre des résultats clés ne peut pas être vide
 ErrOkrKrScoreNotComplete: KR score non terminé
+ErrOkrKrTimeInvalid: Temps KR doit être dans la plage de temps O
 ErrOkrNoData: Aucune donnée n’a été consultée
 ErrOkrNoDepartment: Vous n’êtes actuellement affilié à aucun département et ne pouvez pas initier!
+ErrOkrNoPermission: Aucune autorisation OKR
 ErrOkrNoViewPermission: Aucune autorisation de visionnement pour le moment
 ErrOkrOwnerNotCancel: Opération réservée aux personnes responsables
 ErrOkrOwnerNotScore: Responsable non évalué

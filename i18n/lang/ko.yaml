@@ -20,8 +20,10 @@ ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
 ErrOkrKeyResultAtLeastOne: 적어도 하나의 중요한 결과가 있습니다
 ErrOkrKeyResultTitleEmpty: 중요 결과 제목이 비어 있을 수 없습니다
 ErrOkrKrScoreNotComplete: kr 채점은 완료되지 않았다
+ErrOkrKrTimeInvalid: kr 시간은 o 시간 범위 이내여야 한다
 ErrOkrNoData: 관련 데이터를 조회하지 못했다
 ErrOkrNoDepartment: 현재 어떤 부서에 가입되어 있지 않습니다. 시작할 수 없습니다!
+ErrOkrNoPermission: okr 권한이 없음
 ErrOkrNoViewPermission: 현재 볼 수 있는 권한이 없습니다
 ErrOkrOwnerNotCancel: 책임자만 조작할수 있다
 ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다

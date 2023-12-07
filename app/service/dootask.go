@@ -218,14 +218,14 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 	var oHtml string
 	var krHtml string
 	var userNickname string
+	if okr.User != nil {
+		userNickname = fmt.Sprintf("<span class=\"mention okr\">%v</span>", okr.User.Nickname)
+	} else {
+		userNickname = "<span class=\"mention okr\">Unknown User</span>"
+	}
 	if okr.ParentId == 0 {
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.Id, okr.Title)
 	} else {
-		if okr.User != nil {
-			userNickname = fmt.Sprintf("<span class=\"mention okr\">#%v</span>", okr.User.Nickname)
-		} else {
-			userNickname = "<span class=\"mention okr\">#Unknown User</span>"
-		}
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.ParentOKr.Title)
 		krHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.Title)
 	}
