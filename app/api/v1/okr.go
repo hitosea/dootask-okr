@@ -521,3 +521,22 @@ func (api *BaseApi) OkrDepartmentSearch() {
 
 	helper.Success(api.Context, result)
 }
+
+// @Tags Okr
+// @Summary 获取/保存okr设置
+// @Description 获取/保存okr设置
+// @Accept json
+// @Param request body interfaces.OkrSettingReq true "request"
+// @Success 200 {object} interfaces.Response{data=interfaces.OkrSettingReq}
+// @Router /okr/setting [post]
+func (api *BaseApi) OkrSetting() {
+	var param = interfaces.OkrSettingReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrSettingService.OkrSetting(param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}

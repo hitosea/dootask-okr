@@ -35,6 +35,7 @@ ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrReplayCommentInvalid: kr 평가를 선택해 주세요
 ErrOkrReplayLengthInvalid: 내용이 너무 깁니다. 255 글자로 제한하십시오
 ErrOkrScoreInvalid: 별점은 0-10의 정수를 입력하십시오
+ErrOkrScoreWeightInvalid: 자체 평가 가중치와 상위 점수의 가중치를 합하면 100이 되어야 합니다
 ErrOkrScored: kr 채점 오류:{{.detail}}
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.

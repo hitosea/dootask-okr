@@ -38,6 +38,8 @@ func Init() error {
 		migrations.AddTableOkrScore,
 		migrations.AddTableOkrLogRecord,
 		migrations.AddTableOkrReplayProblem,
+		migrations.AddTableOkrSetting,
+		migrations.AddTableOkrPushLog,
 	})
 
 	if err := m.Migrate(); err != nil {

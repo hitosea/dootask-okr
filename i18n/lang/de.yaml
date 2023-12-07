@@ -35,6 +35,7 @@ ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrReplayCommentInvalid: Wählen sie die infrarot-analyse
 ErrOkrReplayLengthInvalid: Die inhalte sind zu lang und bitte auf 255 zeichen beschränkt
 ErrOkrScoreInvalid: Bitte geben sie einen ganzzahligen wert Von 0 bis 10 ein
+ErrOkrScoreWeightInvalid: Die bewertung selbst und die beurteilung der vorgesetzten müssen in relation zu 100 liegen
 ErrOkrScored: 'Die infrarot-anlage ist nicht gültig: {{.detail}}'
 ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl
 ErrOkrSuperiorScored: An die vorgesetzten.

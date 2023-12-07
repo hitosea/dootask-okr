@@ -35,6 +35,7 @@ ErrOkrProgressStatusInvalid: The progress status parameter is incorrect
 ErrOkrReplayCommentInvalid: Please select KR Review
 ErrOkrReplayLengthInvalid: The content is too long. Please limit it to 255 characters
 ErrOkrScoreInvalid: Please enter an integer ranging from 0 to 10
+ErrOkrScoreWeightInvalid: The sum of the self-rated weight and the parent rating weight must equal 100
 ErrOkrScored: 'KR has been scored and cannot operate: {{.detail}}'
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
 ErrOkrSuperiorScored: Superior rated

@@ -46,6 +46,7 @@ var (
 	ErrOkrNoViewPermission        = "ErrOkrNoViewPermission"        //当前暂无查看权限
 	ErrOkrNoPermission            = "ErrOkrNoPermission"            //无OKR权限
 	ErrOkrKrTimeInvalid           = "ErrOkrKrTimeInvalid"           //KR时间需在O时间范围内
+	ErrOkrScoreWeightInvalid      = "ErrOkrScoreWeightInvalid"      //自评权重和上级评分权重相加必须等于100
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

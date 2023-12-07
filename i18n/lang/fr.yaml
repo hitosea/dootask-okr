@@ -35,6 +35,7 @@ ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrReplayCommentInvalid: Veuillez choisir KR évaluation
 ErrOkrReplayLengthInvalid: Le contenu est trop long. Veuillez le limiter à 255 caractères
 ErrOkrScoreInvalid: Évaluation veuillez entrer un nombre entier de 0 à 10
+ErrOkrScoreWeightInvalid: La somme des pondérations d’autoévaluation et de notation supérieure doit être égale à 100
 ErrOkrScored: 'KR évalué non opérationnel: {{.detail}}'
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté

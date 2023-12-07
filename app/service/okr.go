@@ -718,7 +718,21 @@ func (s *okrService) getKrScore(obj *model.Okr) float64 {
 	if obj.Score == -1 || obj.SuperiorScore == -1 {
 		return 0
 	}
-	return math.Round((obj.Score*float64(model.SelfScoreWeight/100)+obj.SuperiorScore*float64(model.SuperiorScoreWeight/100))*10) / 10
+	selfWeight, superiorWeight := s.getScoreWeights()
+	return math.Round((obj.Score*float64(selfWeight)/100+obj.SuperiorScore*float64(superiorWeight)/100)*10) / 10
+}
+
+// 获取KR评分权重
+func (s *okrService) getScoreWeights() (selfWeight int, superiorWeight int) {
+	okr, _ := OkrSettingService.GetSetting(model.SettingOkrKey)
+	if okr != nil {
+		selfWeight = int(okr["self_score_weight"].(float64))
+		superiorWeight = int(okr["superior_score_weight"].(float64))
+	} else {
+		selfWeight = model.SelfScoreWeight
+		superiorWeight = model.SuperiorScoreWeight
+	}
+	return
 }
 
 // O总评分 O的评分=所有KR总分之和/KR数量
@@ -2238,8 +2252,35 @@ func (s *okrService) okrKRExpiredNotice() {
 	}
 }
 
+// 根据条件获取目标列表
 func (s *okrService) getOkrObjects(condition string, args ...interface{}) []*model.Okr {
 	var obj []*model.Okr
 	core.DB.Model(&model.Okr{}).Preload("ParentOKr").Where(condition, args...).Find(&obj)
 	return obj
+}
+
+// 检测是否已经推送记录并插入
+func (s *okrService) checkAndPushOkrLog(userid, okrId, noticeType int) {
+	if s.hasPushedOkrLog(userid, okrId, noticeType) {
+		return
+	}
+
+	s.insertOkrPushLog(userid, okrId, noticeType)
+}
+
+// 检测是推送记录
+func (s *okrService) hasPushedOkrLog(userid, okrId, noticeType int) bool {
+	var count int64
+	core.DB.Model(&model.OkrPushLog{}).Where("userid = ? AND okr_id = ? AND type = ?", userid, okrId, noticeType).Count(&count)
+	return count > 0
+}
+
+// 插入推送记录
+func (s *okrService) insertOkrPushLog(userid, okrId, noticeType int) {
+	log := &model.OkrPushLog{
+		Userid: userid,
+		OkrId:  okrId,
+		Type:   noticeType,
+	}
+	core.DB.Create(log)
 }

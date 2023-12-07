@@ -122,3 +122,19 @@ var AddTableOkrReplayProblem = &gormigrate.Migration{
 		return nil
 	},
 }
+
+// 新增设置表 AddTableOkrSetting
+var AddTableOkrSetting = &gormigrate.Migration{
+	ID: "2023120709-add-table-okr-setting",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&model.OkrSetting{})
+	},
+}
+
+// 新增okr发送记录表 AddTableOkrPushLog
+var AddTableOkrPushLog = &gormigrate.Migration{
+	ID: "2023120710-add-table-okr-push-log",
+	Migrate: func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&model.OkrPushLog{})
+	},
+}
