@@ -2222,6 +2222,9 @@ func (s *okrService) OkrNotice() {
 func (s *okrService) okrOExpiringNotice() {
 	obj := s.getOkrObjects("completed = 0 AND canceled = 0 AND parent_id = 0 AND end_at > ? AND end_at <= ?", time.Now(), time.Now().Add(time.Hour*1))
 	for _, item := range obj {
+		if s.checkAndPushOkrLog(item.Userid, item.Id, 1) {
+			continue
+		}
 		go DootaskService.DialogOkrPush(item, "", 7, []int{item.Userid})
 	}
 }
@@ -2231,6 +2234,9 @@ func (s *okrService) okrKRExpiringNotice() {
 	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at > ? AND end_at <= ?", time.Now(), time.Now().Add(time.Hour*1))
 	for _, item := range obj {
 		participantIds := common.ExplodeInt(",", item.Participant, true)
+		if s.checkAndPushOkrLog(item.Userid, item.Id, 1) {
+			continue
+		}
 		go DootaskService.DialogOkrPush(item, "", 8, participantIds)
 	}
 }
@@ -2239,6 +2245,9 @@ func (s *okrService) okrKRExpiringNotice() {
 func (s *okrService) okrOExpiredNotice() {
 	obj := s.getOkrObjects("completed = 0 AND canceled = 0 AND parent_id = 0 AND end_at <= ?", time.Now())
 	for _, item := range obj {
+		if s.checkAndPushOkrLog(item.Userid, item.Id, 2) {
+			continue
+		}
 		go DootaskService.DialogOkrPush(item, "", 9, []int{item.Userid})
 	}
 }
@@ -2248,6 +2257,9 @@ func (s *okrService) okrKRExpiredNotice() {
 	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at <= ?", time.Now())
 	for _, item := range obj {
 		participantIds := common.ExplodeInt(",", item.Participant, true)
+		if s.checkAndPushOkrLog(item.Userid, item.Id, 2) {
+			continue
+		}
 		go DootaskService.DialogOkrPush(item, "", 10, participantIds)
 	}
 }
@@ -2259,13 +2271,14 @@ func (s *okrService) getOkrObjects(condition string, args ...interface{}) []*mod
 	return obj
 }
 
-// 检测是否已经推送记录并插入
-func (s *okrService) checkAndPushOkrLog(userid, okrId, noticeType int) {
+// 检测是否已经推送记录并插入 noticeType 通知类型 0-okr开始提醒，1-距离到期提醒，2-到期超时提醒
+func (s *okrService) checkAndPushOkrLog(userid, okrId, noticeType int) bool {
 	if s.hasPushedOkrLog(userid, okrId, noticeType) {
-		return
+		return true
 	}
 
 	s.insertOkrPushLog(userid, okrId, noticeType)
+	return false
 }
 
 // 检测是推送记录
