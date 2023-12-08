@@ -138,3 +138,19 @@ var AddTableOkrPushLog = &gormigrate.Migration{
 		return tx.AutoMigrate(&model.OkrPushLog{})
 	},
 }
+
+// 更改okr表 新增1.1版本需求字段 AddTableOkr11Version
+var AddTableOkr11Version = &gormigrate.Migration{
+	ID: "2023120811-add-table-okr-11version",
+	Migrate: func(tx *gorm.DB) error {
+		columns := []string{"score_num", "status", "archive_userid", "archive_at"}
+		for _, column := range columns {
+			if !tx.Migrator().HasColumn(&model.Okr{}, column) {
+				if err := tx.Migrator().AddColumn(&model.Okr{}, column); err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	},
+}

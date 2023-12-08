@@ -11,6 +11,8 @@ ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postf
 ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
 ErrMailToInvalid: Bitte geben sie die richtige adresse ein
 ErrNoPermission: Begrenzter zugang.
+ErrOkrArchiveStatusInvalid: Fehler im archiv
+ErrOkrArchiveStatusNotCompleted: Wenn die akte erstellt wurde Oder abgesagt wurde, kann OKR
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
 ErrOkrCanceled: O ziel nicht betriebsbereit
 ErrOkrCompleted: O ziel nicht erreichbar

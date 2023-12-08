@@ -11,6 +11,8 @@ ErrMailContentReject: 邮件内容被拒绝，请检查邮箱是否开启接收�
 ErrMailNotConfig: 发送邮箱未配置
 ErrMailToInvalid: 请输入正确的收件人地址
 ErrNoPermission: 权限不足
+ErrOkrArchiveStatusInvalid: 归档状态错误
+ErrOkrArchiveStatusNotCompleted: 已完成或已取消的OKR才能归档
 ErrOkrAscriptionInvalid: 目标归属参数错误
 ErrOkrCanceled: O目标已取消无法操作
 ErrOkrCompleted: O目标已完成无法操作

@@ -11,6 +11,8 @@ ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre
 ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
 ErrNoPermission: Manque de pouvoirs
+ErrOkrArchiveStatusInvalid: Erreur dans l’état des archives
+ErrOkrArchiveStatusNotCompleted: OKR terminé ou annulé avant de déposer
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
 ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel

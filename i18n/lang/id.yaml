@@ -11,6 +11,8 @@ ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan unt
 ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
 ErrNoPermission: Tidak cukup izin
+ErrOkrArchiveStatusInvalid: Kesalahan pengarsipan
+ErrOkrArchiveStatusNotCompleted: OKR baru bisa diajukan jika sudah selesai atau dibatalkan
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
 ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai

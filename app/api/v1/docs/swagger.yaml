@@ -10,6 +10,10 @@ definitions:
       align_objective:
         description: 对齐目标
         type: string
+      archive_at:
+        type: string
+      archive_userid:
+        type: integer
       ascription:
         type: integer
       canceled:
@@ -58,8 +62,12 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_num:
+        type: integer
       start_at:
         type: string
+      status:
+        type: integer
       superior_score:
         description: 上级评分
         type: number
@@ -311,6 +319,10 @@ definitions:
         items:
           type: integer
         type: array
+      archive_at:
+        type: string
+      archive_userid:
+        type: integer
       ascription:
         type: integer
       canceled:
@@ -365,8 +377,12 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_num:
+        type: integer
       start_at:
         type: string
+      status:
+        type: integer
       superior_score:
         description: 上级评分
         type: number
@@ -480,6 +496,10 @@ definitions:
     type: object
   model.Okr:
     properties:
+      archive_at:
+        type: string
+      archive_userid:
+        type: integer
       ascription:
         type: integer
       canceled:
@@ -525,8 +545,12 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_num:
+        type: integer
       start_at:
         type: string
+      status:
+        type: integer
       superior_score:
         description: 上级评分
         type: number
@@ -980,6 +1004,82 @@ paths:
       summary: OKR评分分布
       tags:
       - OkrAnalyze
+  /okr/archive:
+    get:
+      consumes:
+      - application/json
+      description: OKR归档目标
+      parameters:
+      - description: okr id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: OKR归档目标
+      tags:
+      - Okr
+  /okr/archive/list:
+    get:
+      consumes:
+      - application/json
+      description: OKR归档列表
+      parameters:
+      - description: 目标（O）
+        in: query
+        name: objective
+        type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.Okr'
+                        type: array
+                    type: object
+              type: object
+      summary: OKR归档列表
+      tags:
+      - Okr
+  /okr/archive/restore:
+    get:
+      consumes:
+      - application/json
+      description: OKR还原归档目标
+      parameters:
+      - description: okr id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: OKR还原归档目标
+      tags:
+      - Okr
   /okr/cancel:
     get:
       consumes:
@@ -1055,6 +1155,25 @@ paths:
                   $ref: '#/definitions/model.Okr'
               type: object
       summary: 创建OKR
+      tags:
+      - Okr
+  /okr/delete:
+    get:
+      consumes:
+      - application/json
+      description: 删除OKR
+      parameters:
+      - description: okr id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 删除OKR
       tags:
       - Okr
   /okr/department/list:
@@ -1237,6 +1356,71 @@ paths:
                     type: object
               type: object
       summary: 获取关注的OKR列表
+      tags:
+      - Okr
+  /okr/leave/list:
+    get:
+      consumes:
+      - application/json
+      description: 离职/删除人员OKR列表
+      parameters:
+      - description: 目标（O）
+        in: query
+        name: objective
+        type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.Okr'
+                        type: array
+                    type: object
+              type: object
+      summary: 离职/删除人员OKR列表
+      tags:
+      - Okr
+  /okr/leave/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新离职/删除人员OKR负责人
+      parameters:
+      - collectionFormat: csv
+        description: okr ids
+        in: formData
+        items:
+          type: integer
+        name: okr_ids
+        required: true
+        type: array
+      - description: 新负责人id
+        in: formData
+        name: userid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.Response'
+      summary: 更新离职/删除人员OKR负责人
       tags:
       - Okr
   /okr/log/list:

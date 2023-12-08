@@ -11,6 +11,8 @@ ErrMailContentReject: The email content is rejected. Please check whether the re
 ErrMailNotConfig: The sending mailbox is not configured
 ErrMailToInvalid: Please enter the correct recipient address
 ErrNoPermission: Insufficient authority
+ErrOkrArchiveStatusInvalid: Archive status error
+ErrOkrArchiveStatusNotCompleted: Only completed or cancelled OKRs can be archived
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
 ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated

@@ -11,6 +11,8 @@ ErrMailContentReject: 전자메일 내용이 거부되었습니다. 메일함의
 ErrMailNotConfig: 보내는 편지함이 설정되지 않았습니다
 ErrMailToInvalid: 정확한 수취인 주소를 입력해 주세요
 ErrNoPermission: 권한이 부족합니다.
+ErrOkrArchiveStatusInvalid: 압축 파일 상태 오류
+ErrOkrArchiveStatusNotCompleted: 완료되었거나 취소된 okr만 압축 가능합니다
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
 ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
 ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다

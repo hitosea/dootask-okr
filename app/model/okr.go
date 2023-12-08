@@ -31,6 +31,10 @@ type Okr struct {
 	Confidence     int            `gorm:"default:0;comment:信心指数0-100" json:"confidence"`
 	Score          float64        `gorm:"default:-1;comment:个人评分" json:"score"`          // 个人评分和O总评分
 	SuperiorScore  float64        `gorm:"default:-1;comment:上级评分" json:"superior_score"` // 上级评分
+	ScoreNum       int            `gorm:"default:0;comment:评分次数" json:"score_num"`
+	Status         int            `gorm:"default:0;comment:状态 0-正常 1-已归档 2-人员离职/删除" json:"status"`
+	ArchiveUserid  int            `gorm:"default:0;comment:归档人员Id" json:"archive_userid"`
+	ArchiveAt      *time.Time     `gorm:"comment:归档时间" json:"archive_at"`
 	StartAt        time.Time      `gorm:"comment:开始时间" json:"start_at"`
 	EndAt          time.Time      `gorm:"comment:结束时间" json:"end_at"`
 	CreatedAt      time.Time      `gorm:"autoCreateTime;comment:创建时间" json:"created_at"`

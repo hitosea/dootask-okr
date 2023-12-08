@@ -412,6 +412,131 @@ const docTemplate = `{
                 }
             }
         },
+        "/okr/archive": {
+            "get": {
+                "description": "OKR归档目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR归档目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/archive/list": {
+            "get": {
+                "description": "OKR归档列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR归档列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "目标（O）",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.Okr"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/archive/restore": {
+            "get": {
+                "description": "OKR还原归档目标",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR还原归档目标",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/okr/cancel": {
             "get": {
                 "description": "取消/重启目标",
@@ -538,6 +663,35 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/delete": {
+            "get": {
+                "description": "删除OKR",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "删除OKR",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
                         }
                     }
                 }
@@ -851,6 +1005,113 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/leave/list": {
+            "get": {
+                "description": "离职/删除人员OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "离职/删除人员OKR列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "目标（O）",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.Okr"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/leave/update": {
+            "post": {
+                "description": "更新离职/删除人员OKR负责人",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新离职/删除人员OKR负责人",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "okr ids",
+                        "name": "okr_ids",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "新负责人id",
+                        "name": "userid",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.Response"
                         }
                     }
                 }
@@ -1720,6 +1981,12 @@ const docTemplate = `{
                     "description": "对齐目标",
                     "type": "string"
                 },
+                "archive_at": {
+                    "type": "string"
+                },
+                "archive_userid": {
+                    "type": "integer"
+                },
                 "ascription": {
                     "type": "integer"
                 },
@@ -1790,8 +2057,14 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_num": {
+                    "type": "integer"
+                },
                 "start_at": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 },
                 "superior_score": {
                     "description": "上级评分",
@@ -2140,6 +2413,12 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
+                "archive_at": {
+                    "type": "string"
+                },
+                "archive_userid": {
+                    "type": "integer"
+                },
                 "ascription": {
                     "type": "integer"
                 },
@@ -2218,8 +2497,14 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_num": {
+                    "type": "integer"
+                },
                 "start_at": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 },
                 "superior_score": {
                     "description": "上级评分",
@@ -2377,6 +2662,12 @@ const docTemplate = `{
         "model.Okr": {
             "type": "object",
             "properties": {
+                "archive_at": {
+                    "type": "string"
+                },
+                "archive_userid": {
+                    "type": "integer"
+                },
                 "ascription": {
                     "type": "integer"
                 },
@@ -2443,8 +2734,14 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_num": {
+                    "type": "integer"
+                },
                 "start_at": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 },
                 "superior_score": {
                     "description": "上级评分",

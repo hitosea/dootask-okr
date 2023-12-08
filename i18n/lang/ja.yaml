@@ -11,6 +11,8 @@ ErrMailContentReject: メールの内容が拒否された場合、受信機能�
 ErrMailNotConfig: 送信メールアドレス未設定です。
 ErrMailToInvalid: 正しい宛先を入力願います。
 ErrNoPermission: 権限が足りません。
+ErrOkrArchiveStatusInvalid: ファイリングエラーです。
+ErrOkrArchiveStatusNotCompleted: 完了したOKR、またはキャンセルしたOKRのみ保存できます。
 ErrOkrAscriptionInvalid: ターゲット・ホーム・パラメータ・エラー
 ErrOkrCanceled: ターゲットOキャンセル操作不能です
 ErrOkrCompleted: O標的完了操作不能です
