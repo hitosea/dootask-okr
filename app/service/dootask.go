@@ -10,6 +10,7 @@ import (
 	"dootask-okr/config"
 	"encoding/json"
 	"net/url"
+	"os"
 
 	"fmt"
 	"time"
@@ -259,6 +260,7 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 		params := map[string]interface{}{
 			"text":   text,
 			"userid": userid,
+			"key":    os.Getenv("KEY"),
 		}
 		_, err := s.client.PostToken(url, params, token)
 		if err != nil {
