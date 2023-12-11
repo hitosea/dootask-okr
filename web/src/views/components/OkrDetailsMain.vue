@@ -1050,7 +1050,7 @@ const colorStatus = (color) => {
 // 新窗口打开
 const openNewWin = () => {
     globalStore.electron.sendMessage('windowRouter', {
-        name: `okr-detail`,
+        name: `okr-detail-${props.id}`,
         path: `single/apps/okr/okrDetails?id=${props.id}`,
         force: false,
         config: {
