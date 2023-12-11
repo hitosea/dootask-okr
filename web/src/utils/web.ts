@@ -38,10 +38,10 @@ const webTs = {
     },
 
     /**
- * 返回对话未读数量（不含免打扰，但如果免打扰中有@则返回@数量）
- * @param dialog
- * @returns {*|number}
- */
+     * 返回对话未读数量（不含免打扰，但如果免打扰中有@则返回@数量）
+     * @param dialog
+     * @returns {*|number}
+     */
     getDialogNum(dialog) {
         if (!dialog) {
             return 0
@@ -121,10 +121,10 @@ const webTs = {
         return text
     },
     /**
- * 消息简单描述
- * @param data
- * @returns {string|*}
- */
+     * 消息简单描述
+     * @param data
+     * @returns {string|*}
+     */
     getMsgSimpleDesc(data) {
         if (utils.isJson(data)) {
             switch (data.type) {
@@ -283,7 +283,7 @@ const webTs = {
      * @param nowTime
      * @returns {string|*}
      */
-    countDownFormat(date, nowTime) {         
+    countDownFormat(date, nowTime) {
         let time = Math.round(new Date(date).getTime() / 1000) - nowTime;
         if (time < 86400 * 7 && time > 0) {
             return webTs.formatSeconds(time);

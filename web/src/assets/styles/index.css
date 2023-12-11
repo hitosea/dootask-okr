@@ -48,10 +48,28 @@
 }
 .okr-nav-back .okrfont{
     font-size: 26px;
-} 
+}
 .okr-nav-back.portrait{
     display: none;
-} 
+}
 body.window-portrait .okr-nav-back{
     display: block;
+}
+.electron-single-micro-apps .okr-nav-back{
+    display: none;
+}
+
+
+/* 全局更多下拉样式 */
+.okr-more-button-popover.n-popover{
+    @apply overflow-hidden rounded;
+}
+.okr-more-button-popover.n-popover .n-popover__content{
+    @apply bg-white py-4;
+}
+.okr-more-button-popover.n-popover .n-popover__content p{
+    @apply py-8 px-16 cursor-pointer;
+}
+.okr-more-button-popover.n-popover .n-popover__content p:hover{
+    background: #F4F5F7;
 }

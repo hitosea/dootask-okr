@@ -1,23 +1,41 @@
 <template >
-    <div class="page-okr">
+    <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
             <div class="flex items-center">
                 <div class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
-                <h2 :class="searchShow ? 'title-active' : ''">{{ $t('OKR管理') }}</h2>
+                <h2 :class="searchShow ? 'title-active' : ''">{{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
             <div class="okr-right">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
                     :class="searchShow || searchObject ? 'search-active' : ''">
                     <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ inputName }}</span>
-                    <n-input v-show="searchShow || searchObject" class="border-none" clearable v-model:value="searchObject"
-                        :placeholder="$t('请输入目标 (O)')" />
-                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-ios-search"></i>
+                    <n-input
+                        v-show="searchShow || searchObject"
+                        v-model:value="searchObject"
+                        class="border-none"
+                        clearable
+                        :placeholder="$t('请输入目标 (O)')"/>
+                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
                 </div>
                 <div class="add-button" type="tertiary" @click="handleAdd">
-                    <i v-if="APP_BASE_APPLICATION" class="menu-icon ivu-icon ivu-icon-md-add"></i>
+                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-md-add"></i>
                     <i v-else class="okrfont">&#xe6f2;</i>
+                </div>
+                <div class="more-button" type="tertiary" @click="moreButtonPopoverShow = true">
+                    <n-popover class="okr-more-button-popover" :show="moreButtonPopoverShow" @clickoutside="moreButtonPopoverShow = false" placement="bottom" :z-index="modalTransferIndex()" trigger="click" raw :show-arrow="true">
+                        <template #trigger>
+                            <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-more font-bold"></i>
+                            <i v-else class="okrfont">&#xe6f2;</i>
+                        </template>
+                        <div class="flex flex-col">
+                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p> {{ $t('已归档OKR') }}</p>
+                            <p> {{ $t('离职/删除人员OKR') }}</p>
+                            <p> {{ $t('设置') }}</p>
+                        </div>
+                    </n-popover>
                 </div>
             </div>
         </div>
@@ -25,30 +43,27 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的')" name="MyCreated">
                     <div class="okr-scrollbar">
-                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd">
-                        </Icreated>
+                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('我参与的')" name="MInvolvement">
                     <div class="okr-scrollbar">
-                        <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit">
-                        </OkrParticipant>
+                        <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('部门OKR')" name="Departmental">
                     <div class="okr-scrollbar">
-                        <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit">
-                        </OkrDepartment>
+                        <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('我关注的')" name="MyConcerns">
                     <div class="okr-scrollbar">
-                        <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"></OkrFollow>
+                        <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('OKR复盘')" name="Review">
                     <div class="okr-scrollbar">
-                        <OkrReplay ref="OkrReplayRef" :searchObject="searchObject" @edit="handleEdit"></OkrReplay>
+                        <OkrReplay ref="OkrReplayRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
             </n-tabs>
@@ -74,9 +89,13 @@ import { getUserInfo } from '@/api/modules/user'
 import { GlobalStore } from '@/store'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') ? 1 : 0  )
+const pageTitle = ref("OKR管理")
+const globalStore = GlobalStore()
 const loadIng = ref(false)
 const router = useRouter()
 const route = useRoute()
+const pageOkrRef = ref(null)
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
 const OkrDepartmentRef = ref(null)
@@ -84,14 +103,18 @@ const OkrFollowRef = ref(null)
 const OkrReplayRef = ref(null)
 
 const addShow = ref(false)
+const moreButtonPopoverShow = ref(false)
 const edit = ref(false)
-let editData = {}
 const searchObject = ref('')
 const searchShow = ref(false)
 const tabsName = ref('MyCreated')
 
 const showModal = ref(false)
 const tipsContent = ref('')
+
+
+let editData = {}
+
 
 watch(route,(newValue)=>{
     nextTick(()=>{
@@ -102,7 +125,7 @@ watch(route,(newValue)=>{
 },{immediate:true})
 
 if (route.query.active == undefined) {
-    router.replace({ 
+    router.replace({
         path: route.path,
         query: { active: tabsName.value }
     })
@@ -132,7 +155,7 @@ const changeTabs = (e) => {
     searchObject.value = ''
     searchShow.value = false
     tabsName.value = e
-    router.replace({ 
+    router.replace({
         path: route.path,
         query: { active: e }
     })
@@ -176,7 +199,7 @@ const handleAdd = () => {
             }
             else{
                 if (window.innerWidth < 768) {
-                    router.push(GlobalStore().baseRoute + '/addOkr')
+                    router.push(globalStore.baseRoute + '/addOkr')
                 }
                 else {
                     addShow.value = true
@@ -227,6 +250,29 @@ const handleReturn = () => {
     router.go(-1)
 }
 
+const modalTransferIndex = () => {
+    return window.modalTransferIndex = window.modalTransferIndex + 1
+}
+
+// 新窗口打开
+const openNewWin = () => {
+    globalStore.electron.sendMessage('windowRouter', {
+        name: `okr`,
+        path: `single/apps/okr/list?active=${tabsName.value}`,
+        force: false,
+        config: {
+            title: $t(pageTitle.value),
+            titleFixed: true,
+            parent: null,
+            width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),
+            height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 72),
+            minWidth: 600,
+            minHeight: 450,
+        }
+    });
+}
+
+
 </script>
 
 <style lang="less" scoped>
@@ -252,6 +298,7 @@ const handleReturn = () => {
             @apply flex items-center gap-4 md:gap-6 z-[2];
 
             .add-button,
+            .more-button,
             .search-button {
                 @apply bg-[#f2f3f5] w-36 h-36 rounded-full flex items-center justify-center cursor-pointer;
 

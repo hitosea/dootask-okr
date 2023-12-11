@@ -16,6 +16,7 @@ export interface GlobalState {
     isLoading: number
     language: string
     themeName: string
+    electron: any
     timer: object
     windowActive: any
     windowScrollY: number

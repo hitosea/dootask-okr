@@ -8,10 +8,6 @@
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
             </div>
-            <!-- <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
-                <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
-                <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR结果分析') }}</h2>
-            </div> -->
             <div class="flex overflow-hidden">
                 <n-scrollbar>
                     <n-grid x-gap="24" cols="1 600:2 800:3">
@@ -170,7 +166,7 @@
                                             </span>
                                         </div>
                                     </div>
-                            
+
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
@@ -517,7 +513,7 @@ nextTick(() => {
     }
 }
 
-// 
+//
 body.window-portrait {
     .page-okr-analysis {
         .page-title {

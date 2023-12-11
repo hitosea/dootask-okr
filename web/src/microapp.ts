@@ -11,6 +11,7 @@ const initGlobaStore = (data:any) => {
     globalStore.setThemeName(data.theme == 'auto' ? 'light' : data.theme)
     globalStore.setLanguage(data.languages?.languageType)
     globalStore.setVues(data.vues)
+    globalStore.setElectron(data.electron)
     userStore.setUserInfo(data.userInfo)
 }
 
@@ -65,7 +66,7 @@ const handleData = (router: Router,appName:string, data:any) => {
 // 与基座进行数据交互
 export const handleMicroData = (router: Router) => {
     const eventCenterForMicroApp = window.eventCenterForAppNameVite;
-    // 
+    //
     if (eventCenterForMicroApp) {
         // 设置名称
         GlobalStore().setAppName(eventCenterForMicroApp.appName)

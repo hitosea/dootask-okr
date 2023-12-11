@@ -16,7 +16,8 @@ export const GlobalStore = defineStore({
         language: "zh",
         themeName: "",
         timer: {},
-        // 
+        electron: null,
+        //
         modalList: [],
         // 浏览器窗口方向
         windowActive: true,
@@ -76,6 +77,9 @@ export const GlobalStore = defineStore({
         },
         setVues(vues: any) {
             window.Vues = vues;
+        },
+        setElectron(electron: any) {
+            this.electron = electron;
         },
         appSetup() {
             return {
