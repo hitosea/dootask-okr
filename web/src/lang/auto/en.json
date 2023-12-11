@@ -327,5 +327,11 @@
     "复盘添加/详情": "Review add/details",
     "新窗口打开": "open in a new window",
     "已归档OKR": "Archived OKRs",
-    "离职/删除人员OKR": "Resign/Delete Personnel OKR"
+    "离职/删除人员OKR": "Resign/Delete Personnel OKR",
+    "归档": "Archive",
+    "删除": "delete",
+    "OKR明细": "OKR details",
+    "欢迎使用okr子系统": "Welcome to the okr subsystem",
+    "前往Okr列表": "Go to Okr list",
+    "前往Okr汇总": "Go to Okr summary"
 }

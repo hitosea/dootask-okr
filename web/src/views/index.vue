@@ -24,7 +24,14 @@
                     <i v-else class="okrfont">&#xe6f2;</i>
                 </div>
                 <div class="more-button" type="tertiary" @click="moreButtonPopoverShow = true">
-                    <n-popover class="okr-more-button-popover" :show="moreButtonPopoverShow" @clickoutside="moreButtonPopoverShow = false" placement="bottom" :z-index="modalTransferIndex()" trigger="click" raw :show-arrow="true">
+                    <n-popover class="okr-more-button-popover"
+                    :show="moreButtonPopoverShow"
+                    @clickoutside="moreButtonPopoverShow = false"
+                    placement="bottom"
+                    :z-index="modalTransferIndex()"
+                    trigger="click"
+                    raw
+                    :show-arrow="true">
                         <template #trigger>
                             <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-more font-bold"></i>
                             <i v-else class="okrfont">&#xe6f2;</i>
@@ -265,7 +272,7 @@ const openNewWin = () => {
             titleFixed: true,
             parent: null,
             width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),
-            height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 72),
+            height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 36),
             minWidth: 600,
             minHeight: 450,
         }

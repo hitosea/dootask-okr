@@ -327,5 +327,11 @@
     "复盘添加/详情": "Examiner ajouter/détails",
     "新窗口打开": "ouvrir dans une nouvelle fenêtre",
     "已归档OKR": "OKR archivés",
-    "离职/删除人员OKR": "Démissionner/supprimer le personnel OKR"
+    "离职/删除人员OKR": "Démissionner/supprimer le personnel OKR",
+    "归档": "Archive",
+    "删除": "supprimer",
+    "OKR明细": "Détails des OKR",
+    "欢迎使用okr子系统": "Bienvenue dans le sous-système okr",
+    "前往Okr列表": "Aller à la liste Okr",
+    "前往Okr汇总": "Aller au résumé Okr"
 }

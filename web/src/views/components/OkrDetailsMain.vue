@@ -1,20 +1,33 @@
 <template >
-    <div class="flex flex-col h-full md:h-auto md:flex-row md:max-h-[640px] md:min-h-[640px]">
+    <div ref="pageOkrDetailRef" :class="isSingle ? ['max-h-[100%]'] : ['md:max-h-[640px] md:min-h-[640px]']" class="flex flex-col h-full md:h-auto md:flex-row">
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0"
             :class="navActive == 0 ? 'navActive' : ''">
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover v-if="detailData.completed == '0'" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="showPopover = false">
+                    <n-popover v-if="detailData.completed == '0'" class="okr-more-button-popover"
+                    placement="bottom"
+                    :show="showPopover"
+                    trigger="manual"
+                    @clickoutside="showPopover = false"
+                    :z-index="modalTransferIndex()"
+                    raw
+                    :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover" v-if="detailData.completed == '0'"
                                 class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                 :class="detailData.completed == '0' || detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                             </div>
                         </template>
-                        <span class="cursor-pointer" @click="handleCancel">
-                            {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
-                        </span>
+                        <div class="flex flex-col">
+                            <p @click="handleCancel">
+                                {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
+                            </p>
+                            <p> {{ $t('关注目标') }}</p>
+                            <p> {{ $t('归档') }}</p>
+                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover=false]"> {{ $t('新窗口打开') }}</p>
+                            <p> {{ $t('删除') }}</p>
+                        </div>
                     </n-popover>
                     <div v-if="detailData.completed == '1'"
                         class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid "
@@ -218,7 +231,7 @@
                     <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                     </li>
                 </ul>
-                <i class="okrfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
+                <i v-if="!isSingle" class="okrfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
@@ -386,15 +399,16 @@ import Confidences from '@/views/components/Confidences.vue';
 import MarkVue from '@/views/components/Marks.vue';
 import TipsModal from '@/views/components/TipsModal.vue';
 import { GlobalStore } from '@/store';
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
 
-
 const userInfo = UserStore().info
 const router = useRouter()
+const route = useRoute()
 const globalStore = GlobalStore()
+const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') && route.name == 'okrDetails' ? 1 : 0  )
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
@@ -406,6 +420,7 @@ const message = useMessage()
 const showModal = ref(false)
 const tipsContent = ref('')
 const scrollbarRef = ref(null)
+const pageOkrDetailRef = ref(null)
 
 const logListPage = ref(1)
 const logListLastPage = ref(99999)
@@ -414,6 +429,7 @@ const logList = ref<any>([])
 const replayListPage = ref(1)
 const replayListLastPage = ref(99999)
 const replayList = ref([])
+
 const showDialogWrapper = computed(() => window.Vues?.components?.DialogWrapper ? 1 : 0)
 const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
 
@@ -450,7 +466,6 @@ const props = defineProps({
         default: 0,
     },
 })
-
 
 // 明细
 const getDetail = (type) => {
@@ -526,12 +541,16 @@ const handleNav = (index) => {
         handleGetReplayList()
     }
     if (navActive.value == 3) {
-        
+
         nextTick(()=>{
             loadUserSelects()
         })
 
     }
+}
+
+const modalTransferIndex = () => {
+    return window.modalTransferIndex = window.modalTransferIndex + 1
 }
 
 // 日志下一页
@@ -773,6 +792,7 @@ const handleMark = (id, scores, superior_score, progress) => {
         message.error($t('仅负责人和负责人上级可以操作！'))
     }
 }
+
 //关闭评分
 const handleCloseMarks = (type) => {
     markId.value = 0
@@ -1027,6 +1047,24 @@ const colorStatus = (color) => {
     return result
 }
 
+// 新窗口打开
+const openNewWin = () => {
+    globalStore.electron.sendMessage('windowRouter', {
+        name: `okr-detail`,
+        path: `single/apps/okr/okrDetails?id=${props.id}`,
+        force: false,
+        config: {
+            title: $t('OKR明细'),
+            titleFixed: true,
+            parent: null,
+            width: Math.min(window.screen.availWidth, pageOkrDetailRef.value.clientWidth + 72),
+            height: Math.min(window.screen.availHeight, pageOkrDetailRef.value.clientHeight + 72),
+            minWidth: 600,
+            minHeight: 450,
+        }
+    });
+}
+
 
 // 卸载
 window.addEventListener('apps-unmount', function () {
@@ -1074,16 +1112,16 @@ watch(() => detailData.value.dialog_id, (newValue) => {
 
 onMounted(() => {
     nextTick(() => {
-    if (window.innerWidth < 768 && !globalStore.doubleSkip) {
-        navActive.value = 3
-    }
-    if(window.innerWidth < 768 && globalStore.doubleSkip){
-        globalStore.$patch((state) => {
-            state.doubleSkip = false
-            navActive.value = 2
-        })
-    }
-})
+        if (window.innerWidth < 768 && !globalStore.doubleSkip) {
+            navActive.value = 3
+        }
+        if(window.innerWidth < 768 && globalStore.doubleSkip){
+            globalStore.$patch((state) => {
+                state.doubleSkip = false
+                navActive.value = 2
+            })
+        }
+    })
     nowInterval.value = setInterval(() => {
         nowTime.value = utils.Time();
     }, 1000);

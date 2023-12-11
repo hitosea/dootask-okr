@@ -1,10 +1,10 @@
 <template>
 
     <div v-if="show">
-        <h1 class="text-center mt-[12%]">欢迎使用okr子系统</h1>
+        <h1 class="text-center mt-[12%]">{{ $t('欢迎使用okr子系统') }}</h1>
         <div class="text-center mt-[20px]">
-            <router-link to="/apps/list" class="mr-[10px]">前往Okr列表</router-link> |
-            <router-link to="/apps/analysis" class="ml-[10px]">前往Okr汇总</router-link>
+            <router-link to="/apps/list" class="mr-[10px]">{{ $t('前往Okr列表') }}</router-link> |
+            <router-link to="/apps/analysis" class="ml-[10px]">{{ $t('前往Okr汇总') }}</router-link>
         </div>
     </div>
 
@@ -46,7 +46,7 @@ watch(() => globalStore.okrDetail, (newValue) => {
         if (window.innerWidth < 910) {
             router.push({
                 path: globalStore.baseRoute + '/okrDetails',
-                query: { data: globalStore.okrDetail.id },
+                query: { id: globalStore.okrDetail.id },
             })
         }
         else {
