@@ -11,11 +11,13 @@ ErrMailContentReject: 邮件内容被拒绝，请检查邮箱是否开启接收�
 ErrMailNotConfig: 发送邮箱未配置
 ErrMailToInvalid: 请输入正确的收件人地址
 ErrNoPermission: 权限不足
+ErrOkrAdminNotCancel: 仅限管理员操作
 ErrOkrArchiveStatusInvalid: 归档状态错误
-ErrOkrArchiveStatusNotCompleted: 已完成或已取消的OKR才能归档
+ErrOkrArchiveStatusNotCompleted: 仅限【已完成，已取消】的状态归档
 ErrOkrAscriptionInvalid: 目标归属参数错误
 ErrOkrCanceled: O目标已取消无法操作
 ErrOkrCompleted: O目标已完成无法操作
+ErrOkrCompletedReplay: 请先添加复盘
 ErrOkrConfidenceInvalid: 信心指数请输入0-100的整数
 ErrOkrInvalidKrScore: 无效的KR分数
 ErrOkrIsFinishNotScoreInvalid: 是否已完成未评分参数错误
@@ -29,6 +31,7 @@ ErrOkrNoPermission: 无OKR权限
 ErrOkrNoViewPermission: 当前暂无查看权限
 ErrOkrOwnerNotCancel: 仅限负责人操作
 ErrOkrOwnerNotScore: 负责人未评分
+ErrOkrOwnerOrAdminNotCancel: 仅限负责人、管理员操作
 ErrOkrOwnerScored: 此评分由负责人的上级进行评分
 ErrOkrPriorityInvalid: 目标优先级参数错误
 ErrOkrProgressInvalid: 进度请输入0-100的整数

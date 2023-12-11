@@ -40,6 +40,8 @@ var (
 	ErrOkrTitleLengthInvalid        = "ErrOkrTitleLengthInvalid"        //标题内容过长，请限制在255个字符以内
 	ErrOkrTimeInvalid               = "ErrOkrTimeInvalid"               //开始时间不能大于结束时间，请重新选择合适的时间段
 	ErrOkrOwnerNotCancel            = "ErrOkrOwnerNotCancel"            //仅限负责人操作
+	ErrOkrAdminNotCancel            = "ErrOkrAdminNotCancel"            //仅限管理员操作
+	ErrOkrOwnerOrAdminNotCancel     = "ErrOkrOwnerOrAdminNotCancel"     //仅限负责人、管理员操作
 	ErrOkrReplayCommentInvalid      = "ErrOkrReplayCommentInvalid"      //请选择KR评价
 	ErrOkrNoDepartment              = "ErrOkrNoDepartment"              //您当前未加入任何部门，不能发起！
 	ErrOkrReplayLengthInvalid       = "ErrOkrReplayLengthInvalid"       //内容过长，请限制在255个字符以内
@@ -48,7 +50,8 @@ var (
 	ErrOkrKrTimeInvalid             = "ErrOkrKrTimeInvalid"             //KR时间需在O时间范围内
 	ErrOkrScoreWeightInvalid        = "ErrOkrScoreWeightInvalid"        //自评权重和上级评分权重相加必须等于100
 	ErrOkrArchiveStatusInvalid      = "ErrOkrArchiveStatusInvalid"      //归档状态错误
-	ErrOkrArchiveStatusNotCompleted = "ErrOkrArchiveStatusNotCompleted" //已完成或已取消的OKR才能归档
+	ErrOkrArchiveStatusNotCompleted = "ErrOkrArchiveStatusNotCompleted" //仅限【已完成，已取消】的状态归档
+	ErrOkrCompletedReplay           = "ErrOkrCompletedReplay"           //请先添加复盘
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

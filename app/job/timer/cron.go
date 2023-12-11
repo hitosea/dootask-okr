@@ -15,4 +15,10 @@ func InitCron() {
 // Crontab 定时任务
 func Crontab(c *cron.Cron) {
 	_, _ = c.AddFunc("*/10 * * * * *", service.NewOkrService().OkrNotice) // 10秒检查OKR提醒
+
+	// 5秒检查离职/删除人员的OKR
+	_, _ = c.AddFunc("*/5 * * * * *", func() {
+		service.NewOkrService().CheckLeavedUsersOkr()
+		service.NewOkrService().CheckDeletedUsersOkr()
+	})
 }

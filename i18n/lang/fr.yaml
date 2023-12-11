@@ -11,11 +11,13 @@ ErrMailContentReject: Le contenu du message a été refusé, vérifiez que votre
 ErrMailNotConfig: Email d’envoi non configuré
 ErrMailToInvalid: Veuillez entrer l’adresse correcte du destinataire
 ErrNoPermission: Manque de pouvoirs
+ErrOkrAdminNotCancel: Action réservée aux administrateurs
 ErrOkrArchiveStatusInvalid: Erreur dans l’état des archives
-ErrOkrArchiveStatusNotCompleted: OKR terminé ou annulé avant de déposer
+ErrOkrArchiveStatusNotCompleted: Dossier de statut pour [terminé, annulé] seulement
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
 ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel
+ErrOkrCompletedReplay: Veuillez d’abord ajouter une copie
 ErrOkrConfidenceInvalid: Indice de confiance veuillez entrer un nombre entier de 0 à 100
 ErrOkrInvalidKrScore: Score KR non valide
 ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
@@ -29,6 +31,7 @@ ErrOkrNoPermission: Aucune autorisation OKR
 ErrOkrNoViewPermission: Aucune autorisation de visionnement pour le moment
 ErrOkrOwnerNotCancel: Opération réservée aux personnes responsables
 ErrOkrOwnerNotScore: Responsable non évalué
+ErrOkrOwnerOrAdminNotCancel: Opération réservée aux responsables, administrateurs
 ErrOkrOwnerScored: Cette note a été notée par le supérieur de la personne responsable
 ErrOkrPriorityInvalid: Objectif priorité paramètre erreur
 ErrOkrProgressInvalid: Progrès veuillez entrer un nombre entier de 0 à 100

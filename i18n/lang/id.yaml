@@ -11,11 +11,13 @@ ErrMailContentReject: Pesan ditolak, cek apakah kotak masuk sudah diaktifkan unt
 ErrMailNotConfig: Kirim email tak dikonfigurasi
 ErrMailToInvalid: Silahkan masukkan alamat penerima yang benar
 ErrNoPermission: Tidak cukup izin
+ErrOkrAdminNotCancel: Hanya administrator
 ErrOkrArchiveStatusInvalid: Kesalahan pengarsipan
-ErrOkrArchiveStatusNotCompleted: OKR baru bisa diajukan jika sudah selesai atau dibatalkan
+ErrOkrArchiveStatusNotCompleted: Berkas status saja [selesai, dibatalkan]
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
 ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai
+ErrOkrCompletedReplay: Tolong tambahkan plaster dulu
 ErrOkrConfidenceInvalid: Indeks kepercayaan diri silahkan masukkan bilangan bulat 0-100
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
 ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
@@ -29,6 +31,7 @@ ErrOkrNoPermission: Tidak ada akses OKR
 ErrOkrNoViewPermission: Tak ada akses sementara
 ErrOkrOwnerNotCancel: Hanya orang yang bertanggung jawab
 ErrOkrOwnerNotScore: Orang yang bertanggung jawab tidak dinilai.
+ErrOkrOwnerOrAdminNotCancel: Hanya orang yang bertanggung jawab, operasi administrator
 ErrOkrOwnerScored: Nilai ini dinilai oleh atasan orang yang bertanggung jawab
 ErrOkrPriorityInvalid: Target prioritas parameter salah
 ErrOkrProgressInvalid: Masukkan bilangan bulat 0-100

@@ -1038,6 +1038,12 @@ const docTemplate = `{
                         "description": "每页显示数量，默认:50，最大:100",
                         "name": "page_size",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1079,14 +1085,14 @@ const docTemplate = `{
         },
         "/okr/leave/update": {
             "post": {
-                "description": "更新离职/删除人员OKR负责人",
+                "description": "分配离职/删除人员OKR负责人",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Okr"
                 ],
-                "summary": "更新离职/删除人员OKR负责人",
+                "summary": "分配离职/删除人员OKR负责人",
                 "parameters": [
                     {
                         "type": "array",
@@ -1243,6 +1249,49 @@ const docTemplate = `{
                                                     }
                                                 }
                                             ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/owner/list": {
+            "get": {
+                "description": "OKR负责人列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "OKR负责人列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "状态 0-正常 1-已归档 2-离职/删除人员",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.User"
+                                            }
                                         }
                                     }
                                 }

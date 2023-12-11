@@ -2,6 +2,8 @@ package model
 
 import (
 	"dootask-okr/app/utils/common"
+
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -33,6 +35,14 @@ type User struct {
 }
 
 var UserModel = User{}
+
+// 后置钩子函数
+func (m *User) AfterFind(tx *gorm.DB) error {
+	if m.Nickname == "" {
+		m.Nickname = common.CardFormat(m.Email)
+	}
+	return nil
+}
 
 // 用户昵称
 func (m *User) GetNickname() string {

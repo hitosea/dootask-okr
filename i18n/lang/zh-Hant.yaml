@@ -11,11 +11,13 @@ ErrMailContentReject: 郵件內容被拒絕，請檢查郵箱是否開啓接收�
 ErrMailNotConfig: 發送郵箱未配置
 ErrMailToInvalid: 請輸入正確的收件人地址
 ErrNoPermission: 權限不足
+ErrOkrAdminNotCancel: 僅限管理員操作
 ErrOkrArchiveStatusInvalid: 歸檔狀態錯誤
-ErrOkrArchiveStatusNotCompleted: 已完成或已取消的OKR才能歸檔
+ErrOkrArchiveStatusNotCompleted: 僅限【已完成，已取消】的狀態歸檔
 ErrOkrAscriptionInvalid: 目標歸屬參數錯誤
 ErrOkrCanceled: O目標已取消無法操作
 ErrOkrCompleted: O目標已完成無法操作
+ErrOkrCompletedReplay: 請先添加覆盤
 ErrOkrConfidenceInvalid: 信心指數請輸入0-100的整數
 ErrOkrInvalidKrScore: 無效的KR分數
 ErrOkrIsFinishNotScoreInvalid: 是否已完成未評分參數錯誤
@@ -29,6 +31,7 @@ ErrOkrNoPermission: 無OKR權限
 ErrOkrNoViewPermission: 當前暫無查看權限
 ErrOkrOwnerNotCancel: 僅限負責人操作
 ErrOkrOwnerNotScore: 負責人未評分
+ErrOkrOwnerOrAdminNotCancel: 僅限負責人、管理員操作
 ErrOkrOwnerScored: 此評分由負責人的上級進行評分
 ErrOkrPriorityInvalid: 目標優先級參數錯誤
 ErrOkrProgressInvalid: 進度請輸入0-100的整數

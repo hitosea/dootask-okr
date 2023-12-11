@@ -551,7 +551,7 @@ func (api *BaseApi) OkrSetting() {
 func (api *BaseApi) OkrDelete() {
 	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.DeleteOkr(api.Userinfo.Userid, param.Id)
+	err := service.OkrService.DeleteOkr(api.Userinfo, param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -570,7 +570,7 @@ func (api *BaseApi) OkrDelete() {
 func (api *BaseApi) OkrArchive() {
 	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.ArchiveOkr(api.Userinfo.Userid, param.Id)
+	err := service.OkrService.ArchiveOkr(api.Userinfo, param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -589,7 +589,7 @@ func (api *BaseApi) OkrArchive() {
 func (api *BaseApi) OkrArchiveRestore() {
 	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	err := service.OkrService.ArchiveRestoreOkr(api.Userinfo.Userid, param.Id)
+	err := service.OkrService.ArchiveRestoreOkr(api.Userinfo, param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -621,13 +621,13 @@ func (api *BaseApi) OkrArchiveList() {
 // @Summary 离职/删除人员OKR列表
 // @Description 离职/删除人员OKR列表
 // @Accept json
-// @Param request query interfaces.OkrListBaseReq true "request"
+// @Param request query interfaces.OkrLeaveUpdateListReq true "request"
 // @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.Okr}}
 // @Router /okr/leave/list [get]
 func (api *BaseApi) OkrLeaveList() {
-	var param = interfaces.OkrListBaseReq{}
+	var param = interfaces.OkrLeaveUpdateListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetLeaveList(api.Userinfo, param.Objective, param.Page, param.PageSize)
+	result, err := service.OkrService.GetLeaveList(api.Userinfo, param.Objective, param.Userid, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -637,8 +637,27 @@ func (api *BaseApi) OkrLeaveList() {
 }
 
 // @Tags Okr
-// @Summary 更新离职/删除人员OKR负责人
-// @Description 更新离职/删除人员OKR负责人
+// @Summary OKR负责人列表
+// @Description OKR负责人列表
+// @Accept json
+// @Param request query interfaces.OkrOwnerListReq true "request"
+// @Success 200 {object} interfaces.Response{data=[]model.User}
+// @Router /okr/owner/list [get]
+func (api *BaseApi) OkrOwnerList() {
+	var param = interfaces.OkrOwnerListReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetOwnerList(param.Status)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 分配离职/删除人员OKR负责人
+// @Description 分配离职/删除人员OKR负责人
 // @Accept json
 // @Param request formData interfaces.OkrLeaveUpdateReq true "request"
 // @Success 200 {object} interfaces.Response

@@ -11,11 +11,13 @@ ErrMailContentReject: Die e-mail wird abgelehnt, bitte prüfen sie, ob der postf
 ErrMailNotConfig: Ein e-mail-postfach ist nicht eingerichtet
 ErrMailToInvalid: Bitte geben sie die richtige adresse ein
 ErrNoPermission: Begrenzter zugang.
+ErrOkrAdminNotCancel: Es ist nur für administrator geöffnet
 ErrOkrArchiveStatusInvalid: Fehler im archiv
-ErrOkrArchiveStatusNotCompleted: Wenn die akte erstellt wurde Oder abgesagt wurde, kann OKR
+ErrOkrArchiveStatusNotCompleted: Nur ein archiv nach dem status als erledigt, ausgeliehen und ausgeschieden ist
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
 ErrOkrCanceled: O ziel nicht betriebsbereit
 ErrOkrCompleted: O ziel nicht erreichbar
+ErrOkrCompletedReplay: Bitte fügen sie zuerst die schaltfläche hinzu
 ErrOkrConfidenceInvalid: Geben sie bitte einen ganzzahligen wert Von 0-100 ein
 ErrOkrInvalidKrScore: Das fehlerhafte KRML
 ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
@@ -29,6 +31,7 @@ ErrOkrNoPermission: Hier darf man sich nicht einmischen
 ErrOkrNoViewPermission: Dies kann nicht autorisiert werden
 ErrOkrOwnerNotCancel: Nur mitarbeiter
 ErrOkrOwnerNotScore: Leiter der mission unbenotet.
+ErrOkrOwnerOrAdminNotCancel: Nur die aufsicht und der administrator
 ErrOkrOwnerScored: Diese beurteilung wird Von der abteilungsleiter der direktoren vorgenommen
 ErrOkrPriorityInvalid: Fehler der zielprioritäten
 ErrOkrProgressInvalid: Fortschritt gibt einen ganzzahligen wert Von 0-100 ein

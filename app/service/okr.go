@@ -1907,6 +1907,13 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
+// 判断是否已复盘
+func (s *okrService) hasReplay(okrId int) bool {
+	var replay model.OkrReplay
+	core.DB.Preload("KrHistory").Where("okr_id = ?", okrId).First(&replay)
+	return replay.KrHistory != nil
+}
+
 // 获取目标所属名称
 func (s *okrService) getOwningAlias(ascription int, userid int, departmentId string) []string {
 	var alias []string
@@ -2021,7 +2028,7 @@ func (s *okrService) GetDepartmentsByTopLevelIds(ids []int) ([]int, error) {
 	return departments, nil
 }
 
-// UpdateAlignObjective 更新对齐目标
+// 更新对齐目标
 func (s *okrService) UpdateAlignObjective(userid, okrId int, alignObjective string) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(okrId)
 	if err != nil {
@@ -2218,7 +2225,6 @@ func (s *okrService) OkrNotice() {
 	s.okrKRExpiringNotice()
 	s.okrOExpiredNotice()
 	s.okrKRExpiredNotice()
-	s.CheckLeaveOkr()
 }
 
 // O还有一个小时到期（通知发起人）
@@ -2302,16 +2308,16 @@ func (s *okrService) insertOkrPushLog(userid, okrId, noticeType int) {
 }
 
 // 获取目标及其关键结果并检查用户权限
-func (s *okrService) getObjectiveAndCheckPermission(userid, okrId int) (*model.Okr, error) {
+func (s *okrService) getObjectiveAndCheckPermission(user *interfaces.UserInfoResp, okrId int) (*model.Okr, error) {
 	// 获取目标及其关键结果
 	obj, err := s.GetObjectiveByIdWithKeyResults(okrId)
 	if err != nil {
 		return nil, err
 	}
 
-	// 仅限目标负责人操作
-	if obj.Userid != userid {
-		return nil, e.New(constant.ErrOkrOwnerNotCancel)
+	// 仅限目标负责人、管理员操作
+	if obj.Userid != user.Userid || !user.IsAdmin() {
+		return nil, e.New(constant.ErrOkrOwnerOrAdminNotCancel)
 	}
 
 	return obj, nil
@@ -2329,8 +2335,8 @@ func (s *okrService) operateKeyResults(obj *model.Okr, operation func(*model.Okr
 }
 
 // 删除目标及其关键结果
-func (s *okrService) DeleteOkr(userid, okrId int) error {
-	obj, err := s.getObjectiveAndCheckPermission(userid, okrId)
+func (s *okrService) DeleteOkr(user *interfaces.UserInfoResp, okrId int) error {
+	obj, err := s.getObjectiveAndCheckPermission(user, okrId)
 	if err != nil {
 		return err
 	}
@@ -2353,8 +2359,8 @@ func (s *okrService) DeleteOkr(userid, okrId int) error {
 }
 
 // 归档目标
-func (s *okrService) ArchiveOkr(userid, okrId int) error {
-	obj, err := s.getObjectiveAndCheckPermission(userid, okrId)
+func (s *okrService) ArchiveOkr(user *interfaces.UserInfoResp, okrId int) error {
+	obj, err := s.getObjectiveAndCheckPermission(user, okrId)
 	if err != nil {
 		return err
 	}
@@ -2364,10 +2370,13 @@ func (s *okrService) ArchiveOkr(userid, okrId int) error {
 	}
 	// 已完成/已取消才可以归档
 	if (obj.Completed == 1 && obj.Score > -1) || obj.Canceled == 1 {
+		if obj.Completed == 1 && !s.hasReplay(obj.Id) {
+			return e.New(constant.ErrOkrCompletedReplay)
+		}
 		return core.DB.Transaction(func(tx *gorm.DB) error {
 			now := time.Now()
 			obj.Status = 1
-			obj.ArchiveUserid = userid
+			obj.ArchiveUserid = user.Userid
 			obj.ArchiveAt = &now
 			if err := tx.Save(obj).Error; err != nil {
 				return err
@@ -2375,7 +2384,7 @@ func (s *okrService) ArchiveOkr(userid, okrId int) error {
 
 			updateFunc := func(kr *model.Okr) error {
 				kr.Status = 1
-				kr.ArchiveUserid = userid
+				kr.ArchiveUserid = user.Userid
 				kr.ArchiveAt = &now
 				return tx.Save(kr).Error
 			}
@@ -2392,8 +2401,8 @@ func (s *okrService) ArchiveOkr(userid, okrId int) error {
 }
 
 // 还原归档目标
-func (s *okrService) ArchiveRestoreOkr(userid, okrId int) error {
-	obj, err := s.getObjectiveAndCheckPermission(userid, okrId)
+func (s *okrService) ArchiveRestoreOkr(user *interfaces.UserInfoResp, okrId int) error {
+	obj, err := s.getObjectiveAndCheckPermission(user, okrId)
 	if err != nil {
 		return err
 	}
@@ -2430,13 +2439,19 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 	var objs []*model.Okr
 	var count int64
 
-	query := core.DB.Model(&model.Okr{}).Where("archive_userid = ?", user.Userid).Where("status = 1")
-	if err := query.Count(&count).Error; err != nil {
+	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 1")
+
+	if objective != "" {
+		objective = common.SearchTextFilter(objective)
+		db = db.Where("title LIKE ?", "%"+objective+"%")
+	}
+
+	if err := db.Count(&count).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (page - 1) * pageSize
-	if err := query.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
+	if err := db.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
@@ -2444,27 +2459,62 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 }
 
 // 离职/删除人员OKR列表
-func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
+func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective string, userid, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
 	var count int64
 
-	query := core.DB.Model(&model.Okr{}).Where("status = 2")
-	if err := query.Count(&count).Error; err != nil {
+	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status IN (?)", []int{1, 2})
+
+	if objective != "" {
+		objective = common.SearchTextFilter(objective)
+		db = db.Where("title LIKE ?", "%"+objective+"%")
+	}
+
+	if userid > 0 {
+		db = db.Where("userid = ?", userid)
+	}
+
+	if err := db.Count(&count).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (page - 1) * pageSize
-	if err := query.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
+	if err := db.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, objs), nil
 }
 
-// UpdateLeaveOkr 更新离职/删除人员OKR负责人
+// 获取负责人列表
+func (s *okrService) GetOwnerList(status int) ([]*model.User, error) {
+	var userIds []int
+
+	db := core.DB.Model(&model.Okr{}).Where("status = ?", status)
+	if err := db.Distinct("userid").Pluck("userid", &userIds).Error; err != nil {
+		return nil, err
+	}
+
+	var users []*model.User
+	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	for _, user := range users {
+		user.AfterFind(core.DB)
+	}
+
+	return users, nil
+}
+
+// 分配离职/删除人员OKR负责人
 func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, okrIds []int) error {
+	// 仅限管理员操作
+	if !user.IsAdmin() {
+		return e.New(constant.ErrOkrAdminNotCancel)
+	}
 	var objs []*model.Okr
-	if err := core.DB.Model(&model.Okr{}).Preload("KeyResults").Where("status = 2").Where("id in (?)", okrIds).Find(&objs).Error; err != nil {
+	if err := core.DB.Model(&model.Okr{}).Preload("KeyResults").Where("status IN (?)", []int{1, 2}).Where("id in (?)", okrIds).Find(&objs).Error; err != nil {
 		return err
 	}
 	if len(objs) == 0 {
@@ -2494,35 +2544,58 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 	})
 }
 
-// 定时任务：检测是否有离职/删除人员OKR
-func (s *okrService) CheckLeaveOkr() bool {
-	fmt.Println("检测是否有离职/删除人员OKR")
-	// 检测用户表所有有离职/删除人员 时间在一周内的
-	var users []*model.User
-	if err := core.DB.Model(&model.User{}).Where("FIND_IN_SET(?, identity) > 0", "disable").Where("updated_at >= ?", time.Now().AddDate(0, 0, -7)).Find(&users).Error; err != nil {
+// 定时任务：检测是否有离职人员OKR
+func (s *okrService) CheckLeavedUsersOkr() bool {
+	// 检测离职人员 用户更新时间在一周内的
+	okrTable := core.DBTableName(&model.Okr{})
+	userTable := core.DBTableName(&model.User{})
+	var objs []*model.Okr
+
+	if err := core.DB.Table(okrTable+" AS okrs").
+		Select("okrs.*").
+		Joins(fmt.Sprintf(`JOIN %s users ON okrs.userid = users.userid`, userTable)).
+		Where("FIND_IN_SET(?, users.identity) > 0", "disable").
+		Where("users.updated_at >= ?", time.Now().AddDate(0, 0, -7)).
+		Where("okrs.status = ?", 0).
+		Find(&objs).Error; err != nil {
 		return false
 	}
 
-	if len(users) == 0 {
+	if len(objs) == 0 {
 		return false
 	}
 
-	for _, user := range users {
-		var objs []*model.Okr
-		if err := core.DB.Model(&model.Okr{}).Where("userid = ?", user.Userid).Where("status = 0").Find(&objs).Error; err != nil {
-			return false
-		}
+	// 更新状态
+	if err := core.DB.Model(&objs).Updates(map[string]interface{}{"status": 2}).Error; err != nil {
+		return false
+	}
 
-		if len(objs) == 0 {
-			return false
-		}
+	return true
+}
 
-		for _, obj := range objs {
-			obj.Status = 2
-			if err := core.DB.Save(obj).Error; err != nil {
-				return false
-			}
-		}
+// 定时任务：检测是否有删除人员OKR
+func (s *okrService) CheckDeletedUsersOkr() bool {
+	// 检测删除人员 okr创建时间在一年内的
+	okrTable := core.DBTableName(&model.Okr{})
+	userTable := core.DBTableName(&model.User{})
+	var okrs []*model.Okr
+	if err := core.DB.Table(okrTable+" AS okrs").
+		Select("okrs.*").
+		Joins(fmt.Sprintf(`LEFT JOIN %s users ON okrs.userid = users.userid`, userTable)).
+		Where("users.userid IS NULL").
+		Where("okrs.status = ?", 0).
+		Where("okrs.created_at >= ?", time.Now().AddDate(-1, 0, 0)).
+		Find(&okrs).Error; err != nil {
+		return false
+	}
+
+	if len(okrs) == 0 {
+		return false
+	}
+
+	// 更新状态
+	if err := core.DB.Model(&okrs).Updates(map[string]interface{}{"status": 2}).Error; err != nil {
+		return false
 	}
 
 	return true

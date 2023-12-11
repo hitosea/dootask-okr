@@ -11,11 +11,13 @@ ErrMailContentReject: The email content is rejected. Please check whether the re
 ErrMailNotConfig: The sending mailbox is not configured
 ErrMailToInvalid: Please enter the correct recipient address
 ErrNoPermission: Insufficient authority
+ErrOkrAdminNotCancel: Administrators only
 ErrOkrArchiveStatusInvalid: Archive status error
-ErrOkrArchiveStatusNotCompleted: Only completed or cancelled OKRs can be archived
+ErrOkrArchiveStatusNotCompleted: Status archiving for Completed, Cancelled only
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
 ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated
+ErrOkrCompletedReplay: Please add a copy first
 ErrOkrConfidenceInvalid: Confidence Index Please enter an integer between 0 and 100
 ErrOkrInvalidKrScore: Invalid KR score
 ErrOkrIsFinishNotScoreInvalid: Complete No score parameter is incorrect
@@ -29,6 +31,7 @@ ErrOkrNoPermission: No OKR permission
 ErrOkrNoViewPermission: Currently there is no view permission
 ErrOkrOwnerNotCancel: Responsible person only
 ErrOkrOwnerNotScore: Person in charge not rated
+ErrOkrOwnerOrAdminNotCancel: This operation is performed only by principals and administrators
 ErrOkrOwnerScored: This rating is scored by the supervisor of the person in charge
 ErrOkrPriorityInvalid: The target priority parameter is incorrect
 ErrOkrProgressInvalid: Progress Please enter an integer ranging from 0 to 100

@@ -187,7 +187,19 @@ type OkrLogParams struct {
 	StatusChange         []string `json:"status_change,omitempty"`          // 状态变更
 }
 
-// OkrLeaveUpdateReq 更新离职/删除人员OKR负责人请求
+// 离职/删除人员列表分页请求
+type OkrLeaveUpdateListReq struct {
+	Objective string `form:"objective" json:"objective"` // 目标（O）
+	Userid    int    `form:"userid" json:"userid"`       // 用户id
+	*Pages
+}
+
+// OKR负责人列表
+type OkrOwnerListReq struct {
+	Status int `form:"status,default=0" json:"status"` // 状态 0-正常 1-已归档 2-离职/删除人员
+}
+
+// 更新离职/删除人员OKR负责人请求
 type OkrLeaveUpdateReq struct {
 	OkrIds []int `form:"okr_ids" json:"okr_ids" binding:"required"` // okr ids
 	Userid int   `form:"userid" json:"userid" binding:"required"`   // 新负责人id

@@ -11,11 +11,13 @@ ErrMailContentReject: メールの内容が拒否された場合、受信機能�
 ErrMailNotConfig: 送信メールアドレス未設定です。
 ErrMailToInvalid: 正しい宛先を入力願います。
 ErrNoPermission: 権限が足りません。
+ErrOkrAdminNotCancel: 操作は管理者のみです
 ErrOkrArchiveStatusInvalid: ファイリングエラーです。
-ErrOkrArchiveStatusNotCompleted: 完了したOKR、またはキャンセルしたOKRのみ保存できます。
+ErrOkrArchiveStatusNotCompleted: '[完了、キャンセル]のステータスファイリングに限ります。'
 ErrOkrAscriptionInvalid: ターゲット・ホーム・パラメータ・エラー
 ErrOkrCanceled: ターゲットOキャンセル操作不能です
 ErrOkrCompleted: O標的完了操作不能です
+ErrOkrCompletedReplay: 復刻をお願いします。
 ErrOkrConfidenceInvalid: 自信指数は0-100の整数で入力します。
 ErrOkrInvalidKrScore: 無効なKRスコアです
 ErrOkrIsFinishNotScoreInvalid: 未採点パラメータエラーが完了していますか
@@ -29,6 +31,7 @@ ErrOkrNoPermission: OKRの権限はありません
 ErrOkrNoViewPermission: 当面は閲覧権限がありません。
 ErrOkrOwnerNotCancel: 担当者のみの取り扱いとなります
 ErrOkrOwnerNotScore: 担当者採点なしです
+ErrOkrOwnerOrAdminNotCancel: 担当者、管理者のみの操作となります。
 ErrOkrOwnerScored: この採点は担当者の上司が行います。
 ErrOkrPriorityInvalid: 目標優先度パラメーターエラーです
 ErrOkrProgressInvalid: 進捗は,0-100の整数で入力します。

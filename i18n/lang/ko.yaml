@@ -11,11 +11,13 @@ ErrMailContentReject: 전자메일 내용이 거부되었습니다. 메일함의
 ErrMailNotConfig: 보내는 편지함이 설정되지 않았습니다
 ErrMailToInvalid: 정확한 수취인 주소를 입력해 주세요
 ErrNoPermission: 권한이 부족합니다.
+ErrOkrAdminNotCancel: 운영자에게만 허용됩니다
 ErrOkrArchiveStatusInvalid: 압축 파일 상태 오류
-ErrOkrArchiveStatusNotCompleted: 완료되었거나 취소된 okr만 압축 가능합니다
+ErrOkrArchiveStatusNotCompleted: 완료된 상태, 취소된 상태만 압축 파일
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
 ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
 ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다
+ErrOkrCompletedReplay: 먼저 콤플렉스를 추가하세요
 ErrOkrConfidenceInvalid: 신뢰지수 0-100의 정수를 입력하십시오
 ErrOkrInvalidKrScore: 잘못된 kr 점수
 ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
@@ -29,6 +31,7 @@ ErrOkrNoPermission: okr 권한이 없음
 ErrOkrNoViewPermission: 현재 볼 수 있는 권한이 없습니다
 ErrOkrOwnerNotCancel: 책임자만 조작할수 있다
 ErrOkrOwnerNotScore: 책임자가 점수를 매기지 않다
+ErrOkrOwnerOrAdminNotCancel: 책임자나 관리자만이 조작할수 있다
 ErrOkrOwnerScored: 이 평점은 책임자의 상부에서 매긴다
 ErrOkrPriorityInvalid: 대상 우선 순위 인자 오류
 ErrOkrProgressInvalid: 0-100의 정수를 입력하십시오

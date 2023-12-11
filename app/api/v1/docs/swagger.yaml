@@ -1376,6 +1376,10 @@ paths:
         in: query
         name: page_size
         type: integer
+      - description: 用户id
+        in: query
+        name: userid
+        type: integer
       responses:
         "200":
           description: OK
@@ -1400,7 +1404,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 更新离职/删除人员OKR负责人
+      description: 分配离职/删除人员OKR负责人
       parameters:
       - collectionFormat: csv
         description: okr ids
@@ -1420,7 +1424,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/interfaces.Response'
-      summary: 更新离职/删除人员OKR负责人
+      summary: 分配离职/删除人员OKR负责人
       tags:
       - Okr
   /okr/log/list:
@@ -1498,6 +1502,31 @@ paths:
                     type: object
               type: object
       summary: 获取我的OKR列表
+      tags:
+      - Okr
+  /okr/owner/list:
+    get:
+      consumes:
+      - application/json
+      description: OKR负责人列表
+      parameters:
+      - description: 状态 0-正常 1-已归档 2-离职/删除人员
+        in: query
+        name: status
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.User'
+                  type: array
+              type: object
+      summary: OKR负责人列表
       tags:
       - Okr
   /okr/participant/list:
