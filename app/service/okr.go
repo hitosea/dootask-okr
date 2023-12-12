@@ -929,7 +929,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 0").Order("canceled,completed asc, ascription asc, created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
-	if !user.IsAdmin() {
+	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -973,6 +973,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 			}
 		}
 	} else {
+		// v1.1新增指定人员审核部门okr功能，即相当于拥有管理员权限，可以看到所有部门的OKR
 		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR，除去有部门的超管
 		var adminUserIds []int
 		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Where("department IS NULL OR department = '' OR department = ',,'").Pluck("userid", &adminUserIds)
@@ -1119,7 +1120,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 
 	var allWhere []string
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
-	if !user.IsAdmin() {
+	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -1216,7 +1217,8 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	}
 
 	// 仅负责人、参与人查看
-	if !s.hasPermission(user, obj) {
+	// v1.1新增指定人员审核部门okr功能，即相当于拥有管理员权限，可以看到所有部门的OKR
+	if !s.hasPermission(user, obj) && s.GetSettingSuperiorUserId() != user.Userid {
 		return nil, e.New(constant.ErrOkrNoPermission)
 	}
 
