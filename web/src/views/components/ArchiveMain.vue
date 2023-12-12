@@ -13,24 +13,36 @@
       </n-button>
     </div>
     <div class="mt-16 flex flex-col flex-1">
-      <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false"
+      <div>
+        <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false"
         style="--n-td-color-hover-modal:#ffffff" />
-      <div class="mt-auto flex justify-center">
+      </div>
+      <div class="mt-auto flex justify-center shrink-0">
         <n-pagination v-model:page="page" :page-count="total" size="medium" show-quick-jumper show-size-picker />
       </div>
-
     </div>
+
+   <WarningPopup v-model:show="showModal" :title="OTitle" :content="OContent" @close=" showModal = false "></WarningPopup>
   </div>
 </template>
 <script setup lang="ts">
 import { DataTableColumn } from 'naive-ui';
+import  WarningPopup from './WarningPopup.vue';
 
 const loadIng = ref(0)
 const keyWord = ref('')
 const page = ref(1);
 const total = ref(0);
+const showModal = ref(false);
+const OTitle = ref('');
+const OContent = ref('');
 
-const tableData = ref<any>([])
+const tableData = ref<any>([
+  // {
+  //   O:"打卡的话旷达科技啊快进到撒寄快递会尽快的哈时间跨度哈看的h",
+  //   Ocomplete:"21323",
+  // }
+])
 
 const columns = ref<DataTableColumn[]>([
   {
@@ -93,9 +105,30 @@ const columns = ref<DataTableColumn[]>([
     key:"",
     render(rowData) {
       let arr = []
+      arr.push(
+        h('span',{
+          class:"text-primary-color cursor-pointer",
+        },$t('查看'))
+      )
+      arr.push(
+        h('span',{
+          class:"text-primary-color cursor-pointer",
+          onClick: () => {
+            OTitle.value = $t('还原')
+            OContent.value = $t('确定要还原')+`【${rowData.O}】？`
+             showModal.value = true
+            }
+        },$t('还原'))
+      )
+      arr.push(
+        h('span',{
+          class:"text-[#ED4014] cursor-pointer",
+        },$t('删除'))
+      )
       return h('div', {
         style: {
           display: 'flex',
+          gap:'12px',
           alignItems: 'items-center',
         },
       }, arr)
@@ -105,16 +138,16 @@ const columns = ref<DataTableColumn[]>([
 
 const onSearch = () => { }
 </script>
-<style scoped>
+<style scoped lang="less">
 .archive-box {
   @apply flex flex-col h-full;
 }
 
 .archive-box-search {
-  @apply flex gap-[16px] items-center;
+  @apply flex gap-4 items-center;
 }
 
 .archive-search-input {
-  @apply flex items-center gap-[8px];
+  @apply flex items-center gap-2;
 }
 </style>

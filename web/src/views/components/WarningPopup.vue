@@ -1,0 +1,54 @@
+<template >
+    <n-modal v-model:show="showModal">
+        <n-card class="w-[480px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true">
+            <template #header-extra>
+
+            </template>
+            <template #header>
+                <h3 class="flex items-center text-16 font-medium text-title-color">
+                        <n-icon class="mr-12 text-[#f90]" size="28" :component="HelpCircle" />
+                        {{ props.title }}
+                    </h3>
+            </template>
+            <p class=" text-text-li text-14 pl-[40px]">{{ props.content }}</p>
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <n-button quaternary @click="() => { emit('close') }">
+                        {{ $t('取消') }}
+                    </n-button>
+                    <n-button type="primary" @click="() => { emit('submit') }">
+                        {{ $t('确定') }}
+                    </n-button>
+                </div>
+            </template>
+        </n-card>
+    </n-modal>
+</template>
+<script setup lang="ts">
+import { HelpCircle } from '@vicons/ionicons5'
+
+const showModal = ref(false)
+
+const emit = defineEmits(['close','submit'])
+
+const props = defineProps({
+    title: {
+        type: String,
+        default: '',
+    },
+    content: {
+        type: String,
+        default: '',
+    }
+})
+
+
+</script>
+<style lang="less" scoped>
+:deep(.n-card-header){
+    @apply pb-12;
+}
+:deep(.n-card__content){
+    @apply pb-20;
+}
+</style>

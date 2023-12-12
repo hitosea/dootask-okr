@@ -34,7 +34,7 @@ const showDrawer = () => {
 }
 
 </script>
-<style  scoped>
+<style  scoped lang="less">
 
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
@@ -46,7 +46,6 @@ const showDrawer = () => {
     &:focus {
         @apply bg-none;
     }
-
     i {
         @apply text-[#fff];
     }
