@@ -94,7 +94,7 @@
                             <p class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
                                     utils.GoDate(detailData.end_at || 0) }}</span>
-                                <div class="" v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
+                                <div v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
                                     <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i
                                             class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
@@ -1122,6 +1122,8 @@ onMounted(() => {
             })
         }
     })
+    //
+    nowTime.value = utils.Time();
     nowInterval.value = setInterval(() => {
         nowTime.value = utils.Time();
     }, 1000);
