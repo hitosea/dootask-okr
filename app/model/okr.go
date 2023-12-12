@@ -46,6 +46,7 @@ type Okr struct {
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 	CanUpdateScore bool           `gorm:"-" json:"can_update_score"`       // KR是否能评分
+	ObjectiveNum   string         `gorm:"-" json:"objective_num"`          // O的数字编号
 }
 
 var (
