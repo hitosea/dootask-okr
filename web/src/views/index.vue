@@ -38,7 +38,7 @@
                         </template>
                         <div class="flex flex-col">
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
-                            <p> {{ $t('已归档OKR') }}</p>
+                            <p @click="handleOpenArchive"> {{ $t('已归档OKR') }}</p>
                             <p> {{ $t('离职/删除人员OKR') }}</p>
                             <p> {{ $t('设置') }}</p>
                         </div>
@@ -78,6 +78,10 @@
     </div>
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
 
+    <!-- 已归档 -->
+    <ArchiveDrawer v-model:show="archiveShow" ></ArchiveDrawer>
+
+
     <!-- 强提示 -->
     <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>
 </template>
@@ -85,6 +89,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import AddOkrsDrawer from './components/AddOkrsDrawer.vue'
+import ArchiveDrawer from './components/ArchiveDrawer.vue'
 import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
@@ -110,6 +115,7 @@ const OkrFollowRef = ref(null)
 const OkrReplayRef = ref(null)
 
 const addShow = ref(false)
+const archiveShow = ref(false)
 const moreButtonPopoverShow = ref(false)
 const edit = ref(false)
 const searchObject = ref('')
@@ -217,6 +223,12 @@ const handleAdd = () => {
         .finally(() => {
 
         })
+}
+
+// 打开已归档
+const handleOpenArchive = () =>{
+  archiveShow.value = true;
+  moreButtonPopoverShow.value = false;
 }
 
 const handleClose = (e, id) => {
