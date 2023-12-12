@@ -1,8 +1,9 @@
 import Index from '../views/index.vue'
 import Analysis from '../views/analysis.vue'
-import addOkr from '../views/addOkr.vue'
-import okrDetails from '../views/okrDetails.vue'
-import addMultiple from '../views/addMultiple.vue'
+import addOkr from '../views/childpage/addOkr.vue'
+import okrDetails from '../views/childpage/okrDetails.vue'
+import addMultiple from '../views/childpage/addMultiple.vue'
+import dimission from '../views/childpage/dimission.vue'
 import I18n from "@/lang/index"
 
 export const routes = [
@@ -35,5 +36,11 @@ export const routes = [
         path: "/:catchAll(.*)/addMultiple",
         meta: { title:  I18n.global.t('复盘添加/详情')},
         component: addMultiple
+    },
+    {
+        name: "deletePersonnel",
+        path: "/:catchAll(.*)/deletePersonnel",
+        meta: { title:  I18n.global.t('离职/删除人员OKR')},
+        component: dimission
     }
 ]

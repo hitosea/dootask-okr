@@ -3,13 +3,11 @@
         <div class="delete-box-search">
             <div class="flex flex-1 gap-[16px]">
                 <div class="delete-box-search-input">
-                    <p class=" text-text-li shrink-0">{{ $t('目标名称') }}</p>
+                    <p class="delete-box-search-title text-text-li shrink-0">{{ $t('目标名称') }}</p>
                     <n-input v-model:value="tableKeyWord" :placeholder="$t('目标名称')" clearable />
                 </div>
-                <div class=" flex items-center overflow-hidden" >
-                    <div class="text-text-li mr-8 whitespace-nowrap">
-                        {{ $t('负责人') }}
-                    </div>
+                <div class="flex items-center overflow-hidden" >
+                    <p class="delete-box-search-title text-text-li mr-8 ">{{ $t('负责人') }}</p>
                     <n-select v-model:value="principalValue" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" :class="userIdentity == 'admin' ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
@@ -23,24 +21,32 @@
                         </template>
                     </n-select>
                 </div>
-                <n-button :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
+                <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
                         <i class="okrfont">&#xe72a;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
             </div>
-            <n-button
-                :strong="tableCheckedRowKeys.length == 0"
-                :secondary="tableCheckedRowKeys.length == 0"
-                :type="tableCheckedRowKeys.length == 0 ? 'tertiary' : 'primary'"
-                :disabled="tableCheckedRowKeys.length == 0"
-                class="float-right"
-                size="small"
-                @click="handleAssign"
-            >
-                {{ $t('批量分配') }}
-            </n-button>
+            <div class="delete-box-search-btn-row">
+                <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
+                    <template #icon>
+                        <i class="okrfont">&#xe72a;</i>
+                    </template>
+                    {{ $t('搜索') }}
+                </n-button>
+                <n-button
+                    :strong="tableCheckedRowKeys.length == 0"
+                    :secondary="tableCheckedRowKeys.length == 0"
+                    :type="tableCheckedRowKeys.length == 0 ? 'tertiary' : 'primary'"
+                    :disabled="tableCheckedRowKeys.length == 0"
+                    class="float-right"
+                    size="small"
+                    @click="handleAssign"
+                >
+                    {{ $t('批量分配') }}
+                </n-button>
+            </div>
         </div>
         <div class="mt-16 flex flex-col flex-1">
             <div>
@@ -52,11 +58,11 @@
                     @update:checked-row-keys="handleCheck"
                 />
             </div>
-            <div class="mt-auto flex justify-center">
+            <div class="pagination mt-auto flex justify-center">
                 <n-pagination
                     v-model:page="tablePage"
                     :default-page-size="tablePageSize"
-                    :page-sizes="[15,20,30,40,50]"
+                    :page-sizes="[10,20,30,40,50]"
                     :page-count="tableLastPage"
                     size="medium"
                     show-quick-jumper
@@ -116,9 +122,13 @@ import { NButton, DataTableRowKey } from 'naive-ui'
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
+import { useRouter } from 'vue-router';
+import { GlobalStore } from '@/store';
 
 const userIdentity = UserStore().info.identity[0]
 const message = useMessage()
+const router = useRouter()
+const globalStore = GlobalStore()
 
 const popupShow  = ref(false)
 const popupTitle  = ref('')
@@ -144,8 +154,8 @@ const tableKeyWord = ref('')
 const tableData = ref<any>([])
 const tableTotal = ref(0);
 const tablePage = ref(1);
-const tablePageSize = ref(15);
-const tableLastPage = ref(99999)
+const tablePageSize = ref(20);
+const tableLastPage = ref(1)
 const tableCheckedRowKeys = ref<DataTableRowKey[]>([])
 const tableColumns = ref<DataTableColumn[]>([
     {
@@ -194,7 +204,15 @@ const tableColumns = ref<DataTableColumn[]>([
                     type: 'primary',
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = true
+                        if (window.innerWidth < 768) {
+                            router.push({
+                                path: globalStore.baseRoute + '/okrDetails',
+                                query: { id: rowData.id },
+                            })
+                        }
+                        else {
+                            okrDetailsShow.value = true
+                        }
                     }
                 },
                 { default: () => $t('查看') }
@@ -341,19 +359,61 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .delete-box {
     @apply flex flex-col h-full;
+
+    .delete-box-search {
+        @apply flex gap-16 items-center;
+
+        .delete-box-search-input {
+            @apply flex items-center gap-2;
+        }
+        .delete-box-search-btn-row{
+            .search-button{
+                @apply hidden;
+            }
+        }
+    }
+
+    .pagination{
+        @apply pt-16;
+    }
 }
 
-.delete-box-search {
-    @apply flex gap-[16px] items-center;
+body.window-portrait {
+    .delete-box {
+        .delete-box-search{
+            @apply block;
+            >div{
+                @apply block;
+            }
+            .delete-box-search-title{
+                width: 60px;
+            }
+            .delete-box-search-input{
+                @apply mb-16;
+            }
+            .delete-box-search-btn-row{
+                @apply flex mt-16 justify-between;
+                .search-button{
+                    @apply flex flex;
+                }
+            }
+            .search-button{
+                @apply hidden;
+            }
+        }
+        .pagination{
+            :deep(.n-select) {
+                @apply hidden;
+            }
+            :deep(.n-pagination-quick-jumper) {
+                @apply hidden;
+            }
+        }
+    }
 }
-
-.delete-box-search-input {
-    @apply flex items-center gap-[8px];
-}
-
 </style>
 <style>
 .okr .delete-box .n-checkbox .n-checkbox-box{

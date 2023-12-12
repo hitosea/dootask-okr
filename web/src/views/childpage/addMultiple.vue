@@ -11,8 +11,9 @@
         </div>
     </div>
 </template>
+
 <script setup lang="ts">
-import AddMultipleMain from './components/AddMultipleMain.vue';
+import AddMultipleMain from '@/views/components/AddMultipleMain.vue';
 import { useRouter } from 'vue-router';
 import { GlobalStore } from '@/store';
 

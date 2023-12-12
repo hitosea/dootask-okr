@@ -1,5 +1,4 @@
 <template>
-
     <div v-if="show">
         <h1 class="text-center mt-[12%]">{{ $t('欢迎使用okr子系统') }}</h1>
         <div class="text-center mt-[20px]">
@@ -7,7 +6,6 @@
             <router-link to="/apps/analysis" class="ml-[10px]">{{ $t('前往Okr汇总') }}</router-link>
         </div>
     </div>
-
     <OkrDetailsModal ref="RefOkrDetails" @edit="handleEdit" :id="globalStore.okrDetail.id" :show="okrDetailsShow" @close="close" @openDetail="handleOpenDetail" />
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose" />
 </template>

@@ -39,7 +39,7 @@
                         <div class="flex flex-col">
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[archiveShow=true, moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
-                            <p @click="[deleteShow=true, moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
+                            <p @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
                             <p> {{ $t('设置') }}</p>
                         </div>
                     </n-popover>
@@ -207,26 +207,25 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
-    getUserInfo()
-        .then(({ data }) => {
-            if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
-                tipsContent.value = $t('您当前未加入任何部门，不能发起！')
-                showModal.value = true
-                return
+    getUserInfo().then(({ data }) => {
+        if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
+            tipsContent.value = $t('您当前未加入任何部门，不能发起！')
+            showModal.value = true
+            return
+        }
+        else{
+            if (window.innerWidth < 768) {
+                router.push(globalStore.baseRoute + '/addOkr')
             }
-            else{
-                if (window.innerWidth < 768) {
-                    router.push(globalStore.baseRoute + '/addOkr')
-                }
-                else {
-                    addShow.value = true
-                }
+            else {
+                addShow.value = true
             }
-        })
-        .catch()
-        .finally(() => {
+        }
+    })
+    .catch()
+    .finally(() => {
 
-        })
+    })
 }
 
 const handleClose = (e, id) => {
@@ -288,6 +287,17 @@ const openNewWin = () => {
         }
     });
 }
+
+// 已离职删除人员
+const handleDeleteShow = () => {
+    if (window.innerWidth < 768) {
+        router.push(globalStore.baseRoute + '/deletePersonnel')
+    }
+    else {
+        deleteShow.value = true
+    }
+}
+
 
 
 </script>
