@@ -42,9 +42,10 @@ type Okr struct {
 	DeletedAt      gorm.DeletedAt `gorm:"index;comment:删除时间" json:"deleted_at" swaggerignore:"true"`
 	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
 	ParentOKr      *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
+	User           *User          `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
-	User           *User          `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
+	CanUpdateScore bool           `gorm:"-" json:"can_update_score"`       // KR是否能评分
 }
 
 var (
@@ -65,6 +66,7 @@ var (
 	}
 	SelfScoreWeight     = 30 // 个人评分权重30
 	SuperiorScoreWeight = 70 // 上级评分权重70
+	DefaultScoreNum     = 3  // 默认评分次数3次
 )
 
 // 获取所有部门ids

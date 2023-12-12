@@ -1238,6 +1238,7 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	for _, kr := range obj.KeyResults {
 		krScore := s.getKrScore(kr)
 		kr.KrScore = krScore
+		kr.CanUpdateScore = s.CanUpdateScore(kr)
 	}
 
 	objResp := &interfaces.OkrResp{
@@ -1248,6 +1249,26 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	s.GetObjectiveExt(objResp, obj.KeyResults, user)
 
 	return objResp, nil
+}
+
+// kr是否能修改评分 3次机会
+func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
+	// 如果上级未评分，负责人分数可修改3次
+	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
+		return true
+	}
+
+	// 上级也可对评分修改3次
+	if kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
+		return true
+	}
+
+	// 复盘后分数不可修改
+	if s.hasReplay(kr.ParentId) {
+		return false
+	}
+
+	return false
 }
 
 // 是否有权限查看
@@ -1421,17 +1442,24 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
+	// kr是否能修改评分
+	if !s.CanUpdateScore(kr) {
+		return nil, e.New(constant.ErrOkrScoredNotUpdate)
+	}
+
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
 	superior := s.IsObjectiveManager(kr, user)
 	if !superior {
 		// 检查是否已评分
-		if kr.Score > -1 {
+		if kr.Score > -1 && !s.CanUpdateScore(kr) {
 			return nil, e.New(constant.ErrOkrOwnerScored)
 		}
 		// 检查用户是否为目标负责人
 		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
+		// 评分次数+1
+		kr.ScoreNum++
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
 			// 如果是超管评分，则更新目标评分
@@ -1439,6 +1467,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Updates(map[string]interface{}{
 					"score":          param.Score,
 					"superior_score": param.Score,
+					"score_num":      kr.ScoreNum,
 				}).Scan(&kr).Error; err != nil {
 					return err
 				}
@@ -1453,7 +1482,10 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 					return err
 				}
 			} else {
-				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("score", param.Score).Scan(&kr).Error; err != nil {
+				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Updates(map[string]interface{}{
+					"score":     param.Score,
+					"score_num": kr.ScoreNum,
+				}).Scan(&kr).Error; err != nil {
 					return err
 				}
 			}
@@ -1476,12 +1508,23 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
 		// 检查是否已评分
-		if kr.SuperiorScore > -1 {
+		if kr.SuperiorScore > -1 && !s.CanUpdateScore(kr) {
 			return nil, e.New(constant.ErrOkrSuperiorScored)
+		}
+		// 如果是上级首次评分，评分次数重置为1，否则评分次数+1
+		if kr.SuperiorScore == -1 && kr.ScoreNum >= 0 {
+			kr.ScoreNum = 1
+		} else {
+			kr.ScoreNum++
 		}
 		// 上级评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Update("superior_score", param.Score).Scan(&kr).Error; err != nil {
+			err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).
+				Updates(map[string]interface{}{
+					"superior_score": param.Score,
+					"score_num":      kr.ScoreNum,
+				}).Scan(&kr).Error
+			if err != nil {
 				return err
 			}
 
@@ -1907,7 +1950,7 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
-// 判断是否已复盘
+// 是否已复盘
 func (s *okrService) hasReplay(okrId int) bool {
 	var replay model.OkrReplay
 	core.DB.Preload("KrHistory").Where("okr_id = ?", okrId).First(&replay)
@@ -2439,7 +2482,7 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 	var objs []*model.Okr
 	var count int64
 
-	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 1")
+	db := core.DB.Model(&model.Okr{}).Preload("User").Where("parent_id = 0").Where("status = 1")
 
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
@@ -2463,7 +2506,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	var objs []*model.Okr
 	var count int64
 
-	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status IN (?)", []int{1, 2})
+	db := core.DB.Model(&model.Okr{}).Preload("User").Where("parent_id = 0").Where("status IN (?)", []int{1, 2})
 
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)

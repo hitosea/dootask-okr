@@ -42,6 +42,7 @@ ErrOkrReplayLengthInvalid: Le contenu est trop long. Veuillez le limiter à 255 
 ErrOkrScoreInvalid: Évaluation veuillez entrer un nombre entier de 0 à 10
 ErrOkrScoreWeightInvalid: La somme des pondérations d’autoévaluation et de notation supérieure doit être égale à 100
 ErrOkrScored: 'KR évalué non opérationnel: {{.detail}}'
+ErrOkrScoredNotUpdate: Les notes ne sont pas modifiables
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
 ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTimeEmpty: Le temps ne peut pas être vide

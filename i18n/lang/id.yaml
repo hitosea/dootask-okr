@@ -42,6 +42,7 @@ ErrOkrReplayLengthInvalid: Isinya terlalu panjang, tolong batasi sampai di bawah
 ErrOkrScoreInvalid: Untuk kelas silahkan masukkan bilangan bulat 0-10
 ErrOkrScoreWeightInvalid: Antara penilaian diri dan penilaian yang lebih tinggi, harus setara dengan 100
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi
+ErrOkrScoredNotUpdate: Nilai tidak bisa dimodifikasi
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTimeEmpty: Waktu tidak boleh kosong

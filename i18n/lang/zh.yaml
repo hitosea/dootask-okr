@@ -42,6 +42,7 @@ ErrOkrReplayLengthInvalid: 内容过长，请限制在255个字符以内
 ErrOkrScoreInvalid: 评分请输入0-10的整数
 ErrOkrScoreWeightInvalid: 自评权重和上级评分权重相加必须等于100
 ErrOkrScored: KR已评分无法操作：{{.detail}}
+ErrOkrScoredNotUpdate: 评分不可修改
 ErrOkrScoredNotUpdateProgress: 评分后不允许修改进度
 ErrOkrSuperiorScored: 上级已评分
 ErrOkrTimeEmpty: 时间不能为空
