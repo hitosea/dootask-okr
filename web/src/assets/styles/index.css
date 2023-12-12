@@ -73,3 +73,16 @@ body.window-portrait .okr-nav-back{
 .okr-more-button-popover.n-popover .n-popover__content p:hover{
     background: #F4F5F7;
 }
+
+
+/*  */
+.okr-objective-num{
+    color: #68d838;
+    display: inline-block;
+    font-size: 12px;
+    transform: scale(0.9);
+    border-radius: 8px;
+    padding: 0 6px;
+    margin-right: 4px;
+    background: rgba(135, 208, 104, 0.2);
+}

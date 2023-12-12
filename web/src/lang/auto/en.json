@@ -333,5 +333,20 @@
     "OKR明细": "OKR details",
     "欢迎使用okr子系统": "Welcome to the okr subsystem",
     "前往Okr列表": "Go to Okr list",
-    "前往Okr汇总": "Go to Okr summary"
+    "前往Okr汇总": "Go to Okr summary",
+    "目标名称": "target name",
+    "完成时间": "Complete time",
+    "归档时间": "Archive time",
+    "归档人员": "filing staff",
+    "操作": "operate",
+    "当前O进度": "Current O progress",
+    "还原": "reduction",
+    "确定要还原": "Confirm to restore",
+    "批量分配": "Bulk allocation",
+    "确定要删除吗？": "Are you sure you want to delete [{title}]?",
+    "分配OKR": "Assign OKRs",
+    "请选择用户": "Please select user",
+    "分配": "distribute",
+    "分配成功": "Allocation successful",
+    "删除成功": "successfully deleted"
 }

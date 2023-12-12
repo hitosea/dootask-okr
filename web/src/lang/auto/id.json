@@ -333,5 +333,20 @@
     "OKR明细": "Detail OKR",
     "欢迎使用okr子系统": "Selamat datang di subsistem okr",
     "前往Okr列表": "Buka daftar Okr",
-    "前往Okr汇总": "Buka ringkasan Okr"
+    "前往Okr汇总": "Buka ringkasan Okr",
+    "目标名称": "nama sasaran",
+    "完成时间": "Waktu yang lengkap",
+    "归档时间": "Waktu arsip",
+    "归档人员": "staf pengarsipan",
+    "操作": "beroperasi",
+    "当前O进度": "Kemajuan O saat ini",
+    "还原": "pengurangan",
+    "确定要还原": "Konfirmasikan untuk memulihkan",
+    "批量分配": "Alokasi massal",
+    "确定要删除吗？": "Apakah Anda yakin ingin menghapus [{title}]?",
+    "分配OKR": "Tetapkan OKR",
+    "请选择用户": "Silakan pilih pengguna",
+    "分配": "mendistribusikan",
+    "分配成功": "Alokasi berhasil",
+    "删除成功": "berhasil dihapus"
 }

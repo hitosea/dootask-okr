@@ -36,7 +36,7 @@
                     <n-date-picker v-else :class="userInfo == 'admin' ? '' :'max-w-[225px] ' " v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
                 </div>
-                
+
                 <n-button :loading="isloading" type="primary" size="small" class="ml-16 rounded px-16"
                     @click="handleClick()">
                     <template #icon>

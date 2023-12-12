@@ -163,8 +163,8 @@ const handleOpenDetail = (id,userid) => {
         router.push({
             path: globalStore.baseRoute + '/okrDetails',
             query: {
-                data: id,
-                userid:userid,
+                id: id,
+                userid: userid,
             },
         })
     }

@@ -333,5 +333,20 @@
     "OKR明细": "Détails des OKR",
     "欢迎使用okr子系统": "Bienvenue dans le sous-système okr",
     "前往Okr列表": "Aller à la liste Okr",
-    "前往Okr汇总": "Aller au résumé Okr"
+    "前往Okr汇总": "Aller au résumé Okr",
+    "目标名称": "nom de la cible",
+    "完成时间": "Temps complet",
+    "归档时间": "Heure d'archivage",
+    "归档人员": "personnel de classement",
+    "操作": "fonctionner",
+    "当前O进度": "Progression actuelle de O",
+    "还原": "réduction",
+    "确定要还原": "Confirmez pour restaurer",
+    "批量分配": "Allocation groupée",
+    "确定要删除吗？": "Êtes-vous sûr de vouloir supprimer [{title}] ?",
+    "分配OKR": "Attribuer des OKR",
+    "请选择用户": "Veuillez sélectionner un utilisateur",
+    "分配": "distribuer",
+    "分配成功": "Attribution réussie",
+    "删除成功": "supprimé avec succès"
 }

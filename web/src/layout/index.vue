@@ -1,7 +1,6 @@
 <template>
     <!-- :theme="theme" -->
-    <n-config-provider  :locale="locale" :date-locale="dateLocale"
-        :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides">
+    <n-config-provider :locale="locale" :date-locale="dateLocale" :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides">
         <n-loading-bar-provider>
             <n-message-provider>
                 <n-notification-provider>

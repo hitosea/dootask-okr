@@ -16,7 +16,7 @@
                     <n-button quaternary @click="() => { emit('close') }">
                         {{ $t('取消') }}
                     </n-button>
-                    <n-button type="primary" @click="() => { emit('submit') }">
+                    <n-button type="primary" :loading="loading" @click="() => { emit('submit') }">
                         {{ $t('确定') }}
                     </n-button>
                 </div>
@@ -39,6 +39,10 @@ const props = defineProps({
     content: {
         type: String,
         default: '',
+    },
+    loading: {
+        type: Boolean,
+        default: false,
     }
 })
 

@@ -74,3 +74,18 @@ export const participantUpdate = (data) => {
 export const okrCancel = (data) => {
     return http.get<PageReq>("okr/cancel",data)
 }
+
+//okr离职人员列表
+export const getLeaveList= (data) => {
+    return http.get<PageReq>("okr/leave/list",data)
+}
+
+//okr删除
+export const okrDelete = (id) => {
+    return http.get<PageReq>("okr/delete",{id})
+}
+
+//okr删除
+export const okrAssign = (data) => {
+    return http.post<PageReq>("okr/leave/update",data)
+}
