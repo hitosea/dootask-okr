@@ -144,7 +144,7 @@ const tableKeyWord = ref('')
 const tableData = ref<any>([])
 const tableTotal = ref(0);
 const tablePage = ref(1);
-const tablePageSize = ref(5);
+const tablePageSize = ref(15);
 const tableLastPage = ref(99999)
 const tableCheckedRowKeys = ref<DataTableRowKey[]>([])
 const tableColumns = ref<DataTableColumn[]>([
@@ -157,7 +157,12 @@ const tableColumns = ref<DataTableColumn[]>([
         key: 'title',
         minWidth: 200,
         render(rowData:any) {
-            return [ h("span",{class: 'okr-objective-num'}, rowData.objective_num || ('O' + rowData.id) ), rowData.title || "" ]
+            return h("div",{class: 'relative'},
+                h("div",{class: 'flex max-w-[100%] items-center absolute top-[-10px]'}, [
+                    h("span",{class: 'okr-objective-num'}, rowData.objective_num || ('O' + rowData.id) ),
+                    h("span",{class: 'overflow-hidden whitespace-nowrap text-ellipsis'}, rowData.title || "" ),
+                ])
+            )
         }
     },
     {

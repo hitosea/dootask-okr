@@ -29,7 +29,7 @@ const showDrawer = () => {
 }
 </script>
 
-<style  scoped>
+<style lang="less" scoped>
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
 }

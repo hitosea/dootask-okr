@@ -85,4 +85,5 @@ body.window-portrait .okr-nav-back{
     padding: 0 6px;
     margin-right: 4px;
     background: rgba(135, 208, 104, 0.2);
+    white-space: nowrap;
 }

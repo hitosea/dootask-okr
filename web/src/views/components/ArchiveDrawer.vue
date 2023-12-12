@@ -7,9 +7,6 @@
                 <div class=" flex-auto overflow-hidden">
                   <ArchiveMain></ArchiveMain>
                 </div>
-                <div class="button-box flex-initial">
-
-                </div>
             </div>
         </n-drawer-content>
     </n-drawer>
@@ -30,11 +27,11 @@ const closeDrawer = () => {
 
 // 显示
 const showDrawer = () => {
-  
+
 }
 
 </script>
-<style  scoped lang="less">
+<style scoped lang="less">
 
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
