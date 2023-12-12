@@ -2033,6 +2033,9 @@ const docTemplate = `{
                 "archive_at": {
                     "type": "string"
                 },
+                "archive_user": {
+                    "$ref": "#/definitions/model.User"
+                },
                 "archive_userid": {
                     "type": "integer"
                 },
@@ -2076,6 +2079,10 @@ const docTemplate = `{
                 "kr_score": {
                     "description": "KR总评分",
                     "type": "number"
+                },
+                "objective_num": {
+                    "description": "O的数字编号",
+                    "type": "string"
                 },
                 "parent_id": {
                     "type": "integer"
@@ -2469,6 +2476,9 @@ const docTemplate = `{
                 "archive_at": {
                     "type": "string"
                 },
+                "archive_user": {
+                    "$ref": "#/definitions/model.User"
+                },
                 "archive_userid": {
                     "type": "integer"
                 },
@@ -2524,6 +2534,10 @@ const docTemplate = `{
                 "kr_score": {
                     "description": "KR总评分",
                     "type": "number"
+                },
+                "objective_num": {
+                    "description": "O的数字编号",
+                    "type": "string"
                 },
                 "parent_id": {
                     "type": "integer"
@@ -2722,6 +2736,9 @@ const docTemplate = `{
                 "archive_at": {
                     "type": "string"
                 },
+                "archive_user": {
+                    "$ref": "#/definitions/model.User"
+                },
                 "archive_userid": {
                     "type": "integer"
                 },
@@ -2765,6 +2782,10 @@ const docTemplate = `{
                 "kr_score": {
                     "description": "KR总评分",
                     "type": "number"
+                },
+                "objective_num": {
+                    "description": "O的数字编号",
+                    "type": "string"
                 },
                 "parent_id": {
                     "type": "integer"

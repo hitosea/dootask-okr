@@ -43,6 +43,7 @@ type Okr struct {
 	KeyResults     []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
 	ParentOKr      *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
 	User           *User          `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
+	ArchiveUser    *User          `gorm:"ForeignKey:ArchiveUserid;References:Userid" json:"archive_user,omitempty"`
 	KrScore        float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle    string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 	CanUpdateScore bool           `gorm:"-" json:"can_update_score"`       // KR是否能评分

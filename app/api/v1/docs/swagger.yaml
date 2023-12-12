@@ -12,6 +12,8 @@ definitions:
         type: string
       archive_at:
         type: string
+      archive_user:
+        $ref: '#/definitions/model.User'
       archive_userid:
         type: integer
       ascription:
@@ -42,6 +44,9 @@ definitions:
       kr_score:
         description: KR总评分
         type: number
+      objective_num:
+        description: O的数字编号
+        type: string
       parent_id:
         type: integer
       parent_okr:
@@ -324,6 +329,8 @@ definitions:
         type: array
       archive_at:
         type: string
+      archive_user:
+        $ref: '#/definitions/model.User'
       archive_userid:
         type: integer
       ascription:
@@ -363,6 +370,9 @@ definitions:
       kr_score:
         description: KR总评分
         type: number
+      objective_num:
+        description: O的数字编号
+        type: string
       parent_id:
         type: integer
       parent_okr:
@@ -504,6 +514,8 @@ definitions:
     properties:
       archive_at:
         type: string
+      archive_user:
+        $ref: '#/definitions/model.User'
       archive_userid:
         type: integer
       ascription:
@@ -534,6 +546,9 @@ definitions:
       kr_score:
         description: KR总评分
         type: number
+      objective_num:
+        description: O的数字编号
+        type: string
       parent_id:
         type: integer
       parent_okr:

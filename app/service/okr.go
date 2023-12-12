@@ -2510,7 +2510,7 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 	var objs []*model.Okr
 	var count int64
 
-	db := core.DB.Model(&model.Okr{}).Preload("User").Where("parent_id = 0").Where("status = 1")
+	db := core.DB.Model(&model.Okr{}).Preload("User").Preload("ArchiveUser").Where("parent_id = 0").Where("status = 1")
 
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
