@@ -1243,7 +1243,7 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 
 	objResp := &interfaces.OkrResp{
 		Okr:          obj,
-		SuperiorUser: s.GetSuperiorUserIds(obj, user.Userid),
+		SuperiorUser: s.GetSuperiorUserIds(obj, user),
 	}
 
 	s.GetObjectiveExt(objResp, obj.KeyResults, user)
@@ -1463,7 +1463,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
 			// 如果是超管评分，则更新目标评分
-			if user.IsAdmin() {
+			if user.IsAdmin() && s.GetSettingSuperiorUserId() == 0 {
 				if err := tx.Model(&model.Okr{}).Where("id = ?", param.Id).Updates(map[string]interface{}{
 					"score":          param.Score,
 					"superior_score": param.Score,
@@ -1556,6 +1556,16 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	return kr, nil
 }
 
+// 获取设置上级评分的用户id
+func (s *okrService) GetSettingSuperiorUserId() int {
+	var userid int
+	okr, _ := OkrSettingService.GetSetting(model.SettingOkrKey)
+	if okr != nil {
+		userid = int(okr["score_department_user"].(float64))
+	}
+	return userid
+}
+
 // 检查用户是否为目标上级
 func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfoResp) bool {
 	// 负责人 = 部门负责人
@@ -1566,6 +1576,14 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 	// 是否超管评分 1.顶级部门负责人已评分 3.顶级部门负责人评分后，超管可评分
 	var topDepartment model.UserDepartment
 	core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("owner_userid = ?", kr.Userid).First(&topDepartment)
+
+	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
+	settingSuperiorUserId := s.GetSettingSuperiorUserId()
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) {
+		return user.Userid == settingSuperiorUserId
+	}
+
+	// 正常超管评分
 	if user.IsAdmin() && topDepartment.Id > 0 {
 		return true
 	}
@@ -1612,12 +1630,20 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 }
 
 // 获取目标评分上级用户ids
-func (s *okrService) GetSuperiorUserIds(obj *model.Okr, userid int) []int {
+func (s *okrService) GetSuperiorUserIds(obj *model.Okr, user *interfaces.UserInfoResp) []int {
 	var userids []int
 
 	// 如果是超管评分，则返回所有超管用户
 	var topDepartment model.UserDepartment
 	core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("owner_userid = ?", obj.Userid).First(&topDepartment)
+
+	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
+	settingSuperiorUserId := s.GetSettingSuperiorUserId()
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) {
+		return []int{settingSuperiorUserId}
+	}
+
+	// 正常超管评分
 	if topDepartment.Id > 0 {
 		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Pluck("userid", &userids)
 		return userids
@@ -2359,7 +2385,7 @@ func (s *okrService) getObjectiveAndCheckPermission(user *interfaces.UserInfoRes
 	}
 
 	// 仅限目标负责人、管理员操作
-	if obj.Userid != user.Userid || !user.IsAdmin() {
+	if obj.Userid != user.Userid && !user.IsAdmin() {
 		return nil, e.New(constant.ErrOkrOwnerOrAdminNotCancel)
 	}
 
