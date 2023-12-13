@@ -348,5 +348,12 @@
     "请选择用户": "Silakan pilih pengguna",
     "分配": "mendistribusikan",
     "分配成功": "Alokasi berhasil",
-    "删除成功": "berhasil dihapus"
+    "删除成功": "berhasil dihapus",
+    "评分部门": "Departemen Penilaian",
+    "单选：指定可评分部门及部门负责人OKR的人员。": "Pilihan tunggal: Tentukan orang yang dapat menilai OKR untuk departemen dan kepala departemen.",
+    "评分规则": "Aturan penilaian",
+    "自评占比": "Proporsi evaluasi diri",
+    "上级占比": "Proporsi atasan",
+    "自评与上级的占比总和需等于100%。": "Jumlah proporsi evaluasi diri dan atasan harus sama dengan 100%.",
+    "自评与上级的占比总和需等于100%": "Jumlah proporsi evaluasi diri dan atasan harus sama dengan 100%"
 }

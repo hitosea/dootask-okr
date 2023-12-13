@@ -5,6 +5,7 @@ import okrDetails from '../views/childpage/okrDetails.vue'
 import addMultiple from '../views/childpage/addMultiple.vue'
 import dimission from '../views/childpage/dimission.vue'
 import archive from '../views/childpage/archive.vue'
+import setting from '../views/childpage/setting.vue'
 import I18n from "@/lang/index"
 
 export const routes = [
@@ -49,5 +50,11 @@ export const routes = [
         path: "/:catchAll(.*)/archive",
         meta: { title:  I18n.global.t('已归档OKR')},
         component: archive
+    },
+    {
+        name: "setting",
+        path: "/:catchAll(.*)/setting",
+        meta: { title:  I18n.global.t('离职/删除人员OKR')},
+        component: setting
     }
 ]

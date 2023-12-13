@@ -9,3 +9,7 @@ export const systemSetting = (params?: System.systemSetting) => {
 export const systemSettingMail = (params?: System.systemSettingEmail) => {
     return http.post<ResultData>("system/setting/mail", params)
 }
+
+export const okrSetting = (params?: any) => {
+    return http.post("okr/setting", params)
+}

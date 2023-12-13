@@ -85,7 +85,7 @@ export const okrDelete = (id) => {
     return http.get<PageReq>("okr/delete",{id})
 }
 
-//okr删除
+//okr分配
 export const okrAssign = (data) => {
     return http.post<PageReq>("okr/leave/update",data)
 }

@@ -348,5 +348,12 @@
     "请选择用户": "Veuillez sélectionner un utilisateur",
     "分配": "distribuer",
     "分配成功": "Attribution réussie",
-    "删除成功": "supprimé avec succès"
+    "删除成功": "supprimé avec succès",
+    "评分部门": "Département de classement",
+    "单选：指定可评分部门及部门负责人OKR的人员。": "Choix unique : spécifiez les personnes qui peuvent évaluer les OKR pour les départements et les chefs de département.",
+    "评分规则": "Règles de jugement",
+    "自评占比": "Proportion d'auto-évaluation",
+    "上级占比": "Proportion de supérieurs",
+    "自评与上级的占比总和需等于100%。": "La somme des proportions d'auto-évaluation et de supérieurs doit être égale à 100 %.",
+    "自评与上级的占比总和需等于100%": "La somme des proportions d'auto-évaluation et de supérieurs doit être égale à 100 %"
 }

@@ -59,7 +59,6 @@ body.window-portrait .okr-nav-back{
     display: none;
 }
 
-
 /* 全局更多下拉样式 */
 .okr-more-button-popover.n-popover{
     @apply overflow-hidden rounded;
@@ -74,8 +73,7 @@ body.window-portrait .okr-nav-back{
     background: #F4F5F7;
 }
 
-
-/*  */
+/* 全局O编号 */
 .okr-objective-num{
     color: #68d838;
     display: inline-block;

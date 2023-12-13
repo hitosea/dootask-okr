@@ -39,8 +39,8 @@
                         <div class="flex flex-col">
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
-                            <p @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
-                            <p> {{ $t('设置') }}</p>
+                            <p v-if="isAdmin" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
+                            <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
                         </div>
                     </n-popover>
                 </div>
@@ -76,6 +76,8 @@
             </n-tabs>
         </div>
     </div>
+
+    <!-- 添加Okr -->
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
 
     <!-- 已归档 -->
@@ -83,6 +85,9 @@
 
     <!-- 离职/删除人员OKR -->
     <DeleteDrawer v-model:show="deleteShow" ></DeleteDrawer>
+
+    <!-- 设置 -->
+    <SettingDrawer v-model:show="settingShow"></SettingDrawer>
 
     <!-- 强提示 -->
     <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>
@@ -93,6 +98,7 @@ import { ref } from 'vue'
 import AddOkrsDrawer from './components/AddOkrsDrawer.vue'
 import ArchiveDrawer from './components/ArchiveDrawer.vue'
 import DeleteDrawer from './components/DeleteDrawer.vue'
+import SettingDrawer from './components/SettingDrawer.vue'
 import Icreated from '@/views/manage/Icreated.vue'
 import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
@@ -102,9 +108,13 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { GlobalStore } from '@/store'
+import { UserStore } from '@/store/user'
+
+const isAdmin = UserStore().info.identity[0] == 'admin'
 
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') ? 1 : 0  )
+const isPortrait = computed(() => document.querySelector('.window-portrait') ? 1 : 0  )
 const pageTitle = ref("OKR管理")
 const globalStore = GlobalStore()
 const loadIng = ref(false)
@@ -120,6 +130,7 @@ const OkrReplayRef = ref(null)
 const addShow = ref(false)
 const archiveShow = ref(false)
 const deleteShow = ref(false)
+const settingShow = ref(false)
 const moreButtonPopoverShow = ref(false)
 const edit = ref(false)
 const searchObject = ref('')
@@ -214,18 +225,15 @@ const handleAdd = () => {
             return
         }
         else{
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 768 && isPortrait.value) {
                 router.push(globalStore.baseRoute + '/addOkr')
-            }
-            else {
+            }else {
                 addShow.value = true
             }
         }
     })
     .catch()
-    .finally(() => {
-
-    })
+    .finally()
 }
 
 const handleClose = (e, id) => {
@@ -288,18 +296,9 @@ const openNewWin = () => {
     });
 }
 
-// 已离职删除人员
-const handleDeleteShow = () => {
-    if (window.innerWidth < 768) {
-        router.push(globalStore.baseRoute + '/deletePersonnel')
-    }
-    else {
-        deleteShow.value = true
-    }
-}
-// 已离职删除人员
+// 已归档
 const handleArchiveShow = () => {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 768 && isPortrait.value) {
         router.push(globalStore.baseRoute + '/archive')
     }
     else {
@@ -307,8 +306,23 @@ const handleArchiveShow = () => {
     }
 }
 
+// 已离职删除人员
+const handleDeleteShow = () => {
+    if (window.innerWidth < 768 && isPortrait.value) {
+        router.push(globalStore.baseRoute + '/deletePersonnel')
+    }else {
+        deleteShow.value = true
+    }
+}
 
-
+// 设置
+const handleSettingShow = () => {
+    if (window.innerWidth < 768 && isPortrait.value) {
+        router.push(globalStore.baseRoute + '/setting')
+    }else {
+        settingShow.value = true
+    }
+}
 </script>
 
 <style lang="less" scoped>

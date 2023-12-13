@@ -348,5 +348,12 @@
     "请选择用户": "Please select user",
     "分配": "distribute",
     "分配成功": "Allocation successful",
-    "删除成功": "successfully deleted"
+    "删除成功": "successfully deleted",
+    "评分部门": "Grading Department",
+    "单选：指定可评分部门及部门负责人OKR的人员。": "Single choice: Specify the people who can score OKRs for departments and department heads.",
+    "评分规则": "Judging rules",
+    "自评占比": "Self-evaluation proportion",
+    "上级占比": "Proportion of superiors",
+    "自评与上级的占比总和需等于100%。": "The sum of the proportions of self-evaluation and superiors must equal 100%.",
+    "自评与上级的占比总和需等于100%": "The sum of the proportions of self-evaluation and superiors must equal 100%"
 }
