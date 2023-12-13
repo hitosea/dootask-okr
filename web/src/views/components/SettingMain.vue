@@ -63,7 +63,7 @@ const loadUserSelects = () => {
                         class: "okr-user-selects",
                         props: {
                             value: formModel.value.score_department_user ? [formModel.value.score_department_user] : [],
-                            title: $t('选择参与人'),
+                            title: $t('选择用户'),
                             border: false,
                             avatarSize: 36,
                             addIcon: false,

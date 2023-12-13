@@ -153,7 +153,7 @@
                                             <div v-if="userInfo.userid != detailData.userid || detailData.canceled == '1' || detailData.completed == '1' || item.score > -1 || item.superior_score > -1"
                                                 class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]">
                                             </div>
-                                            <UserSelects class=" relative z-[1]" :formkey="index" />
+                                            <UserSelects class="relative z-[1]" :formkey="index" />
                                         </div>
                                         <n-avatar v-if="!showUserSelect" round :size="20"
                                             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
@@ -276,7 +276,7 @@
                                                     <div v-if="userInfo.userid != detailData.userid || detailData.canceled == '1' || detailData.completed == '1' || item.score > -1 || item.superior_score > -1"
                                                         class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]">
                                                     </div>
-                                                    <UserSelects class=" relative z-[1]" :formkey="index" />
+                                                    <UserSelects class="relative z-[1]" :formkey="index" />
                                                 </div>
                                                 <n-avatar v-if="!showUserSelect" round :size="20"
                                                     src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
