@@ -1575,9 +1575,9 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "是否已评分未复盘 0-默认全部 1-未复盘",
-                        "name": "replayed",
+                        "type": "boolean",
+                        "description": "选中已评分未复盘 true-选中 false-未选中",
+                        "name": "select_replayed",
                         "in": "query"
                     },
                     {
@@ -2147,6 +2147,9 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_completed_at": {
+                    "type": "string"
+                },
                 "score_num": {
                     "type": "integer"
                 },
@@ -2598,6 +2601,9 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_completed_at": {
+                    "type": "string"
+                },
                 "score_num": {
                     "type": "integer"
                 },
@@ -2846,6 +2852,9 @@ const docTemplate = `{
                     "description": "个人评分和O总评分",
                     "type": "number"
                 },
+                "score_completed_at": {
+                    "type": "string"
+                },
                 "score_num": {
                     "type": "integer"
                 },
@@ -2986,6 +2995,9 @@ const docTemplate = `{
                 },
                 "problem": {
                     "type": "string"
+                },
+                "replay": {
+                    "type": "integer"
                 },
                 "replays": {
                     "description": "复盘集合",

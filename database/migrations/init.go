@@ -143,10 +143,19 @@ var AddTableOkrPushLog = &gormigrate.Migration{
 var AddTableOkr11Version = &gormigrate.Migration{
 	ID: "2023120811-add-table-okr-11version",
 	Migrate: func(tx *gorm.DB) error {
-		columns := []string{"score_num", "status", "archive_userid", "archive_at"}
+		columns := []string{"score_num", "score_completed_at", "status", "archive_userid", "archive_at"}
 		for _, column := range columns {
 			if !tx.Migrator().HasColumn(&model.Okr{}, column) {
 				if err := tx.Migrator().AddColumn(&model.Okr{}, column); err != nil {
+					return err
+				}
+			}
+		}
+
+		columns2 := []string{"replay"}
+		for _, column := range columns2 {
+			if !tx.Migrator().HasColumn(&model.OkrReplay{}, column) {
+				if err := tx.Migrator().AddColumn(&model.OkrReplay{}, column); err != nil {
 					return err
 				}
 			}

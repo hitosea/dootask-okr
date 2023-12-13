@@ -70,6 +70,8 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_completed_at:
+        type: string
       score_num:
         type: integer
       start_at:
@@ -393,6 +395,8 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_completed_at:
+        type: string
       score_num:
         type: integer
       start_at:
@@ -569,6 +573,8 @@ definitions:
       score:
         description: 个人评分和O总评分
         type: number
+      score_completed_at:
+        type: string
       score_num:
         type: integer
       start_at:
@@ -663,6 +669,8 @@ definitions:
         type: integer
       problem:
         type: string
+      replay:
+        type: integer
       replays:
         description: 复盘集合
         items:
@@ -1678,10 +1686,10 @@ paths:
         in: query
         name: page_size
         type: integer
-      - description: 是否已评分未复盘 0-默认全部 1-未复盘
+      - description: 选中已评分未复盘 true-选中 false-未选中
         in: query
-        name: replayed
-        type: integer
+        name: select_replayed
+        type: boolean
       - description: 开始时间
         in: query
         name: start_at

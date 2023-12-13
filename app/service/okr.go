@@ -764,6 +764,8 @@ func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
 
 	// 更新O评分
 	obj.Score = score
+	t := time.Now()
+	obj.ScoreCompletedAt = &t
 	if err := tx.Save(obj).Error; err != nil {
 		return err
 	}
@@ -791,6 +793,7 @@ func (s *okrService) CreateOkrReplayTx(tx *gorm.DB, userid int, obj *model.Okr) 
 		OkrPriority:     obj.Priority,
 		Review:          "",
 		Problem:         "",
+		Replay:          2,
 	}
 	if err := tx.Create(&replay).Error; err != nil {
 		return err
@@ -1206,7 +1209,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		}
 		var admSql []string
 		for _, departmentId := range admDepartments {
-			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, replay.department_id) > 0", departmentId))
+			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
 		}
 		db = db.Where(strings.Join(admSql, " OR "))
 	}
@@ -1236,13 +1239,13 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		if err != nil {
 			return nil, e.New(constant.ErrOkrTimeFormat)
 		}
-		db = db.Where("replay.created_at >= ? AND replay.created_at <= ?", startAt, endAt)
+		db = db.Where("okr.score_completed_at >= ? AND okr.score_completed_at <= ?", startAt, endAt)
 	}
 
-	// 是否已评分未复盘筛选 Replayed 0-默认全部 1-未复盘
-	Replayed := param.Replayed
-	if Replayed == 1 {
-		db = db.Where("replay.review = ''")
+	// 是否已评分未复盘筛选 true-选中 false-未选中
+	SelectReplayed := param.SelectReplayed
+	if SelectReplayed {
+		db = db.Where("replay.replay = 2")
 	}
 
 	var count int64
@@ -1337,16 +1340,6 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 
 // kr是否能修改评分 3次机会
 func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
-	// 如果上级未评分，负责人分数可修改3次
-	if kr.SuperiorScore == -1 && kr.ScoreNum <= model.DefaultScoreNum {
-		return true
-	}
-
-	// 上级也可对评分修改3次
-	if kr.SuperiorScore > -1 && kr.ScoreNum <= model.DefaultScoreNum {
-		return true
-	}
-
 	// 复盘后分数不可修改
 	if s.hasReplay(kr.ParentId) {
 		return false
@@ -1355,6 +1348,16 @@ func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
 	// 归档和离职的人员kr状态时分数不可修改
 	if kr.Status > 0 {
 		return false
+	}
+
+	// 如果上级未评分，负责人分数可修改3次
+	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
+		return true
+	}
+
+	// 上级也可对评分修改3次
+	if kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
+		return true
 	}
 
 	return false
@@ -1532,9 +1535,9 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 	}
 
 	// kr是否能修改评分
-	if !s.CanUpdateScore(kr) {
-		return nil, e.New(constant.ErrOkrScoredNotUpdate)
-	}
+	// if (kr.Score > -1 || (param.Score > -1 && kr.SuperiorScore > -1)) && !s.CanUpdateScore(kr) {
+	// 	return nil, e.New(constant.ErrOkrScoredNotUpdate)
+	// }
 
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
 	superior := s.IsObjectiveManager(kr, user)
@@ -1547,8 +1550,10 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
-		// 评分次数+1
-		kr.ScoreNum++
+		// 如果不是首次评分，评分次数+1
+		if kr.Score > -1 {
+			kr.ScoreNum++
+		}
 		// 负责人评分
 		err = core.DB.Transaction(func(tx *gorm.DB) error {
 			// 如果是超管评分，则更新目标评分
@@ -1600,9 +1605,9 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		if kr.SuperiorScore > -1 && !s.CanUpdateScore(kr) {
 			return nil, e.New(constant.ErrOkrSuperiorScored)
 		}
-		// 如果是上级首次评分，评分次数重置为1，否则评分次数+1
-		if kr.SuperiorScore == -1 && kr.ScoreNum >= 0 {
-			kr.ScoreNum = 1
+		// 如果是上级首次评分，评分次数重置为0，否则评分次数+1
+		if kr.SuperiorScore == -1 && kr.ScoreNum > 0 {
+			kr.ScoreNum = 0
 		} else {
 			kr.ScoreNum++
 		}
@@ -1668,7 +1673,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 
 	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
 	settingSuperiorUserId := s.GetSettingSuperiorUserId()
-	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) {
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) && settingSuperiorUserId != kr.Userid {
 		return user.Userid == settingSuperiorUserId
 	}
 
@@ -1728,7 +1733,7 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, user *interfaces.UserInf
 
 	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
 	settingSuperiorUserId := s.GetSettingSuperiorUserId()
-	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) {
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) && settingSuperiorUserId != obj.Userid {
 		return []int{settingSuperiorUserId}
 	}
 
