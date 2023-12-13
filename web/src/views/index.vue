@@ -38,7 +38,7 @@
                         </template>
                         <div class="flex flex-col">
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
-                            <p @click="[archiveShow=true, moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
+                            <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
                             <p @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
                             <p> {{ $t('设置') }}</p>
                         </div>
@@ -295,6 +295,15 @@ const handleDeleteShow = () => {
     }
     else {
         deleteShow.value = true
+    }
+}
+// 已离职删除人员
+const handleArchiveShow = () => {
+    if (window.innerWidth < 768) {
+        router.push(globalStore.baseRoute + '/archive')
+    }
+    else {
+        archiveShow.value = true
     }
 }
 

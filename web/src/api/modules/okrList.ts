@@ -89,3 +89,19 @@ export const okrDelete = (id) => {
 export const okrAssign = (data) => {
     return http.post<PageReq>("okr/leave/update",data)
 }
+
+//操作归档
+export const okrArchive = (id) => {
+    return http.get<PageReq>("okr/archive",id)
+}
+
+//获取归档列表
+export const getOkrArchive = (data) => {
+    return http.get<PageReq>("okr/archive/list",data)
+}
+
+//还原归档目标
+export const okrArchiveRestore = (id) => {
+    return http.get<PageReq>("okr/archive/restore",id)
+}
+

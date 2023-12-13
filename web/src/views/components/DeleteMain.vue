@@ -75,7 +75,7 @@
     </div>
 
     <!-- OKR详情 -->
-    <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"/>
+    <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getList="()=>{  getList('init') }" @close="() => { okrDetailsShow = false }"/>
 
     <!-- 警告框 -->
     <WarningPopup v-model:show="popupShow" :loading="deleteLoadIng>0" :title="popupTitle" :content="popupContent" @close="popupShow = false" @submit="handleDelete"></WarningPopup>
@@ -167,12 +167,10 @@ const tableColumns = ref<DataTableColumn[]>([
         key: 'title',
         minWidth: 200,
         render(rowData:any) {
-            return h("div",{class: 'relative'},
-                h("div",{class: 'flex max-w-[100%] items-center absolute top-[-10px]'}, [
+            return h("div",{class: 'flex items-center'}, [
                     h("span",{class: 'okr-objective-num'}, rowData.objective_num || ('O' + rowData.id) ),
-                    h("span",{class: 'overflow-hidden whitespace-nowrap text-ellipsis'}, rowData.title || "" ),
+                    h("span",{class: 'line-clamp-1'}, rowData.title || "" ),
                 ])
-            )
         }
     },
     {
