@@ -20,6 +20,8 @@ type OkrReplay struct {
 	UpdatedAt       time.Time           `gorm:"autoUpdateTime;comment:更新时间" json:"updated_at"`
 	KrHistory       []*OkrReplayHistory `gorm:"foreignkey:ReplayId" json:"kr_history,omitempty"`
 	OkrAlias        []string            `gorm:"-" json:"okr_alias,omitempty"`
+	KeyResults      []*Okr              `gorm:"-" json:"key_results"` // KR集合
+	Replays         []*OkrReplay        `gorm:"-" json:"replays"`     // 复盘集合
 }
 
 var OkrReplayModel = OkrReplay{}

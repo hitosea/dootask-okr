@@ -634,6 +634,11 @@ definitions:
         type: string
       id:
         type: integer
+      key_results:
+        description: KR集合
+        items:
+          $ref: '#/definitions/model.Okr'
+        type: array
       kr_history:
         items:
           $ref: '#/definitions/model.OkrReplayHistory'
@@ -658,6 +663,11 @@ definitions:
         type: integer
       problem:
         type: string
+      replays:
+        description: 复盘集合
+        items:
+          $ref: '#/definitions/model.OkrReplay'
+        type: array
       review:
         type: string
       updated_at:
@@ -1648,6 +1658,14 @@ paths:
       - application/json
       description: 获取OKR复盘列表
       parameters:
+      - description: 部门id
+        in: query
+        name: department_id
+        type: integer
+      - description: 结束时间
+        in: query
+        name: end_at
+        type: string
       - description: 目标（O）
         in: query
         name: objective
@@ -1659,6 +1677,18 @@ paths:
       - description: 每页显示数量，默认:50，最大:100
         in: query
         name: page_size
+        type: integer
+      - description: 是否已评分未复盘 0-默认全部 1-未复盘
+        in: query
+        name: replayed
+        type: integer
+      - description: 开始时间
+        in: query
+        name: start_at
+        type: string
+      - description: 用户id
+        in: query
+        name: userid
         type: integer
       responses:
         "200":

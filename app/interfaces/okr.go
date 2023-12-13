@@ -204,3 +204,20 @@ type OkrLeaveUpdateReq struct {
 	OkrIds []int `form:"okr_ids" json:"okr_ids" binding:"required"` // okr ids
 	Userid int   `form:"userid" json:"userid" binding:"required"`   // 新负责人id
 }
+
+// OKR复盘列表请求
+type OkrReplayListReq struct {
+	DepartmentId int    `form:"department_id" json:"department_id"` // 部门id
+	Userid       int    `form:"userid" json:"userid"`               // 用户id
+	Objective    string `form:"objective" json:"objective"`         // 目标（O）
+	StartAt      string `form:"start_at" json:"start_at"`           // 开始时间
+	EndAt        string `form:"end_at" json:"end_at"`               // 结束时间
+	Replayed     int    `form:"replayed" json:"replayed"`           // 是否已评分未复盘 0-默认全部 1-未复盘
+	*Pages
+}
+
+// OKR复盘列表请求
+type OkrReplayResp struct {
+	*model.OkrReplay
+	ReplayIds string `json:"replay_ids"` // 复盘集合
+}

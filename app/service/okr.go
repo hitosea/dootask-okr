@@ -768,6 +768,34 @@ func (s *okrService) UpdateObjectiveScoreTx(tx *gorm.DB, obj *model.Okr) error {
 		return err
 	}
 
+	// v1.1完成后，创建一个空复盘记录
+	if obj.Score > -1 {
+		if err := s.CreateOkrReplayTx(tx, obj.Userid, obj); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// 评分完成，创建 OKR 空的复盘记录
+func (s *okrService) CreateOkrReplayTx(tx *gorm.DB, userid int, obj *model.Okr) error {
+	replay := model.OkrReplay{
+		Userid:          userid,
+		OkrId:           obj.Id,
+		OkrAscription:   obj.Ascription,
+		OkrUserid:       obj.Userid,
+		OkrDepartmentId: obj.DepartmentId,
+		OkrTitle:        obj.Title,
+		OkrProgress:     obj.Progress,
+		OkrPriority:     obj.Priority,
+		Review:          "",
+		Problem:         "",
+	}
+	if err := tx.Create(&replay).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -1107,15 +1135,17 @@ func (s *okrService) GetFollowList(user *interfaces.UserInfoResp, objective stri
 }
 
 // 获取复盘列表
-func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
-	var replays []*model.OkrReplay
+func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfaces.OkrReplayListReq, page, pageSize int) (*interfaces.Pagination, error) {
+	var replays []*interfaces.OkrReplayResp
 
 	okrTable := core.DBTableName(&model.Okr{})
 	okrReplayTable := core.DBTableName(&model.OkrReplay{})
 
 	db := core.DB.Table(okrReplayTable + " AS replay").
-		Select("replay.*, okr.visible_range, okr.parent_id").
+		Select("replay.*, GROUP_CONCAT(replay.id ORDER BY replay.created_at DESC) as replay_ids, okr.visible_range, okr.parent_id").
 		Joins(fmt.Sprintf(`LEFT JOIN %s okr ON replay.okr_id = okr.id`, okrTable)).
+		Where("okr.status = 0").
+		Group("replay.okr_id").
 		Order("replay.created_at DESC")
 
 	var allWhere []string
@@ -1167,9 +1197,52 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR replay.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
 	}
 
+	// 超级管理员可以通过部门筛选
+	departmentId := param.DepartmentId
+	if departmentId != 0 {
+		admDepartments, _, err := s.GetDepartmentsBySearchDeptId([]int{departmentId})
+		if err != nil {
+			return nil, err
+		}
+		var admSql []string
+		for _, departmentId := range admDepartments {
+			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, replay.department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(admSql, " OR "))
+	}
+
+	// 部门负责人可以通过人员筛选
+	userid := param.Userid
+	if userid != 0 {
+		db = db.Where("replay.userid = ?", userid)
+	}
+
+	// 目标筛选
+	objective := param.Objective
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
 		db = db.Where("replay.okr_title LIKE ?", "%"+objective+"%")
+	}
+
+	// 时间筛选
+	startAtStr := param.StartAt
+	endAtStr := param.EndAt
+	if startAtStr != "" && endAtStr != "" {
+		startAt, err := common.ParseTime(startAtStr)
+		if err != nil {
+			return nil, e.New(constant.ErrOkrTimeFormat)
+		}
+		endAt, err := common.ParseTime(endAtStr)
+		if err != nil {
+			return nil, e.New(constant.ErrOkrTimeFormat)
+		}
+		db = db.Where("replay.created_at >= ? AND replay.created_at <= ?", startAt, endAt)
+	}
+
+	// 是否已评分未复盘筛选 Replayed 0-默认全部 1-未复盘
+	Replayed := param.Replayed
+	if Replayed == 1 {
+		db = db.Where("replay.review = ''")
 	}
 
 	var count int64
@@ -1177,13 +1250,17 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, objective stri
 		return nil, err
 	}
 
-	if err := db.Preload("KrHistory").Offset((page - 1) * pageSize).Limit(pageSize).Find(&replays).Error; err != nil {
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&replays).Error; err != nil {
 		return nil, err
 	}
 
 	// 获取所属别名
 	for _, replay := range replays {
 		replay.OkrAlias = s.getOwningAlias(replay.OkrAscription, replay.Userid, replay.OkrDepartmentId)
+		core.DB.Model(&model.Okr{}).Where("parent_id = ?", replay.OkrId).Order("created_at ASC").Find(&replay.KeyResults)
+		// 加载合并的复盘记录
+		replayIds := strings.Split(replay.ReplayIds, ",")
+		core.DB.Model(&model.OkrReplay{}).Preload("KrHistory").Where("id IN (?)", replayIds).Order("created_at ASC").Find(&replay.Replays)
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
@@ -1204,6 +1281,11 @@ func (s *okrService) GetReplayListByOkrId(okrId, page, pageSize int) (*interface
 
 	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&replays).Error; err != nil {
 		return nil, err
+	}
+
+	// 如果为空复盘记录，则返回空
+	if !s.hasReplay(okrId) {
+		replays = nil
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
@@ -1256,17 +1338,22 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 // kr是否能修改评分 3次机会
 func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
 	// 如果上级未评分，负责人分数可修改3次
-	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
+	if kr.SuperiorScore == -1 && kr.ScoreNum <= model.DefaultScoreNum {
 		return true
 	}
 
 	// 上级也可对评分修改3次
-	if kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
+	if kr.SuperiorScore > -1 && kr.ScoreNum <= model.DefaultScoreNum {
 		return true
 	}
 
 	// 复盘后分数不可修改
 	if s.hasReplay(kr.ParentId) {
+		return false
+	}
+
+	// 归档和离职的人员kr状态时分数不可修改
+	if kr.Status > 0 {
 		return false
 	}
 
@@ -1933,10 +2020,16 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&replay).Error; err != nil {
-			return err
+		// 如果有空复盘记录，则不创建， 直接更新复盘记录
+		if !s.hasReplay(req.OkrId) {
+			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(&replay).Scan(&replay).Error; err != nil {
+				return err
+			}
+		} else {
+			if err := tx.Create(&replay).Error; err != nil {
+				return err
+			}
 		}
-
 		for _, history := range histories {
 			history.ReplayId = replay.Id
 			if err := tx.Create(history).Error; err != nil {
@@ -1978,11 +2071,11 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
-// 是否已复盘
+// 是否已复盘 false-未复盘 true-已复盘
 func (s *okrService) hasReplay(okrId int) bool {
 	var replay model.OkrReplay
 	core.DB.Preload("KrHistory").Where("okr_id = ?", okrId).First(&replay)
-	return replay.KrHistory != nil
+	return len(replay.KrHistory) > 0
 }
 
 // 获取目标所属名称

@@ -1545,6 +1545,18 @@ const docTemplate = `{
                 "summary": "获取OKR复盘列表",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "部门id",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "end_at",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
@@ -1560,6 +1572,24 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "每页显示数量，默认:50，最大:100",
                         "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否已评分未复盘 0-默认全部 1-未复盘",
+                        "name": "replayed",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "start_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "userid",
                         "in": "query"
                     }
                 ],
@@ -2914,6 +2944,13 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "key_results": {
+                    "description": "KR集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Okr"
+                    }
+                },
                 "kr_history": {
                     "type": "array",
                     "items": {
@@ -2949,6 +2986,13 @@ const docTemplate = `{
                 },
                 "problem": {
                     "type": "string"
+                },
+                "replays": {
+                    "description": "复盘集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.OkrReplay"
+                    }
                 },
                 "review": {
                     "type": "string"

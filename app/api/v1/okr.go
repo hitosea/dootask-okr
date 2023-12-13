@@ -181,13 +181,13 @@ func (api *BaseApi) OkrFollowList() {
 // @Summary 获取OKR复盘列表
 // @Description 获取OKR复盘列表
 // @Accept json
-// @Param request query interfaces.OkrListBaseReq true "request"
+// @Param request query interfaces.OkrReplayListReq true "request"
 // @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.OkrReplay}}
 // @Router /okr/replay/list [get]
 func (api *BaseApi) OkrReplayList() {
-	var param = interfaces.OkrListBaseReq{}
+	var param = interfaces.OkrReplayListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetReplayList(api.Userinfo, param.Objective, param.Page, param.PageSize)
+	result, err := service.OkrService.GetReplayList(api.Userinfo, param, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
