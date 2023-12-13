@@ -1,16 +1,49 @@
 <template>
-    <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" size="small" />
-    <div class="replay-details">
-        <div class="replay-details-title">{{ $t("回顾") }}</div>
-        <h3 class="mb-8 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
-        <p class="text-text-li text-14" v-html="review"></p>
-        <h3 class="mt-16 mb-8 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('问题与不足') }}</h3>
-        <p class="text-text-li text-14" v-html="problem"></p>
+    <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false"
+        style="--n-merged-td-color-hover:#ffffff" />
+    <div class="flex flex-col gap-[16px] mt-[24px]">
+        <div class="bg-[#F4F5F7] p-[16px] rounded-lg cursor-pointer" v-for="(item, index) in props.okrReplayList.replays"
+            @click="openActive(index)">
+            <div class="flex items-center justify-between">
+                <h3 class="text-text-li text-16">{{ item.okr_title }}</h3>
+                <img class="ml-8 w-15" :src="index == active ? utils.apiUrl(packUp) : utils.apiUrl(unfold)" />
+            </div>
+            <template v-if="index == active">
+                <div class="bg-[#fff] border-[#F2F2F2] border-[1px] rounded-lg overflow-hidden mt-24">
+                    <div class="flex items-center py-[14px] px-[16px] text-text-li text-14"
+                        :class="(indexs + 1) < item.kr_history.length ? 'border-solid border-0 border-b-[1px] border-[#F2F2F2]' : ''"
+                        v-for="(items, indexs) in item.kr_history">
+
+                        <div class="flex-[7]">
+                            <span class="text-primary-color text-12 mr-4">KR{{ indexs + 1 }}</span> {{ items.title }}
+                        </div>
+                        <div class="flex-[3]">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="replay-details">
+                    <h3 class="mb-12 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}
+                    </h3>
+                    <p class="text-text-li text-14" v-html="item.review"></p>
+                    <h3 class="mt-24 mb-12 text-text-li text-20 font-medium flex justify-between items-center ">{{
+                        $t('问题与不足')
+                    }}
+                    </h3>
+                    <p class="text-text-li text-14" v-html="item.problem"></p>
+                </div>
+            </template>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { DataTableColumn } from "naive-ui"
+import utils from '@/utils/utils';
+import packUp from '@/assets/images/icon/packUp.svg';
+import unfold from '@/assets/images/icon/unfold.svg';
+
+
 const props = defineProps({
     okrReplayList: {
         type: Object,
@@ -19,6 +52,8 @@ const props = defineProps({
 }
 )
 const tableData = ref([])
+const active = ref(-1)
+
 
 watch(() => props.okrReplayList, (newValue) => {
     if (newValue) {
@@ -42,10 +77,6 @@ watch(() => props.okrReplayList, (newValue) => {
     }
 
 }, { immediate: true })
-
-// 回顾
-let review = ref("")
-let problem = ref("")
 
 //表格定义
 const columns = ref<DataTableColumn[]>([
@@ -107,7 +138,7 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.Ocomplete  },
+                { default: () => row.Ocomplete },
             )
         },
     },
@@ -224,12 +255,18 @@ const columns = ref<DataTableColumn[]>([
         },
     },
 ])
+
+const openActive = (index) => {
+    if(active.value == index){
+        active.value = -1
+    }else{
+        active.value = index
+    }
+
+}
+
 </script>
 
-<style lang="less" scoped>
-.replay-details {
-    &-title {
-        @apply mt-10 py-12 text-18 text-[#515A6E] font-medium;
-    }
-}
-</style>
+<style lang="less" scoped>.replay-details {
+    @apply mt-24;
+}</style>

@@ -13,7 +13,7 @@
                             <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.okr_priority)">{{
                                 item.okr_priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ item.okr_alias.join(",") }}</b></span>
+                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ (item.okr_alias || []).join(",") }}</b></span>
                             <span class=" text-text-li text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
