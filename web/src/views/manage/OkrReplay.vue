@@ -52,6 +52,8 @@ import OkrLoading from '../components/OkrLoading.vue'
 import { useRouter } from 'vue-router'
 import { GlobalStore } from '@/store'
 
+const { proxy } = getCurrentInstance();
+
 const router = useRouter()
 const addMultipleShow = ref(false)
 const items = ref([])
@@ -155,16 +157,9 @@ const openMultiple = () => {
 
 //查看okr详情
 const openOkrDetail = (id) => {
-
-    if (window.innerWidth < 768) {
-        router.push({
-            path: GlobalStore().baseRoute + '/okrDetails',
-            query: { data: id },
-        })
-    }
-    else {
+    okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id:id })
+    if(okrDetailsShow.value){
         detailId.value = id
-         okrDetailsShow.value = true
     }
 }
 

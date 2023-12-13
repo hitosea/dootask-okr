@@ -39,11 +39,8 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
-import { useRouter } from 'vue-router';
-import { GlobalStore } from '@/store';
 
-const router = useRouter()
-const globalStore = GlobalStore()
+const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)
 const objective = ref('')
@@ -124,15 +121,7 @@ const columns = ref<DataTableColumn[]>([
                     class: "text-primary-color cursor-pointer",
                     onClick: () => {
                         okrDetailsId.value = rowData.id
-                        if (window.innerWidth < 768) {
-                            router.push({
-                                path: globalStore.baseRoute + '/okrDetails',
-                                query: { id: rowData.id },
-                            })
-                        }
-                        else {
-                            okrDetailsShow.value = true
-                        }
+                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
                     }
                 }, $t('查看'))
             )

@@ -133,10 +133,17 @@ export const GlobalStore = defineStore({
                 this.timer[key] = setTimeout(resolve, ms);
             });
         },
+        isSingle(){
+            return  document.querySelector('.electron-single-micro-apps') ? 1 : 0 ;
+        },
+        isPortrait(){
+            return document.querySelector('.window-portrait') ? 1 : 0;
+        }
     },
     persist: piniaPersistConfig("GlobalState"),
-})
+});
 
+//
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 export default pinia

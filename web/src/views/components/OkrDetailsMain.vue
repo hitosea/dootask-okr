@@ -439,6 +439,8 @@ import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
 
+const { proxy } = getCurrentInstance();
+
 const userInfo = UserStore().info
 const router = useRouter()
 const route = useRoute()
@@ -737,16 +739,12 @@ const handleGetReplayList = () => {
 
 //编辑
 const handleEdit = () => {
-    if (window.innerWidth < 768) {
-        router.push({
-            path: globalStore.baseRoute + '/addOkr',
-        })
+    if (!proxy.$openChildPage('/addOkr')) {
         globalStore.$patch((state) => {
             state.okrEditData = detailData.value
             state.okrEdit = true
         })
-    }
-    else {
+    } else {
         emit('edit', utils.cloneJSON(detailData.value))
     }
 }
@@ -1001,10 +999,7 @@ const handleAddMultiple = () => {
         return
     }
     if (detailData.value.score < 0) return message.error($t('KR评分未完成'))
-    if (window.innerWidth < 768) {
-        router.push({
-            path: globalStore.baseRoute + '/addMultiple',
-        })
+    if (!proxy.$openChildPage('/addMultiple')) {
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.multipleId = 0
@@ -1023,7 +1018,7 @@ const handleAddMultiple = () => {
 
 //查看复盘
 const handleCheckMultiple = (id) => {
-    if (window.innerWidth < 768) {
+    if (!proxy.$openChildPage('/addMultiple')) {
         router.push({
             path: globalStore.baseRoute + '/addMultiple',
         })

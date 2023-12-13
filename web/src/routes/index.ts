@@ -7,7 +7,7 @@ import Main from '../views/main.vue'
 
 export const loadingBarApiRef = ref(null)
 
-export default function createDemoRouter(app, routes) {
+export default function createDemoRouter(routes) {
 
     const isDetails = window.eventCenterForAppNameVite?.appName == 'okr-details' ? true : false
     const isElectron = !!(window && window.process && window.process?.type);

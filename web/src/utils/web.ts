@@ -95,19 +95,19 @@ const webTs = {
     },
 
     /**
- * 对话完成
- * @param dialog
- * @returns {*[]}
- */
+     * 对话完成
+     * @param dialog
+     * @returns {*[]}
+     */
     dialogCompleted(dialog) {
         return webTs.dialogTags(dialog).find(({ color }) => color == 'success');
     },
 
     /**
- * 返回文本信息预览格式
- * @param text
- * @returns {*}
- */
+     * 返回文本信息预览格式
+     * @param text
+     * @returns {*}
+     */
     getMsgTextPreview(text) {
         if (!text) return '';
         text = text.replace(/<img\s+class="emoticon"[^>]*?alt="(\S+)"[^>]*?>/g, "[$1]")
@@ -153,11 +153,11 @@ const webTs = {
     },
 
     /**
-        * 消息格式化处理
-        * @param text
-        * @param userid
-        * @returns {string|*}
-        */
+    * 消息格式化处理
+    * @param text
+    * @param userid
+    * @returns {string|*}
+    */
     formatTextMsg(text, userid) {
         if (!text) {
             return ""
@@ -221,10 +221,10 @@ const webTs = {
     },
 
     /**
- * 服务地址
- * @param str
- * @returns {string}
- */
+     * 服务地址
+     * @param str
+     * @returns {string}
+     */
     originUrl(str) {
         if (str.substring(0, 2) === "//" ||
             str.substring(0, 7) === "http://" ||

@@ -122,13 +122,11 @@ import { NButton, DataTableRowKey } from 'naive-ui'
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
-import { useRouter } from 'vue-router';
-import { GlobalStore } from '@/store';
+
+const { proxy } = getCurrentInstance();
 
 const userIdentity = UserStore().info.identity[0]
 const message = useMessage()
-const router = useRouter()
-const globalStore = GlobalStore()
 
 const popupShow  = ref(false)
 const popupTitle  = ref('')
@@ -202,15 +200,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     type: 'primary',
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
-                        if (window.innerWidth < 768) {
-                            router.push({
-                                path: globalStore.baseRoute + '/okrDetails',
-                                query: { id: rowData.id },
-                            })
-                        }
-                        else {
-                            okrDetailsShow.value = true
-                        }
+                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
                     }
                 },
                 { default: () => $t('查看') }

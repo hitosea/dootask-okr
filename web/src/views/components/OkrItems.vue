@@ -107,13 +107,13 @@ import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
 import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
-import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import { GlobalStore } from '@/store'
 
+const { proxy } = getCurrentInstance();
+
 const globalStore = GlobalStore()
 const userInfo = UserStore().info
-const router = useRouter()
 const alignTargetShow = ref(false)
 const selectAlignmentShow = ref(false)
 const alignObjective = ref([])
@@ -159,18 +159,12 @@ const pStatus = (p) => {
 
 //打开详情
 const handleOpenDetail = (id,userid) => {
-    if (window.innerWidth < 768) {
-        router.push({
-            path: globalStore.baseRoute + '/okrDetails',
-            query: {
-                id: id,
-                userid: userid,
-            },
-        })
-    }
-    else {
+    okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{
+        id: id,
+        userid: userid,
+    })
+    if(okrDetailsShow.value){
         eidtId.value = id
-        okrDetailsShow.value = true
     }
 }
 

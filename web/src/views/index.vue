@@ -37,7 +37,7 @@
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="proxy.$globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
                             <p v-if="isAdmin" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -107,18 +107,15 @@ import OkrDepartment from './manage/OkrDepartment.vue';
 import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
-import { GlobalStore } from '@/store'
 import { UserStore } from '@/store/user'
 
+const { proxy } = getCurrentInstance();
 const isAdmin = UserStore().info.identity[0] == 'admin'
-
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
-const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') ? 1 : 0  )
-const isPortrait = computed(() => document.querySelector('.window-portrait') ? 1 : 0  )
-const pageTitle = ref("OKR管理")
-const globalStore = GlobalStore()
-const loadIng = ref(false)
 const router = useRouter()
+const isSingle = proxy.$globalStore.isSingle()
+const pageTitle = ref("OKR管理")
+const loadIng = ref(false)
 const route = useRoute()
 const pageOkrRef = ref(null)
 const ICreatedRef = ref(null)
@@ -225,11 +222,7 @@ const handleAdd = () => {
             return
         }
         else{
-            if (window.innerWidth < 768 && isPortrait.value) {
-                router.push(globalStore.baseRoute + '/addOkr')
-            }else {
-                addShow.value = true
-            }
+            addShow.value = proxy.$openChildPage('/addOkr')
         }
     })
     .catch()
@@ -280,7 +273,7 @@ const modalTransferIndex = () => {
 
 // 新窗口打开
 const openNewWin = () => {
-    globalStore.electron.sendMessage('windowRouter', {
+    proxy.$globalStore.electron.sendMessage('windowRouter', {
         name: `okr`,
         path: `single/apps/okr/list?active=${tabsName.value}`,
         force: false,
@@ -298,30 +291,17 @@ const openNewWin = () => {
 
 // 已归档
 const handleArchiveShow = () => {
-    if (window.innerWidth < 768 && isPortrait.value) {
-        router.push(globalStore.baseRoute + '/archive')
-    }
-    else {
-        archiveShow.value = true
-    }
+    archiveShow.value = proxy.$openChildPage('/archive')
 }
 
 // 已离职删除人员
 const handleDeleteShow = () => {
-    if (window.innerWidth < 768 && isPortrait.value) {
-        router.push(globalStore.baseRoute + '/deletePersonnel')
-    }else {
-        deleteShow.value = true
-    }
+    deleteShow.value = proxy.$openChildPage('/deletePersonnel')
 }
 
 // 设置
 const handleSettingShow = () => {
-    if (window.innerWidth < 768 && isPortrait.value) {
-        router.push(globalStore.baseRoute + '/setting')
-    }else {
-        settingShow.value = true
-    }
+    settingShow.value = proxy.$openChildPage('/setting')
 }
 </script>
 

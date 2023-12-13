@@ -6,7 +6,6 @@
             <UserSelects/>
         </div>
         <p class="mt-8 text-xs text-[#515A6E]">{{ $t('单选：指定可评分部门及部门负责人OKR的人员。') }}</p>
-        <!-- <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant"></UserList> -->
 
         <p class="mt-24 font-medium text-[#303133]">{{ $t('评分规则') }}</p>
         <div class="mt-16 font-medium">
