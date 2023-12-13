@@ -4,6 +4,7 @@ import pinia, { GlobalStore } from "./store"
 import { routes } from "./routes/routes"
 import I18n from "./lang/index"
 import createDemoRouter from "./routes"
+import initGlobal from "./global"
 import "./assets/styles/index.css"
 import directives from "@/directives/index"
 import { handleMicroData,fixBugForVueRouter4 } from "./microapp"
@@ -17,36 +18,15 @@ app.use(I18n)
 app.use(pinia)
 app.use(directives)
 
-//
-const globalStore = GlobalStore()
-
-//全局方法
-app.config.globalProperties.$openChildPage = (path: string, query:any = {}) => {
-    if (window.innerWidth < 768 && globalStore.isPortrait()) {
-        route.push({
-            path: globalStore.baseRoute + path,
-            query: query,
-        })
-        return false;
-    }else {
-        return true;
-    }
-}
-app.config.globalProperties.$globalStore = globalStore
-declare module '@vue/runtime-core' {
-    export interface ComponentCustomProperties {
-        $openChildPage: any;
-        $globalStore: any;
-    }
-}
-
-
 // 加载
+const globalStore = GlobalStore()
 globalStore.init().then(() => {
+    // 全局方法
+    initGlobal(app,route,globalStore)
+    // 翻译
+    window.$t = I18n.global.t
+    // 初始化
     route.isReady().then(() => {
-        // 翻译
-        window.$t = I18n.global.t
-        //
         app.mount("#vite-app")
         // 与基座进行数据交互
         handleMicroData(route)

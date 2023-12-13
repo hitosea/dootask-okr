@@ -49,12 +49,9 @@ import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
 import * as http from "../../api/modules/replay"
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import OkrLoading from '../components/OkrLoading.vue'
-import { useRouter } from 'vue-router'
-import { GlobalStore } from '@/store'
 
 const { proxy } = getCurrentInstance();
 
-const router = useRouter()
 const addMultipleShow = ref(false)
 const items = ref([])
 const loadIng = ref(false)

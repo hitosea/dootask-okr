@@ -341,9 +341,8 @@
                         </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
-                        <!-- <n-spin size="small" class="absolute top-0 bottom-0 left-0 right-0"> </n-spin> -->
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>
-                        <div v-else class=" absolute top-0 md:-top-[20px] -bottom-[16px] left-0 right-0">
+                        <div v-else class="text-left absolute top-0 md:-top-[20px] -bottom-[16px] left-0 right-0">
                             <DialogWrappers />
                         </div>
                     </div>

@@ -30,40 +30,38 @@ const resultCode = result.code()
 const globalStore = GlobalStore()
 const { themeName, theme } = globalStore.appSetup()
 
-nextTick(()=>{
-    if(!document.getElementById('okr-okrfont-style')){
-        const styleTag = document.createElement('style');
-        styleTag.setAttribute('id', 'okr-okrfont-style');
-        styleTag.textContent = !import.meta.env.DEV ? `
-            @font-face {
-                font-family: 'okrfont';  /* Project id 2583385 */
-                src: url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.woff2') format('woff2'),
-                url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.woff') format('woff'),
-                url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.ttf') format('truetype');
-            }
-            .okrfont {
-                font-family: "okrfont", "serif" !important;
-                font-style: normal;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-        ` : `
-            @font-face {
-                font-family: 'okrfont';  /* Project id 2583385 */
-                src: url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.woff2') format('woff2'),
-                url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.woff') format('woff'),
-                url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.ttf') format('truetype');
-            }
-            .okrfont {
-                font-family: "okrfont", "serif" !important;
-                font-style: normal;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-        `;
-        document.head.appendChild(styleTag);
-    }
-})
+if(!document.getElementById('okr-okrfont-style')){
+    const styleTag = document.createElement('style');
+    styleTag.setAttribute('id', 'okr-okrfont-style');
+    styleTag.textContent = !import.meta.env.DEV ? `
+        @font-face {
+            font-family: 'okrfont';  /* Project id 2583385 */
+            src: url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.woff2') format('woff2'),
+            url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.woff') format('woff'),
+            url('${globalStore.baseUrl}/apps/okr/assets/styles/okrfont/iconfont.ttf') format('truetype');
+        }
+        .okrfont {
+            font-family: "okrfont", "serif" !important;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    ` : `
+        @font-face {
+            font-family: 'okrfont';  /* Project id 2583385 */
+            src: url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.woff2') format('woff2'),
+            url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.woff') format('woff'),
+            url('http://127.0.0.1:5566/apps/okr/assets/styles/okrfont/iconfont.ttf') format('truetype');
+        }
+        .okrfont {
+            font-family: "okrfont", "serif" !important;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    `;
+    document.head.appendChild(styleTag);
+}
 
 const locale = computed((): NLocale => {
     if (globalStore.language == "en") return enUS
