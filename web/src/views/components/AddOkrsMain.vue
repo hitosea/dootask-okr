@@ -125,20 +125,24 @@
                                         size="medium" />
                                 </n-form-item-gi>
 
+                                <!-- pc -->
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]" @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
                                 </n-form-item-gi>
+
+                                <!-- app -->
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]" @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
                                     </UserList>
                                 </n-form-item-gi>
+
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
                                     <n-input-number class="w-full" :max="100" :min="0" :precision="0"
                                         v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
@@ -496,6 +500,12 @@ const handleGoal = () => {
     selectAlignmentShow.value = true
 }
 
+// 点击参与人
+const onParticipantClick = (e) => {
+    e.target?.querySelector(".add-icon")?.dispatchEvent(new Event('click'));
+}
+
+
 // 加载时间组件
 const loadDatePickers = () => {
     nextTick(() => {
@@ -524,6 +534,7 @@ const loadDatePickers = () => {
                             type:"datetimerange",
                             placement: "top-end",
                             confirm: true,
+                            transfer: true,
                             options: {shortcuts: window.$A ? window.$A.timeOptionShortcuts() : []}
                         },
                         on: {
