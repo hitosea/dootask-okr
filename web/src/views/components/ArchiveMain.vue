@@ -29,7 +29,7 @@
         </WarningPopup>
 
         <!-- OKR详情 -->
-        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getlist=" handleGetOkrArchive " @close="() => { okrDetailsShow = false }" />
+        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getlist="handleGetOkrArchive" @close="() => { okrDetailsShow = false }" />
 
     </div>
 </template>
@@ -39,7 +39,13 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
+import { useRouter } from 'vue-router';
+import { GlobalStore } from '@/store';
+import { useMessage } from 'naive-ui';
 
+const message = useMessage()
+const router = useRouter()
+const globalStore = GlobalStore()
 const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)
@@ -60,7 +66,7 @@ const OContent = ref('');
 const OId = ref(0)
 const OType = ref(0)
 
-
+const emit = defineEmits(['close'])
 
 const columns = ref<DataTableColumn[]>([
     {
@@ -197,10 +203,12 @@ const handleRestore = () => {
     okrArchiveRestore({
         id: OId.value,
     }).then(({ data }) => {
+        message.success($t('操作成功'))
         handleGetOkrArchive();
+        emit('close', 1)
     })
         .catch(({ msg }) => {
-
+            message.error(msg)
         })
         .finally(() => {
             loadIng.value = false
@@ -214,10 +222,11 @@ const handleDelete = () => {
     okrDelete({
         id: OId.value,
     }).then(({ data }) => {
+        message.success($t('操作成功'))
         handleGetOkrArchive();
     })
         .catch(({ msg }) => {
-
+            message.error(msg)
         })
         .finally(() => {
             loadIng.value = false

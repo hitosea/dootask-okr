@@ -10,10 +10,10 @@
                     :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
                     <div class="replay-item-head">
                         <div>
-                            <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.priority)">{{
-                                item.priority
+                            <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.okr_priority)">{{
+                                item.okr_priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ item.replayName }}</b></span>
+                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ item.okr_alias.join(",") }}</b></span>
                             <span class=" text-text-li text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
@@ -22,9 +22,9 @@
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]" @click.stop="openOkrDetail(item.id)">
+                        <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]" @click.stop="openOkrDetail(item.okr_id)">
                             <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
-                            <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okrName }}</div>
+                            <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okr_title }}</div>
                         </div>
                     </div>
                     <div class="replay-item-body" v-if="item.isActive">
@@ -62,6 +62,7 @@ const onscrolloading = ref(false)
 const page = ref(1)
 const last_page = ref(99999)
 
+
 const okrDetailsShow = ref(false)
 const detailId = ref(0)
 
@@ -83,25 +84,6 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
-//封装复盘列表
-const loadResplayList = (data) => {
-    items.value = data.map((itemData) => returnReplayItem(itemData))
-}
-
-//提取复盘信息
-const returnReplayItem = (replay) => {
-    return {
-        id: replay.okr_id,
-        isActive: false,
-        replayName: replay.okr_alias.join(","),
-        okrName: replay.okr_title,
-        priority: replay.okr_priority,
-        krList: replay.kr_history ? replay.kr_history : [],
-        okrProgress: replay.okr_progress,
-        review: replay.review,
-        problem:replay.problem
-    }
-}
 
 // 获取数据
 const getData = (type) => {
@@ -121,11 +103,16 @@ const getData = (type) => {
         http.getReplayList(data).then(({ data }) => {
             onscrolloading.value = false
             loadIng.value = false
+            console.log(data.data);
+
             if (serstatic) {
-                data.data ? loadResplayList(data.data) : []
+                data.data ?
+                 items.value = data.data
+                : items.value = []
             } else {
                 ; (data.data || []).map((item) => {
-                    items.value.push(returnReplayItem(item))
+                    item.isActive = false
+                    items.value.push(item)
                 })
             }
             last_page.value = data.last_page
@@ -164,7 +151,7 @@ const openOkrDetail = (id) => {
 }
 
 onMounted(() => {
-    getData("search")
+    getData('')
 })
 
 </script>

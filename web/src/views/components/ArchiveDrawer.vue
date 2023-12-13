@@ -5,7 +5,7 @@
         <n-drawer-content :title="$t('已归档OKR')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
                 <div class=" flex-auto overflow-hidden">
-                  <ArchiveMain></ArchiveMain>
+                  <ArchiveMain @close="(e, id) => { emit('close', e, id)}"></ArchiveMain>
                 </div>
             </div>
         </n-drawer-content>

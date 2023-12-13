@@ -125,6 +125,8 @@ import { ResultDialog } from "@/api"
 
 const { proxy } = getCurrentInstance();
 
+const emit = defineEmits(['close'])
+
 const userIdentity = UserStore().info.identity[0]
 const message = useMessage()
 
@@ -317,6 +319,7 @@ const submitAssign = () => {
         userid: assignUserId.value,
     }).then(({ data }) => {
         message.success($t('分配成功'))
+        emit('close', 1)
         getList('init')
     }).finally(() => {
         assignLoadIng.value = 0
@@ -329,7 +332,7 @@ const submitAssign = () => {
 // 删除
 const handleDelete = () => {
     deleteLoadIng.value = 1
-    okrDelete(popupDataId.value).then(({ msg }) => {
+    okrDelete({id:popupDataId.value }).then(({ msg }) => {
         message.success($t('删除成功'))
         getList('init')
     })

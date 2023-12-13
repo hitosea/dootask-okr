@@ -82,7 +82,7 @@ export const getLeaveList= (data) => {
 
 //okr删除
 export const okrDelete = (id) => {
-    return http.get<PageReq>("okr/delete",{id})
+    return http.get<PageReq>("okr/delete",id)
 }
 
 //okr分配

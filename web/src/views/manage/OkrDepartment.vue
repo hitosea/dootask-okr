@@ -189,7 +189,7 @@ const list = ref([])
 const departmentsvalue = ref(null)
 const principalvalue = ref(null)
 const types = ref(null);
-const daterange = ref([])
+const daterange = ref<[number, number]>([0,0])
 const completednotrated = ref(false)
 const searchTime = ref(null)
 const keyWord = ref('')
@@ -234,7 +234,7 @@ watch(() => active.value, (newValue) => {
 })
 
 const searchActive = computed(() => {
-    return departmentsvalue.value != null || principalvalue.value != null || types.value != null || daterange.value.length != 0
+    return departmentsvalue.value != null || principalvalue.value != null || types.value != null || daterange.value[0] != 0 || daterange.value[1] != 0
 })
 
 const getUser = (keyword) => {
@@ -382,7 +382,7 @@ const handleReset = () => {
     departmentsvalue.value = null
     principalvalue.value = null
     types.value = null
-    daterange.value = null
+    daterange.value = [0,0]
     loadingstatus.value = false
     active.value = false
     page.value = 1

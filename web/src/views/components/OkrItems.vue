@@ -43,6 +43,12 @@
                         <i class="okrfont text-[12px]" > &#xe6e8;</i>
                         <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
+                    <div v-if="item.score > -1" class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
+                    <div v-if="item.score > -1" class="flex items-center cursor-pointer">
+                        <img class="mr-4" :src="utils.apiUrl(fenSvg)" />
+                        <p class="text-12">{{ item.score }}{{ $t('分') }}
+                        </p>
+                    </div>
                 </div>
 
                 <div class="okr-time-web">
@@ -109,6 +115,7 @@ import { useMessage } from "naive-ui"
 import { ResultDialog } from "@/api"
 import { UserStore } from '@/store/user'
 import { GlobalStore } from '@/store'
+import fenSvg from '@/assets/images/icon/fen.svg';
 
 const { proxy } = getCurrentInstance();
 

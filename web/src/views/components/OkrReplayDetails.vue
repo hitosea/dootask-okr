@@ -1,5 +1,5 @@
 <template>
-    <n-data-table :columns="columns" :data="data" :single-line="false" size="small" />
+    <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" size="small" />
     <div class="replay-details">
         <div class="replay-details-title">{{ $t("回顾") }}</div>
         <h3 class="mb-8 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}</h3>
@@ -11,47 +11,48 @@
 
 <script lang="ts" setup>
 import { DataTableColumn } from "naive-ui"
-const props = defineProps(["okrReplayList"])
+const props = defineProps({
+    okrReplayList: {
+        type: Object,
+        default: {},
+    }
+}
+)
+const tableData = ref([])
+
+watch(() => props.okrReplayList, (newValue) => {
+    if (newValue) {
+        tableData.value.push({
+            O: newValue.okr_title,
+            lenght: newValue.key_results.length,
+            Ocomplete: newValue.okr_progress + '%',
+            KR: newValue.key_results[0].title,
+            KRcomplete: newValue.key_results[0].progress + '%',
+            KRMark: newValue.key_results[0].score,
+            evaluate: null,
+        })
+        for (let index = 1; index < newValue.key_results.length; index++) {
+            tableData.value.push({
+                KR: newValue.key_results[index].title,
+                KRcomplete: newValue.key_results[index].progress + '%',
+                KRMark: newValue.key_results[index].score,
+                evaluate: null,
+            })
+        }
+    }
+
+}, { immediate: true })
 
 // 回顾
 let review = ref("")
 let problem = ref("")
 
-// 加载表格
-const loadTable = (krReplay) => {
-    review = krReplay.review || $t('无')
-    problem = krReplay.problem || $t('无')
-    let count = 1
-    data.value = krReplay.krList.map((itemData, index) => {
-        const additionalProps =
-            index === 0
-                ? { targetTitle: krReplay.okrName, length: krReplay.krList.length, completeness: krReplay.okrProgress }
-                : {}
-        return {
-            id: itemData.id, //目标id
-            num: count++, //kr位置
-            krList: itemData.kr_history, //kr列表
-            krTitle: itemData.title, //标题
-            krCompleteness: itemData.progress, //完成度
-            score: itemData.score, //评分
-            evaluate: itemData.comment == 1 ? $t("做得好的") : $t("可提升的"), //评价
-            ...additionalProps,
-        }
-    })
-}
-
-nextTick(() => {
-    loadTable(props.okrReplayList)
-})
-
-const data = ref([])
-
 //表格定义
 const columns = ref<DataTableColumn[]>([
     {
-        key: "targetTitle",
-        minWidth:'100px',
-        rowSpan: (rowData) => rowData.length,
+        key: "O",
+        minWidth: 200,
+        rowSpan: (rowData) => rowData.lenght,
         title() {
             return h(
                 "p",
@@ -65,23 +66,25 @@ const columns = ref<DataTableColumn[]>([
                 { default: () => $t("目标（O）") },
             )
         },
-        render(row) {
-            return h(
-                "span",
-                {
-                    style: {
-                        color: "#515A6E",
-                        fontSize: "14px",
-                    },
-                },
-                { default: () => row.targetTitle },
+        render(rowData) {
+            let arr = []
+            arr.push(
+                h('span', {
+                    class: 'line-clamp-2'
+                }, rowData.O)
             )
-        },
+            return h('div', {
+                style: {
+                    display: 'flex',
+                    alignItems: 'start',
+                },
+            }, arr)
+        }
     },
     {
-        key: "completeness",
-        minWidth:'100px',
-        rowSpan: (rowData) => rowData.length,
+        key: "Ocomplete",
+        minWidth: 100,
+        rowSpan: (rowData) => rowData.lenght,
         title() {
             return h(
                 "p",
@@ -104,13 +107,13 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.completeness + "%" },
+                { default: () => row.Ocomplete  },
             )
         },
     },
     {
-        key: "krTitle",
-        minWidth:'100px',
+        key: "KR",
+        minWidth: 300,
         title() {
             return h(
                 "p",
@@ -124,7 +127,7 @@ const columns = ref<DataTableColumn[]>([
                 { default: () => $t("关键KR") },
             )
         },
-        render(row) {
+        render(row, index) {
             return h("div", [
                 h(
                     "span",
@@ -138,7 +141,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     {
                         default: () => {
-                            return "KR" + row.num
+                            return "KR" + (index + 1)
                         },
                     },
                 ),
@@ -155,7 +158,7 @@ const columns = ref<DataTableColumn[]>([
                     },
                     {
                         default: () => {
-                            return row.krTitle
+                            return row.KR
                         },
                     },
                 ),
@@ -163,8 +166,8 @@ const columns = ref<DataTableColumn[]>([
         },
     },
     {
-        key: "krCompleteness",
-        minWidth:'100px',
+        key: "KRcomplete",
+        minWidth: 100,
         title() {
             return h(
                 "p",
@@ -187,13 +190,13 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.krCompleteness + "%" },
+                { default: () => row.KRcomplete },
             )
         },
     },
     {
-        key: "score",
-        minWidth:'100px',
+        key: "KRMark",
+        minWidth: 100,
         title() {
             return h(
                 "p",
@@ -216,36 +219,7 @@ const columns = ref<DataTableColumn[]>([
                         fontSize: "14px",
                     },
                 },
-                { default: () => row.score },
-            )
-        },
-    },
-    {
-        key: "evaluate",
-        minWidth:'100px',
-        title() {
-            return h(
-                "p",
-                {
-                    style: {
-                        color: "#515A6E",
-                        fontSize: "14px",
-                    },
-                    size: 24,
-                },
-                { default: () => $t("评价") },
-            )
-        },
-        render(row) {
-            return h(
-                "span",
-                {
-                    style: {
-                        color: "#515A6E",
-                        fontSize: "14px",
-                    },
-                },
-                { default: () => row.evaluate },
+                { default: () => row.KRMark },
             )
         },
     },

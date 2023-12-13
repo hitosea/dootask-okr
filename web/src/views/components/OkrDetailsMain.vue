@@ -910,6 +910,7 @@ const handleArchive = () => {
     }).then(({ msg }) => {
         message.success($t('操作成功'))
         emit('close')
+        emit('getList')
     })
         .catch(({ msg }) => {
             message.error(msg)

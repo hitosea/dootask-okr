@@ -5,7 +5,7 @@
         <n-drawer-content :title="$t('离职/删除人员OKR')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
                 <div class="flex-auto overflow-hidden">
-                    <DeleteMain></DeleteMain>
+                    <DeleteMain @close="(e, id) => { emit('close', e, id)}"></DeleteMain>
                 </div>
             </div>
         </n-drawer-content>

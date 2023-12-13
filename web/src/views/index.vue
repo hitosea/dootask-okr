@@ -81,10 +81,10 @@
     <AddOkrsDrawer v-model:show="addShow" :edit="edit" :editData="editData" @close="handleClose"></AddOkrsDrawer>
 
     <!-- 已归档 -->
-    <ArchiveDrawer v-model:show="archiveShow" ></ArchiveDrawer>
+    <ArchiveDrawer v-model:show="archiveShow" @close="handleClose"></ArchiveDrawer>
 
     <!-- 离职/删除人员OKR -->
-    <DeleteDrawer v-model:show="deleteShow" ></DeleteDrawer>
+    <DeleteDrawer v-model:show="deleteShow" @close="handleClose"></DeleteDrawer>
 
     <!-- 设置 -->
     <SettingDrawer v-model:show="settingShow"></SettingDrawer>
@@ -230,17 +230,18 @@ const handleAdd = () => {
 }
 
 const handleClose = (e, id) => {
+
     //重新获取列表
     if (tabsName.value == 'MyCreated' && e == 1) {
         ICreatedRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'MInvolvement' && e == 1) {
+    if (tabsName.value == 'MInvolvement' && e == 1) {
         OkrParticipantRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'Departmental' && e == 1) {
+    if (tabsName.value == 'Departmental' && e == 1) {
         OkrDepartmentRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'MyConcerns' && e == 1) {
+    if (tabsName.value == 'MyConcerns' && e == 1) {
         OkrFollowRef.value.resetGetList('search')
     }
 
@@ -248,13 +249,13 @@ const handleClose = (e, id) => {
     if (tabsName.value == 'MyCreated' && e == 2) {
         ICreatedRef.value.upData(id)
     }
-    else if (tabsName.value == 'MInvolvement' && e == 2) {
+    if (tabsName.value == 'MInvolvement' && e == 2) {
         OkrParticipantRef.value.upData(id)
     }
-    else if (tabsName.value == 'Departmental' && e == 2) {
+    if (tabsName.value == 'Departmental' && e == 2) {
         OkrDepartmentRef.value.upData(id)
     }
-    else if (tabsName.value == 'MyConcerns' && e == 2) {
+    if (tabsName.value == 'MyConcerns' && e == 2) {
         OkrFollowRef.value.upData(id)
     }
 
