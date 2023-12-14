@@ -33,7 +33,7 @@
                 </div>
                 <div class="okr-time">
                     <i class="okrfont text-[12px]">&#xe6e4;</i>
-                    <p>{{ item.alias.join(',') }}</p>
+                    <p>{{ (item.alias || []).join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
                     <template v-if="item.canceled == '0' && item.completed =='0'">
                         <i class="okrfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
