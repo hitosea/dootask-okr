@@ -23,7 +23,7 @@ watch:
 release:
 	cd web && npm run build && cd ../ && rm -f main
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
-	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.0.12 --platform linux/amd64,linux/arm64 .
+	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.0.13 --platform linux/amd64,linux/arm64 .
 
 build:
 	cd web && npm run build && cd ../
