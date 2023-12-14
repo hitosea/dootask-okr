@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sort"
 	"strings"
 	"time"
 
@@ -696,13 +697,14 @@ func (s *okrService) GetObjectivesWithDetails(objs []*interfaces.OkrResp, user *
 
 // 额外信息
 func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, user *interfaces.UserInfoResp) *interfaces.OkrResp {
-	obj.IsFollow = s.isFollow(user.Userid, obj.Id)                             // 是否被关注
-	obj.KrCount = len(krs)                                                     // kr总数量
-	obj.KrFinishCount = s.getFinishCount(krs)                                  // kr完成数量
-	aliasIds := s.getAlignObjectiveIds(obj.Id)                                 // 对齐目标ids
-	obj.AlignObjective = aliasIds                                              // 对齐目标
-	obj.AlignCount = len(aliasIds)                                             // 对齐目标数量
-	obj.Alias = s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId) // 目标所属名称
+	obj.IsFollow = s.isFollow(user.Userid, obj.Id)                                                          // 是否被关注
+	obj.KrCount = len(krs)                                                                                  // kr总数量
+	obj.KrFinishCount = s.getFinishCount(krs)                                                               // kr完成数量
+	aliasIds := s.getAlignObjectiveIds(obj.Id)                                                              // 对齐目标ids
+	obj.AlignObjective = aliasIds                                                                           // 对齐目标
+	obj.AlignCount = len(aliasIds)                                                                          // 对齐目标数量
+	obj.Alias = s.getOwningAlias(obj.Ascription, obj.Userid, obj.DepartmentId)                              // 目标所属名称
+	obj.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(obj.Id, obj.Userid, obj.Ascription, obj.DepartmentId) // O排序
 
 	// 用户头像
 	users, _ := DootaskService.GetUserBasic(user.Token, []int{obj.Userid})
@@ -711,6 +713,81 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 	}
 
 	return obj
+}
+
+// O排序
+func (s *okrService) ObjectiveNumDepartmentOrUser(okrId, userid, ascription int, departmentId string) string {
+	var num string
+	if ascription == 1 {
+		num = s.getObjectiveNumDepartment(okrId, ascription, departmentId)
+	} else {
+		num = s.getObjectiveNumUser(okrId, userid, ascription)
+	}
+	return num
+}
+
+// 获取部门的目标排序号
+func (s *okrService) getObjectiveNumDepartment(okrId, ascription int, departmentId string) string {
+	topIds, _ := s.GetTopIdsByDepartmentId(departmentId)
+
+	// 构建查询条件
+	admSql := make([]string, 0, len(topIds))
+	for _, departmentId := range topIds {
+		admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+	}
+
+	var okrs []model.Okr
+	core.DB.Where(strings.Join(admSql, " OR ")).Where("parent_id = 0").Where("ascription = ?", ascription).Order("created_at").Find(&okrs)
+
+	// 根据年份进行分组
+	groups := make(map[int][]model.Okr)
+	for _, okr := range okrs {
+		year := okr.CreatedAt.Year()
+		groups[year] = append(groups[year], okr)
+	}
+
+	// 在每个分组中对目标进行排序，并返回目标的排序号
+	objectiveNum := ""
+	for _, okrs := range groups {
+		sort.Slice(okrs, func(i, j int) bool {
+			return okrs[i].CreatedAt.Before(okrs[j].CreatedAt)
+		})
+		for i, okr := range okrs {
+			if okr.Id == okrId {
+				objectiveNum = fmt.Sprintf("O%d", i+1)
+			}
+		}
+	}
+
+	return objectiveNum
+}
+
+// 获取用户的目标排序号
+func (s *okrService) getObjectiveNumUser(okrId, userid, ascription int) string {
+	var okrs []model.Okr
+	core.DB.Where("userid = ?", userid).Where("parent_id = 0").Where("ascription = ?", ascription).Order("created_at").Find(&okrs)
+
+	// 根据年份进行分组
+	groups := make(map[int][]model.Okr)
+	for _, okr := range okrs {
+		year := okr.CreatedAt.Year()
+		groups[year] = append(groups[year], okr)
+	}
+
+	// 在每个分组中对目标进行排序，并返回目标的排序号
+	objectiveNum := ""
+	for _, okrs := range groups {
+		sort.Slice(okrs, func(i, j int) bool {
+			return okrs[i].CreatedAt.Before(okrs[j].CreatedAt)
+		})
+		for i, okr := range okrs {
+			if okr.Id == okrId {
+				objectiveNum = fmt.Sprintf("O%d", i+1)
+			}
+		}
+	}
+
+	return objectiveNum
 }
 
 // KR总评分 KR评分=【自评*30%+上级评分*70%】
@@ -1267,12 +1344,16 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 	for _, replay := range replays {
 		replay.OkrAlias = s.getOwningAlias(replay.OkrAscription, replay.Userid, replay.OkrDepartmentId)
 		core.DB.Model(&model.Okr{}).Where("parent_id = ?", replay.OkrId).Order("created_at ASC").Find(&replay.KeyResults)
-
+		for _, kr := range replay.KeyResults {
+			krScore := s.getKrScore(kr)
+			kr.KrScore = krScore
+		}
 		// 如果已复盘，加载合并的复盘记录
 		if replay.Replay == 1 {
 			replayIds := strings.Split(replay.ReplayIds, ",")
 			core.DB.Model(&model.OkrReplay{}).Preload("KrHistory").Where("id IN (?)", replayIds).Order("created_at ASC").Find(&replay.Replays)
 		}
+		replay.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(replay.OkrId, replay.OkrUserid, replay.OkrAscription, replay.OkrDepartmentId) // O排序
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
@@ -2210,6 +2291,19 @@ func (s *okrService) GetDepartmentsByTopLevelIds(ids []int) ([]int, error) {
 	return departments, nil
 }
 
+// 通过departmentId获取顶级部门ids
+func (s *okrService) GetTopIdsByDepartmentId(departmentId string) ([]int, error) {
+	departmentIds := common.ExplodeInt(",", departmentId, true)
+	// 查询所有子部门
+	var departments []int
+	if err := core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Where("id IN (?)", departmentIds).Pluck("id", &departments).Error; err != nil {
+		return nil, err
+	}
+
+	// 顶级部门ids
+	return common.ArrayUniqueInt(departments), nil
+}
+
 // 更新对齐目标
 func (s *okrService) UpdateAlignObjective(userid, okrId int, alignObjective string) (*model.Okr, error) {
 	obj, err := s.GetObjectiveById(okrId)
@@ -2637,6 +2731,10 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 		return nil, err
 	}
 
+	for _, obj := range objs {
+		obj.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(obj.Id, obj.Userid, obj.Ascription, obj.DepartmentId) // O排序
+	}
+
 	return interfaces.PaginationRsp(page, pageSize, count, objs), nil
 }
 
@@ -2663,6 +2761,10 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	offset := (page - 1) * pageSize
 	if err := db.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
+	}
+
+	for _, obj := range objs {
+		obj.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(obj.Id, obj.Userid, obj.Ascription, obj.DepartmentId) // O排序
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, objs), nil

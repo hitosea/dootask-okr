@@ -43,8 +43,8 @@ type Okr struct {
 	DeletedAt        gorm.DeletedAt `gorm:"index;comment:删除时间" json:"deleted_at" swaggerignore:"true"`
 	KeyResults       []*Okr         `gorm:"ForeignKey:ParentId" json:"key_results,omitempty"`
 	ParentOKr        *Okr           `gorm:"ForeignKey:ParentId" json:"parent_okr,omitempty"`
-	User             *User          `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
-	ArchiveUser      *User          `gorm:"ForeignKey:ArchiveUserid;References:Userid" json:"archive_user,omitempty"`
+	User             *UserBasic     `gorm:"ForeignKey:Userid;References:Userid" json:"user,omitempty"`
+	ArchiveUser      *UserBasic     `gorm:"ForeignKey:ArchiveUserid;References:Userid" json:"archive_user,omitempty"`
 	KrScore          float64        `gorm:"-" json:"kr_score"`               // KR总评分
 	ParentTitle      string         `gorm:"-" json:"parent_title,omitempty"` // 父级目标标题
 	CanUpdateScore   bool           `gorm:"-" json:"can_update_score"`       // KR是否能评分

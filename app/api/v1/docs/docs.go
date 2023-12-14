@@ -2070,7 +2070,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "archive_user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "archive_userid": {
                     "type": "integer"
@@ -2179,7 +2179,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "userid": {
                     "type": "integer"
@@ -2516,7 +2516,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "archive_user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "archive_userid": {
                     "type": "integer"
@@ -2640,7 +2640,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "user_avatar": {
                     "description": "用户头像",
@@ -2779,7 +2779,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "archive_user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "archive_userid": {
                     "type": "integer"
@@ -2884,7 +2884,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/model.UserBasic"
                 },
                 "userid": {
                     "type": "integer"
@@ -2971,6 +2971,10 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.OkrReplayHistory"
                     }
+                },
+                "objective_num": {
+                    "description": "O的数字编号",
+                    "type": "string"
                 },
                 "okr_alias": {
                     "type": "array",
@@ -3064,12 +3068,121 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
+                "az": {
+                    "description": "首字母",
+                    "type": "string"
+                },
+                "bot": {
+                    "description": "是否是机器人 1-是 0-否",
+                    "type": "integer"
+                },
+                "changepass": {
+                    "description": "是否需要修改密码 1-是 0-否",
+                    "type": "integer"
+                },
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "created_ip": {
+                    "description": "创建ip",
+                    "type": "string"
+                },
+                "department": {
+                    "description": "部门",
+                    "type": "string"
+                },
+                "department_name": {
+                    "description": "部门名称",
+                    "type": "string"
+                },
+                "disable_at": {
+                    "description": "禁用时间",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string"
+                },
+                "email_verity": {
+                    "description": "邮箱是否验证 1-是 0-否",
+                    "type": "integer"
+                },
+                "identity": {
+                    "description": "身份",
+                    "type": "string"
+                },
+                "last_at": {
+                    "description": "最后登录时间",
+                    "type": "string"
+                },
+                "last_ip": {
+                    "description": "最后登录ip",
+                    "type": "string"
+                },
+                "line_at": {
+                    "description": "在线时间",
+                    "type": "string"
+                },
+                "line_ip": {
+                    "description": "在线ip",
+                    "type": "string"
+                },
+                "login_num": {
+                    "description": "登录次数",
+                    "type": "integer"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                },
+                "nickname_original": {
+                    "description": "昵称原始值",
+                    "type": "string"
+                },
+                "pinyin": {
+                    "description": "拼音",
+                    "type": "string"
+                },
+                "profession": {
+                    "description": "职业",
+                    "type": "string"
+                },
+                "task_dialog_id": {
+                    "description": "任务对话框id",
+                    "type": "integer"
+                },
+                "tel": {
+                    "description": "手机号",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "token",
+                    "type": "string"
+                },
+                "userid": {
+                    "description": "用户id",
+                    "type": "integer"
+                },
+                "userimg": {
+                    "description": "头像",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserBasic": {
+            "type": "object",
+            "properties": {
                 "created_at": {
                     "description": "创建时间",
                     "type": "string"
                 },
                 "department": {
                     "description": "部门",
+                    "type": "string"
+                },
+                "department_name": {
+                    "description": "部门名称",
                     "type": "string"
                 },
                 "disable_at": {
@@ -3090,6 +3203,10 @@ const docTemplate = `{
                 },
                 "profession": {
                     "description": "职业",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "token",
                     "type": "string"
                 },
                 "userid": {
