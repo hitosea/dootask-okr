@@ -2718,6 +2718,52 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 
 	db := core.DB.Model(&model.Okr{}).Preload("User").Preload("ArchiveUser").Where("parent_id = 0").Where("status = 1")
 
+	// 用户不是超级管理员时，根据自己的权限获取
+	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+		if len(user.Department) == 0 {
+			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
+		}
+
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+		var sql []string
+		for _, departmentId := range departments {
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(sql, " OR "))
+
+		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
+		// 判断是否是普通组员
+		var department model.UserDepartment
+		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
+		if department.Id == 0 {
+			// 普通组员的权限
+			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
+		} else {
+			// 判断是否是顶级部门负责人
+			var departmentTop model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+			// 判断是否是同级小组负责人
+			var departmentSameLevel []model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			if len(departmentSameLevel) > 0 {
+				// 小组负责人可以看到自己所在小组的所有OKR
+				var sqlSame []string
+				for _, department := range departmentSameLevel {
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+				}
+
+				if departmentTop.Id == 0 {
+					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
+				}
+			}
+		}
+	}
+
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
 		db = db.Where("title LIKE ?", "%"+objective+"%")
@@ -2745,6 +2791,52 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	var count int64
 
 	db := core.DB.Model(&model.Okr{}).Preload("User").Where("parent_id = 0").Where("status IN (?)", []int{1, 2})
+
+	// 用户不是超级管理员时，根据自己的权限获取
+	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+		if len(user.Department) == 0 {
+			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
+		}
+
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+		var sql []string
+		for _, departmentId := range departments {
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+		}
+		db = db.Where(strings.Join(sql, " OR "))
+
+		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
+		// 判断是否是普通组员
+		var department model.UserDepartment
+		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
+		if department.Id == 0 {
+			// 普通组员的权限
+			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
+		} else {
+			// 判断是否是顶级部门负责人
+			var departmentTop model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+			// 判断是否是同级小组负责人
+			var departmentSameLevel []model.UserDepartment
+			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+			if len(departmentSameLevel) > 0 {
+				// 小组负责人可以看到自己所在小组的所有OKR
+				var sqlSame []string
+				for _, department := range departmentSameLevel {
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+				}
+
+				if departmentTop.Id == 0 {
+					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND (" + strings.Join(sqlSame, " OR ") + "))")
+				}
+			}
+		}
+	}
 
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
