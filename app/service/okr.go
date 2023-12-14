@@ -719,7 +719,7 @@ func (s *okrService) GetObjectiveExt(obj *interfaces.OkrResp, krs []*model.Okr, 
 func (s *okrService) ObjectiveNumDepartmentOrUser(okrId, userid, ascription int, departmentId string) string {
 	var num string
 	if ascription == 1 {
-		num = s.getObjectiveNumDepartment(okrId, ascription, departmentId)
+		num = s.getObjectiveNumDepartment(okrId, userid, ascription, departmentId)
 	} else {
 		num = s.getObjectiveNumUser(okrId, userid, ascription)
 	}
@@ -727,7 +727,7 @@ func (s *okrService) ObjectiveNumDepartmentOrUser(okrId, userid, ascription int,
 }
 
 // 获取部门的目标排序号
-func (s *okrService) getObjectiveNumDepartment(okrId, ascription int, departmentId string) string {
+func (s *okrService) getObjectiveNumDepartment(okrId, userid, ascription int, departmentId string) string {
 	topIds, _ := s.GetTopIdsByDepartmentId(departmentId)
 
 	// 构建查询条件
@@ -737,7 +737,7 @@ func (s *okrService) getObjectiveNumDepartment(okrId, ascription int, department
 	}
 
 	var okrs []model.Okr
-	core.DB.Where(strings.Join(admSql, " OR ")).Where("parent_id = 0").Where("ascription = ?", ascription).Order("created_at").Find(&okrs)
+	core.DB.Where(strings.Join(admSql, " OR ")).Where("userid = ?", userid).Where("parent_id = 0").Where("ascription = ?", ascription).Order("created_at").Find(&okrs)
 
 	// 根据年份进行分组
 	groups := make(map[int][]model.Okr)
@@ -2466,6 +2466,7 @@ func (s *okrService) GetOkrLogList(user *interfaces.UserInfoResp, okrId, page, p
 			if user.Userid == log.Userid {
 				log.UserAvatar = user.Userimg
 				log.UserNickname = user.Nickname
+				log.UserDisableAt = user.DisableAt
 			}
 		}
 
