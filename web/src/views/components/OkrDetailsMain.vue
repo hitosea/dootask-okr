@@ -164,7 +164,7 @@
                                             item.participant.split(',').length - 4 }}</span>
                                     </div>
                                     <template
-                                        v-if="!isOverdue(item) || detailData.completed == '1' || detailData.canceled == '1'">
+                                        v-if="!isOverdue(item) || detailData.completed == '1' || detailData.canceled == '1' || detailData.completed == '0' || detailData.canceled == '0'">
                                         <i class="okrfont mr-4 text-12 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
                                         <p
                                             class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">
@@ -172,8 +172,7 @@
                                                 utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                         </p>
                                     </template>
-                                    <template
-                                        v-if="isOverdue(item) && detailData.completed == '0' && detailData.canceled == '0'">
+                                    <template v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
                                         <i class="okrfont mr-4 text-12 ml-24 "
                                             :class="isOverdue(item) ? 'text-[#ED4014]' : ''"> &#xe6e8;</i>
                                         <p :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
@@ -217,8 +216,10 @@
                                         </template>
                                         <div>
                                             <div class="flex items-center gap-[36px]">
-                                                <p class=" text-12 text-[#fff]">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{item.score}}</span></p>
-                                                <p class=" text-12 text-[#fff]">{{ $t('上级评分分数：') }}<span class=" text-primary-color">{{ item.superior_score }}</span></p>
+                                                <p class=" text-12 text-[#fff]">{{ $t('负责人自评分数：') }}<span
+                                                        class=" text-primary-color">{{ item.score }}</span></p>
+                                                <p class=" text-12 text-[#fff]">{{ $t('上级评分分数：') }}<span
+                                                        class=" text-primary-color">{{ item.superior_score }}</span></p>
                                             </div>
                                         </div>
                                     </n-tooltip>
@@ -299,10 +300,15 @@
                                                     item.participant.split(',').length - 4 }}</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div class="flex items-center" v-if="!expiresFormat(item.end_at) || detailData.completed == '1' || detailData.canceled == '1'">
                                             <i class="okrfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
                                             <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
                                                 || 0) }}
+                                            </p>
+                                        </div>
+                                        <div class="flex items-center" v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
+                                            <i class="okrfont text-12 mr-4 text-[#ED4014]">&#xe6e8;</i>
+                                            <p class="flex-1 text-[#ED4014] text-12  shrink-0">{{ expiresFormat(item.end_at) }}
                                             </p>
                                         </div>
                                     </div>
@@ -1117,7 +1123,7 @@ const participantChange = (item, index) => {
 //超期判断
 const within24Hours = (date) => {
     let time = utils.GoDateHMS(date)
-    return Number(utils.Date(time, true)) - nowTime.value < 86400
+    return Number(utils.Date(time, true)) - nowTime.value < (86400 * 7)
 }
 
 const expiresFormat = (date) => {
