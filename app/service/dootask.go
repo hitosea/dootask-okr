@@ -43,6 +43,8 @@ func (s dootaskService) GetUserInfo(token string) (*interfaces.UserInfoResp, err
 	if err := common.MapToStruct(info, userInfo); err != nil {
 		return nil, err
 	}
+	// okr普通人员是否拥有管理员有权限
+	userInfo.OkrAdminOwner = OkrService.GetSettingSuperiorUserId() == userInfo.Userid
 	return userInfo, nil
 }
 

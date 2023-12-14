@@ -94,6 +94,18 @@ definitions:
       visible_range:
         type: integer
     type: object
+  interfaces.OkrAnalyzeDepartment:
+    properties:
+      id:
+        description: 部门id
+        type: integer
+      name:
+        description: 部门名称
+        type: string
+      owner:
+        description: 是否部门负责人
+        type: boolean
+    type: object
   interfaces.OkrAnalyzeDept:
     properties:
       complete:
@@ -629,6 +641,8 @@ definitions:
         type: object
       user_avatar:
         type: string
+      user_disable_at:
+        type: string
       user_nickname:
         type: string
       userid:
@@ -978,6 +992,12 @@ paths:
       consumes:
       - application/json
       description: OKR整体平均完成度
+      parameters:
+      - description: 部门id
+        in: query
+        name: department
+        required: true
+        type: number
       responses:
         "200":
           description: OK
@@ -991,11 +1011,35 @@ paths:
       summary: OKR整体平均完成度
       tags:
       - OkrAnalyze
+  /okr/analyze/department:
+    get:
+      consumes:
+      - application/json
+      description: OKR整体平均完成度
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/interfaces.OkrAnalyzeDepartment'
+              type: object
+      summary: OKR整体平均完成度
+      tags:
+      - OkrAnalyze
   /okr/analyze/dept/complete:
     get:
       consumes:
       - application/json
       description: OKR各部门平均完成度
+      parameters:
+      - description: 部门id
+        in: query
+        name: department
+        required: true
+        type: number
       responses:
         "200":
           description: OK
@@ -1016,6 +1060,12 @@ paths:
       consumes:
       - application/json
       description: OKR各部门评分分布
+      parameters:
+      - description: 部门id
+        in: query
+        name: department
+        required: true
+        type: number
       responses:
         "200":
           description: OK
@@ -1054,6 +1104,12 @@ paths:
       consumes:
       - application/json
       description: OKR人员评分率
+      parameters:
+      - description: 部门id
+        in: query
+        name: department
+        required: true
+        type: number
       responses:
         "200":
           description: OK
@@ -1072,6 +1128,12 @@ paths:
       consumes:
       - application/json
       description: OKR评分分布
+      parameters:
+      - description: 部门id
+        in: query
+        name: department
+        required: true
+        type: number
       responses:
         "200":
           description: OK
