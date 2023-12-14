@@ -1534,21 +1534,20 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
-	// kr是否能修改评分
-	// if (kr.Score > -1 || (param.Score > -1 && kr.SuperiorScore > -1)) && !s.CanUpdateScore(kr) {
-	// 	return nil, e.New(constant.ErrOkrScoredNotUpdate)
-	// }
-
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
 	superior := s.IsObjectiveManager(kr, user)
 	if !superior {
 		// 检查是否已评分
-		if kr.Score > -1 && !s.CanUpdateScore(kr) {
-			return nil, e.New(constant.ErrOkrOwnerScored)
-		}
+		// if kr.Score > -1 {
+		// 	return nil, e.New(constant.ErrOkrOwnerScored)
+		// }
 		// 检查用户是否为目标负责人
 		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
+		}
+		// kr是否能修改评分
+		if kr.Score > -1 && !s.CanUpdateScore(kr) {
+			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果不是首次评分，评分次数+1
 		if kr.Score > -1 {
@@ -1602,8 +1601,12 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
 		// 检查是否已评分
+		// if kr.SuperiorScore > -1 {
+		// 	return nil, e.New(constant.ErrOkrSuperiorScored)
+		// }
+		// kr是否能修改评分
 		if kr.SuperiorScore > -1 && !s.CanUpdateScore(kr) {
-			return nil, e.New(constant.ErrOkrSuperiorScored)
+			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果是上级首次评分，评分次数重置为0，否则评分次数+1
 		if kr.SuperiorScore == -1 && kr.ScoreNum > 0 {
@@ -1994,6 +1997,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrPriority:     obj.Priority,
 		Review:          req.Review,
 		Problem:         req.Problem,
+		Replay:          1, // 1-已复盘 2-未复盘
 	}
 
 	// 创建 KR 复盘历史记录
