@@ -1267,9 +1267,12 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 	for _, replay := range replays {
 		replay.OkrAlias = s.getOwningAlias(replay.OkrAscription, replay.Userid, replay.OkrDepartmentId)
 		core.DB.Model(&model.Okr{}).Where("parent_id = ?", replay.OkrId).Order("created_at ASC").Find(&replay.KeyResults)
-		// 加载合并的复盘记录
-		replayIds := strings.Split(replay.ReplayIds, ",")
-		core.DB.Model(&model.OkrReplay{}).Preload("KrHistory").Where("id IN (?)", replayIds).Order("created_at ASC").Find(&replay.Replays)
+
+		// 如果已复盘，加载合并的复盘记录
+		if replay.Replay == 1 {
+			replayIds := strings.Split(replay.ReplayIds, ",")
+			core.DB.Model(&model.OkrReplay{}).Preload("KrHistory").Where("id IN (?)", replayIds).Order("created_at ASC").Find(&replay.Replays)
+		}
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
