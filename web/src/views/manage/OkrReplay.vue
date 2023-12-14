@@ -49,7 +49,7 @@
                         {{ $t('搜索') }}
                     </n-button>
                 </div>
-                <div class="flex items-center mb-12 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
+                <div class="flex items-center mb-12 justify-between md:justify-start">
                     <n-checkbox v-model:checked="completednotrated" class="rounded whitespace-nowrap mb-2 "
                         @click="handleClick()">
                         <span class="text-text-li">{{ $t('已评分未复盘') }}</span>
@@ -88,7 +88,7 @@
                     <div class="flex">
                         <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]"
                             @click.stop="openOkrDetail(item.okr_id)">
-                            <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
+                            <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">{{ item.objective_num || ( '0' + item.okr_id)  }}</div>
                             <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okr_title }}</div>
                         </div>
                     </div>
