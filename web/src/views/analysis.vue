@@ -8,7 +8,7 @@
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
             </div>
-            <n-tabs v-if="(departments.length + (isAdmin ? 1 : 0)) > 1" class="ml-[2px] mt-[-10px] pb-12" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
+            <n-tabs v-if="(departments.length + (isAdmin ? 1 : 0)) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
                 <n-tab-pane v-if="isAdmin" name="all" :tab="$t('全系统OKR结果分析')"></n-tab-pane>
                 <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.name"></n-tab-pane>
             </n-tabs>
@@ -440,10 +440,6 @@ nextTick(() => {
             @apply text-28;
         }
     }
-    :deep(.n-tabs .n-tabs-tab .n-tabs-tab__label){
-        font-size: 16px;
-    }
-
     .list-body {
         @apply p-24;
 
