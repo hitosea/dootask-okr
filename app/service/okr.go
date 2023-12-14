@@ -2790,7 +2790,13 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	var objs []*model.Okr
 	var count int64
 
-	db := core.DB.Model(&model.Okr{}).Preload("User").Where("parent_id = 0").Where("status IN (?)", []int{1, 2})
+	okrTable := core.DBTableName(&model.Okr{})
+	userTable := core.DBTableName(&model.User{})
+	db := core.DB.Table(okrTable+" AS okrs").
+		Joins(fmt.Sprintf(`LEFT JOIN %s users ON okrs.userid = users.userid`, userTable)).
+		Where("users.userid IS NULL OR users.disable_at IS NOT NULL").
+		Where("okrs.parent_id = 0").
+		Where("okrs.status IN (?)", []int{1, 2})
 
 	// 用户不是超级管理员时，根据自己的权限获取
 	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
