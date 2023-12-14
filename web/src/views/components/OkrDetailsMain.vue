@@ -202,16 +202,27 @@
                                     </div>
                                     <div v-if="item.kr_score == '0'"
                                         class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
-                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress,item.can_update_score)">
+                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
                                         <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                     </div>
-                                    <div v-else class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
-                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress,item.can_update_score)">
-                                        <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
-                                        <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
-                                        </p>
-                                    </div>
+                                    <n-tooltip trigger="hover" v-else>
+                                        <template #trigger>
+                                            <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
+                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
+                                                <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
+                                                <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
+                                                </p>
+                                            </div>
+                                        </template>
+                                        <div>
+                                            <div class="flex items-center gap-[36px]">
+                                                <p class=" text-12 text-[#fff]">{{ $t('负责人自评分数：') }}<span class=" text-primary-color">{{item.score}}</span></p>
+                                                <p class=" text-12 text-[#fff]">{{ $t('上级评分分数：') }}<span class=" text-primary-color">{{ item.superior_score }}</span></p>
+                                            </div>
+                                        </div>
+                                    </n-tooltip>
+
                                 </div>
                             </div>
                         </div>
@@ -319,12 +330,12 @@
                                         </div>
                                         <div v-if="item.kr_score == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer"
-                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress,item.can_update_score)">
+                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
                                             <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
-                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress,item.can_update_score)">
+                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
                                             <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                             </p>
@@ -407,8 +418,8 @@
     </Confidences>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow" :canUpdateScore="canUpdateScore"
-        @close="handleCloseMarks">
+    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow"
+        :canUpdateScore="canUpdateScore" @close="handleCloseMarks">
     </MarkVue>
 
     <!-- 强提示 -->
@@ -715,6 +726,7 @@ const nextReplayList = (e) => {
 
 // 复盘列表
 const handleGetReplayList = () => {
+
     if (replayListLastPage.value >= replayListPage.value) {
         loadIngR.value = true
         getReplayList({
@@ -722,7 +734,7 @@ const handleGetReplayList = () => {
             page: replayListPage.value,
             page_size: 10,
         }).then(({ data }) => {
-            data.data.map(item => {
+            (data.data || []).map(item => {
                 replayList.value.push(item)
             })
             replayListLastPage.value = data.last_page
@@ -807,7 +819,7 @@ const handleCloseConfidenes = (type) => {
 }
 
 //打开评分
-const handleMark = (id, scores, superior_score, progress,can_update_score) => {
+const handleMark = (id, scores, superior_score, progress, can_update_score) => {
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))

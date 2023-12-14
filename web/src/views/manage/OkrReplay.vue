@@ -2,18 +2,21 @@
     <n-scrollbar :on-scroll="onScroll">
         <div class="okr-replay-main">
             <div>
-                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')" :types="searchObject !=''"></OkrNotDatas>
+                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')"
+                    :types="searchObject != ''"></OkrNotDatas>
                 <OkrLoading v-if="loadIng"></OkrLoading>
             </div>
             <div v-if="items.length != 0" class="replay">
                 <div v-for="(item, index) in items" :key="index"
-                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }" @click="openMultiple">
+                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
+                    @click="openMultiple(item.okr_id)">
                     <div class="replay-item-head">
                         <div>
                             <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.okr_priority)">{{
                                 item.okr_priority
                             }}</span>
-                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{ (item.okr_alias || []).join(",") }}</b></span>
+                            <span class="text-[14px] m-[5px] text-title-color font-medium"><b class="font-medium">{{
+                                (item.okr_alias || []).join(",") }}</b></span>
                             <span class=" text-text-li text-12">{{ $t("的目标复盘") }}</span>
                         </div>
                         <div class="cursor-pointer hidden md:block" @click="() => (item.isActive = !item.isActive)">
@@ -22,7 +25,8 @@
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]" @click.stop="openOkrDetail(item.okr_id)">
+                        <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]"
+                            @click.stop="openOkrDetail(item.okr_id)">
                             <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">O</div>
                             <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okr_title }}</div>
                         </div>
@@ -35,8 +39,8 @@
             <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
             <!-- OKR详情 -->
             <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @openDetail="openOkrDetail" @close="() => {
-                    okrDetailsShow = false
-                }
+                okrDetailsShow = false
+            }
                 "></OkrDetailsModal>
         </div>
     </n-scrollbar>
@@ -46,13 +50,14 @@
 import { ref } from "vue"
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
-import * as http from "../../api/modules/replay"
+import { getReplayList } from '@/api/modules/replay'
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import OkrLoading from '../components/OkrLoading.vue'
+import { GlobalStore } from '@/store';
 
 const { proxy } = getCurrentInstance();
 
-const addMultipleShow = ref(false)
+const globalStore = GlobalStore()
 const items = ref([])
 const loadIng = ref(false)
 const onscrolloading = ref(false)
@@ -81,6 +86,11 @@ watch(() => props.searchObject, (newValue) => {
     }, 300)
 }, { deep: true })
 
+watch(() => globalStore.addMultipleChange, (newValue) => {
+    if (newValue) {
+        getData('search')
+    }
+}, { deep: true })
 
 // 获取数据
 const getData = (type) => {
@@ -97,17 +107,15 @@ const getData = (type) => {
         } else if (type == 'onscrollsearch') {
             onscrolloading.value = true
         }
-        http.getReplayList(data).then(({ data }) => {
+        getReplayList(data).then(({ data }) => {
             onscrolloading.value = false
             loadIng.value = false
-            console.log(data.data);
-
             if (serstatic) {
                 data.data ?
-                 items.value = data.data
-                : items.value = []
+                    items.value = data.data
+                    : items.value = []
             } else {
-                ; (data.data || []).map((item) => {
+                (data.data || []).map((item) => {
                     item.isActive = false
                     items.value.push(item)
                 })
@@ -135,22 +143,33 @@ const pStatus = (p) => {
 }
 
 // 打开复盘
-const openMultiple = () => {
-    addMultipleShow.value = true
+const openMultiple = (id) => {
+    if (window.innerWidth < 768) {
+        okrDetailsShow.value = proxy.$openChildPage('/multipleDetails', { id: id })
+    }
 }
 
 //查看okr详情
 const openOkrDetail = (id) => {
-    okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id:id })
-    if(okrDetailsShow.value){
+    if (window.innerWidth < 768) return
+    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: id })
+    if (okrDetailsShow.value) {
         detailId.value = id
     }
 }
 
-onMounted(() => {
-    getData('')
-})
+//重新获取
+const resetGetList = () => {
+    page.value = 1
+    getData('search')
+}
 
+onMounted(() => {
+    getData('search')
+})
+defineExpose({
+    resetGetList,
+})
 </script>
 
 <style lang="less" scoped>
@@ -211,5 +230,4 @@ onMounted(() => {
 
 .span-3 {
     @apply bg-[#72A1F7];
-}
-</style>
+}</style>

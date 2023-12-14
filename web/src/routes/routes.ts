@@ -6,6 +6,7 @@ import addMultiple from '../views/childpage/addMultiple.vue'
 import dimission from '../views/childpage/dimission.vue'
 import archive from '../views/childpage/archive.vue'
 import setting from '../views/childpage/setting.vue'
+import multipleDetails from '../views/childpage/multipleDetails.vue'
 import I18n from "@/lang/index"
 
 export const routes = [
@@ -56,5 +57,11 @@ export const routes = [
         path: "/:catchAll(.*)/setting",
         meta: { title:  I18n.global.t('离职/删除人员OKR')},
         component: setting
+    },
+    {
+        name: "multipleDetails",
+        path: "/:catchAll(.*)/multipleDetails",
+        meta: { title:  I18n.global.t('复盘详情')},
+        component: multipleDetails
     }
 ]

@@ -39,13 +39,10 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
-import { useRouter } from 'vue-router';
-import { GlobalStore } from '@/store';
 import { useMessage } from 'naive-ui';
 
 const message = useMessage()
-const router = useRouter()
-const globalStore = GlobalStore()
+
 const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)

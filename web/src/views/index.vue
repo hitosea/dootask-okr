@@ -192,14 +192,17 @@ const reLoadList = () => {
    if (tabsName.value == 'MyCreated' ) {
         ICreatedRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'MInvolvement') {
+    if (tabsName.value == 'MInvolvement') {
         OkrParticipantRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'Departmental') {
+    if (tabsName.value == 'Departmental') {
         OkrDepartmentRef.value.resetGetList('search')
     }
-    else if (tabsName.value == 'MyConcerns') {
+    if (tabsName.value == 'MyConcerns') {
         OkrFollowRef.value.resetGetList('search')
+    }
+    if (tabsName.value == 'Review') {
+        OkrReplayRef.value.resetGetList('search')
     }
     setTimeout(()=>{
         loadIng.value = false;

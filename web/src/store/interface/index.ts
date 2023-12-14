@@ -27,6 +27,7 @@ export interface GlobalState {
     addMultipleShow: any
     multipleId: number
     addMultipleData: any
+    addMultipleChange: any
     okrEditData: any
     okrEdit: boolean
     doubleSkip: any,

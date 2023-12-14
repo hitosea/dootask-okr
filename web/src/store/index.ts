@@ -30,6 +30,7 @@ export const GlobalStore = defineStore({
             id: 0,
         },
         addMultipleShow: false,
+        addMultipleChange: false,
         multipleId: 0,
         addMultipleData: null,
         okrEditData: null,

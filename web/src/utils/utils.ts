@@ -533,7 +533,7 @@ const utils = {
      * @param v
      * @returns {string}
      */
-    GoDateHMS(format) {
+    GoDateHMS(format,type:string='-') {
         const dateObj = new Date((format || '').replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,''));
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
@@ -541,7 +541,13 @@ const utils = {
         const hours = String(dateObj.getHours()).padStart(2, "0");
         const minutes = String(dateObj.getMinutes()).padStart(2, "0");
         const seconds = String(dateObj.getSeconds()).padStart(2, "0");
-        const formattedDate = `${year}-${month}-${day}`;
+        let formattedDate = ''
+        if(type=='-'){
+            formattedDate = `${year}-${month}-${day}`;
+        }else{
+            formattedDate = `${year}/${month}/${day}`;
+        }
+
         const formattedTime = `${hours}:${minutes}:${seconds}`;
         return (formattedDate + ' ' + formattedTime)
     },

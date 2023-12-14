@@ -16,7 +16,7 @@
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{ item.title }}</h3>
+                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{ item.objective_num || ('O' + item.id) }}：{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
                         <i class="okrfont okr-title-star text-[16px]" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
