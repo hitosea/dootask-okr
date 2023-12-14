@@ -8,7 +8,11 @@
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
             </div>
-            <div class="flex overflow-hidden">
+            <n-tabs v-if="(departments.length + (isAdmin ? 1 : 0)) > 1" class="ml-[2px] mt-[-10px] pb-12" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
+                <n-tab-pane v-if="isAdmin" name="all" :tab="$t('全系统OKR结果分析')"></n-tab-pane>
+                <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.name"></n-tab-pane>
+            </n-tabs>
+            <div v-if="!deptLoadIng" class="flex overflow-hidden">
                 <n-scrollbar>
                     <n-grid x-gap="24" cols="1 600:2 800:3">
 
@@ -28,14 +32,15 @@
                                             </span>
                                             <span>
                                                 <span class="legend-name">{{ $t('已完成O') }}:</span>
-                                                <span class="font-medium text-12">{{ analyzeDatas.completes.complete
-                                                }}</span>
+                                                <span class="font-medium text-12">{{ analyzeDatas.completes.complete }}</span>
                                             </span>
                                         </div>
                                     </div>
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
-                                        <div class="text-16 font-medium">{{ $t('各部门OKR平均完成度') }}</div>
+                                        <div class="text-16 font-medium">
+                                            {{ tabsValue == 'all' ? $t('各部门OKR平均完成度') : $t('各人员OKR平均完成度') }}
+                                        </div>
                                         <div class="text-14 text-center py-50"
                                             v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
                                         <div class="mt-20" v-else v-for="item in analyzeDatas.deptCompletes">
@@ -61,52 +66,34 @@
                                         <div class="pie">
                                             <div id="scoreDistribution"></div>
                                         </div>
-                                        <div class="legend ">
-                                            <n-grid cols="1 250:2 350:4 ">
-                                                <n-grid-item>
-                                                    <span class="flex justify-center items-center">
-                                                        <p class="dot"></p>
-                                                        <span class="legend-name">{{ $t('未评分') }}: </span>
-                                                        <span class="font-medium text-12">{{ analyzeDatas.score.unscored
-                                                        }}</span>
-                                                    </span>
-                                                </n-grid-item>
-
-                                                <n-grid-item>
-                                                    <span class="flex justify-center items-center">
-                                                        <p class="dot ff"></p>
-                                                        <span class="legend-name">{{ $t('0-3分') }}: </span>
-                                                        <span class="font-medium text-12">{{
-                                                            analyzeDatas.score.zero_to_three
-                                                        }}</span>
-                                                    </span>
-
-                                                </n-grid-item>
-
-                                                <n-grid-item>
-                                                    <span class="flex justify-center items-center">
-                                                        <p class="dot fc"></p>
-                                                        <span class="legend-name">{{ $t('3-7分') }}: </span>
-                                                        <span class="font-medium text-12">{{
-                                                            analyzeDatas.score.three_to_seven
-                                                        }}</span>
-                                                    </span>
-                                                </n-grid-item>
-
-                                                <n-grid-item>
-                                                    <span class="flex justify-center items-center">
-                                                        <p class="dot bc"></p>
-                                                        <span class="legend-name">{{ $t('7-10分') }}: </span>
-                                                        <span class="font-medium text-12">{{ analyzeDatas.score.seven_to_ten
-                                                        }}</span>
-                                                    </span>
-                                                </n-grid-item>
-                                            </n-grid>
+                                        <div class="legend flex justify-center flex-wrap" >
+                                            <span class="flex justify-center items-center float-left mb-10">
+                                                <p class="dot"></p>
+                                                <span class="legend-name">{{ $t('未评分') }}: </span>
+                                                <span class="font-medium text-12">{{ analyzeDatas.score.unscored }}</span>
+                                            </span>
+                                            <span class="flex justify-center items-center float-left mb-10">
+                                                <p class="dot ff"></p>
+                                                <span class="legend-name">{{ $t('0-3分') }}: </span>
+                                                <span class="font-medium text-12">{{ analyzeDatas.score.zero_to_three}}</span>
+                                            </span>
+                                            <span class="flex justify-center items-center float-left mb-10">
+                                                <p class="dot fc"></p>
+                                                <span class="legend-name">{{ $t('3-7分') }}: </span>
+                                                <span class="font-medium text-12">{{ analyzeDatas.score.three_to_seven }}</span>
+                                            </span>
+                                            <span class="flex justify-center items-center float-left mb-10">
+                                                <p class="dot bc"></p>
+                                                <span class="legend-name">{{ $t('7-10分') }}: </span>
+                                                <span class="font-medium text-12">{{ analyzeDatas.score.seven_to_ten }}</span>
+                                            </span>
                                         </div>
                                     </div>
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
-                                        <div class="text-16 font-medium">{{ $t('各部门OKR评分分布') }}</div>
+                                        <div class="text-16 font-medium">
+                                            {{ tabsValue == 'all' ? $t('各部门OKR评分分布') : $t('各人员OKR评分分布') }}
+                                        </div>
                                         <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">
                                             {{ $t('暂无数据') }}</div>
                                         <div class="mt-20" v-else v-for="item in analyzeDatas.deptScores">
@@ -169,12 +156,13 @@
 
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
-                                        <div class="text-16 font-medium flex">{{ $t('OKR部门评分占比') }}
+                                        <div class="text-16 font-medium flex">
+                                            {{ tabsValue == 'all' ? $t('OKR部门评分占比') : $t('OKR个人评分占比') }}
                                             <n-tooltip trigger="hover">
                                                 <template #trigger>
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
                                                 </template>
-                                                {{ $t('各个部门完成OKR评分的所占比例') }}
+                                                {{ tabsValue == 'all' ? $t('各个部门完成OKR评分的所占比例') : $t('各个人员完成OKR评分的所占比例') }}
                                             </n-tooltip>
                                         </div>
                                         <div class="text-14 text-center py-50"
@@ -208,15 +196,19 @@
 
 <script lang="ts" setup>
 import * as echarts from 'echarts';
-import * as http from "../api/modules/analysis";
-import { useRouter } from 'vue-router';
+import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
+import { UserStore } from '@/store/user'
 
-const router = useRouter()
+const { proxy } = getCurrentInstance();
+const deptLoadIng = ref(false)
 const loadIng = ref(false)
+const tabsValue = ref<any>('')
+const departments = ref<any>([])
+const isAdmin = UserStore().isAdmin()
 
-// 总提数据
+// 总数据
 const analyzeDatas = ref({
     completes: {
         total: 0,
@@ -237,6 +229,17 @@ const analyzeDatas = ref({
     },
     deptScoreProportion: [],
 })
+
+// 计算进度
+const getDepartment = () => {
+    deptLoadIng.value = true;
+    http.getAnalyzeDepartment().then(res=>{
+        departments.value = res.data
+        tabsValue.value = isAdmin ? 'all' : departments.value[0].id;
+    }).finally(()=> {
+        deptLoadIng.value = false;
+    })
+}
 
 // 计算进度
 const calculatingProgress = (complete: number, total: number) => {
@@ -287,7 +290,7 @@ const loadComplete = () => {
     });
 }
 
-// OKR整体平均完成度
+// OKR评分分布
 const scoreDistributeEcharts = ref(null);
 const loadScoreDistribute = () => {
     if(!document.getElementById('scoreDistribution')){
@@ -373,34 +376,37 @@ const loadScoreRate = () => {
 
 //返回
 const handleReturn = () => {
-    router.back()
+    proxy.$routerBack()
 }
 
 // 获取数据
 const getData = () => {
     loadIng.value = true;
+    const params = {
+        department: tabsValue.value == 'all' ? 0 : tabsValue.value
+    }
     // OKR整体平均完成度
-    http.getAnalyzeComplete().then(({ data }) => {
+    http.getAnalyzeComplete(params).then(({ data }) => {
         analyzeDatas.value.completes = data
         loadComplete()
     })
-    http.getAnalyzeDeptComplete().then(({ data }) => {
+    http.getAnalyzeDeptComplete(params).then(({ data }) => {
         analyzeDatas.value.deptCompletes = data
     })
     // OKR评分分布
-    http.getAnalyzeScore().then(({ data }) => {
+    http.getAnalyzeScore(params).then(({ data }) => {
         analyzeDatas.value.score = data
         loadScoreDistribute()
     })
-    http.getAnalyzeDeptScore().then(({ data }) => {
+    http.getAnalyzeDeptScore(params).then(({ data }) => {
         analyzeDatas.value.deptScores = data
     })
     // OKR人员评分率
-    http.getAnalyzeScoreSate().then(({ data }) => {
+    http.getAnalyzeScoreSate(params).then(({ data }) => {
         analyzeDatas.value.scoreRate = data
         loadScoreRate()
     })
-    http.getAnalyzeDeptScoreProportion().then(({ data }) => {
+    http.getAnalyzeDeptScoreProportion(params).then(({ data }) => {
         analyzeDatas.value.deptScoreProportion = data
     })
     setTimeout(() => {
@@ -408,12 +414,18 @@ const getData = () => {
     }, 300)
 }
 
-// 加载
-nextTick(() => {
+
+//
+watch(tabsValue, (value) => {
     loadComplete()
     loadScoreDistribute();
     loadScoreRate();
     getData()
+})
+
+// 加载
+nextTick(() => {
+    getDepartment()
 })
 </script>
 
@@ -427,6 +439,9 @@ nextTick(() => {
         h2 {
             @apply text-28;
         }
+    }
+    :deep(.n-tabs .n-tabs-tab .n-tabs-tab__label){
+        font-size: 16px;
     }
 
     .list-body {
@@ -444,6 +459,8 @@ nextTick(() => {
             }
 
             .legend {
+                height: 28px;
+
                 >div {
                     @apply whitespace-nowrap;
                 }

@@ -14,7 +14,6 @@ export const UserStore = defineStore({
             avatar: "",
             created_at: "",
             updated_at: "",
-            userIsAdmin: false,
             identity:[],
             userid:0,
             department_owner:null,
@@ -22,6 +21,12 @@ export const UserStore = defineStore({
         },
     }),
     actions: {
+        isAdmin() {
+            return this.info?.identity?.indexOf('admin') !== -1
+        },
+        isDepartmentOwner() {
+            return this.info?.department_owner
+        },
         refresh() {
             return new Promise((resolve, reject) => {
                 getUserInfo().then(({ data }) => {

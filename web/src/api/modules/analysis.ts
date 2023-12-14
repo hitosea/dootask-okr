@@ -1,29 +1,33 @@
 import http from "../index"
 import * as Analysis from "../interface/analysis"
 
-// 
-export const getAnalyzeComplete = () => {
-    return http.get<Analysis.complete>("okr/analyze/complete")
+export const getAnalyzeDepartment = () => {
+    return http.get<Analysis.complete>("okr/analyze/department")
 }
 
-export const getAnalyzeDeptComplete = () => {
-    return http.get<[Analysis.deptCompletes]>("okr/analyze/dept/complete")
+//
+export const getAnalyzeComplete = (params={}) => {
+    return http.get<Analysis.complete>("okr/analyze/complete",params)
 }
 
-// 
-export const getAnalyzeScore = () => {
-    return http.get<Analysis.score>("okr/analyze/score")
+export const getAnalyzeDeptComplete = (params={}) => {
+    return http.get<[Analysis.deptCompletes]>("okr/analyze/dept/complete",params)
 }
 
-export const getAnalyzeDeptScore = () => {
-    return http.get<[Analysis.deptScore]>("okr/analyze/dept/score")
+//
+export const getAnalyzeScore = (params={}) => {
+    return http.get<Analysis.score>("okr/analyze/score",params)
 }
 
-// 
-export const getAnalyzeScoreSate = () => {
-    return http.get<Analysis.complete>("okr/analyze/personnel/score/rate")
+export const getAnalyzeDeptScore = (params={}) => {
+    return http.get<[Analysis.deptScore]>("okr/analyze/dept/score",params)
 }
 
-export const getAnalyzeDeptScoreProportion = () => {
-    return http.get<[Analysis.deptScore]>("okr/analyze/dept/score/proportion")
+//
+export const getAnalyzeScoreSate = (params={}) => {
+    return http.get<Analysis.complete>("okr/analyze/personnel/score/rate",params)
+}
+
+export const getAnalyzeDeptScoreProportion = (params={}) => {
+    return http.get<[Analysis.deptScore]>("okr/analyze/dept/score/proportion",params)
 }

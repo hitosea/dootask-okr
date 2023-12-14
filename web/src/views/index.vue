@@ -39,7 +39,7 @@
                         <div class="flex flex-col">
                             <p v-if="proxy.$globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
-                            <p v-if="isAdmin" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
+                            <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
                         </div>
                     </n-popover>
@@ -110,7 +110,8 @@ import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
-const isAdmin = UserStore().info.identity[0] == 'admin'
+const isAdmin = UserStore().isAdmin()
+const isDepartmentOwner = UserStore().isDepartmentOwner()
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const router = useRouter()
 const isSingle = proxy.$globalStore.isSingle()

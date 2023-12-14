@@ -9,7 +9,6 @@ export namespace User {
         avatar: string
         created_at: string
         updated_at: string
-        userIsAdmin: boolean
         identity: any
         department_owner: any
         userid: any

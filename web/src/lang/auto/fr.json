@@ -355,5 +355,18 @@
     "自评占比": "Proportion d'auto-évaluation",
     "上级占比": "Proportion de supérieurs",
     "自评与上级的占比总和需等于100%。": "La somme des proportions d'auto-évaluation et de supérieurs doit être égale à 100 %.",
-    "自评与上级的占比总和需等于100%": "La somme des proportions d'auto-évaluation et de supérieurs doit être égale à 100 %"
+    "自评与上级的占比总和需等于100%": "La somme des proportions d'auto-évaluation et de supérieurs doit être égale à 100 %",
+    "全系统OKR结果分析": "Analyse des résultats OKR à l’échelle du système",
+    "确定要删除": "Confirmez pour supprimer",
+    "修改": "Réviser",
+    "确定要归档": "Confirmer pour archiver",
+    "选择用户": "Sélectionner un utilisateur",
+    "各人员OKR平均完成度": "Degré d’achèvement moyen des OKR de chaque employé",
+    "各人员OKR评分分布": "Répartition des scores OKR de chaque personnel",
+    "OKR个人评分占比": "Proportion de notes personnelles OKR",
+    "各个人员完成OKR评分的所占比例": "La proportion de chaque personne complétant la notation OKR",
+    "KR完成度：": "Diplôme d'achèvement KR :",
+    "KR评分：": "Note KR :",
+    "评价：": "évaluer:",
+    "已评分未复盘": "Noté mais non évalué"
 }
