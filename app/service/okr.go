@@ -1214,6 +1214,12 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		db = db.Where(strings.Join(admSql, " OR "))
 	}
 
+	// 目标id筛选(兼容手机端详情)
+	okrId := param.OkrId
+	if okrId != 0 {
+		db = db.Where("replay.okr_id = ?", okrId)
+	}
+
 	// 部门负责人可以通过人员筛选
 	userid := param.Userid
 	if userid != 0 {

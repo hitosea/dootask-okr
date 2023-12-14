@@ -207,6 +207,7 @@ type OkrLeaveUpdateReq struct {
 
 // OKR复盘列表请求
 type OkrReplayListReq struct {
+	OkrId          int    `form:"okr_id" json:"okr_id"`                   // 目标id(兼容手机端详情)
 	DepartmentId   int    `form:"department_id" json:"department_id"`     // 部门id
 	Userid         int    `form:"userid" json:"userid"`                   // 用户id
 	Objective      string `form:"objective" json:"objective"`             // 目标（O）

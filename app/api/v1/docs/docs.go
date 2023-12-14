@@ -1564,6 +1564,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "目标id(兼容手机端详情)",
+                        "name": "okr_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "当前页，默认:1",
                         "name": "page",
                         "in": "query"

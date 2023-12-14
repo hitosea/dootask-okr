@@ -1678,6 +1678,10 @@ paths:
         in: query
         name: objective
         type: string
+      - description: 目标id(兼容手机端详情)
+        in: query
+        name: okr_id
+        type: integer
       - description: 当前页，默认:1
         in: query
         name: page
