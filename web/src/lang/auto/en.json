@@ -355,5 +355,18 @@
     "自评占比": "Self-evaluation proportion",
     "上级占比": "Proportion of superiors",
     "自评与上级的占比总和需等于100%。": "The sum of the proportions of self-evaluation and superiors must equal 100%.",
-    "自评与上级的占比总和需等于100%": "The sum of the proportions of self-evaluation and superiors must equal 100%"
+    "自评与上级的占比总和需等于100%": "The sum of the proportions of self-evaluation and superiors must equal 100%",
+    "全系统OKR结果分析": "System-wide OKR result analysis",
+    "确定要删除": "Confirm to delete",
+    "修改": "Revise",
+    "确定要归档": "Confirm to archive",
+    "选择用户": "Select user",
+    "各人员OKR平均完成度": "Average OKR completion degree of each employee",
+    "各人员OKR评分分布": "OKR score distribution of each personnel",
+    "OKR个人评分占比": "OKR personal rating proportion",
+    "各个人员完成OKR评分的所占比例": "The proportion of each person completing OKR scoring",
+    "KR完成度：": "KR completion degree:",
+    "KR评分：": "KR rating:",
+    "评价：": "evaluate:",
+    "已评分未复盘": "Rated but not reviewed"
 }

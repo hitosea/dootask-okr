@@ -1,5 +1,11 @@
 package interfaces
 
+type OkrAnalyzeDepartment struct {
+	Id    int64  `json:"id"`    // 部门id
+	Name  string `json:"name"`  // 部门名称
+	Owner bool   `json:"owner"` // 是否部门负责人
+}
+
 // OKR整体平均完成度
 type OkrAnalyzeOverall struct {
 	Total     int64 `json:"total"`    // okr 总数

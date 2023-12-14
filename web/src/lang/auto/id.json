@@ -355,5 +355,18 @@
     "自评占比": "Proporsi evaluasi diri",
     "上级占比": "Proporsi atasan",
     "自评与上级的占比总和需等于100%。": "Jumlah proporsi evaluasi diri dan atasan harus sama dengan 100%.",
-    "自评与上级的占比总和需等于100%": "Jumlah proporsi evaluasi diri dan atasan harus sama dengan 100%"
+    "自评与上级的占比总和需等于100%": "Jumlah proporsi evaluasi diri dan atasan harus sama dengan 100%",
+    "全系统OKR结果分析": "Analisis hasil OKR seluruh sistem",
+    "确定要删除": "Konfirmasikan untuk menghapus",
+    "修改": "Merevisi",
+    "确定要归档": "Konfirmasikan ke arsip",
+    "选择用户": "Pilih pengguna",
+    "各人员OKR平均完成度": "Rata-rata tingkat penyelesaian OKR setiap karyawan",
+    "各人员OKR评分分布": "Distribusi skor OKR masing-masing personel",
+    "OKR个人评分占比": "Proporsi peringkat pribadi OKR",
+    "各个人员完成OKR评分的所占比例": "Proporsi setiap orang yang menyelesaikan penilaian OKR",
+    "KR完成度：": "Gelar penyelesaian KR:",
+    "KR评分：": "Peringkat KR:",
+    "评价：": "evaluasi:",
+    "已评分未复盘": "Dinilai tetapi tidak ditinjau"
 }

@@ -224,6 +224,15 @@ const docTemplate = `{
                     "OkrAnalyze"
                 ],
                 "summary": "OKR整体平均完成度",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "部门id",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -246,6 +255,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/okr/analyze/department": {
+            "get": {
+                "description": "OKR整体平均完成度",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OkrAnalyze"
+                ],
+                "summary": "OKR整体平均完成度",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/interfaces.OkrAnalyzeDepartment"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/okr/analyze/dept/complete": {
             "get": {
                 "description": "OKR各部门平均完成度",
@@ -256,6 +297,15 @@ const docTemplate = `{
                     "OkrAnalyze"
                 ],
                 "summary": "OKR各部门平均完成度",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "部门id",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -291,6 +341,15 @@ const docTemplate = `{
                     "OkrAnalyze"
                 ],
                 "summary": "OKR各部门评分分布",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "部门id",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -358,6 +417,15 @@ const docTemplate = `{
                     "OkrAnalyze"
                 ],
                 "summary": "OKR人员评分率",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "部门id",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -390,6 +458,15 @@ const docTemplate = `{
                     "OkrAnalyze"
                 ],
                 "summary": "OKR评分分布",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "部门id",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2189,6 +2266,23 @@ const docTemplate = `{
                 }
             }
         },
+        "interfaces.OkrAnalyzeDepartment": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "部门id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "部门名称",
+                    "type": "string"
+                },
+                "owner": {
+                    "description": "是否部门负责人",
+                    "type": "boolean"
+                }
+            }
+        },
         "interfaces.OkrAnalyzeDept": {
             "type": "object",
             "properties": {
@@ -2940,6 +3034,9 @@ const docTemplate = `{
                     "additionalProperties": true
                 },
                 "user_avatar": {
+                    "type": "string"
+                },
+                "user_disable_at": {
                     "type": "string"
                 },
                 "user_nickname": {

@@ -176,7 +176,7 @@ import { AlertCircleOutline } from '@vicons/ionicons5'
 
 const emit = defineEmits(['close', 'loadIng','submit'])
 
-const departmentOwner = UserStore().info.department_owner
+const departmentOwner = UserStore().isDepartmentOwner()
 
 
 const message = useMessage()

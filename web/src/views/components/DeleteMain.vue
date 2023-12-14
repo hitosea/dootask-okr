@@ -8,7 +8,7 @@
                 </div>
                 <div class="flex items-center overflow-hidden" >
                     <p class="delete-box-search-title text-text-li mr-8 ">{{ $t('负责人') }}</p>
-                    <n-select v-model:value="principalValue" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" :class="userIdentity == 'admin' ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
+                    <n-select v-model:value="principalValue" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" :class="isAdmin ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principalLastPage > principalPage" quaternary
@@ -127,7 +127,7 @@ const { proxy } = getCurrentInstance();
 
 const emit = defineEmits(['close'])
 
-const userIdentity = UserStore().info.identity[0]
+const isAdmin = UserStore().isAdmin()
 const message = useMessage()
 
 const popupShow  = ref(false)
@@ -214,7 +214,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     onClick:  _ => handleAssign(rowData)
                 },
                 { default: () => $t('分配') }
-            ), h(
+            ), !isAdmin ? h(
                 NButton,{
                     quaternary: true,
                     size: 'small',
@@ -227,7 +227,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     }
                 },
                 { default: () => $t('删除') }
-            )]
+            ) : '']
         }
     }
 ])
@@ -246,7 +246,7 @@ const getPrincipalList = (type:any) => {
         keyWord = type + ''
     }
     const sendata = {
-        dept_only: userIdentity == 'admin' ? false : true,
+        dept_only: isAdmin ? false : true,
         page: principalPage.value,
         page_size: 20,
         keyword: keyWord,

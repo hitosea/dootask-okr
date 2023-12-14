@@ -17,6 +17,7 @@ type UserInfoResp struct {
 	TaskDialogId     int      `json:"task_dialog_id"`    // 任务对话框id
 	CreatedAt        string   `json:"created_at"`        // 创建时间
 	DepartmentOwner  bool     `json:"department_owner"`  // 是否是部门负责人 false-不是 true-是
+	OkrAdminOwner    bool     `json:"okr_admin_owner"`   // okr普通人员是否拥有管理员有权限 false-不是 true-是
 }
 
 // 用户基础信息
