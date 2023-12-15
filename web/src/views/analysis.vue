@@ -1,12 +1,20 @@
 <template>
-    <div class="page-okr-analysis">
+    <div class="page-okr-analysis" ref="pageOkrAnalysisRef">
         <div class="h-full flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
                     <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
-                    <h2>{{ $t('OKR结果分析') }}</h2>
+                    <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
+                <n-tooltip v-if="proxy.$globalStore.electron && !isSingle" trigger="hover">
+                    <template #trigger>
+                        <div class="open-new-win" type="tertiary" @click="openNewWin">
+                            <i class="okrfont open">&#xe776;</i>
+                        </div>
+                    </template>
+                    <p class="max-w-[300px]"> {{ $t('新窗口打开') }}</p>
+               </n-tooltip>
             </div>
             <n-tabs v-if="(departments.length + (isAdmin ? 1 : 0)) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
                 <n-tab-pane v-if="isAdmin" name="all" :tab="$t('全系统OKR结果分析')"></n-tab-pane>
@@ -202,11 +210,14 @@ import tipsSvgfrom from '@/assets/images/icon/tips.svg';
 import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
+const pageTitle = $t('OKR结果分析')
 const deptLoadIng = ref(false)
 const loadIng = ref(false)
 const tabsValue = ref<any>('')
 const departments = ref<any>([])
 const isAdmin = UserStore().isAdmin()
+const pageOkrAnalysisRef = ref(null)
+const isSingle = proxy.$globalStore.isSingle()
 
 // 总数据
 const analyzeDatas = ref({
@@ -414,6 +425,24 @@ const getData = () => {
     }, 300)
 }
 
+// 新窗口打开
+const openNewWin = () => {
+    proxy.$globalStore.electron.sendMessage('windowRouter', {
+        name: `okr`,
+        path: `single/apps/okr/analysis`,
+        force: false,
+        config: {
+            title: pageTitle.value,
+            titleFixed: true,
+            parent: null,
+            width: Math.min(window.screen.availWidth, pageOkrAnalysisRef.value.clientWidth + 72),
+            height: Math.min(window.screen.availHeight, pageOkrAnalysisRef.value.clientHeight + 36),
+            minWidth: 600,
+            minHeight: 450,
+        }
+    });
+}
+
 
 //
 watch(tabsValue, (value) => {
@@ -434,7 +463,12 @@ nextTick(() => {
     @apply px-16 py-20  md:p-20 h-full w-full bg-page-bg box-border;
 
     .page-title {
-        @apply pb-16 md:pb-24 text-title-color font-medium pt-12;
+        @apply flex pb-16 md:pb-24 text-title-color font-medium pt-12 justify-between;
+
+        .open-new-win .okrfont{
+            font-size: 24px;
+            cursor: pointer;
+        }
 
         h2 {
             @apply text-28;
