@@ -1,7 +1,7 @@
 <template >
     <div class="setting-main-okr">
 
-        <p class="font-medium text-[#303133]">{{ $t('评分部门') }}</p>
+        <p class="font-medium text-[#303133]">{{ $t('评分部门OKR') }}</p>
         <div class="mt-16" v-if="showUserSelect">
             <UserSelects/>
         </div>
@@ -123,7 +123,7 @@ const onSuperiorScoreWeight = (val: number) => {
 const handleSubmit = (type) => {
     if(type != 'get'){
         if(!formModel.value.score_department_user){
-            message.error($t('请选择用户'))
+            message.error($t('请选择评分人员'))
             return;
         }
         if(formModel.value.self_score_weight + formModel.value.superior_score_weight != 100){

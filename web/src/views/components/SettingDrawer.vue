@@ -7,9 +7,12 @@
                 <div class="flex-auto overflow-hidden">
                     <SettingMain ref="settingMainRef" @loadIng="(e)=>(loadIng = e)"></SettingMain>
                 </div>
-                <div class="button-box flex-initial">
+                <div class="button-box flex-initial gap-[8px] flex">
                     <n-button :loading="loadIng" type="primary" @click="handleSubmit">
                         {{ $t('提交') }}
+                    </n-button>
+                    <n-button :loading="loadIng" strong secondary @click="handleReset">
+                        {{ $t('重置') }}
                     </n-button>
                 </div>
             </div>
@@ -38,6 +41,12 @@ const showDrawer = () => {
 const handleSubmit = () => {
     settingMainRef.value.handleSubmit()
 }
+//提交
+const handleReset = () => {
+    settingMainRef.value.handleSubmit('get')
+}
+
+
 </script>
 
 <style lang="less" scoped>

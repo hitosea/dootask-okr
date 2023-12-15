@@ -368,5 +368,7 @@
     "KR完成度：": "Diplôme d'achèvement KR :",
     "KR评分：": "Note KR :",
     "评价：": "évaluer:",
-    "已评分未复盘": "Noté mais non évalué"
+    "已评分未复盘": "Noté mais non évalué",
+    "评分部门OKR": "OKR du département de notation",
+    "请选择评分人员": "Veuillez sélectionner un évaluateur"
 }

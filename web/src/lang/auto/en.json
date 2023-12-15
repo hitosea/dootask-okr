@@ -368,5 +368,7 @@
     "KR完成度：": "KR completion degree:",
     "KR评分：": "KR rating:",
     "评价：": "evaluate:",
-    "已评分未复盘": "Rated but not reviewed"
+    "已评分未复盘": "Rated but not reviewed",
+    "评分部门OKR": "Scoring Department OKRs",
+    "请选择评分人员": "Please select a rater"
 }
