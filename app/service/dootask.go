@@ -2,7 +2,6 @@ package service
 
 import (
 	"dootask-okr/app/constant"
-	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
@@ -155,13 +154,17 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 			// 获取部门负责人userid
 			var UserDepartmentOwner []model.UserDepartment
 			var ownerids []int
-			err := core.DB.Model(&model.UserDepartment{}).Preload("OwnerUser").Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
+			UserDepartmentOwner, err := OkrService.GetUniqueTopLevelDepartments(departmentIds)
 			if err != nil {
 				return 0, err
 			}
+
 			for _, v := range UserDepartmentOwner {
-				ownerids = append(ownerids, v.OwnerUser.Userid)
-				s.DialogOkrPush(okr, token, 11, []int{v.OwnerUser.Userid})
+				if v.OwnerUserid == okr.Userid {
+					continue
+				}
+				ownerids = append(ownerids, v.OwnerUserid)
+				s.DialogOkrPush(okr, token, 11, []int{v.OwnerUserid})
 			}
 			userids = common.ArrayUniqueInt(append(userids, ownerids...))
 		}

@@ -1455,6 +1455,11 @@ func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
 
 // 是否有权限查看
 func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr) bool {
+	// 超级管理员可以查看所有
+	if user.IsAdmin() || s.GetSettingSuperiorUserId() == user.Userid {
+		return true
+	}
+
 	if user.Userid == obj.Userid || obj.VisibleRange == 1 {
 		return true
 	}
@@ -2520,6 +2525,10 @@ func (s *okrService) okrKRExpiringNotice() {
 	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at > ? AND end_at <= ?", time.Now(), time.Now().Add(time.Hour*1))
 	for _, item := range obj {
 		participantIds := common.ExplodeInt(",", item.Participant, true)
+		// 有参与人才发送消息
+		if len(participantIds) == 0 {
+			continue
+		}
 		if s.checkAndPushOkrLog(item.Userid, item.Id, 1) {
 			continue
 		}
@@ -2543,6 +2552,10 @@ func (s *okrService) okrKRExpiredNotice() {
 	obj := s.getOkrObjects("completed = 0 AND progress < 100 AND parent_id > 0 AND end_at <= ?", time.Now())
 	for _, item := range obj {
 		participantIds := common.ExplodeInt(",", item.Participant, true)
+		// 有参与人才发送消息
+		if len(participantIds) == 0 {
+			continue
+		}
 		if s.checkAndPushOkrLog(item.Userid, item.Id, 2) {
 			continue
 		}
