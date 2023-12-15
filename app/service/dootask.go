@@ -217,10 +217,10 @@ func (s dootaskService) DialogGroupDeluser(token string, dialogId int, userids [
 // 推送OKR相关信息
 func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, userids []int) error {
 	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/dialog/okr/push")
-
 	var oHtml string
 	var krHtml string
 	var userNickname string
+	var title string
 	if okr.User != nil {
 		userNickname = fmt.Sprintf("<span class=\"mention okr\">%v</span>", okr.User.Nickname)
 	} else {
@@ -229,7 +229,12 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 	if okr.ParentId == 0 {
 		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.Id, okr.Title)
 	} else {
-		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.ParentOKr.Title)
+		if okr.ParentOKr != nil {
+			title = okr.ParentOKr.Title
+		} else {
+			title = okr.ParentTitle
+		}
+		oHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, title)
 		krHtml = fmt.Sprintf("<span class=\"mention okr\" data-id=\"%v\">#%v</span>", okr.ParentId, okr.Title)
 	}
 	text := ""

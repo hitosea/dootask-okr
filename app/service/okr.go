@@ -263,7 +263,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 					return err
 				}
 				// 新增kr时，发送提示消息
-				// keyResult.ParentTitle = obj.Title
+				keyResult.ParentTitle = obj.Title
 				go DootaskService.DialogOkrPush(keyResult, user.Token, 4, common.ExplodeInt(",", kr.Participant, true))
 				obj.KeyResults = append(obj.KeyResults, keyResult)
 			} else {
@@ -485,7 +485,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	}
 
 	// 父级目标标题
-	// keyResult.ParentTitle = obj.Title
+	keyResult.ParentTitle = obj.Title
 
 	oldParticipant := common.ExplodeInt(",", keyResult.Participant, true)
 	newParticipant := common.ExplodeInt(",", kr.Participant, true)
@@ -1934,11 +1934,11 @@ func (s *okrService) UpdateParticipant(user *interfaces.UserInfoResp, param inte
 
 		addDiffParticipant := common.ArrayDifferenceAddProcessing(newParticipant, oldParticipant)
 		if len(addDiffParticipant) > 0 {
-			// obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
-			// if err != nil {
-			// 	return nil, e.New(constant.ErrOkrNoData)
-			// }
-			// kr.ParentTitle = obj.Title
+			obj, err := s.GetObjectiveByIdWithKeyResults(kr.ParentId)
+			if err != nil {
+				return nil, e.New(constant.ErrOkrNoData)
+			}
+			kr.ParentTitle = obj.Title
 			go DootaskService.DialogGroupAdduser(user.Token, kr.DialogId, addDiffParticipant) // 新增对话成员
 			go DootaskService.DialogOkrPush(kr, user.Token, 4, diffParticipant)
 		}
