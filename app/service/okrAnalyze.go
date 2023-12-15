@@ -80,26 +80,32 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 				Group("user.userid").
 				Order("SUM(b.completed) / SUM(b.total) desc")
 		} else {
-			db = db.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+			db = db.Raw(fmt.Sprintf(`
+				select
+					department_id,
+					department_name,
+					count(*) as total,
+					ifnull( SUM(CASE WHEN completeds != 0 THEN 1 ELSE 0 END), 0) as completed
+				FROM(
+					SELECT
+						DISTINCT b.okr_id,
+						dept.id as department_id,
+						dept.name as department_name,
+						b.completed as completeds
+					FROM %s AS dept
 					LEFT JOIN (
-						SELECT depts.id, 
-							COUNT(*) as total, 
-							SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
+						SELECT okr.id as okr_id, depts.id, okr.completed
 						FROM %s okr
-						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
-						where okr.parent_id = 0 and okr.canceled = 0
-						GROUP BY depts.id
-					) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
-				`, okrTable, departmentTable, departmentTable)).
-				Select(`
-					dept.id as department_id, 
-					dept.name as department_name, 
-					SUM(ifnull(b.total,0)) total, 
-					SUM(ifnull(b.completed,0)) completed
-				`).
-				Where("dept.parent_id = 0").
-				Group("dept.id").
-				Order("SUM(b.completed) / SUM(b.total) desc")
+						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
+						where okr.parent_id = 0 and okr.canceled = 0 and okr.canceled = 0 and okr.deleted_at is null
+						GROUP BY depts.id, okr.id
+					) b on  dept.id = b.id OR b.id IN( select id FROM %s where parent_id = dept.id)
+					WHERE dept.parent_id = 0
+				) t
+				GROUP BY department_id
+				ORDER BY SUM(CASE WHEN completeds != 0 THEN 1 ELSE 0 END) / count(*) desc`,
+				departmentTable, okrTable, departmentTable, departmentTable,
+			))
 		}
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
@@ -188,32 +194,35 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 				Group("user.userid").
 				Order("SUM(b.total) desc")
 		} else {
-			db = db.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+			db = db.Raw(fmt.Sprintf(`
+				select
+					department_id,
+					department_name,
+					count(*) as total,
+					ifnull( SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END), 0) as unscored,
+					ifnull( SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END), 0) as zero_to_three,
+					ifnull( SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END), 0) as three_to_seven,
+					ifnull( SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END), 0) as seven_to_ten
+				FROM(
+					SELECT
+						DISTINCT b.okr_id,
+						dept.id as department_id,
+						dept.name as department_name,
+						b.score
+					FROM %s AS dept
 					LEFT JOIN (
-						SELECT depts.id, 
-							COUNT(*) as total, 
-							SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
-							SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three, 
-							SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven, 
-							SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
+						SELECT okr.id as okr_id, depts.id, okr.score
 						FROM %s okr
-						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
-						where okr.parent_id = 0 and okr.canceled = 0
-						GROUP BY depts.id
-					) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
-				`, okrTable, departmentTable, departmentTable)).
-				Select(`
-					dept.id as department_id,
-					dept.name as department_name,
-					SUM(ifnull(b.total,0)) total,
-					SUM(ifnull(b.unscored,0)) unscored,
-					SUM(ifnull(b.zero_to_three,0)) zero_to_three,
-					SUM(ifnull(b.three_to_seven,0)) three_to_seven,
-					SUM(ifnull(b.seven_to_ten,0)) seven_to_ten
-				`).
-				Where("dept.parent_id = 0").
-				Group("dept.id").
-				Order("SUM(b.total) desc")
+						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
+						where okr.parent_id = 0 and okr.canceled = 0 and okr.canceled = 0 and okr.deleted_at is null
+						GROUP BY depts.id, okr.id
+					) b on  dept.id = b.id OR b.id IN( select id FROM %s where parent_id = dept.id)
+					WHERE dept.parent_id = 0
+				) t
+				GROUP BY department_id
+				ORDER BY total desc`,
+				departmentTable, okrTable, departmentTable, departmentTable,
+			))
 		}
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
@@ -298,27 +307,33 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 				Group("user.userid").
 				Order("SUM(b.okr_total) desc")
 		} else {
-			db = db.Table(departmentTable + " AS dept").Joins(fmt.Sprintf(`
+			db = db.Raw(fmt.Sprintf(`
+				select 
+					department_id, 
+					department_name,
+					count(*) as total, 
+					ifnull(SUM(CASE WHEN score > -1 THEN 1 ELSE 0 END),0) as already_reviewed,
+					ifnull(count(*),0) - ifnull(SUM(CASE WHEN score > -1 THEN 1 ELSE 0 END),0) as unscored
+				FROM(
+					SELECT 
+						DISTINCT b.okr_id,
+						dept.id as department_id,
+						dept.name as department_name,
+						b.score
+					FROM %s AS dept 
 					LEFT JOIN (
-						SELECT depts.id, 
-							count(*) as okr_total,
-							SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
+						SELECT okr.id as okr_id, depts.id, okr.score
 						FROM %s okr
 						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id) 
-						where okr.parent_id = 0 and okr.canceled = 0
-						GROUP BY depts.id
-					) b on dept.id = b.id OR b.id IN(select id FROM %s where parent_id = dept.id) 
-				`, okrTable, departmentTable, departmentTable)).
-				Select(`
-					dept.id as department_id,
-					dept.name as department_name,
-					SUM(ifnull(b.okr_total,0)) total,
-					SUM(ifnull(b.okr_total,0) - ifnull(b.completed,0)) unscored,
-					SUM(ifnull(b.completed,0)) already_reviewed
-				`).
-				Where("dept.parent_id = 0").
-				Group("dept.id").
-				Order("SUM(b.okr_total) desc")
+						where okr.parent_id = 0 and okr.canceled = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						GROUP BY depts.id, okr.id
+					) b on  dept.id = b.id OR b.id IN( select id FROM %s where parent_id = dept.id) 
+					WHERE dept.parent_id = 0 
+				) t 
+				GROUP BY department_id
+				ORDER BY total desc`,
+				departmentTable, okrTable, departmentTable, departmentTable,
+			))
 		}
 		if err := db.Find(&data).Error; err != nil {
 			return nil, err
