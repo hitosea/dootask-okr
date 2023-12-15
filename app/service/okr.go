@@ -1641,7 +1641,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
 		// kr是否能修改评分
-		if kr.Score > -1 && !s.CanUpdateScore(kr) {
+		if (kr.Score > -1 && kr.SuperiorScore > -1) || !s.CanUpdateScore(kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果不是首次评分，评分次数+1

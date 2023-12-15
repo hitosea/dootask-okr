@@ -159,10 +159,16 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 				return 0, err
 			}
 
+			owneridsMap := make(map[int]bool)
 			for _, v := range UserDepartmentOwner {
+				fmt.Println(v.OwnerUserid, okr.Userid)
 				if v.OwnerUserid == okr.Userid {
 					continue
 				}
+				if _, exists := owneridsMap[v.OwnerUserid]; exists {
+					continue
+				}
+				owneridsMap[v.OwnerUserid] = true
 				ownerids = append(ownerids, v.OwnerUserid)
 				s.DialogOkrPush(okr, token, 11, []int{v.OwnerUserid})
 			}
