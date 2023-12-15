@@ -519,11 +519,10 @@ const utils = {
      * @returns {string}
      */
     GoDate(format) {
-        const dateObj = new Date((format || '').replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,''));
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const day = String(dateObj.getDate()).padStart(2, "0");
-        const formattedDate = `${year}/${month}/${day}`;
+        const date = new Date(format);
+        date.setMonth(date.getMonth() + 1);
+        date.setDate(0);
+        const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
         return (formattedDate)
     },
 
@@ -534,7 +533,7 @@ const utils = {
      * @returns {string}
      */
     GoDateHMS(format,type:string='-') {
-        const dateObj = new Date((format || '').replace(/\T/g,' ').replace(/\Z/g,'').replace(/\+08:00/g,''));
+        const dateObj = new Date(format);
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, "0");
         const day = String(dateObj.getDate()).padStart(2, "0");
@@ -542,6 +541,7 @@ const utils = {
         const minutes = String(dateObj.getMinutes()).padStart(2, "0");
         const seconds = String(dateObj.getSeconds()).padStart(2, "0");
         let formattedDate = ''
+
         if(type=='-'){
             formattedDate = `${year}-${month}-${day}`;
         }else{

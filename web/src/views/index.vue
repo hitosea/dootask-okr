@@ -87,7 +87,7 @@
     <DeleteDrawer v-model:show="deleteShow" @close="handleClose"></DeleteDrawer>
 
     <!-- 设置 -->
-    <SettingDrawer v-model:show="settingShow"></SettingDrawer>
+    <SettingDrawer v-model:show="settingShow" @close="()=>{ settingShow = false }"></SettingDrawer>
 
     <!-- 强提示 -->
     <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>

@@ -112,7 +112,7 @@ const handleSubmit = () => {
             message.error(msg)
         })
         .finally(() => {
-            emit('close', 1, props.id,formValue.value.progress,formValue.value.progress_status)
+            emit('close', 1,formValue.value.progress)
             loadIng.value = false
         })
 }

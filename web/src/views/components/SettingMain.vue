@@ -159,7 +159,7 @@ const handleSubmit = (type) => {
 
 // 显示Drawer
 const showDrawer = () => {
-    emit('close')
+  
 }
 
 // 关闭Drawer
