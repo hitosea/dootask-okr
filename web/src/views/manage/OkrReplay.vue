@@ -4,7 +4,7 @@
 
             <div class="flex flex-wrap flex-col 2xl:flex-row 2xl:items-center ">
                 <div class="hidden md:flex items-center mb-16  min-w-full">
-                    <div class="flex-1 flex items-center overflow-hidden" v-if="userInfo == 'admin'">
+                    <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
                         <div class="mb-2 mr-8 text-text-li whitespace-nowrap">
                             {{ $t('部门') }}
                         </div>
@@ -12,12 +12,12 @@
                             class="mr-16 flex-1 overflow-hidden" :placeholder="$t('全部')" />
                     </div>
 
-                    <div class=" flex items-center overflow-hidden" :class="userInfo == 'admin' ? 'flex-1' : ''">
+                    <div class=" flex items-center overflow-hidden" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
                         <div class="text-text-li mr-8 whitespace-nowrap">
                             {{ $t('负责人') }}
                         </div>
                         <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser"
-                            :class="userInfo == 'admin' ? '' : 'max-w-[225px] '" class="flex-1 overflow-hidden" filterable
+                            :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '" class="flex-1 overflow-hidden" filterable
                             :placeholder="$t('全部')" clearable>
                             <template #action>
                                 <div v-if="principallast_page > principalpage" quaternary
@@ -31,13 +31,13 @@
                         </n-select>
                     </div>
 
-                    <div class="flex items-center" :class="userInfo == 'admin' ? 'flex-1' : ''">
+                    <div class="flex items-center" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
                         <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
-                        <div v-if="showDatePickers" :class="userInfo == 'admin' ? '' : 'max-w-[225px] '"
+                        <div v-if="showDatePickers" :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
                             class="okr-date-picker-waps ">
                             <DatePickers />
                         </div>
-                        <n-date-picker v-else :class="userInfo == 'admin' ? '' : 'max-w-[225px] '" v-model:value="daterange"
+                        <n-date-picker v-else :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '" v-model:value="daterange"
                             value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
                     </div>
 
@@ -107,13 +107,13 @@
                         </div>
                     </template>
                     <div class="flex flex-col h-full">
-                        <div v-if="userInfo == 'admin'" class="whitespace-nowrap text-text-li mb-4">
+                        <div v-if="(userInfo == 'admin' || okrAdminOwner)" class="whitespace-nowrap text-text-li mb-4">
                             {{ $t('部门') }}
                         </div>
-                        <n-select v-if="userInfo == 'admin'" v-model:value="departmentsvalue" :options="departments"
+                        <n-select v-if="(userInfo == 'admin' || okrAdminOwner)" v-model:value="departmentsvalue" :options="departments"
                             clearable class="mr-24" :placeholder="$t('全部')" />
 
-                        <div class=" whitespace-nowrap text-text-li mb-4" :class="userInfo == 'admin' ? 'mt-16' : ''">
+                        <div class=" whitespace-nowrap text-text-li mb-4" :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">
                             {{ $t('负责人') }}
                         </div>
                         <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class=""
@@ -175,6 +175,7 @@ import OkrLoading from '../components/OkrLoading.vue'
 import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import { getUserList } from '@/api/modules/created'
+import { getUserInfo } from '@/api/modules/user'
 import utils from "@/utils/utils"
 
 const { proxy } = getCurrentInstance();
@@ -202,6 +203,7 @@ const principallast_page = ref(99999)
 const principalpage = ref(1)
 
 const userInfo = UserStore().info.identity[0]
+const okrAdminOwner = ref(false)
 const showDatePickers = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const daterange = ref<[number, number]>([0, 0])
@@ -317,6 +319,14 @@ const principalClick = (type) => {
             })
         }
         principallast_page.value = data.last_page
+    })
+}
+
+//获取能否能搜索部门
+const handleGetUserInfo = () => {
+    getUserInfo().then(({ data }) => {
+        console.log(data);
+        okrAdminOwner.value  = data.okr_admin_owner
     })
 }
 
@@ -479,6 +489,7 @@ onMounted(() => {
     init()
     getData('search')
     loadDatePickers()
+    handleGetUserInfo()
 })
 defineExpose({
     resetGetList,

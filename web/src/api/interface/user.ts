@@ -13,6 +13,7 @@ export namespace User {
         department_owner: any
         userid: any
         department: any
+        okr_admin_owner: any
     }
 
     // 登录请求
