@@ -325,7 +325,6 @@ const principalClick = (type) => {
 //获取能否能搜索部门
 const handleGetUserInfo = () => {
     getUserInfo().then(({ data }) => {
-        console.log(data);
         okrAdminOwner.value  = data.okr_admin_owner
     })
 }
