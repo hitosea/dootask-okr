@@ -172,7 +172,8 @@
                                                 utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                         </p>
                                     </template>
-                                    <template v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
+                                    <template
+                                        v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
                                         <i class="okrfont mr-4 text-12 ml-24 "
                                             :class="isOverdue(item) ? 'text-[#ED4014]' : ''"> &#xe6e8;</i>
                                         <p :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
@@ -199,12 +200,22 @@
                                         <i class="okrfont mr-6 text-16 text-[#FFA25A]">&#xe674;</i>
                                         <p class="text-text-li opacity-50 text-12">{{ item.confidence }}</p>
                                     </div>
-                                    <div v-if="item.kr_score == '0'"
-                                        class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
-                                        @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
-                                        <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
-                                        <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
-                                    </div>
+
+                                    <n-tooltip trigger="hover" v-if="item.kr_score == '0'" :disabled="item.score == -1">
+                                        <template #trigger>
+                                            <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
+                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)">
+                                                <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
+                                                <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
+                                            </div>
+                                        </template>
+                                        <div>
+                                            <div class="flex items-center ">
+                                                <p class=" text-12 text-[#fff]">{{ $t('负责人自评分数：') }}<span
+                                                        class=" text-primary-color">{{ item.score }}</span></p>
+                                            </div>
+                                        </div>
+                                    </n-tooltip>
                                     <n-tooltip trigger="hover" v-else>
                                         <template #trigger>
                                             <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
@@ -300,15 +311,18 @@
                                                     item.participant.split(',').length - 4 }}</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-center" v-if="!expiresFormat(item.end_at) || detailData.completed == '1' || detailData.canceled == '1'">
+                                        <div class="flex items-center"
+                                            v-if="!expiresFormat(item.end_at) || detailData.completed == '1' || detailData.canceled == '1'">
                                             <i class="okrfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
                                             <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
                                                 || 0) }}
                                             </p>
                                         </div>
-                                        <div class="flex items-center" v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
+                                        <div class="flex items-center"
+                                            v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
                                             <i class="okrfont text-12 mr-4 text-[#ED4014]">&#xe6e8;</i>
-                                            <p class="flex-1 text-[#ED4014] text-12  shrink-0">{{ expiresFormat(item.end_at) }}
+                                            <p class="flex-1 text-[#ED4014] text-12  shrink-0">{{ expiresFormat(item.end_at)
+                                            }}
                                             </p>
                                         </div>
                                     </div>
@@ -506,6 +520,7 @@ const confidence = ref(0)
 
 const markShow = ref(false)
 const markId = ref(0)
+const openMarkId = ref(0)
 const score = ref(0)
 const superiorScore = ref(0)
 const inputShow = ref(false)
@@ -544,6 +559,14 @@ const getDetail = (type) => {
                     replayListPage.value = 1
                     replayList.value = []
                     handleGetReplayList()
+                }
+                if (type == 'openMark') {
+                    detailData.value.key_results.map((item) => {
+                        if (item.id == openMarkId.value) {
+                            handleMark(item.id, item.score, item.superior_score, item.progress, item.can_update_score)
+                        }
+                    })
+                    openMarkId.value = 0
                 }
             })
         } else {
@@ -787,9 +810,14 @@ const handleSchedule = (id, progress, progress_status, score) => {
 }
 
 //关闭进度
-const handleCloseDedree = (type) => {
+const handleCloseDedree = (type, progress) => {
     if (type == 1) {
-        getDetail('')
+        if (progress == 100) {
+            getDetail('openMark')
+            openMarkId.value = degreeOfCompletionId.value
+        } else {
+            getDetail('')
+        }
         AlignTargetRef.value.getList()
         emit('upData', detailData.value.id)
     }

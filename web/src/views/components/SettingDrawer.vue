@@ -5,7 +5,7 @@
         <n-drawer-content :title="$t('设置')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[26px] right-[26px] overflow-hidden">
                 <div class="flex-auto overflow-hidden">
-                    <SettingMain ref="settingMainRef" @loadIng="(e)=>(loadIng = e)"></SettingMain>
+                    <SettingMain ref="settingMainRef" @loadIng="(e)=>(loadIng = e)" @close="()=>{ emit('close') }"></SettingMain>
                 </div>
                 <div class="button-box flex-initial gap-[8px] flex">
                     <n-button :loading="loadIng" type="primary" @click="handleSubmit">

@@ -63,6 +63,9 @@ const themeOverrides = {
         Popover:{
             borderRadius:"8px",
         },
+        Tooltip:{
+            color:"rgba(81, 90, 110, 0.75)",
+        },
         Tabs:{
             tabFontWeightActive:"500",
             tabTextColorLine:"#606266",
