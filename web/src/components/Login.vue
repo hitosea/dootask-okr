@@ -80,7 +80,8 @@
 <script lang="ts">
 import {defineComponent, ref} from "vue";
 import {LogoGithub, AddCircleOutline} from "@vicons/ionicons5";
-import {FormInst, FormItemRule, FormRules, useMessage} from 'naive-ui'
+import {FormInst, FormItemRule, FormRules} from 'naive-ui'
+import { useMessage } from "@/utils/messageAll"
 import {ResultDialog} from "../api";
 import utils from "../utils/utils";
 import {userLogin, userReg} from "../api/modules/user";

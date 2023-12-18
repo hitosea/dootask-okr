@@ -8,7 +8,8 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import { UploadFileInfo, useMessage } from "naive-ui"
+import { UploadFileInfo } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import webTs from "@/utils/web";
 import utils from "@/utils/utils";
 import { UserStore } from "@/store/user"

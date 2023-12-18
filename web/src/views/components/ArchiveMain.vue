@@ -39,7 +39,7 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
-import { useMessage } from 'naive-ui';
+import { useMessage } from "@/utils/messageAll"
 
 const message = useMessage()
 

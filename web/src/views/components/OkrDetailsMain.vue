@@ -380,8 +380,9 @@
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList"
                             v-if="logList.length">
-                            <n-avatar round :size="28" class="mr-8 shrink-0"
-                                :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" />
+                            <userAvatar :userUrl="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" :disable="item.user_disable_at"></userAvatar>
+                            <!-- <n-avatar round :size="28" class="mr-8 shrink-0"
+                                :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" /> -->
                             <div class="flex flex-col gap-3">
                                 <p class="text-14 leading-[16px] text-primary-color">{{ item.user_nickname }}<span
                                         class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
@@ -455,13 +456,14 @@ import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpd
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import DegreeOfCompletion from '@/views/components/DegreeOfCompletion.vue'
 import Confidences from '@/views/components/Confidences.vue';
 import MarkVue from '@/views/components/Marks.vue';
 import TipsModal from '@/views/components/TipsModal.vue';
 import WarningPopup from '@/views/components/WarningPopup.vue';
+import userAvatar from './userAvatar.vue';
 
 import { GlobalStore } from '@/store';
 import { useRoute, useRouter } from 'vue-router'
@@ -800,7 +802,6 @@ const handleSchedule = (id, progress, progress_status, score) => {
         showModal.value = true
         return
     }
-    message.destroyAll()
     if (score > -1) return message.error($t('KR已评分无法操作'))
     if (detailData.value.completed == '1') return message.error($t('O目标已完成无法操作'))
     if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
@@ -855,7 +856,6 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress, can_update_score) => {
-    message.destroyAll()
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
@@ -1046,7 +1046,6 @@ const handleAddMultiple = () => {
         showModal.value = true
         return
     }
-    message.destroyAll()
     if (detailData.value.score < 0) return message.error($t('KR评分未完成'))
     if (!proxy.$openChildPage('/addMultiple')) {
         globalStore.$patch((state) => {

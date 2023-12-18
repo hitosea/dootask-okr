@@ -111,7 +111,7 @@ import { CheckmarkSharp } from '@vicons/ionicons5'
 import utils from '@/utils/utils';
 import webTs from '@/utils/web'
 import { alignUpdate, okrFollow } from '@/api/modules/okrList'
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import { ResultDialog } from "@/api"
 import { UserStore } from '@/store/user'
 import { GlobalStore } from '@/store'
@@ -150,7 +150,6 @@ const handleTarget = (e, item) => {
     eidtItem.value = item
     eidtId.value = item.id
     userId.value = item.userid
-    message.destroyAll()
     if (e == 1) {
         alignTargetShow.value = true
     } else {
@@ -185,7 +184,7 @@ const handleFollowOkr = (id) => {
     loadIng.value = true
     okrFollow(upData)
         .then(({ msg }) => {
-            message.success($t('操作成功'))
+            message.success('操作成功')
             emit('upData', id, 'FollowOkr')
         })
         .catch(ResultDialog)

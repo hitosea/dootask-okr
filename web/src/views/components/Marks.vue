@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
 import { okrScore } from '@/api/modules/okrList'
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import { ResultDialog } from "@/api"
 
 const message = useMessage()

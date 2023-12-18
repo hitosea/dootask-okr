@@ -114,7 +114,8 @@
 
 </template>
 <script setup lang="ts">
-import { DataTableColumn, useMessage } from 'naive-ui';
+import { DataTableColumn } from 'naive-ui';
+import { useMessage } from "@/utils/messageAll"
 import { getUserList } from '@/api/modules/created'
 import { getLeaveList, okrDelete, okrAssign } from '@/api/modules/okrList'
 import { UserStore } from '@/store/user'
@@ -309,7 +310,6 @@ const handleAssign = (rowData) => {
     assignShow.value = true
 }
 const submitAssign = () => {
-    message.destroyAll()
     if(!assignUserId.value){
         message.error($t('请选择用户'))
         return;

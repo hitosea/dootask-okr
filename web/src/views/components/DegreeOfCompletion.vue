@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { Close } from "@vicons/ionicons5"
 import { updateProgress } from '@/api/modules/okrList'
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 
 const message = useMessage()
 const show = ref(false)

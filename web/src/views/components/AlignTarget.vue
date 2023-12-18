@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
 import InfoModal from "./InfoModal.vue";
 import utils from "@/utils/utils";

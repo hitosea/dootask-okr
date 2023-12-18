@@ -33,7 +33,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { useMessage } from 'naive-ui';
+import { useMessage } from "@/utils/messageAll"
 import { okrSetting } from '@/api/modules/system'
 
 const message = useMessage()
@@ -122,7 +122,6 @@ const onSuperiorScoreWeight = (val: number) => {
 // 提交
 const handleSubmit = (type) => {
     if(type != 'get'){
-        message.destroyAll()
         if(!formModel.value.score_department_user){
             message.error($t('请选择评分人员'))
             return;

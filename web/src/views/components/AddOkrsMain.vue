@@ -179,7 +179,7 @@ import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import ItemList from "./ItemList.vue";
 import UserList from "./UserList.vue";
 import { addOkr, upDateOkr } from '@/api/modules/created'
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import utils from "@/utils/utils";
 import { UserStore } from '@/store/user'
 import { AlertCircleOutline } from '@vicons/ionicons5'
@@ -497,7 +497,6 @@ const handleAddKr = () => {
 
 // 删除kr
 const handleRemoveKr = (index) => {
-    message.destroyAll()
     if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
     unmountUserSelectsApps()
@@ -551,6 +550,16 @@ const loadDatePickers = () => {
                         on: {
                             "on-change": (value: any) => {
                                 this.value = value.map((h: any, key: number) => utils.TimeHandle(h, key))
+                                if (type == 'cycle') {
+                                    if(this.value[0] && this.value[1]){
+                                        formValue.value.time = this.value;
+                                    }else{
+                                        formValue.value.time = null
+                                    }
+                                }
+                                else {
+                                    item.time = this.value;
+                                }
                                 nextTick(()=>{
                                     formRef.value?.validate((errors) => {
                                     formRefs.value?.forEach(element => {
@@ -575,11 +584,6 @@ const loadDatePickers = () => {
                                     };
                                 }).catch(_ => { })
                                 })
-                                if (type == 'cycle') {
-                                    formValue.value.time = this.value;
-                                } else {
-                                    item.time = this.value;
-                                }
                             }
                         }
                     })

@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { NSelect, DataTableColumn } from 'naive-ui';
 import { replayCreate, replayDetail } from '@/api/modules/okrList'
-import { useMessage } from "naive-ui"
+import { useMessage } from "@/utils/messageAll"
 import { GlobalStore } from '@/store';
 
 const globalStore = GlobalStore()
@@ -182,6 +182,7 @@ const closeDrawer = () => {
 }
 
 const handleSubmit = () => {
+
     const upData = {
         okr_id: props.data.id,
         review: review.value,
