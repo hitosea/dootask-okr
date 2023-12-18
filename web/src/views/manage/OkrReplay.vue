@@ -1,73 +1,75 @@
 <template>
-    <n-scrollbar :on-scroll="onScroll">
-        <div class="okr-replay-main">
+    <div class="okr-replay-main">
 
-            <div class="flex flex-wrap flex-col 2xl:flex-row 2xl:items-center ">
-                <div class="hidden md:flex items-center mb-16  min-w-full">
-                    <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
-                        <div class="mb-2 mr-8 text-text-li whitespace-nowrap">
-                            {{ $t('部门') }}
-                        </div>
-                        <n-select v-model:value="departmentsvalue" :options="departments" clearable
-                            class="mr-16 flex-1 overflow-hidden" :placeholder="$t('全部')" />
+        <div class="flex flex-wrap flex-col 2xl:flex-row 2xl:items-center flex-[0_0_auto]">
+            <div class="hidden md:flex items-center mb-16  min-w-full">
+                <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
+                    <div class="mb-2 mr-8 text-text-li whitespace-nowrap">
+                        {{ $t('部门') }}
                     </div>
+                    <n-select v-model:value="departmentsvalue" :options="departments" clearable
+                        class="mr-16 flex-1 overflow-hidden" :placeholder="$t('全部')" />
+                </div>
 
-                    <div class=" flex items-center overflow-hidden" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
-                        <div class="text-text-li mr-8 whitespace-nowrap">
-                            {{ $t('负责人') }}
-                        </div>
-                        <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser"
-                            :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '" class="flex-1 overflow-hidden" filterable
-                            :placeholder="$t('全部')" clearable>
-                            <template #action>
-                                <div v-if="principallast_page > principalpage" quaternary
-                                    class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
-                                    {{ $t('更多...') }}
-                                </div>
-                                <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
-                                    {{ $t('已经到底了') }}
-                                </div>
-                            </template>
-                        </n-select>
+                <div class=" flex items-center overflow-hidden"
+                    :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
+                    <div class="text-text-li mr-8 whitespace-nowrap">
+                        {{ $t('负责人') }}
                     </div>
-
-                    <div class="flex items-center" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
-                        <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
-                        <div v-if="showDatePickers" :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
-                            class="okr-date-picker-waps ">
-                            <DatePickers />
-                        </div>
-                        <n-date-picker v-else :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '" v-model:value="daterange"
-                            value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
-                    </div>
-
-                    <n-button :loading="isloading" type="primary" size="small" class="ml-16 rounded px-16"
-                        @click="handleClick()">
-                        <template #icon>
-                            <i class="okrfont" v-if="!(isloading)">&#xe72a;</i>
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser"
+                        :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
+                        class="flex-1 overflow-hidden" filterable :placeholder="$t('全部')" clearable>
+                        <template #action>
+                            <div v-if="principallast_page > principalpage" quaternary
+                                class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
+                                {{ $t('更多...') }}
+                            </div>
+                            <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
+                                {{ $t('已经到底了') }}
+                            </div>
                         </template>
-                        {{ $t('搜索') }}
-                    </n-button>
+                    </n-select>
                 </div>
-                <div class="flex items-center mb-12 justify-between md:justify-start">
-                    <n-checkbox v-model:checked="completednotrated" class="rounded whitespace-nowrap mb-2 "
-                        @click="handleClick()">
-                        <span class="text-text-li">{{ $t('已评分未复盘') }}</span>
-                    </n-checkbox>
-                    <div @click="active = true" class="flex items-center md:hidden text-14"
-                        :class="searchActive ? 'text-primary-color' : 'text-text-tips'">
-                        <i class="okrfont text-18 mr-4">&#xe700;</i>
-                        {{ $t('筛选') }}
-                    </div>
 
+                <div class="flex items-center" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
+                    <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
+                    <div v-if="showDatePickers" :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
+                        class="okr-date-picker-waps ">
+                        <DatePickers />
+                    </div>
+                    <n-date-picker v-else :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
+                        v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable
+                        size="medium" />
                 </div>
+
+                <n-button :loading="isloading" type="primary" size="small" class="ml-16 rounded px-16"
+                    @click="handleClick()">
+                    <template #icon>
+                        <i class="okrfont" v-if="!(isloading)">&#xe72a;</i>
+                    </template>
+                    {{ $t('搜索') }}
+                </n-button>
             </div>
-            <div>
-                <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')"
-                    :types="searchObject != ''"></OkrNotDatas>
-                <OkrLoading v-if="loadIng"></OkrLoading>
+            <div class="flex items-center mb-12 justify-between md:justify-start">
+                <n-checkbox v-model:checked="completednotrated" class="rounded whitespace-nowrap mb-2 "
+                    @click="handleClick()">
+                    <span class="text-text-li">{{ $t('已评分未复盘') }}</span>
+                </n-checkbox>
+                <div @click="active = true" class="flex items-center md:hidden text-14"
+                    :class="searchActive ? 'text-primary-color' : 'text-text-tips'">
+                    <i class="okrfont text-18 mr-4">&#xe700;</i>
+                    {{ $t('筛选') }}
+                </div>
+
             </div>
-            <div v-if="items.length != 0" class="replay">
+        </div>
+        <div>
+            <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')"
+                :types="searchObject != ''"></OkrNotDatas>
+            <OkrLoading v-if="loadIng"></OkrLoading>
+        </div>
+        <n-scrollbar :on-scroll="onScroll">
+            <div v-if="items.length != 0" class="replay flex-[1_1_auto] ">
                 <div v-for="(item, index) in items" :key="index"
                     :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
                     @click="openMultiple(item.okr_id)">
@@ -88,7 +90,8 @@
                     <div class="flex">
                         <div class="replay-item-okr cursor-pointer px-[16px] py-[9.5px] bg-[#f4f5f7]"
                             @click.stop="openOkrDetail(item.okr_id)">
-                            <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">{{ item.objective_num || ( '0' + item.okr_id)  }}</div>
+                            <div class="replay-item-okr-icon w-[25px] h-[16px] shrink-0">{{ item.objective_num || ('0' +
+                                item.okr_id) }}</div>
                             <div class="text-[#515A6E] text-14 line-clamp-1">{{ item.okr_title }}</div>
                         </div>
                     </div>
@@ -97,71 +100,71 @@
                     </div>
                 </div>
             </div>
-            <n-drawer v-model:show="active" default-height="362px" placement="bottom" resizable>
+        </n-scrollbar>
+        <n-drawer v-model:show="active" default-height="362px" placement="bottom" resizable>
 
-                <n-drawer-content class="screen-d">
-                    <template #header>
-                        <div class="flex w-full items-center justify-between text-text-li text-16 md:text-18">
-                            {{ $t('筛选') }}
-                            <i class="okrfont text-text-tips" @click="active = false">&#xe6e5;</i>
-                        </div>
-                    </template>
-                    <div class="flex flex-col h-full">
-                        <div v-if="(userInfo == 'admin' || okrAdminOwner)" class="whitespace-nowrap text-text-li mb-4">
-                            {{ $t('部门') }}
-                        </div>
-                        <n-select v-if="(userInfo == 'admin' || okrAdminOwner)" v-model:value="departmentsvalue" :options="departments"
-                            clearable class="mr-24" :placeholder="$t('全部')" />
-
-                        <div class=" whitespace-nowrap text-text-li mb-4" :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">
-                            {{ $t('负责人') }}
-                        </div>
-                        <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class=""
-                            filterable :placeholder="$t('全部')" clearable>
-                            <template #action>
-                                <div v-if="principallast_page > principalpage" quaternary
-                                    class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
-                                    {{ $t('更多...') }}
-                                </div>
-                                <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
-                                    {{ $t('已经到底了') }}
-                                </div>
-                            </template>
-                        </n-select>
-
-                        <div class="mt-16 whitespace-nowrap mb-4 text-text-li">
-                            {{ $t('时间') }}
-                        </div>
-                        <div v-if="showDatePickers" class="okr-date-picker-waps">
-                            <DatePickers />
-                        </div>
-                        <n-date-picker v-else class="h-[36px]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
-                            type="daterange" clearable size="medium" />
-
-
-                        <div
-                            class="flex justify-between gap-4 mt-auto border-solid pt-12 border-0  border-t-[1px] border-[#F2F2F2]">
-                            <n-button :loading="isloading" strong secondary type="tertiary" class="flex-1"
-                                @click="handleReset">
-                                {{ $t('重置') }}
-                            </n-button>
-                            <n-button :loading="isloading" type="primary" class="flex-1" @click="handleClick()">
-                                {{ $t('搜索') }}
-                            </n-button>
-                        </div>
-
+            <n-drawer-content class="screen-d">
+                <template #header>
+                    <div class="flex w-full items-center justify-between text-text-li text-16 md:text-18">
+                        {{ $t('筛选') }}
+                        <i class="okrfont text-text-tips" @click="active = false">&#xe6e5;</i>
                     </div>
-                </n-drawer-content>
-            </n-drawer>
+                </template>
+                <div class="flex flex-col h-full">
+                    <div v-if="(userInfo == 'admin' || okrAdminOwner)" class="whitespace-nowrap text-text-li mb-4">
+                        {{ $t('部门') }}
+                    </div>
+                    <n-select v-if="(userInfo == 'admin' || okrAdminOwner)" v-model:value="departmentsvalue"
+                        :options="departments" clearable class="mr-24" :placeholder="$t('全部')" />
 
-            <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
-            <!-- OKR详情 -->
-            <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @openDetail="openOkrDetail" @close="() => {
-                okrDetailsShow = false
-            }
-                "></OkrDetailsModal>
-        </div>
-    </n-scrollbar>
+                    <div class=" whitespace-nowrap text-text-li mb-4"
+                        :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">
+                        {{ $t('负责人') }}
+                    </div>
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class="" filterable
+                        :placeholder="$t('全部')" clearable>
+                        <template #action>
+                            <div v-if="principallast_page > principalpage" quaternary
+                                class=" h-full w-full whitespace-nowrap text-center" @click.stop="principalClick('')">
+                                {{ $t('更多...') }}
+                            </div>
+                            <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
+                                {{ $t('已经到底了') }}
+                            </div>
+                        </template>
+                    </n-select>
+
+                    <div class="mt-16 whitespace-nowrap mb-4 text-text-li">
+                        {{ $t('时间') }}
+                    </div>
+                    <div v-if="showDatePickers" class="okr-date-picker-waps">
+                        <DatePickers />
+                    </div>
+                    <n-date-picker v-else class="h-[36px]" v-model:value="daterange" value-format="yyyy.MM.dd HH:mm:ss"
+                        type="daterange" clearable size="medium" />
+
+
+                    <div
+                        class="flex justify-between gap-4 mt-auto border-solid pt-12 border-0  border-t-[1px] border-[#F2F2F2]">
+                        <n-button :loading="isloading" strong secondary type="tertiary" class="flex-1" @click="handleReset">
+                            {{ $t('重置') }}
+                        </n-button>
+                        <n-button :loading="isloading" type="primary" class="flex-1" @click="handleClick()">
+                            {{ $t('搜索') }}
+                        </n-button>
+                    </div>
+
+                </div>
+            </n-drawer-content>
+        </n-drawer>
+
+        <OkrLoading v-if="onscrolloading" position='onscroll'></OkrLoading>
+        <!-- OKR详情 -->
+        <OkrDetailsModal ref="RefOkrDetails" :id="detailId" :show="okrDetailsShow" @openDetail="openOkrDetail" @close="() => {
+            okrDetailsShow = false
+        }
+            "></OkrDetailsModal>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -325,7 +328,7 @@ const principalClick = (type) => {
 //获取能否能搜索部门
 const handleGetUserInfo = () => {
     getUserInfo().then(({ data }) => {
-        okrAdminOwner.value  = data.okr_admin_owner
+        okrAdminOwner.value = data.okr_admin_owner
     })
 }
 
@@ -420,7 +423,7 @@ const handleClick = () => {
 const handleReset = () => {
     departmentsvalue.value = null
     principalvalue.value = null
-    daterange.value = [0,0]
+    daterange.value = [0, 0]
     active.value = false
     page.value = 1
     getData('search');
@@ -497,7 +500,7 @@ defineExpose({
 
 <style lang="less" scoped>
 .okr-replay-main {
-    @apply pt-16 md:pt-24 flex flex-col;
+    @apply pt-16 md:pt-24 flex flex-col h-full;
 }
 
 .replay {
@@ -554,9 +557,11 @@ defineExpose({
 .span-3 {
     @apply bg-[#72A1F7];
 }
+
 :deep(.n-drawer-header__main) {
     @apply flex-1;
 }
+
 :deep(.n-checkbox-box__border) {
     @apply rounded !important;
 }
