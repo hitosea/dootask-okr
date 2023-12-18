@@ -613,7 +613,7 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 // 根据id获取目标
 func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Preload("ParentOKr").Where("id = ?", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("User").Preload("ParentOKr").Where("id = ?", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -625,7 +625,7 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 // 根据id获取是关键结果的目标
 func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Preload("ParentOKr").Where("id = ? and parent_id > 0", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("User").Preload("ParentOKr").Where("id = ? and parent_id > 0", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -637,7 +637,7 @@ func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 // 根据id获取目标及其关键结果
 func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) {
 	var obj model.Okr
-	if err := core.DB.Preload("ParentOKr").Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
+	if err := core.DB.Preload("User").Preload("ParentOKr").Preload("KeyResults").Where("id = ?", id).First(&obj).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -1775,7 +1775,7 @@ func (s *okrService) IsObjectiveManager(kr *model.Okr, user *interfaces.UserInfo
 
 	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
 	settingSuperiorUserId := s.GetSettingSuperiorUserId()
-	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) && settingSuperiorUserId != kr.Userid {
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || kr.User.IsAdmin()) {
 		return user.Userid == settingSuperiorUserId
 	}
 
@@ -1835,7 +1835,7 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, user *interfaces.UserInf
 
 	// 设置了上级评分的用户id 1、顶级部门负责人和部门的OKR 2、如果是管理员（没有部门）
 	settingSuperiorUserId := s.GetSettingSuperiorUserId()
-	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || user.IsAdmin()) && settingSuperiorUserId != obj.Userid {
+	if settingSuperiorUserId > 0 && (topDepartment.Id > 0 || obj.User.IsAdmin()) {
 		return []int{settingSuperiorUserId}
 	}
 
@@ -2690,6 +2690,9 @@ func (s *okrService) ArchiveOkr(user *interfaces.UserInfoResp, okrId int) error 
 			return nil
 		})
 	} else {
+		if obj.Completed == 1 && !s.hasReplay(obj.Id) {
+			return e.New(constant.ErrOkrCompletedReplay)
+		}
 		return e.New(constant.ErrOkrArchiveStatusNotCompleted)
 	}
 }
