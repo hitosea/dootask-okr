@@ -174,7 +174,7 @@ const getList = (type) => {
                 })
             }
             last_page.value = data.last_page
-            loadIng.value = false
+
             if (cities.value != null) {
                 okrList.value.map((item, index) => {
                     item.key_results?.map(items => {
@@ -184,6 +184,11 @@ const getList = (type) => {
                     })
                 })
             }
+        }).catch(({ msg }) => {
+            loadIng.value = false
+        })
+        .finally(() => {
+            loadIng.value = false
         })
     }
 }

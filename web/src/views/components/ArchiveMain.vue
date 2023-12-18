@@ -2,7 +2,7 @@
     <div class="archive-box">
         <div class="archive-box-search">
             <div class="archive-search-input">
-                <p class=" text-text-li shrink-0">{{ $t('目标名称') }}</p><n-input v-model="objective" :loading="loadIng"
+                <p class=" text-text-li shrink-0">{{ $t('目标名称') }}</p><n-input v-model:value="objective" :loading="loadIng"
                     :placeholder="$t('目标名称')" clearable />
             </div>
             <n-button :loading="loadIng" type="primary" size="small" @click="onSearch">

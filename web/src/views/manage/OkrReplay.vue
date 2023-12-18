@@ -280,6 +280,15 @@ const getData = (type) => {
                 })
             }
             last_page.value = data.last_page
+        }).catch(({ msg }) => {
+            onscrolloading.value = false
+            loadIng.value = false
+            isloading.value = false
+        })
+        .finally(() => {
+            onscrolloading.value = false
+            loadIng.value = false
+            isloading.value = false
         })
     }
 }
