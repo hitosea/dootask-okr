@@ -164,6 +164,18 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 			owneridsMap := make(map[int]bool)
 			for _, v := range UserDepartmentOwner {
 				if v.OwnerUserid == okr.Userid {
+					// 创建人是小组负责人不通知，而获取上级负责人通知
+					var UserDepartmentOwnerSuper model.UserDepartment
+					err := core.DB.Model(&model.UserDepartment{}).Where("id = ?", v.ParentId).Find(&UserDepartmentOwnerSuper).Error
+					if err != nil {
+						return 0, err
+					}
+					if _, exists := owneridsMap[UserDepartmentOwnerSuper.OwnerUserid]; exists {
+						continue
+					}
+					owneridsMap[UserDepartmentOwnerSuper.OwnerUserid] = true
+					ownerids = append(ownerids, UserDepartmentOwnerSuper.OwnerUserid)
+					s.DialogOkrPush(okr, token, 11, []int{UserDepartmentOwnerSuper.OwnerUserid})
 					continue
 				}
 				if _, exists := owneridsMap[v.OwnerUserid]; exists {

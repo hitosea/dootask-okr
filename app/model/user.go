@@ -3,6 +3,7 @@ package model
 import (
 	"dootask-okr/app/core"
 	"dootask-okr/app/utils/common"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -54,6 +55,11 @@ var UserModel = User{}
 // 表名
 func (mb *UserBasic) TableName() string {
 	return core.DBTableName(&User{})
+}
+
+// 是否为管理员
+func (m *UserBasic) IsAdmin() bool {
+	return strings.Contains(m.Identity, "admin")
 }
 
 // 后置钩子函数
