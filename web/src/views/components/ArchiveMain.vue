@@ -172,7 +172,7 @@ const handleGetOkrArchive = () => {
         page: tablePage.value,
         page_size: tablePageSize.value,
     }).then(({ data }) => {
-        tableData.value = data.data
+        tableData.value = (data.data || [])
         tableTotal.value = data.count
     })
         .catch(({ msg }) => {

@@ -305,34 +305,7 @@ const init = () => {
     })
 }
 
-//负责人
-const principalClick = (type) => {
-    if (type == 'init') {
-        principalpage.value = 1
-        principal.value = ([
-            { label: $t('全部'), value: null }
-        ])
-    } else {
-        principalpage.value++
-    }
-    const sendata = {
-        dept_only: userInfo == 'admin' ? false : true,
-        page: principalpage.value,
-        page_size: 20,
-        keyword: keyWord.value,
-    }
-    getUserList(sendata).then(({ data }) => {
-        if (data.data) {
-            data.data.map(item => {
-                principal.value.push({
-                    label: item.nickname,
-                    value: item.userid,
-                })
-            })
-        }
-        principallast_page.value = data.last_page
-    })
-}
+
 
 //获取能否能搜索部门
 const handleGetUserInfo = () => {
@@ -379,6 +352,36 @@ const resetGetList = () => {
     page.value = 1
     getData('search')
 }
+
+//负责人
+const principalClick = (type) => {
+    if (type == 'init') {
+        principalpage.value = 1
+        principal.value = ([
+            { label: $t('全部'), value: null }
+        ])
+    } else {
+        principalpage.value++
+    }
+    const sendata = {
+        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
+        page: principalpage.value,
+        page_size: 20,
+        keyword: keyWord.value,
+    }
+    getUserList(sendata).then(({ data }) => {
+        if (data.data) {
+            data.data.map(item => {
+                principal.value.push({
+                    label: item.nickname,
+                    value: item.userid,
+                })
+            })
+        }
+        principallast_page.value = data.last_page
+    })
+}
+
 // 获取用户
 const getUser = (keyword) => {
     if (keyword == '') {
@@ -386,7 +389,7 @@ const getUser = (keyword) => {
     }
     keyWord.value = keyword
     const sendata = {
-        dept_only: userInfo == 'admin' ? false : true,
+        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
         page_size: 20,
         keyword: keyword,

@@ -381,10 +381,8 @@
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList"
                             v-if="logList.length">
                             <userAvatar :userUrl="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" :disable="item.user_disable_at"></userAvatar>
-                            <!-- <n-avatar round :size="28" class="mr-8 shrink-0"
-                                :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" /> -->
                             <div class="flex flex-col gap-3">
-                                <p class="text-14 leading-[16px] text-primary-color">{{ item.user_nickname }}<span
+                                <p class="text-14 leading-[16px]" ><span :class="item.user_disable_at!=''?' opacity-80 line-through text-text-li':'text-primary-color'">{{ item.user_nickname }}</span><span
                                         class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
                                         }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span

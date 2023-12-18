@@ -245,7 +245,7 @@ const getUser = (keyword) => {
     }
     keyWord.value = keyword
     const sendata = {
-        dept_only: userInfo == 'admin' ? false : true,
+        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
         page_size: 20,
         keyword: keyword,
@@ -360,8 +360,10 @@ const principalClick = (type) => {
     } else {
         principalpage.value++
     }
+    console.log(userInfo == 'admin',okrAdminOwner.value);
+    
     const sendata = {
-        dept_only: userInfo == 'admin' ? false : true,
+        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
         page_size: 20,
         keyword: keyWord.value,
