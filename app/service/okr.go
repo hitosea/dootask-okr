@@ -1393,7 +1393,7 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 
 	// 仅负责人、参与人查看
 	// v1.1新增指定人员审核部门okr功能，即相当于拥有管理员权限，可以看到所有部门的OKR
-	if !s.hasPermission(user, obj) && s.GetSettingSuperiorUserId() != user.Userid {
+	if !s.hasPermission(user, obj) {
 		return nil, e.New(constant.ErrOkrNoPermission)
 	}
 
@@ -1415,7 +1415,7 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	for _, kr := range obj.KeyResults {
 		krScore := s.getKrScore(kr)
 		kr.KrScore = krScore
-		kr.CanUpdateScore = s.CanUpdateScore(kr)
+		kr.CanUpdateScore = s.CanUpdateScore(user, kr)
 	}
 
 	objResp := &interfaces.OkrResp{
@@ -1429,7 +1429,7 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 }
 
 // kr是否能修改评分 3次机会
-func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
+func (s *okrService) CanUpdateScore(user *interfaces.UserInfoResp, kr *model.Okr) bool {
 	// 复盘后分数不可修改
 	if s.hasReplay(kr.ParentId) {
 		return false
@@ -1446,7 +1446,7 @@ func (s *okrService) CanUpdateScore(kr *model.Okr) bool {
 	}
 
 	// 上级也可对评分修改3次
-	if kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
+	if common.InArrayInt(user.Userid, s.GetSuperiorUserIds(kr, user)) && kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
 		return true
 	}
 
@@ -1641,7 +1641,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
 		// kr是否能修改评分
-		if (kr.Score > -1 && kr.SuperiorScore > -1) || !s.CanUpdateScore(kr) {
+		if (kr.Score > -1 && kr.SuperiorScore > -1) || !s.CanUpdateScore(user, kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果不是首次评分，评分次数+1
@@ -1700,7 +1700,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		// 	return nil, e.New(constant.ErrOkrSuperiorScored)
 		// }
 		// kr是否能修改评分
-		if kr.SuperiorScore > -1 && !s.CanUpdateScore(kr) {
+		if kr.SuperiorScore > -1 && !s.CanUpdateScore(user, kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果是上级首次评分，评分次数重置为0，否则评分次数+1
