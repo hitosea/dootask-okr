@@ -2742,6 +2742,8 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 			return nil, err
 		}
 		var sql []string
+		// 全公司可见，所有人可见
+		sql = append(sql, "visible_range = 1")
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
@@ -2823,7 +2825,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 		}
 		var sql []string
 		for _, departmentId := range departments {
-			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okrs.department_id) > 0", departmentId))
 		}
 		db = db.Where(strings.Join(sql, " OR "))
 
@@ -2835,7 +2837,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 			// 普通组员的权限
 			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
 			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
-			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
+			db = db.Where("okrs.visible_range IN (1, 3) OR (okrs.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okrs.userid = ?) OR FIND_IN_SET(?, okrs.participant) > 0", user.Userid, user.Userid)
 		} else {
 			// 判断是否是顶级部门负责人
 			var departmentTop model.UserDepartment
@@ -2847,11 +2849,11 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 				// 小组负责人可以看到自己所在小组的所有OKR
 				var sqlSame []string
 				for _, department := range departmentSameLevel {
-					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okrs.department_id) > 0", department.Id))
 				}
 
 				if departmentTop.Id == 0 {
-					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND (" + strings.Join(sqlSame, " OR ") + "))")
+					db = db.Where("okrs.visible_range IN (1, 3) OR (okrs.visible_range = 2 AND (" + strings.Join(sqlSame, " OR ") + "))")
 				}
 			}
 		}
@@ -2859,11 +2861,11 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
-		db = db.Where("title LIKE ?", "%"+objective+"%")
+		db = db.Where("okrs.title LIKE ?", "%"+objective+"%")
 	}
 
 	if userid > 0 {
-		db = db.Where("userid = ?", userid)
+		db = db.Where("okrs.userid = ?", userid)
 	}
 
 	if err := db.Count(&count).Error; err != nil {
@@ -2871,7 +2873,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	}
 
 	offset := (page - 1) * pageSize
-	if err := db.Order("updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
+	if err := db.Order("okrs.updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
