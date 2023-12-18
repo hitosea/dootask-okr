@@ -1460,17 +1460,21 @@ func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr
 		return true
 	}
 
+	// OKR的所有者可以查看和全公司可见
 	if user.Userid == obj.Userid || obj.VisibleRange == 1 {
 		return true
 	}
 
+	// OKR的参与者可以查看
 	participantIds := common.ExplodeInt(",", obj.Participant, true)
 	if common.InArrayInt(user.Userid, participantIds) {
 		return true
 	}
 
+	// OKR对用户的部门可见
 	if obj.VisibleRange == 3 {
 		departmentIds := common.ExplodeInt(",", obj.DepartmentId, true)
+		departmentIds, _, _ = s.GetDepartmentsBySearchDeptId(departmentIds)
 		for _, deptId := range departmentIds {
 			if common.InArrayInt(deptId, user.Department) {
 				return true
