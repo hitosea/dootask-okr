@@ -2,6 +2,7 @@ package service
 
 import (
 	"dootask-okr/app/constant"
+	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
@@ -154,14 +155,14 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 			// 获取部门负责人userid
 			var UserDepartmentOwner []model.UserDepartment
 			var ownerids []int
-			UserDepartmentOwner, err := OkrService.GetUniqueTopLevelDepartments(departmentIds)
+			// 通知上级，只通知一级
+			err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
 			if err != nil {
 				return 0, err
 			}
 
 			owneridsMap := make(map[int]bool)
 			for _, v := range UserDepartmentOwner {
-				fmt.Println(v.OwnerUserid, okr.Userid)
 				if v.OwnerUserid == okr.Userid {
 					continue
 				}
