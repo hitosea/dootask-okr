@@ -497,6 +497,7 @@ const handleAddKr = () => {
 
 // 删除kr
 const handleRemoveKr = (index) => {
+    message.destroyAll()
     if (formKRValue.value.length == 1) return message.warning($t('至少需要一个KR！'))
     formKRValue.value.splice(index, 1)
     unmountUserSelectsApps()

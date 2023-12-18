@@ -150,6 +150,7 @@ const handleTarget = (e, item) => {
     eidtItem.value = item
     eidtId.value = item.id
     userId.value = item.userid
+    message.destroyAll()
     if (e == 1) {
         alignTargetShow.value = true
     } else {

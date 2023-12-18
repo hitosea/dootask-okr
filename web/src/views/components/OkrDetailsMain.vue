@@ -800,6 +800,7 @@ const handleSchedule = (id, progress, progress_status, score) => {
         showModal.value = true
         return
     }
+    message.destroyAll()
     if (score > -1) return message.error($t('KR已评分无法操作'))
     if (detailData.value.completed == '1') return message.error($t('O目标已完成无法操作'))
     if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
@@ -854,6 +855,7 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress, can_update_score) => {
+    message.destroyAll()
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
@@ -1044,6 +1046,7 @@ const handleAddMultiple = () => {
         showModal.value = true
         return
     }
+    message.destroyAll()
     if (detailData.value.score < 0) return message.error($t('KR评分未完成'))
     if (!proxy.$openChildPage('/addMultiple')) {
         globalStore.$patch((state) => {

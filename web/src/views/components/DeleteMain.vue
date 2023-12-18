@@ -309,6 +309,7 @@ const handleAssign = (rowData) => {
     assignShow.value = true
 }
 const submitAssign = () => {
+    message.destroyAll()
     if(!assignUserId.value){
         message.error($t('请选择用户'))
         return;
