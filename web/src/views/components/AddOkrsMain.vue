@@ -19,7 +19,7 @@
                 </n-form-item>
 
                 <n-form-item :label="$t('优先级')" path="priority">
-                    <n-radio-group v-model:value="formValue.priority" name="radiogroup2" >
+                    <n-radio-group v-model:value="formValue.priority" name="radiogroup2">
                         <n-space>
                             <template v-if="formValue.type == 1">
                                 <n-radio value="P0">
@@ -48,7 +48,9 @@
                 </n-form-item>
 
                 <n-form-item :label="$t('周期')" path="time">
-                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]"> <DatePickers type="cycle" /></div>
+                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]">
+                        <DatePickers type="cycle" />
+                    </div>
                     <n-date-picker v-else class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
                         type="daterange" clearable size="medium" />
                 </n-form-item>
@@ -89,9 +91,12 @@
                                 <p class="text-12 text-title-color mt-12">{{ $t('示例') }}</p>
                                 <p class="text-12 text-text-li">{{ $t('将客户续约率从70%提高到90%') }}</p>
 
-                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
+                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4"
+                                        src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4"
+                                        src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4"
+                                        src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
                             </div>
                         </n-popover>
                     </h3>
@@ -105,7 +110,8 @@
                     <div
                         class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                         <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
-                        <div v-if="item.score == -1" class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
+                        <div v-if="item.score == -1" class="flex items-center cursor-pointer"
+                            @click="handleRemoveKr(index)">
                             <i class="okrfont text-14 text-text-tips">&#xe787;</i>
                         </div>
                     </div>
@@ -120,14 +126,17 @@
                                 </n-form-item-gi>
 
                                 <n-form-item-gi :span="4" :label="$t('时间')" path="time">
-                                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]"> <DatePickers type="time" :formkey="index"/></div>
-                                    <n-date-picker v-else class="w-full" v-model:value="item.time" type="daterange" clearable
-                                        size="medium" />
+                                    <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]">
+                                        <DatePickers type="time" :formkey="index" />
+                                    </div>
+                                    <n-date-picker v-else class="w-full" v-model:value="item.time" type="daterange"
+                                        clearable size="medium" />
                                 </n-form-item-gi>
 
                                 <!-- pc -->
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]" @click="onParticipantClick">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]"
+                                        @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
@@ -136,7 +145,8 @@
 
                                 <!-- app -->
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]" @click="onParticipantClick">
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]"
+                                        @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
                                     <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
@@ -174,7 +184,7 @@ import utils from "@/utils/utils";
 import { UserStore } from '@/store/user'
 import { AlertCircleOutline } from '@vicons/ionicons5'
 
-const emit = defineEmits(['close', 'loadIng','submit'])
+const emit = defineEmits(['close', 'loadIng', 'submit'])
 
 const departmentOwner = UserStore().isDepartmentOwner()
 
@@ -228,7 +238,7 @@ const formKRValue = ref<any>([
         time: null,
         confidence: null,
         participant: null,
-        score:-1,
+        score: -1,
     },
 ])
 
@@ -242,13 +252,13 @@ watch(() => props.edit, (newValue) => {
         props.editData.key_results.map((item, index) => {
             formKRValue.value[index].time = [
                 utils.TimeHandle(item.start_at),
-                utils.TimeHandle(item.end_at,1),
+                utils.TimeHandle(item.end_at, 1),
             ]
             formKRValue.value[index].participant = item.participant.split(",").map(Number)
         })
         formValue.value.time = [
             utils.TimeHandle(props.editData.start_at),
-            utils.TimeHandle(props.editData.end_at,1),
+            utils.TimeHandle(props.editData.end_at, 1),
         ]
     }
 }, { immediate: true })
@@ -324,19 +334,19 @@ const handleSubmit = () => {
                 if (errors) {
                     const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
                     errorList[0].scrollIntoView({
-                        block:'center',
-                        behavior:'smooth',
+                        block: 'center',
+                        behavior: 'smooth',
                     })
                     return false;
                 }
-            })
+            }).catch(_ => { })
         });
         if (errors) {
             const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
-                errorList[0].scrollIntoView({
-                    block:'center',
-                    behavior:'smooth',
-                })
+            errorList[0].scrollIntoView({
+                block: 'center',
+                behavior: 'smooth',
+            })
             return false
         };
         const keyResults = []
@@ -348,7 +358,7 @@ const handleSubmit = () => {
                 confidence: formKRValue.value[index].confidence == null ? 0 : formKRValue.value[index].confidence,
                 participant: formKRValue.value[index].participant == null ? "" : formKRValue.value[index].participant.join(','),
                 start_at: utils.TimeHandle(formKRValue.value[index].time[0]),
-                end_at: utils.TimeHandle(formKRValue.value[index].time[1],1),
+                end_at: utils.TimeHandle(formKRValue.value[index].time[1], 1),
             })
         }
         const upData = {
@@ -359,7 +369,7 @@ const handleSubmit = () => {
             ascription: formValue.value.ascription,
             visible_range: formValue.value.visible_range,
             start_at: utils.TimeHandle(formValue.value.time[0]),
-            end_at: utils.TimeHandle(formValue.value.time[1],1),
+            end_at: utils.TimeHandle(formValue.value.time[1], 1),
             align_objective: formValue.value.align_objective == null ? "" : formValue.value.align_objective.join(','),
             project_id: formValue.value.project_id == null ? 0 : formValue.value.project_id,
             key_results: keyResults,
@@ -397,7 +407,7 @@ const handleSubmit = () => {
                 })
         }
 
-    })
+    }).catch(_ => { })
 }
 
 // 加载选择用户组件
@@ -435,10 +445,10 @@ const loadUserSelects = () => {
 }
 // 卸载用户组件
 const unmountUserSelectsApps = () => {
-    if(userSelectApps.value){
+    if (userSelectApps.value) {
         userSelectApps.value.forEach(app => {
             let dom = document.createElement("UserSelects")
-            dom.setAttribute('formkey',app._vnode.data.formkey)
+            dom.setAttribute('formkey', app._vnode.data.formkey)
             app.$el.replaceWith(dom);
             app.$destroy()
         })
@@ -465,7 +475,7 @@ const handleClear = () => {
             time: null,
             confidence: null,
             participant: null,
-            score:-1,
+            score: -1,
         },
     ]
 }
@@ -478,7 +488,7 @@ const handleAddKr = () => {
             time: null,
             confidence: null,
             participant: null,
-            score:-1,
+            score: -1,
         },
     )
     loadUserSelects()
@@ -518,10 +528,10 @@ const loadDatePickers = () => {
                 store: window.Vues.store,
                 data() {
                     return {
-                        value : ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h:any,key:number)=>utils.TimeHandle(h,key))
+                        value: ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h: any, key: number) => utils.TimeHandle(h, key))
                     }
                 },
-                render: function(h: any) {
+                render: function (h: any) {
                     return h(window.Vues?.components?.DatePicker, {
                         class: "okr-app-date-pickers",
                         type: type,
@@ -531,18 +541,42 @@ const loadDatePickers = () => {
                             editable: false,
                             placeholder: $t("请选择时间"),
                             format: "yyyy/MM/dd HH:mm",
-                            type:"datetimerange",
+                            type: "datetimerange",
                             placement: "top-end",
                             confirm: true,
                             transfer: true,
-                            options: {shortcuts: window.$A ? window.$A.timeOptionShortcuts() : []}
+                            options: { shortcuts: window.$A ? window.$A.timeOptionShortcuts() : [] }
                         },
                         on: {
                             "on-change": (value: any) => {
-                                this.value = value.map((h:any,key:number)=>utils.TimeHandle(h,key))
-                                if(type == 'cycle'){
+                                this.value = value.map((h: any, key: number) => utils.TimeHandle(h, key))
+                                nextTick(()=>{
+                                    formRef.value?.validate((errors) => {
+                                    formRefs.value?.forEach(element => {
+                                        element.validate((errors) => {                       
+                                            if (errors) {
+                                                const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
+                                                errorList[0].scrollIntoView({
+                                                    block: 'center',
+                                                    behavior: 'smooth',
+                                                })
+                                                return false;
+                                            }
+                                        }).catch(_ => { })
+                                    });
+                                    if (errors) {
+                                        const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
+                                        errorList[0].scrollIntoView({
+                                            block: 'center',
+                                            behavior: 'smooth',
+                                        })
+                                        return false
+                                    };
+                                }).catch(_ => { })
+                                })
+                                if (type == 'cycle') {
                                     formValue.value.time = this.value;
-                                }else{
+                                } else {
                                     item.time = this.value;
                                 }
                             }
@@ -556,11 +590,11 @@ const loadDatePickers = () => {
 }
 // 卸载时间组件
 const unmountDatePickerApps = () => {
-    if(datePickerApps.value){
+    if (datePickerApps.value) {
         datePickerApps.value.forEach(app => {
             let dom = document.createElement("DatePickers")
-            dom.setAttribute('formkey',app._vnode.data.formkey)
-            dom.setAttribute('type',app._vnode.data.type)
+            dom.setAttribute('formkey', app._vnode.data.formkey)
+            dom.setAttribute('type', app._vnode.data.type)
             app.$el.replaceWith(dom);
             app.$destroy()
         })
@@ -591,9 +625,9 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
-    nextTick(()=>{
+    nextTick(() => {
         //判断初始化归属
-        if(!departmentOwner){
+        if (!departmentOwner) {
             formValue.value.ascription = 2
         }
         showUserSelect.value = window.Vues?.components?.UserSelect ? 1 : 0
@@ -612,13 +646,11 @@ defineExpose({
 
 <style>
 .popover-tips {
-    @apply bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFAE9_100%)] p-24 !important;
+    @apply bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFAE9_100%)] !p-24;
 }
 </style>
 
 <style lang="less" scoped>
-
-
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
 }
@@ -666,9 +698,9 @@ defineExpose({
 :deep(.okr-user-selects) {
     @apply w-full bg-none border-none !important;
 }
+
 :deep(.n-radio__dot) {
     box-shadow: inset #dddddd 0 0 0 1px;
 }
-
 </style>
 
