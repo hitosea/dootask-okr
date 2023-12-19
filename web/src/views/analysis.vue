@@ -17,7 +17,7 @@
                </n-tooltip>
             </div>
             <n-tabs v-if="(departments.length) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
-                <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.name"></n-tab-pane>
+                <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.id == 0 ? $t(item.name) : item.name"></n-tab-pane>
             </n-tabs>
             <div v-if="!deptLoadIng" class="flex overflow-hidden">
                 <n-scrollbar>
