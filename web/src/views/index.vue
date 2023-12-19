@@ -48,27 +48,27 @@
         </div>
         <div class="okr-tabs">
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
-                <n-tab-pane :tab="$t('我创建的')" name="MyCreated">
+                <n-tab-pane :tab="$t('我创建的')" name="created">
                     <div class="okr-scrollbar">
                         <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('我参与的')" name="MInvolvement">
+                <n-tab-pane :tab="$t('我参与的')" name="katılım">
                     <div class="okr-scrollbar">
                         <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('部门OKR')" name="Departmental">
+                <n-tab-pane :tab="$t('部门OKR')" name="dept">
                     <div class="okr-scrollbar">
                         <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('我关注的')" name="MyConcerns">
+                <n-tab-pane :tab="$t('我关注的')" name="attention">
                     <div class="okr-scrollbar">
                         <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('OKR复盘')" name="Review">
+                <n-tab-pane :tab="$t('OKR复盘')" name="review">
                     <div class="okr-scrollbar">
                         <OkrReplay ref="OkrReplayRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
@@ -133,7 +133,7 @@ const moreButtonPopoverShow = ref(false)
 const edit = ref(false)
 const searchObject = ref('')
 const searchShow = ref(false)
-const tabsName = ref('MyCreated')
+const tabsName = ref('created')
 
 const showModal = ref(false)
 const tipsContent = ref('')
@@ -160,19 +160,19 @@ if (route.query.active == undefined) {
 }
 
 const inputName = computed(()=>{
-    if(tabsName.value == 'MyCreated'){
+    if(tabsName.value == 'created'){
         return $t('我创建的')
     }
-    if(tabsName.value == 'MInvolvement'){
+    if(tabsName.value == 'katılım'){
         return $t('我参与的')
     }
-    if(tabsName.value == 'Departmental'){
+    if(tabsName.value == 'dept'){
         return $t('部门OKR')
     }
-    if(tabsName.value == 'MyConcerns'){
+    if(tabsName.value == 'attention'){
         return $t('我关注的')
     }
-    if(tabsName.value == 'Review'){
+    if(tabsName.value == 'review'){
         return $t('OKR复盘')
     }
 })
@@ -190,19 +190,19 @@ const changeTabs = (e) => {
 const reLoadList = () => {
     loadIng.value = true;
     //重新获取列表
-   if (tabsName.value == 'MyCreated' ) {
+   if (tabsName.value == 'created' ) {
         ICreatedRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'MInvolvement') {
+    if (tabsName.value == 'katılım') {
         OkrParticipantRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'Departmental') {
+    if (tabsName.value == 'dept') {
         OkrDepartmentRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'MyConcerns') {
+    if (tabsName.value == 'attention') {
         OkrFollowRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'Review') {
+    if (tabsName.value == 'review') {
         OkrReplayRef.value.resetGetList('search')
     }
     setTimeout(()=>{
@@ -236,30 +236,30 @@ const handleAdd = () => {
 const handleClose = (e, id) => {
 
     //重新获取列表
-    if (tabsName.value == 'MyCreated' && e == 1) {
+    if (tabsName.value == 'created' && e == 1) {
         ICreatedRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'MInvolvement' && e == 1) {
+    if (tabsName.value == 'katılım' && e == 1) {
         OkrParticipantRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'Departmental' && e == 1) {
+    if (tabsName.value == 'dept' && e == 1) {
         OkrDepartmentRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'MyConcerns' && e == 1) {
+    if (tabsName.value == 'attention' && e == 1) {
         OkrFollowRef.value.resetGetList('search')
     }
 
     //更新单条数据
-    if (tabsName.value == 'MyCreated' && e == 2) {
+    if (tabsName.value == 'created' && e == 2) {
         ICreatedRef.value.upData(id)
     }
-    if (tabsName.value == 'MInvolvement' && e == 2) {
+    if (tabsName.value == 'katılım' && e == 2) {
         OkrParticipantRef.value.upData(id)
     }
-    if (tabsName.value == 'Departmental' && e == 2) {
+    if (tabsName.value == 'dept' && e == 2) {
         OkrDepartmentRef.value.upData(id)
     }
-    if (tabsName.value == 'MyConcerns' && e == 2) {
+    if (tabsName.value == 'attention' && e == 2) {
         OkrFollowRef.value.upData(id)
     }
 
@@ -280,7 +280,7 @@ const modalTransferIndex = () => {
 const openNewWin = () => {
     proxy.$globalStore.electron.sendMessage('windowRouter', {
         name: `okr`,
-        path: `single/apps/okr/list?active=${tabsName.value}`,
+        path: `single/apps/okr/list?tab=${tabsName.value}`,
         force: false,
         config: {
             title: $t(pageTitle.value),
