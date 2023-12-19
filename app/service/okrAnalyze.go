@@ -22,6 +22,13 @@ func (s *okrAnalyzeService) GetOverallDepartment(user *interfaces.UserInfoResp) 
 	if err := core.DB.Model(&model.UserDepartment{}).Select("id,name").Where("parent_id = 0 and owner_userid = ?", user.Userid).Find(&data).Error; err != nil {
 		return nil, err
 	}
+	if user.IsAdmin() {
+		data = append(data, interfaces.OkrAnalyzeDepartment{
+			Name:  "全系统OKR结果分析",
+			Id:    0,
+			Owner: true,
+		})
+	}
 	return &data, nil
 }
 

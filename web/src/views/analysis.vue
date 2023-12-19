@@ -16,8 +16,7 @@
                     <p class="max-w-[300px]"> {{ $t('新窗口打开') }}</p>
                </n-tooltip>
             </div>
-            <n-tabs v-if="(departments.length + (isAdmin ? 1 : 0)) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
-                <n-tab-pane v-if="isAdmin" name="all" :tab="$t('全系统OKR结果分析')"></n-tab-pane>
+            <n-tabs v-if="(departments.length) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
                 <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.name"></n-tab-pane>
             </n-tabs>
             <div v-if="!deptLoadIng" class="flex overflow-hidden">
@@ -47,7 +46,7 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium">
-                                            {{ tabsValue == 'all' ? $t('各部门OKR平均完成度') : $t('各人员OKR平均完成度') }}
+                                            {{ tabsValue == 0 ? $t('各部门OKR平均完成度') : $t('各人员OKR平均完成度') }}
                                         </div>
                                         <div class="text-14 text-center py-50"
                                             v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
@@ -100,7 +99,7 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium">
-                                            {{ tabsValue == 'all' ? $t('各部门OKR评分分布') : $t('各人员OKR评分分布') }}
+                                            {{ tabsValue == 0 ? $t('各部门OKR评分分布') : $t('各人员OKR评分分布') }}
                                         </div>
                                         <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">
                                             {{ $t('暂无数据') }}</div>
@@ -165,12 +164,12 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium flex">
-                                            {{ tabsValue == 'all' ? $t('OKR部门评分占比') : $t('OKR个人评分占比') }}
+                                            {{ tabsValue == 0 ? $t('OKR部门评分占比') : $t('OKR个人评分占比') }}
                                             <n-tooltip trigger="hover">
                                                 <template #trigger>
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
                                                 </template>
-                                                {{ tabsValue == 'all' ? $t('各个部门完成OKR评分的所占比例') : $t('各个人员完成OKR评分的所占比例') }}
+                                                {{ tabsValue == 0 ? $t('各个部门完成OKR评分的所占比例') : $t('各个人员完成OKR评分的所占比例') }}
                                             </n-tooltip>
                                         </div>
                                         <div class="text-14 text-center py-50"
@@ -207,15 +206,13 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
 const pageTitle = $t('OKR结果分析')
 const deptLoadIng = ref(false)
 const loadIng = ref(false)
-const tabsValue = ref<any>('')
+const tabsValue = ref<any>(null)
 const departments = ref<any>([])
-const isAdmin = UserStore().isAdmin()
 const pageOkrAnalysisRef = ref(null)
 const isSingle = proxy.$globalStore.isSingle()
 
@@ -245,8 +242,8 @@ const analyzeDatas = ref({
 const getDepartment = () => {
     deptLoadIng.value = true;
     http.getAnalyzeDepartment().then(res=>{
-        departments.value = res.data
-        tabsValue.value = isAdmin ? 'all' : departments.value[0].id;
+        departments.value = res.data?.sort((a, b) => a.id - b.id);
+        tabsValue.value = departments.value[0].id;
     }).finally(()=> {
         deptLoadIng.value = false;
     })
@@ -394,7 +391,7 @@ const handleReturn = () => {
 const getData = () => {
     loadIng.value = true;
     const params = {
-        department: tabsValue.value == 'all' ? 0 : tabsValue.value
+        department: tabsValue.value
     }
     // OKR整体平均完成度
     http.getAnalyzeComplete(params).then(({ data }) => {
