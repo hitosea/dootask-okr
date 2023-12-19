@@ -509,7 +509,7 @@ const utils = {
         if((time + '').split(":").length == 2){
             time = time + ':00'
         }
-        return time.replace(/\//g,'-') 
+        return time.replace(/\//g,'-')
     },
 
     /**
@@ -520,8 +520,6 @@ const utils = {
      */
     GoDate(format) {
         const date = new Date(format);
-        date.setMonth(date.getMonth() + 1);
-        date.setDate(0);
         const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
         return (formattedDate)
     },
