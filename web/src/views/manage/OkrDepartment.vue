@@ -243,7 +243,7 @@ const getUser = (keyword) => {
     if (keyword == '') {
         principalpage.value = 1
     }
-    keyWord.value = keyword
+    keyWord.value = keyword  
     const sendata = {
         dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
@@ -280,7 +280,6 @@ const getUser = (keyword) => {
 }
 
 const init = () => {
-    principalClick('init')
     getDepartmentList().then(({ data }) => {
         data.data.map(item => {
             departments.value.push({
@@ -411,6 +410,7 @@ const upData = (id) => {
 const handleGetUserInfo = () => {
     getUserInfo().then(({ data }) => {
         okrAdminOwner.value  = data.okr_admin_owner
+        principalClick('init')
     })
 }
 

@@ -551,39 +551,44 @@ const loadDatePickers = () => {
                             "on-change": (value: any) => {
                                 this.value = value.map((h: any, key: number) => utils.TimeHandle(h, key))
                                 if (type == 'cycle') {
-                                    if(this.value[0] && this.value[1]){
+                                    if (this.value[0] && this.value[1]) {
                                         formValue.value.time = this.value;
-                                    }else{
+                                    } else {
                                         formValue.value.time = null
                                     }
-                                }
-                                else {
-                                    item.time = this.value;
-                                }
-                                nextTick(()=>{
-                                    formRef.value?.validate((errors) => {
-                                    formRefs.value?.forEach(element => {
-                                        element.validate((errors) => {                       
+                                    nextTick(() => {
+                                        formRef.value?.validate((errors) => {                                  
                                             if (errors) {
                                                 const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
+                                                console.log(errorList);
+                                                
                                                 errorList[0].scrollIntoView({
                                                     block: 'center',
                                                     behavior: 'smooth',
                                                 })
-                                                return false;
-                                            }
+                                                return false
+                                            };
                                         }).catch(_ => { })
-                                    });
-                                    if (errors) {
-                                        const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
-                                        errorList[0].scrollIntoView({
-                                            block: 'center',
-                                            behavior: 'smooth',
-                                        })
-                                        return false
-                                    };
-                                }).catch(_ => { })
-                                })
+                                    })
+                                }
+                                else {
+                                    item.time = this.value;
+                                    nextTick(() => {
+                                        formRefs.value?.forEach(element => {   
+                                            element.validate((errors) => {  
+                                                if (errors) {
+                                                    const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
+                                                    errorList[0].scrollIntoView({
+                                                        block: 'center',
+                                                        behavior: 'smooth',
+                                                    })
+                                                    return false;
+                                                }
+                                            }).catch(_ => { })
+                                        });
+                                    })
+                                }
+
                             }
                         }
                     })

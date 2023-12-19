@@ -294,7 +294,6 @@ const getData = (type) => {
 }
 
 const init = () => {
-    principalClick('init')
     getDepartmentList().then(({ data }) => {
         data.data.map(item => {
             departments.value.push({
@@ -311,6 +310,7 @@ const init = () => {
 const handleGetUserInfo = () => {
     getUserInfo().then(({ data }) => {
         okrAdminOwner.value = data.okr_admin_owner
+        principalClick('init')
     })
 }
 
