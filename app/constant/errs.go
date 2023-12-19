@@ -53,6 +53,7 @@ var (
 	ErrOkrArchiveStatusNotCompleted = "ErrOkrArchiveStatusNotCompleted" //仅限【已完成，已取消】的状态归档
 	ErrOkrCompletedReplay           = "ErrOkrCompletedReplay"           //请先添加复盘
 	ErrOkrScoredNotUpdate           = "ErrOkrScoredNotUpdate"           //评分不可修改
+	ErrOkrScoreTypeInvalid          = "ErrOkrScoreTypeInvalid"          //评分类型错误
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

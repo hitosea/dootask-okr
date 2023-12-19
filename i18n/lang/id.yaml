@@ -40,6 +40,7 @@ ErrOkrProgressStatusInvalid: Parameter status progres salah
 ErrOkrReplayCommentInvalid: Silahkan pilih KR evaluasi
 ErrOkrReplayLengthInvalid: Isinya terlalu panjang, tolong batasi sampai di bawah 255 karakter
 ErrOkrScoreInvalid: Untuk kelas silahkan masukkan bilangan bulat 0-10
+ErrOkrScoreTypeInvalid: Salah jenis rating
 ErrOkrScoreWeightInvalid: Antara penilaian diri dan penilaian yang lebih tinggi, harus setara dengan 100
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi
 ErrOkrScoredNotUpdate: Nilai tidak bisa dimodifikasi

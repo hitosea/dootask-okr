@@ -1804,6 +1804,12 @@ const docTemplate = `{
                         "description": "个人评分 0-10",
                         "name": "score",
                         "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "评分类型 1-个人评分 2-上级评分",
+                        "name": "type",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2155,8 +2161,16 @@ const docTemplate = `{
                 "ascription": {
                     "type": "integer"
                 },
+                "can_owner_update_score": {
+                    "description": "KR负责人是否能修改评分",
+                    "type": "boolean"
+                },
+                "can_superior_update_score": {
+                    "description": "KR上级是否能修改评分",
+                    "type": "boolean"
+                },
                 "can_update_score": {
-                    "description": "KR是否能评分",
+                    "description": "是否能评分",
                     "type": "boolean"
                 },
                 "canceled": {
@@ -2618,8 +2632,16 @@ const docTemplate = `{
                 "ascription": {
                     "type": "integer"
                 },
+                "can_owner_update_score": {
+                    "description": "KR负责人是否能修改评分",
+                    "type": "boolean"
+                },
+                "can_superior_update_score": {
+                    "description": "KR上级是否能修改评分",
+                    "type": "boolean"
+                },
                 "can_update_score": {
-                    "description": "KR是否能评分",
+                    "description": "是否能评分",
                     "type": "boolean"
                 },
                 "canceled": {
@@ -2881,8 +2903,16 @@ const docTemplate = `{
                 "ascription": {
                     "type": "integer"
                 },
+                "can_owner_update_score": {
+                    "description": "KR负责人是否能修改评分",
+                    "type": "boolean"
+                },
+                "can_superior_update_score": {
+                    "description": "KR上级是否能修改评分",
+                    "type": "boolean"
+                },
                 "can_update_score": {
-                    "description": "KR是否能评分",
+                    "description": "是否能评分",
                     "type": "boolean"
                 },
                 "canceled": {
@@ -3278,10 +3308,6 @@ const docTemplate = `{
                     "description": "部门",
                     "type": "string"
                 },
-                "department_name": {
-                    "description": "部门名称",
-                    "type": "string"
-                },
                 "disable_at": {
                     "description": "禁用时间",
                     "type": "string"
@@ -3300,10 +3326,6 @@ const docTemplate = `{
                 },
                 "profession": {
                     "description": "职业",
-                    "type": "string"
-                },
-                "token": {
-                    "description": "token",
                     "type": "string"
                 },
                 "userid": {

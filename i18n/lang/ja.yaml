@@ -40,6 +40,7 @@ ErrOkrProgressStatusInvalid: 進捗状態パラメータエラーです
 ErrOkrReplayCommentInvalid: KRレビューをお願いします
 ErrOkrReplayLengthInvalid: 長すぎますので255文字までにしてください
 ErrOkrScoreInvalid: 採点は0-10の整数でお願いします。
+ErrOkrScoreTypeInvalid: 採点ミスです。
 ErrOkrScoreWeightInvalid: 自己評価の重みと上級者の採点の重みを足し合わせると必ず100に等しくなります
 ErrOkrScored: KR已採点不能操作:{{.detail}}
 ErrOkrScoredNotUpdate: 採点は変更不可です

@@ -40,6 +40,7 @@ ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrReplayCommentInvalid: 請選擇KR評價
 ErrOkrReplayLengthInvalid: 內容過長，請限制在255個字符以內
 ErrOkrScoreInvalid: 評分請輸入0-10的整數
+ErrOkrScoreTypeInvalid: 評分類型錯誤
 ErrOkrScoreWeightInvalid: 自評權重和上級評分權重相加必須等於100
 ErrOkrScored: KR已評分無法操作：{{.detail}}
 ErrOkrScoredNotUpdate: 評分不可修改

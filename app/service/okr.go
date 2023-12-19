@@ -966,49 +966,51 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	var allWhere []string
 	if !user.IsAdmin() {
-		if len(user.Department) == 0 {
-			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
-		}
+		if len(user.Department) > 0 {
+			departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+			if err != nil {
+				return nil, err
+			}
+			var sql []string
+			for _, departmentId := range departments {
+				sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
+			}
+			allWhere = append(allWhere, "("+strings.Join(sql, " OR ")+")")
 
-		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
-		if err != nil {
-			return nil, err
-		}
-		var sql []string
-		for _, departmentId := range departments {
-			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
-		}
-		allWhere = append(allWhere, "("+strings.Join(sql, " OR ")+")")
+			departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
+			// 判断是否是普通组员
+			var department model.UserDepartment
+			departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
+			if department.Id == 0 {
+				// 普通组员的权限
+				// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+				// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+				allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d))", user.Userid))
+			} else {
+				// 判断是否是顶级部门负责人
+				var departmentTop model.UserDepartment
+				departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+				// 判断是否是同级小组负责人
+				var departmentSameLevel []model.UserDepartment
+				departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+				if len(departmentSameLevel) > 0 {
+					// 小组负责人可以看到自己所在小组的所有OKR
+					var sqlSame []string
+					for _, department := range departmentSameLevel {
+						sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
+					}
 
-		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
-		// 判断是否是普通组员
-		var department model.UserDepartment
-		departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
-		if department.Id == 0 {
-			// 普通组员的权限
-			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
-			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
-			allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND okr.userid = %d))", user.Userid))
-		} else {
-			// 判断是否是顶级部门负责人
-			var departmentTop model.UserDepartment
-			departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
-			// 判断是否是同级小组负责人
-			var departmentSameLevel []model.UserDepartment
-			departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
-			if len(departmentSameLevel) > 0 {
-				// 小组负责人可以看到自己所在小组的所有OKR
-				var sqlSame []string
-				for _, department := range departmentSameLevel {
-					sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", department.Id))
-				}
-
-				if departmentTop.Id == 0 {
-					allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")))"))
+					if departmentTop.Id == 0 {
+						allWhere = append(allWhere, fmt.Sprintf("(okr.visible_range IN (1, 3) OR (okr.visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")))"))
+					}
 				}
 			}
 		}
-		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR okr.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
+		if len(allWhere) > 0 {
+			db = db.Where("("+strings.Join(allWhere, " AND ")+" OR okr.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
+		} else {
+			db = db.Where("okr.userid = ? OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
+		}
 	}
 
 	// 标题筛选
@@ -1467,10 +1469,8 @@ func (s *okrService) CanOwnerUpdateScore(kr *model.Okr) bool {
 		return false
 	}
 
-	fmt.Println(common.StructToJson(kr))
 	// 如果上级未评分，负责人分数可修改3次
 	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
-		fmt.Println("负责人是否能修改评分 3次机会")
 		return true
 	}
 
@@ -1515,8 +1515,8 @@ func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr
 		return true
 	}
 
-	// OKR对用户的部门可见
-	if obj.VisibleRange == 3 {
+	// 仅相关成员/仅部门成员
+	if obj.VisibleRange == 2 || obj.VisibleRange == 3 {
 		departmentIds := common.ExplodeInt(",", obj.DepartmentId, true)
 		departmentIds, _, _ = s.GetDepartmentsBySearchDeptId(departmentIds)
 		for _, deptId := range departmentIds {
@@ -1677,10 +1677,17 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
+	param.Type = 1
+
+	// 评分类型 1-负责人评分 2-上级评分
+	if param.Type != 1 && param.Type != 2 {
+		return nil, e.New(constant.ErrOkrScoreTypeInvalid)
+	}
+
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
-	superior := s.IsObjectiveManager(kr, user)
+	// superior := s.IsObjectiveManager(kr, user)
 	// 负责人评分
-	if param.Type == 1 && !superior {
+	if param.Type == 1 {
 		// 检查用户是否为目标负责人
 		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
@@ -1737,7 +1744,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		}
 	}
 	// 上级评分
-	if param.Type == 2 && superior {
+	if param.Type == 2 {
 		// 需要负责人评分才可以上级评分
 		if kr.Score == -1 {
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
