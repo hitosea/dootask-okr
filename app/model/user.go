@@ -44,7 +44,6 @@ type UserBasic struct {
 	Userimg        string `json:"userimg"`         // 头像
 	Department     string `json:"department"`      // 部门
 	Profession     string `json:"profession"`      // 职业
-	Token          string `json:"token"`           // token
 	DepartmentName string `json:"department_name"` // 部门名称
 	CreatedAt      string `json:"created_at"`      // 创建时间
 	DisableAt      string `json:"disable_at"`      // 禁用时间
@@ -59,6 +58,9 @@ func (mb *UserBasic) TableName() string {
 
 // 是否为管理员
 func (m *UserBasic) IsAdmin() bool {
+	if m == nil {
+		return false
+	}
 	return strings.Contains(m.Identity, "admin")
 }
 

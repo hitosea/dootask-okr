@@ -1415,7 +1415,8 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	for _, kr := range obj.KeyResults {
 		krScore := s.getKrScore(kr)
 		kr.KrScore = krScore
-		kr.CanUpdateScore = s.CanUpdateScore(user, kr)
+		kr.CanOwnerUpdateScore = s.CanOwnerUpdateScore(kr)
+		kr.CanSuperiorUpdateScore = s.CanSuperiorUpdateScore(user, kr)
 	}
 
 	objResp := &interfaces.OkrResp{
@@ -1428,8 +1429,8 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	return objResp, nil
 }
 
-// kr是否能修改评分 3次机会
-func (s *okrService) CanUpdateScore(user *interfaces.UserInfoResp, kr *model.Okr) bool {
+// 负责人是否能修改评分 3次机会
+func (s *okrService) CanOwnerUpdateScore(kr *model.Okr) bool {
 	// 复盘后分数不可修改
 	if s.hasReplay(kr.ParentId) {
 		return false
@@ -1443,6 +1444,21 @@ func (s *okrService) CanUpdateScore(user *interfaces.UserInfoResp, kr *model.Okr
 	// 如果上级未评分，负责人分数可修改3次
 	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
 		return true
+	}
+
+	return false
+}
+
+// 上级是否能修改评分 3次机会
+func (s *okrService) CanSuperiorUpdateScore(user *interfaces.UserInfoResp, kr *model.Okr) bool {
+	// 复盘后分数不可修改
+	if s.hasReplay(kr.ParentId) {
+		return false
+	}
+
+	// 归档和离职的人员kr状态时分数不可修改
+	if kr.Status > 0 {
+		return false
 	}
 
 	// 上级也可对评分修改3次
@@ -1645,7 +1661,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
 		}
 		// kr是否能修改评分
-		if (kr.Score > -1 && kr.SuperiorScore > -1) || !s.CanUpdateScore(user, kr) {
+		if (kr.Score > -1 && kr.SuperiorScore > -1) || !s.CanOwnerUpdateScore(kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果不是首次评分，评分次数+1
@@ -1704,7 +1720,7 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		// 	return nil, e.New(constant.ErrOkrSuperiorScored)
 		// }
 		// kr是否能修改评分
-		if kr.SuperiorScore > -1 && !s.CanUpdateScore(user, kr) {
+		if kr.SuperiorScore > -1 && !s.CanSuperiorUpdateScore(user, kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)
 		}
 		// 如果是上级首次评分，评分次数重置为0，否则评分次数+1
@@ -2749,11 +2765,11 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 			return nil, err
 		}
 		var sql []string
-		// 全公司可见，所有人可见
-		sql = append(sql, "visible_range = 1")
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
+		sql = append(sql, "visible_range = 1")                                          // 全公司可见，所有人可见
+		sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, participant) > 0", user.Userid)) // 参与人可见
 		db = db.Where(strings.Join(sql, " OR "))
 
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
