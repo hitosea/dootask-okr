@@ -11,6 +11,8 @@
                     <p class="py-8" @click="handleEdit" v-if="userInfo.userid == detail.userid && detail.canceled == '0' && detail.completed == '0'"> {{ $t('编辑') }}</p>
                     <p class="py-8" @click="handleFollowOkr"> {{ is_follow ? $t('取消关注') : $t('关注目标') }}</p>
                     <p class="py-8" @click="handleCancel" v-if="userInfo.userid == detail.userid && detail.completed == '0'"> {{ cancel == 0 ? $t('取消目标') : $t('重启目标') }}</p>
+                    <p class="py-8" @click="handleWarningShow(2)" > {{  $t('归档') }}</p>
+                    <p class="py-8" @click="handleWarningShow(1)" > {{ $t('删除') }}</p>
                 </div>
             </n-popover>
         </div>
@@ -82,6 +84,11 @@ const handleCancel = () => {
 
 const handleFollowOkr = () => {
     OkrDetailsMainRef.value.handleFollowOkr()
+    showPopover.value = false
+}
+
+const handleWarningShow = (e) => {
+    OkrDetailsMainRef.value.handleWarningShow(e)
     showPopover.value = false
 }
 </script>

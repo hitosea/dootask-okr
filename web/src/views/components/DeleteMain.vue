@@ -60,6 +60,7 @@
             </div>
             <div class="pagination mt-auto flex justify-center">
                 <n-pagination
+                    class=" hidden md:flex"
                     v-model:page="tablePage"
                     :default-page-size="tablePageSize"
                     :page-sizes="[10,20,30,40,50]"
@@ -70,6 +71,7 @@
                     :on-update:page="onPage"
                     :on-update:page-size="onPageSize"
                 />
+                <n-pagination class="pagination-web md:hidden flex" simple v-model:page="tablePage" :page-count="tableLastPage" />
             </div>
         </div>
     </div>
@@ -404,14 +406,7 @@ body.window-portrait {
                 @apply hidden;
             }
         }
-        .pagination{
-            :deep(.n-select) {
-                @apply hidden;
-            }
-            :deep(.n-pagination-quick-jumper) {
-                @apply hidden;
-            }
-        }
+
     }
 }
 </style>

@@ -17,10 +17,13 @@
                 <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" :loading="loadIng"
                     style="--n-td-color-hover-modal:#ffffff" />
             </div>
-            <div class="mt-auto flex justify-center shrink-0">
+            <div class="mt-auto md:flex hidden justify-center shrink-0">
                 <n-pagination v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal"
                     size="medium" :page-sizes="[10, 20, 30, 50, 100]" show-quick-jumper show-size-picker
                     :on-update:page="onPage" :on-update:page-size="onPageSize" />
+            </div>
+            <div class="flex md:hidden justify-center shrink-0 mt-auto">
+                <n-pagination class="pagination-web" simple v-model:page="tablePage" :page-count="tableTotal" />
             </div>
         </div>
 
@@ -29,7 +32,8 @@
         </WarningPopup>
 
         <!-- OKR详情 -->
-        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getlist="handleGetOkrArchive" @close="() => { okrDetailsShow = false }" />
+        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getlist="handleGetOkrArchive"
+            @close="() => { okrDetailsShow = false }" />
 
     </div>
 </template>
@@ -81,7 +85,7 @@ const columns = ref<DataTableColumn[]>([
                 }, rowData.title)
             )
             return h('div', {
-                class:" flex items-center"
+                class: " flex items-center"
             }, arr)
         }
     },
@@ -115,7 +119,7 @@ const columns = ref<DataTableColumn[]>([
     {
         title: $t('操作'),
         minWidth: 160,
-        width:160,
+        width: 160,
         key: "",
         render(rowData) {
             let arr = []
@@ -124,7 +128,7 @@ const columns = ref<DataTableColumn[]>([
                     class: "text-primary-color cursor-pointer",
                     onClick: () => {
                         okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
+                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: rowData.id })
                     }
                 }, $t('查看'))
             )
@@ -173,7 +177,7 @@ const handleGetOkrArchive = () => {
         page_size: tablePageSize.value,
     }).then(({ data }) => {
         tableData.value = (data.data || [])
-        tableTotal.value = data.count
+        tableTotal.value = data.last_page
     })
         .catch(({ msg }) => {
 
@@ -265,5 +269,19 @@ onMounted(() => {
 
 .archive-search-input {
     @apply flex items-center gap-2;
+}
+</style >
+<style >
+.pagination-web .n-pagination .n-pagination-item.n-pagination-item--disabled.n-pagination-item--active,
+.n-pagination .n-pagination-item.n-pagination-item--disabled.n-pagination-item--button {
+    background: none;
+    border: none;
+}
+
+.pagination-web .n-pagination-quick-jumper {
+    width: 30px;
+}
+.pagination-web .n-pagination-quick-jumper .n-input{
+    background: none;
 }
 </style>

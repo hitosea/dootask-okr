@@ -55,7 +55,7 @@ export const routes = [
     {
         name: "setting",
         path: "/:catchAll(.*)/setting",
-        meta: { title:  I18n.global.t('离职/删除人员OKR')},
+        meta: { title:  I18n.global.t('OKR设置')},
         component: setting
     },
     {

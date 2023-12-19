@@ -1,13 +1,13 @@
 <template >
     <div class="okr-item-main">
-        <div class="okr-item-box" @click="handleOpenDetail(item.id,item.userid)" v-for="(item) in props.list">
+        <div class="okr-item-box" @click="handleOpenDetail(item.id, item.userid)" v-for="(item) in props.list">
 
-            <div class="okr-item-progress hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
-                <n-progress
-                    :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'"
-                    indicator-text-color="#87D068" type="circle" :percentage="item.progress" :offset-degree="180"
-                    :stroke-width="8">
-                    <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
+            <div class="okr-item-progress hidden md:block"
+                :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
+                <n-progress :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'" indicator-text-color="#87D068"
+                    type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
+                    <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span
+                            class="text-12">%</span></p>
                     <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
                 </n-progress>
             </div>
@@ -16,18 +16,23 @@
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{ item.objective_num || ('O' + item.id) }}：{{ item.title }}</h3>
+                        <h3 class="leading-[1.4]"
+                            :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span
+                                class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{
+                                    item.objective_num || ('O' + item.id) }}：{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="okrfont okr-title-star text-[16px]" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
+                        <i class="okrfont okr-title-star text-[16px]"
+                            v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'" @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
+                        <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]"
+                            v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'"
+                            @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="okrfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
-                        <div  v-if="item.completed == '1'"
-                                class="flex md:hidden items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer border-primary-color bg-primary-color"
-                                >
-                                <n-icon class="text-white" size="14" :component="CheckmarkSharp" />
+                        <div v-if="item.completed == '1'"
+                            class="flex md:hidden items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer border-primary-color bg-primary-color">
+                            <n-icon class="text-white" size="14" :component="CheckmarkSharp" />
                         </div>
                     </div>
                 </div>
@@ -35,13 +40,13 @@
                     <i class="okrfont text-[12px]">&#xe6e4;</i>
                     <p>{{ (item.alias || []).join(',') }}</p>
                     <div class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
-                    <template v-if="item.canceled == '0' && item.completed =='0'">
-                        <i class="okrfont text-[12px]" :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''"> &#xe6e8;</i>
-                        <p :class="isOverdue(item.end_at) ?'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
+                    <template v-if="item.canceled == '0' && item.completed == '0'">
+                        <i class="okrfont text-[12px]" :class="isOverdue(item.end_at) ? 'text-[#ED4014]' : ''"> &#xe6e8;</i>
+                        <p :class="isOverdue(item.end_at) ? 'text-[#ED4014]' : ''">{{ expiresFormat(item.end_at) }}</p>
                     </template>
-                    <template v-if="item.canceled == '1' || item.completed =='1'">
-                        <i class="okrfont text-[12px]" > &#xe6e8;</i>
-                        <p >{{utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
+                    <template v-if="item.canceled == '1' || item.completed == '1'">
+                        <i class="okrfont text-[12px]"> &#xe6e8;</i>
+                        <p>{{ utils.GoDate(item.start_at) + "~" + utils.GoDate(item.end_at) }}</p>
                     </template>
                     <div v-if="item.score > -1" class="w-1 bg-[#F2F3F5] mx-12 h-[12px]"></div>
                     <div v-if="item.score > -1" class="flex items-center cursor-pointer">
@@ -52,8 +57,14 @@
                 </div>
 
                 <div class="okr-time-web">
-                    <n-avatar round :size="24" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/') " />
+                    <n-avatar round :size="24"
+                        :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" />
                     <div class="flex items-center text-12">
+                        <div v-if="item.score > -1" class="flex items-center cursor-pointer mr-6">
+                            <img class="mr-4" :src="utils.apiUrl(fenSvg)" />
+                            <p class="text-12">{{ item.score }}{{ $t('分') }}
+                            </p>
+                        </div>
                         <i class="okrfont text-14 mr-6">&#xe671;</i>
                         <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
                         <n-progress class="-mt-7 mr-[6px]" style="width: 14px; " type="circle" :show-indicator="false"
@@ -72,12 +83,14 @@
                             <div class="kr-list-schedule w-[60px] text-text-li">
                                 <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
                                     :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                    :color="colorStatus(childItem.progress_status)" status="success" :percentage="childItem.progress" />
+                                    :color="colorStatus(childItem.progress_status)" status="success"
+                                    :percentage="childItem.progress" />
                                 {{ childItem.progress }}%
                             </div>
                         </div>
                     </template>
-                    <div v-if="item.key_results && item.key_results.length > 3" class=" text-12 text-primary-color ml-[2px]">KR(+{{ item.key_results.length - 3 }})</div>
+                    <div v-if="item.key_results && item.key_results.length > 3"
+                        class=" text-12 text-primary-color ml-[2px]">KR(+{{ item.key_results.length - 3 }})</div>
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
                     <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count
@@ -93,7 +106,8 @@
     </div>
     <!-- 查看对齐OKR -->
     <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem" @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }" @openDetail="handleOpenDetail"></AlignTargetModal>
+        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }"
+        @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
@@ -101,7 +115,8 @@
 
     <!-- OKR详情 -->
     <OkrDetailsModal ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="()=>{ emit('getList') }" @openDetail="handleOpenDetail"></OkrDetailsModal>
+        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="() => { emit('getList') }"
+        @openDetail="handleOpenDetail"></OkrDetailsModal>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
@@ -143,7 +158,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['upData', 'edit','getList'])
+const emit = defineEmits(['upData', 'edit', 'getList'])
 
 //对齐
 const handleTarget = (e, item) => {
@@ -165,12 +180,12 @@ const pStatus = (p) => {
 }
 
 //打开详情
-const handleOpenDetail = (id,userid) => {
-    okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{
+const handleOpenDetail = (id, userid) => {
+    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', {
         id: id,
         userid: userid,
     })
-    if(okrDetailsShow.value){
+    if (okrDetailsShow.value) {
         eidtId.value = id
     }
 }
@@ -250,7 +265,7 @@ onMounted(() => {
     }, 1000);
 })
 
-onUnmounted(()=>{
+onUnmounted(() => {
     clearInterval(nowInterval.value);
 })
 
@@ -272,7 +287,7 @@ onUnmounted(()=>{
                     @apply md:max-w-75p w-full;
 
                     span {
-                        @apply  text-12 mr-4 font-medium text-white px-6 py-0 rounded-full origin-center leading-3 mt-3 md:mt-0;
+                        @apply text-12 mr-4 font-medium text-white px-6 py-0 rounded-full origin-center leading-3 mt-3 md:mt-0;
                     }
 
                     .span-1 {
@@ -288,7 +303,7 @@ onUnmounted(()=>{
                     }
 
                     h3 {
-                        @apply text-text-li text-14  font-normal md:font-medium line-clamp-3 md:line-clamp-1 overflow-hidden;
+                        @apply text-text-li text-14 font-normal md:font-medium line-clamp-3 md:line-clamp-1 overflow-hidden;
                     }
                 }
 
@@ -347,11 +362,11 @@ onUnmounted(()=>{
         }
     }
 
-    .okr-item-progress{
+    .okr-item-progress {
         width: 52px;
-        .n-progress--circle{
+
+        .n-progress--circle {
             width: 100% !important;
         }
     }
-}
-</style>
+}</style>

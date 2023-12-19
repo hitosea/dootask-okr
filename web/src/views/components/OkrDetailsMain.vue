@@ -1307,7 +1307,8 @@ defineExpose({
     closeDrawer,
     handleEdit,
     handleCancel,
-    handleFollowOkr
+    handleFollowOkr,
+    handleWarningShow,
 })
 </script>
 <style lang="less" scoped>

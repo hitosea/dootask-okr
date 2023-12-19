@@ -1,7 +1,7 @@
 <template >
     <div class="delete-box nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalTransferIndex + 1 }">
         <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe704;</i>
-        <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('设置')}}</h2>
+        <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('离职/删除人员OKR')}}</h2>
     </div>
     <div class="relative pt-[76px] pb-16 pl-16 pr-16 h-full" :style="{ 'z-index': modalTransferIndex }">
         <DeleteMain></DeleteMain>
