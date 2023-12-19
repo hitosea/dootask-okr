@@ -18,11 +18,15 @@ export const UserStore = defineStore({
             userid:0,
             department_owner:null,
             department:null,
+            okr_admin_owner:null,
         },
     }),
     actions: {
         isAdmin() {
             return this.info?.identity?.indexOf('admin') !== -1
+        },
+        isOkrAdminOwner(){
+            return this.info?.okr_admin_owner
         },
         isDepartmentOwner() {
             return this.info?.department_owner
@@ -30,6 +34,7 @@ export const UserStore = defineStore({
         refresh() {
             return new Promise((resolve, reject) => {
                 getUserInfo().then(({ data }) => {
+
                     if (utils.isEmpty(data.name)) {
                         data.name = data.email
                     }

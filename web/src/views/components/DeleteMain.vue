@@ -123,13 +123,15 @@ import { NButton, DataTableRowKey } from 'naive-ui'
 import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
-
+import { getUserInfo } from '@/api/modules/user';
 const { proxy } = getCurrentInstance();
 
 const emit = defineEmits(['close'])
 
 const isAdmin = UserStore().isAdmin()
+const okrAdminOwner = ref(false)
 const message = useMessage()
+
 
 const popupShow  = ref(false)
 const popupTitle  = ref('')
@@ -247,7 +249,7 @@ const getPrincipalList = (type:any) => {
         keyWord = type + ''
     }
     const sendata = {
-        dept_only: isAdmin ? false : true,
+        dept_only: (isAdmin || okrAdminOwner.value) ? false : true,
         page: principalPage.value,
         page_size: 20,
         keyword: keyWord,
@@ -343,11 +345,17 @@ const handleDelete = () => {
         popupShow.value = false
     })
 }
-
+//获取能否能搜索部门
+const handleGetUserInfo = () => {
+    getUserInfo().then(({ data }) => {
+        okrAdminOwner.value = data.okr_admin_owner
+    })
+}
 //
 onMounted(() => {
     getPrincipalList('init')
     getList('search')
+    handleGetUserInfo()
 })
 </script>
 
