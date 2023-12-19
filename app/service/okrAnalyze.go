@@ -69,14 +69,16 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
-				`, okrTable, department)).
+					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				`, okrTable, department, departmentTable)).
 				Select(`
 					user.userid as department_id, 
 					user.nickname as department_name, 
 					SUM(ifnull(b.total,0)) total, 
 					SUM(ifnull(b.completed,0)) completed
 				`).
-				Where("find_in_set(?,user.department)", department).
+				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
+				Where("user.bot = 0").
 				Group("user.userid").
 				Order("SUM(b.completed) / SUM(b.total) desc")
 		} else {
@@ -180,7 +182,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
-				`, okrTable, department)).
+					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				`, okrTable, department, departmentTable)).
 				Select(`
 					user.userid as department_id,
 					user.nickname as department_name,
@@ -190,7 +193,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 					SUM(ifnull(b.three_to_seven,0)) three_to_seven,
 					SUM(ifnull(b.seven_to_ten,0)) seven_to_ten
 				`).
-				Where("find_in_set(?,user.department)", department).
+				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
 				Group("user.userid").
 				Order("SUM(b.total) desc")
 		} else {
@@ -295,7 +298,8 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
-				`, okrTable, department)).
+					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				`, okrTable, department, departmentTable)).
 				Select(`
 					user.userid as department_id,
 					user.nickname as department_name,
@@ -303,7 +307,7 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 					SUM(ifnull(b.okr_total,0) - ifnull(b.completed,0)) unscored,
 					SUM(ifnull(b.completed,0)) already_reviewed
 				`).
-				Where("find_in_set(?,user.department)", department).
+				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
 				Group("user.userid").
 				Order("SUM(b.okr_total) desc")
 		} else {
