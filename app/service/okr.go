@@ -1677,8 +1677,6 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		return nil, e.New(constant.ErrOkrProgressNotEnough)
 	}
 
-	param.Type = 1
-
 	// 评分类型 1-负责人评分 2-上级评分
 	if param.Type != 1 && param.Type != 2 {
 		return nil, e.New(constant.ErrOkrScoreTypeInvalid)
