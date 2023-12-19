@@ -62,7 +62,6 @@ const getData = () => {
         getReplayList(data)
         .then(({ data }) => {
             dataDetail.value = data.data[0]
-            console.log(dataDetail.value);
         })
 }
 onMounted(()=>{

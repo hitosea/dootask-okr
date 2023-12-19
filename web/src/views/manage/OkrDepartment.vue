@@ -360,8 +360,6 @@ const principalClick = (type) => {
     } else {
         principalpage.value++
     }
-    console.log(userInfo == 'admin',okrAdminOwner.value);
-    
     const sendata = {
         dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
