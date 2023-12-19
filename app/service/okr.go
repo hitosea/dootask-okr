@@ -1467,8 +1467,10 @@ func (s *okrService) CanOwnerUpdateScore(kr *model.Okr) bool {
 		return false
 	}
 
+	fmt.Println(common.StructToJson(kr))
 	// 如果上级未评分，负责人分数可修改3次
 	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
+		fmt.Println("负责人是否能修改评分 3次机会")
 		return true
 	}
 
@@ -1677,11 +1679,8 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 
 	// 检查用户是否为目标负责人或上级 false-负责人 true-上级
 	superior := s.IsObjectiveManager(kr, user)
-	if !superior {
-		// 检查是否已评分
-		// if kr.Score > -1 {
-		// 	return nil, e.New(constant.ErrOkrOwnerScored)
-		// }
+	// 负责人评分
+	if param.Type == 1 && !superior {
 		// 检查用户是否为目标负责人
 		if kr.Userid != user.Userid {
 			return nil, e.New(constant.ErrOkrOwnerNotCancel)
@@ -1736,15 +1735,13 @@ func (s *okrService) UpdateScore(user *interfaces.UserInfoResp, param interfaces
 		if err != nil {
 			return nil, err
 		}
-	} else {
+	}
+	// 上级评分
+	if param.Type == 2 && superior {
 		// 需要负责人评分才可以上级评分
 		if kr.Score == -1 {
 			return nil, e.New(constant.ErrOkrOwnerNotScore)
 		}
-		// 检查是否已评分
-		// if kr.SuperiorScore > -1 {
-		// 	return nil, e.New(constant.ErrOkrSuperiorScored)
-		// }
 		// kr是否能修改评分
 		if kr.SuperiorScore > -1 && !s.CanSuperiorUpdateScore(user, kr) {
 			return nil, e.New(constant.ErrOkrScoredNotUpdate)

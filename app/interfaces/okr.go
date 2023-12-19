@@ -95,6 +95,7 @@ type OkrUpdateProgressReq struct {
 type OkrScoreReq struct {
 	Id    int     `form:"id" binding:"required" json:"id"` // okr id
 	Score float64 `form:"score" json:"score"`              // 个人评分 0-10
+	Type  int     `form:"type" json:"type"`                // 评分类型 1-个人评分 2-上级评分
 }
 
 // 取消/重启目标
