@@ -47,7 +47,6 @@ type Okr struct {
 	ArchiveUser            *UserBasic     `gorm:"ForeignKey:ArchiveUserid;References:Userid" json:"archive_user,omitempty"`
 	KrScore                float64        `gorm:"-" json:"kr_score"`                  // KR总评分
 	ParentTitle            string         `gorm:"-" json:"parent_title,omitempty"`    // 父级目标标题
-	CanUpdateScore         bool           `gorm:"-" json:"can_update_score"`          // 是否能评分
 	CanOwnerUpdateScore    bool           `gorm:"-" json:"can_owner_update_score"`    // KR负责人是否能修改评分
 	CanSuperiorUpdateScore bool           `gorm:"-" json:"can_superior_update_score"` // KR上级是否能修改评分
 	ObjectiveNum           string         `gorm:"-" json:"objective_num"`             // O的数字编号

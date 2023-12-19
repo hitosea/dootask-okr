@@ -1417,7 +1417,6 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	for _, kr := range obj.KeyResults {
 		krScore := s.getKrScore(kr)
 		kr.KrScore = krScore
-		kr.CanUpdateScore = s.CanUpdateScore(user, kr)
 		kr.CanOwnerUpdateScore = s.CanOwnerUpdateScore(kr)
 		kr.CanSuperiorUpdateScore = s.CanSuperiorUpdateScore(user, kr)
 	}
@@ -1430,31 +1429,6 @@ func (s *okrService) GetOkrDetail(user *interfaces.UserInfoResp, okrId int) (*in
 	s.GetObjectiveExt(objResp, obj.KeyResults, user)
 
 	return objResp, nil
-}
-
-// kr是否能修改评分 3次机会
-func (s *okrService) CanUpdateScore(user *interfaces.UserInfoResp, kr *model.Okr) bool {
-	// 复盘后分数不可修改
-	if s.hasReplay(kr.ParentId) {
-		return false
-	}
-
-	// 归档和离职的人员kr状态时分数不可修改
-	if kr.Status > 0 {
-		return false
-	}
-
-	// 如果上级未评分，负责人分数可修改3次
-	if kr.SuperiorScore == -1 && kr.ScoreNum < model.DefaultScoreNum {
-		return true
-	}
-
-	// 上级也可对评分修改3次
-	if common.InArrayInt(user.Userid, s.GetSuperiorUserIds(kr, user)) && kr.SuperiorScore > -1 && kr.ScoreNum < model.DefaultScoreNum {
-		return true
-	}
-
-	return false
 }
 
 // 负责人是否能修改评分 3次机会
