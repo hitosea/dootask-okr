@@ -37,16 +37,15 @@ type User struct {
 }
 
 type UserBasic struct {
-	Userid         int    `json:"userid"`          // 用户id
-	Identity       string `json:"identity"`        // 身份
-	Nickname       string `json:"nickname"`        // 昵称
-	Email          string `json:"email"`           // 邮箱
-	Userimg        string `json:"userimg"`         // 头像
-	Department     string `json:"department"`      // 部门
-	Profession     string `json:"profession"`      // 职业
-	DepartmentName string `json:"department_name"` // 部门名称
-	CreatedAt      string `json:"created_at"`      // 创建时间
-	DisableAt      string `json:"disable_at"`      // 禁用时间
+	Userid     int    `json:"userid"`     // 用户id
+	Identity   string `json:"identity"`   // 身份
+	Nickname   string `json:"nickname"`   // 昵称
+	Email      string `json:"email"`      // 邮箱
+	Userimg    string `json:"userimg"`    // 头像
+	Department string `json:"department"` // 部门
+	Profession string `json:"profession"` // 职业
+	CreatedAt  string `json:"created_at"` // 创建时间
+	DisableAt  string `json:"disable_at"` // 禁用时间
 }
 
 var UserModel = User{}
