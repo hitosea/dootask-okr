@@ -245,6 +245,14 @@ watch(() => globalStore.addMultipleChange, (newValue) => {
     }
 }, { deep: true })
 
+watch(() => active.value, (newValue) => {
+    if (newValue) {
+        loadDatePickers()
+    } else {
+        unmountDatePickerApps()
+    }
+})
+
 // 获取数据
 const getData = (type) => {
     let serstatic = type == 'search' ? true : false
