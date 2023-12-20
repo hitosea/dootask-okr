@@ -24,7 +24,7 @@ func (s *okrAnalyzeService) GetOverallDepartment(user *interfaces.UserInfoResp) 
 	}
 	if user.IsAdmin() {
 		data = append(data, interfaces.OkrAnalyzeDepartment{
-			Name:  "全系统OKR结果分析",
+			Name:  "全系统",
 			Id:    0,
 			Owner: true,
 		})
