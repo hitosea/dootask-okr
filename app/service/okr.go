@@ -3032,7 +3032,7 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 
 		for _, obj := range objs {
 			// 仅限部门负责人、管理员操作
-			if !user.IsAdmin() && common.InArrayInt(user.Userid, s.GetSuperiorUserIds(obj, user)) {
+			if !user.IsAdmin() && !common.InArrayInt(user.Userid, s.GetSuperiorUserIds(obj, user)) {
 				return e.New(constant.ErrOkrDepartmentOwnerOrAdminNotCancel)
 			}
 
