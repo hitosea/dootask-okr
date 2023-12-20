@@ -238,7 +238,7 @@ func (s dootaskService) DialogGroupDeluser(token string, dialogId int, userids [
 
 // 转让群主
 func (s dootaskService) DialogGroupTransfer(token string, dialogId int, userid int) error {
-	url := fmt.Sprintf("%s%s?token=%s&dialog_id=%d&userid=%d&transfer_verify=no", config.DooTaskUrl, "/api/dialog/group/transfer", token, dialogId, userid)
+	url := fmt.Sprintf("%s%s?token=%s&dialog_id=%d&userid=%d&check_owner=no", config.DooTaskUrl, "/api/dialog/group/transfer", token, dialogId, userid)
 	result, err := s.client.Get(url)
 	if err != nil {
 		return err
