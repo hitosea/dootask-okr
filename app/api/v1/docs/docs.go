@@ -1347,6 +1347,24 @@ const docTemplate = `{
                 "summary": "OKR负责人列表",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "状态 0-正常 1-已归档 2-离职/删除人员",
                         "name": "status",
@@ -1365,10 +1383,22 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/model.User"
-                                            }
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/model.User"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
                                         }
                                     }
                                 }
@@ -2169,10 +2199,6 @@ const docTemplate = `{
                     "description": "KR上级是否能修改评分",
                     "type": "boolean"
                 },
-                "can_update_score": {
-                    "description": "是否能评分",
-                    "type": "boolean"
-                },
                 "canceled": {
                     "type": "integer"
                 },
@@ -2640,10 +2666,6 @@ const docTemplate = `{
                     "description": "KR上级是否能修改评分",
                     "type": "boolean"
                 },
-                "can_update_score": {
-                    "description": "是否能评分",
-                    "type": "boolean"
-                },
                 "canceled": {
                     "type": "integer"
                 },
@@ -2909,10 +2931,6 @@ const docTemplate = `{
                 },
                 "can_superior_update_score": {
                     "description": "KR上级是否能修改评分",
-                    "type": "boolean"
-                },
-                "can_update_score": {
-                    "description": "是否能评分",
                     "type": "boolean"
                 },
                 "canceled": {

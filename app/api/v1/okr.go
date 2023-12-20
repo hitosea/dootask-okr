@@ -641,12 +641,12 @@ func (api *BaseApi) OkrLeaveList() {
 // @Description OKR负责人列表
 // @Accept json
 // @Param request query interfaces.OkrOwnerListReq true "request"
-// @Success 200 {object} interfaces.Response{data=[]model.User}
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.User}}
 // @Router /okr/owner/list [get]
 func (api *BaseApi) OkrOwnerList() {
 	var param = interfaces.OkrOwnerListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetOwnerList(param.Status)
+	result, err := service.OkrService.GetOwnerList(param.KeyWord, param.Status, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

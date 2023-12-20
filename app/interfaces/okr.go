@@ -197,7 +197,9 @@ type OkrLeaveUpdateListReq struct {
 
 // OKR负责人列表
 type OkrOwnerListReq struct {
-	Status int `form:"status,default=0" json:"status"` // 状态 0-正常 1-已归档 2-离职/删除人员
+	KeyWord string `form:"keyword" json:"keyword"`         // 关键词
+	Status  int    `form:"status,default=0" json:"status"` // 状态 0-正常 1-已归档 2-离职/删除人员
+	*Pages
 }
 
 // 更新离职/删除人员OKR负责人请求

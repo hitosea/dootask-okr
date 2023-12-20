@@ -2914,7 +2914,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 }
 
 // 获取负责人列表
-func (s *okrService) GetOwnerList(status int) ([]*model.User, error) {
+func (s *okrService) GetOwnerList(keyword string, status, page, pageSize int) (*interfaces.Pagination, error) {
 	var userIds []int
 
 	db := core.DB.Model(&model.Okr{}).Where("status = ?", status)
@@ -2922,8 +2922,15 @@ func (s *okrService) GetOwnerList(status int) ([]*model.User, error) {
 		return nil, err
 	}
 
+	keyword = common.SearchTextFilter(keyword)
+
+	var count int64
+	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Count(&count).Error; err != nil {
+		return nil, err
+	}
+
 	var users []*model.User
-	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Find(&users).Error; err != nil {
+	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
 		return nil, err
 	}
 
@@ -2931,7 +2938,7 @@ func (s *okrService) GetOwnerList(status int) ([]*model.User, error) {
 		user.AfterFind(core.DB)
 	}
 
-	return users, nil
+	return interfaces.PaginationRsp(page, pageSize, count, users), nil
 }
 
 // 分配离职/删除人员OKR负责人
@@ -2965,6 +2972,9 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 			if err := s.operateKeyResults(obj, updateLeaveFunc); err != nil {
 				return err
 			}
+
+			// 转让okr群组
+			go DootaskService.DialogGroupTransfer(user.Token, obj.DialogId, Userid)
 		}
 
 		return nil

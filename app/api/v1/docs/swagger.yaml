@@ -24,9 +24,6 @@ definitions:
       can_superior_update_score:
         description: KR上级是否能修改评分
         type: boolean
-      can_update_score:
-        description: 是否能评分
-        type: boolean
       canceled:
         type: integer
       completed:
@@ -361,9 +358,6 @@ definitions:
       can_superior_update_score:
         description: KR上级是否能修改评分
         type: boolean
-      can_update_score:
-        description: 是否能评分
-        type: boolean
       canceled:
         type: integer
       completed:
@@ -553,9 +547,6 @@ definitions:
         type: boolean
       can_superior_update_score:
         description: KR上级是否能修改评分
-        type: boolean
-      can_update_score:
-        description: 是否能评分
         type: boolean
       canceled:
         type: integer
@@ -1665,6 +1656,18 @@ paths:
       - application/json
       description: OKR负责人列表
       parameters:
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
       - description: 状态 0-正常 1-已归档 2-离职/删除人员
         in: query
         name: status
@@ -1677,9 +1680,14 @@ paths:
             - $ref: '#/definitions/interfaces.Response'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/model.User'
-                  type: array
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.User'
+                        type: array
+                    type: object
               type: object
       summary: OKR负责人列表
       tags:

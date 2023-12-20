@@ -236,6 +236,20 @@ func (s dootaskService) DialogGroupDeluser(token string, dialogId int, userids [
 	return nil
 }
 
+// 转让群主
+func (s dootaskService) DialogGroupTransfer(token string, dialogId int, userid int) error {
+	url := fmt.Sprintf("%s%s?token=%s&dialog_id=%d&userid=%d&transfer_verify=no", config.DooTaskUrl, "/api/dialog/group/transfer", token, dialogId, userid)
+	result, err := s.client.Get(url)
+	if err != nil {
+		return err
+	}
+	_, err = s.UnmarshalAndCheckResponse(result)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // 推送OKR相关信息
 func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, userids []int) error {
 	url := fmt.Sprintf("%s%s", config.DooTaskUrl, "/api/dialog/okr/push")
