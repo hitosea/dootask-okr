@@ -307,11 +307,11 @@ const getList = (type) => {
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
             department_id: departmentsvalue.value,
-            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1], 2) : '',
+            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1]) : '',
             objective: props.searchObject,
             page: type == 'updata' ? 1 : page.value,
             page_size: type == 'updata' ?  page.value * 20 : 20,
-            start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0]) : '',
+            start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0],2) : '',
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
         }

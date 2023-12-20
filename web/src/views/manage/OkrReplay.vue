@@ -261,8 +261,8 @@ const getData = (type) => {
         const data = {
             select_replayed: completednotrated.value ? 1 : 0,//完成未完成
             department_id: departmentsvalue.value,//部门
-            start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0]) : '',//开始时间
-            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1], 2) : '',//结束时间
+            start_at: daterange.value[0] ? utils.TimeHandle(daterange.value[0],2) : '',//开始时间
+            end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1]) : '',//结束时间
             userid: principalvalue.value,//用户
             objective: props.searchObject,//关键词
             page: page.value,
