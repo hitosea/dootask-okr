@@ -25,3 +25,8 @@ export const getProjectList = (data) => {
 export const getUserList = (data) => {
     return http.get<any>("okr/user/list",data)
 }
+
+//OKR负责人列表
+export const getOwnerList = (data) => {
+    return http.get<any>("okr/owner/list",data)
+}

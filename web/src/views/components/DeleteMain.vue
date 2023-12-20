@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { DataTableColumn } from 'naive-ui';
 import { useMessage } from "@/utils/messageAll"
-import { getUserList } from '@/api/modules/created'
+import { getOwnerList } from '@/api/modules/created'
 import { getLeaveList, okrDelete, okrAssign } from '@/api/modules/okrList'
 import { UserStore } from '@/store/user'
 import { NButton, DataTableRowKey } from 'naive-ui'
@@ -251,18 +251,20 @@ const getPrincipalList = (type:any) => {
         keyWord = type + ''
     }
     const sendata = {
-        dept_only: (isAdmin || okrAdminOwner.value) ? false : true,
+        status: '2',
         page: principalPage.value,
         page_size: 20,
         keyword: keyWord,
     }
-    getUserList(sendata).then(({ data }) => {
+    getOwnerList(sendata).then(({ data }) => {
         principalOptions.value = data.data?.map(item=>{
+
             return {
                 label: item.nickname,
                 value: item.userid,
             }
         }) || []
+        
         principalLastPage.value = data.last_page
     })
 }
