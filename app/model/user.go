@@ -64,7 +64,7 @@ func (m *UserBasic) IsAdmin() bool {
 }
 
 // 后置钩子函数
-func (m *User) AfterFind(tx *gorm.DB) error {
+func (m *UserBasic) AfterFind(tx *gorm.DB) error {
 	if m.Nickname == "" {
 		m.Nickname = common.CardFormat(m.Email)
 	}

@@ -2824,6 +2824,21 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 
 	for _, obj := range objs {
 		obj.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(obj.Id, obj.Userid, obj.Ascription, obj.DepartmentId) // O排序
+		// 如果被删除人员查询不到，nickname设置为-
+		if obj.User == nil {
+			obj.User = &model.UserBasic{
+				Nickname: "-",
+			}
+		} else {
+			obj.User.AfterFind(core.DB)
+		}
+		if obj.ArchiveUser == nil {
+			obj.ArchiveUser = &model.UserBasic{
+				Nickname: "-",
+			}
+		} else {
+			obj.User.AfterFind(core.DB)
+		}
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, objs), nil
@@ -2902,12 +2917,20 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 	}
 
 	offset := (page - 1) * pageSize
-	if err := db.Order("okrs.updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
+	if err := db.Preload("User").Order("okrs.updated_at DESC").Offset(offset).Limit(pageSize).Find(&objs).Error; err != nil {
 		return nil, err
 	}
 
 	for _, obj := range objs {
 		obj.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(obj.Id, obj.Userid, obj.Ascription, obj.DepartmentId) // O排序
+		// 如果被删除人员查询不到，nickname设置为-
+		if obj.User == nil {
+			obj.User = &model.UserBasic{
+				Nickname: "-",
+			}
+		} else {
+			obj.User.AfterFind(core.DB)
+		}
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, objs), nil
@@ -2925,12 +2948,12 @@ func (s *okrService) GetOwnerList(keyword string, status, page, pageSize int) (*
 	keyword = common.SearchTextFilter(keyword)
 
 	var count int64
-	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Count(&count).Error; err != nil {
+	if err := core.DB.Model(&model.UserBasic{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Count(&count).Error; err != nil {
 		return nil, err
 	}
 
-	var users []*model.User
-	if err := core.DB.Model(&model.User{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
+	var users []*model.UserBasic
+	if err := core.DB.Model(&model.UserBasic{}).Where("userid in (?)", userIds).Where("nickname LIKE ? OR email LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
 		return nil, err
 	}
 
