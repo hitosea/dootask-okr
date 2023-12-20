@@ -4,7 +4,7 @@
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
                 <span class="a-t-tabs text-[#8BCF70] w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
                 }}</span>
-                <n-tooltip trigger="hover" v-if="item.alias[0]">
+                <n-tooltip trigger="hover" v-if="item?.alias && item?.alias[0]">
                     <template #trigger>
                         <span v-if="item.alias[0]" class="a-t-tab-b "
                             :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
