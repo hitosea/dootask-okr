@@ -19,6 +19,7 @@ ErrOkrCanceled: ターゲットOキャンセル操作不能です
 ErrOkrCompleted: O標的完了操作不能です
 ErrOkrCompletedReplay: 復刻をお願いします。
 ErrOkrConfidenceInvalid: 自信指数は0-100の整数で入力します。
+ErrOkrDepartmentOwnerOrAdminNotCancel: 部門の責任者、管理者に限ります。
 ErrOkrInvalidKrScore: 無効なKRスコアです
 ErrOkrIsFinishNotScoreInvalid: 未採点パラメータエラーが完了していますか
 ErrOkrKeyResultAtLeastOne: 少なくとも1つの重要な結果があります

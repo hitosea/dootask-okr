@@ -19,6 +19,7 @@ ErrOkrCanceled: O目标已取消无法操作
 ErrOkrCompleted: O目标已完成无法操作
 ErrOkrCompletedReplay: 请先添加复盘
 ErrOkrConfidenceInvalid: 信心指数请输入0-100的整数
+ErrOkrDepartmentOwnerOrAdminNotCancel: 仅限部门负责人、管理员操作
 ErrOkrInvalidKrScore: 无效的KR分数
 ErrOkrIsFinishNotScoreInvalid: 是否已完成未评分参数错误
 ErrOkrKeyResultAtLeastOne: 至少有一条关键结果

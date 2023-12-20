@@ -19,6 +19,7 @@ ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel
 ErrOkrCompletedReplay: Veuillez d’abord ajouter une copie
 ErrOkrConfidenceInvalid: Indice de confiance veuillez entrer un nombre entier de 0 à 100
+ErrOkrDepartmentOwnerOrAdminNotCancel: Opération réservée aux chefs de service, administrateurs
 ErrOkrInvalidKrScore: Score KR non valide
 ErrOkrIsFinishNotScoreInvalid: Est terminé paramètre non noté erreur
 ErrOkrKeyResultAtLeastOne: Au moins un résultat clé

@@ -19,6 +19,7 @@ ErrOkrCanceled: O ziel nicht betriebsbereit
 ErrOkrCompleted: O ziel nicht erreichbar
 ErrOkrCompletedReplay: Bitte fügen sie zuerst die schaltfläche hinzu
 ErrOkrConfidenceInvalid: Geben sie bitte einen ganzzahligen wert Von 0-100 ein
+ErrOkrDepartmentOwnerOrAdminNotCancel: Nur leiter der abteilung und administrator
 ErrOkrInvalidKrScore: Das fehlerhafte KRML
 ErrOkrIsFinishNotScoreInvalid: Ob ein fehlerhafter parameter abgeschlossen ist
 ErrOkrKeyResultAtLeastOne: Zumindest ein entscheidendes ergebnis

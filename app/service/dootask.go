@@ -2,7 +2,6 @@ package service
 
 import (
 	"dootask-okr/app/constant"
-	"dootask-okr/app/core"
 	"dootask-okr/app/interfaces"
 	"dootask-okr/app/model"
 	"dootask-okr/app/utils/common"
@@ -147,47 +146,6 @@ func (s dootaskService) DialogOkrAdd(okr *model.Okr, token string) (int, error) 
 	params["name"] = okr.Title
 	params["link_id"] = okr.Id
 	userids := []int{okr.Userid}
-
-	// 当okr有部门时，添加部门负责人
-	if okr.DepartmentId != "" {
-		departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
-		if len(departmentIds) > 0 {
-			// 获取部门负责人userid
-			var UserDepartmentOwner []model.UserDepartment
-			var ownerids []int
-			// 通知上级，只通知一级
-			err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
-			if err != nil {
-				return 0, err
-			}
-
-			owneridsMap := make(map[int]bool)
-			for _, v := range UserDepartmentOwner {
-				if v.OwnerUserid == okr.Userid {
-					// 创建人是小组负责人不通知，而获取上级负责人通知
-					var UserDepartmentOwnerSuper model.UserDepartment
-					err := core.DB.Model(&model.UserDepartment{}).Where("id = ?", v.ParentId).Find(&UserDepartmentOwnerSuper).Error
-					if err != nil {
-						return 0, err
-					}
-					if _, exists := owneridsMap[UserDepartmentOwnerSuper.OwnerUserid]; exists {
-						continue
-					}
-					owneridsMap[UserDepartmentOwnerSuper.OwnerUserid] = true
-					ownerids = append(ownerids, UserDepartmentOwnerSuper.OwnerUserid)
-					s.DialogOkrPush(okr, token, 11, []int{UserDepartmentOwnerSuper.OwnerUserid})
-					continue
-				}
-				if _, exists := owneridsMap[v.OwnerUserid]; exists {
-					continue
-				}
-				owneridsMap[v.OwnerUserid] = true
-				ownerids = append(ownerids, v.OwnerUserid)
-				s.DialogOkrPush(okr, token, 11, []int{v.OwnerUserid})
-			}
-			userids = common.ArrayUniqueInt(append(userids, ownerids...))
-		}
-	}
 
 	//
 	params["userids"] = userids

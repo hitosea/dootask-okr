@@ -19,6 +19,7 @@ ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated
 ErrOkrCompletedReplay: Please add a copy first
 ErrOkrConfidenceInvalid: Confidence Index Please enter an integer between 0 and 100
+ErrOkrDepartmentOwnerOrAdminNotCancel: Only department heads and administrators can perform this operation
 ErrOkrInvalidKrScore: Invalid KR score
 ErrOkrIsFinishNotScoreInvalid: Complete No score parameter is incorrect
 ErrOkrKeyResultAtLeastOne: There was at least one key result

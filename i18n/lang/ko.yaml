@@ -19,6 +19,7 @@ ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
 ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다
 ErrOkrCompletedReplay: 먼저 콤플렉스를 추가하세요
 ErrOkrConfidenceInvalid: 신뢰지수 0-100의 정수를 입력하십시오
+ErrOkrDepartmentOwnerOrAdminNotCancel: 부서책임자, 관리자만이 운영할수 있다
 ErrOkrInvalidKrScore: 잘못된 kr 점수
 ErrOkrIsFinishNotScoreInvalid: 인자 평가가 끝났는지 여부입니다
 ErrOkrKeyResultAtLeastOne: 적어도 하나의 중요한 결과가 있습니다

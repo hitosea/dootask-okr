@@ -79,9 +79,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		}
 
 		// 创建对话
-		var objDialog *model.Okr
-		tx.Preload("User").Where("id = ?", obj.Id).First(&objDialog)
-		dialogId, err := DootaskService.DialogOkrAdd(objDialog, user.Token)
+		dialogId, err := DootaskService.DialogOkrAdd(obj, user.Token)
 		if err != nil {
 			return err
 		}
@@ -126,11 +124,12 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		return nil, err
 	}
 
-	// 创建O时（通知发起/所有KR参与人）
+	// 创建O时（通知发起/所有KR参与人/上级）
+	s.SendSuperiorUserIdsLv1(obj, user)                  // 增加用户ids
 	participantIds = append(participantIds, user.Userid) // 通知发起/所有KR参与人
 	if len(participantIds) > 0 {
-		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, participantIds)             // 新增对话成员
-		go DootaskService.DialogOkrPush(obj, user.Token, 1, common.ArrayUniqueInt(participantIds)) // 推送对话消息
+		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, common.ArrayUniqueInt(participantIds)) // 新增对话成员
+		go DootaskService.DialogOkrPush(obj, user.Token, 1, common.ArrayUniqueInt(participantIds))            // 推送对话消息
 	}
 
 	return obj, nil
@@ -1902,6 +1901,55 @@ func (s *okrService) GetSuperiorUserIds(obj *model.Okr, user *interfaces.UserInf
 	return userids
 }
 
+// 通知目标评分上级用户ids（上一级）
+func (s *okrService) SendSuperiorUserIdsLv1(okr *model.Okr, user *interfaces.UserInfoResp) error {
+	// var ownerids []int
+	core.DB.Preload("User").Where("id = ?", okr.Id).First(&okr)
+	// 当okr有部门时，添加部门负责人
+	if okr.DepartmentId != "" {
+		departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
+		if len(departmentIds) > 0 {
+			// 获取部门负责人userid
+			var UserDepartmentOwner []model.UserDepartment
+			// 通知上级，只通知一级
+			err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
+			if err != nil {
+				return err
+			}
+
+			owneridsMap := make(map[int]bool)
+			for _, v := range UserDepartmentOwner {
+				if v.OwnerUserid == okr.Userid {
+					// 创建人是小组负责人不通知，而获取上级负责人通知
+					var UserDepartmentOwnerSuper model.UserDepartment
+					err := core.DB.Model(&model.UserDepartment{}).Where("id = ?", v.ParentId).Find(&UserDepartmentOwnerSuper).Error
+					if err != nil {
+						return err
+					}
+					if _, exists := owneridsMap[UserDepartmentOwnerSuper.OwnerUserid]; exists {
+						continue
+					}
+					owneridsMap[UserDepartmentOwnerSuper.OwnerUserid] = true
+					// ownerids = append(ownerids, UserDepartmentOwnerSuper.OwnerUserid)
+					go DootaskService.DialogOkrPush(okr, user.Token, 11, []int{UserDepartmentOwnerSuper.OwnerUserid})
+					continue
+				}
+				if _, exists := owneridsMap[v.OwnerUserid]; exists {
+					continue
+				}
+				owneridsMap[v.OwnerUserid] = true
+				// ownerids = append(ownerids, v.OwnerUserid)
+				go DootaskService.DialogOkrPush(okr, user.Token, 11, []int{v.OwnerUserid})
+			}
+			// ownerids = common.ArrayUniqueInt(append(ownerids, ownerids...))
+		}
+	}
+	// if len(ownerids) > 0 {
+	// 	go DootaskService.DialogGroupAdduser(user.Token, okr.DialogId, common.ArrayUniqueInt(ownerids)) // 新增对话成员
+	// }
+	return nil
+}
+
 // 取消/重启目标
 func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 	kr, err := s.GetObjectiveById(okrId)
@@ -2967,10 +3015,6 @@ func (s *okrService) GetOwnerList(keyword string, status, page, pageSize int) (*
 
 // 分配离职/删除人员OKR负责人
 func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, okrIds []int) error {
-	// 仅限管理员操作
-	if !user.IsAdmin() {
-		return e.New(constant.ErrOkrAdminNotCancel)
-	}
 	var objs []*model.Okr
 	if err := core.DB.Model(&model.Okr{}).Preload("KeyResults").Where("status IN (?)", []int{1, 2}).Where("id in (?)", okrIds).Find(&objs).Error; err != nil {
 		return err
@@ -2987,6 +3031,11 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 		}
 
 		for _, obj := range objs {
+			// 仅限部门负责人、管理员操作
+			if !user.IsAdmin() && common.InArrayInt(user.Userid, s.GetSuperiorUserIds(obj, user)) {
+				return e.New(constant.ErrOkrDepartmentOwnerOrAdminNotCancel)
+			}
+
 			obj.Userid = Userid
 			obj.Status = 0
 			if err := tx.Save(obj).Error; err != nil {

@@ -19,6 +19,7 @@ ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai
 ErrOkrCompletedReplay: Tolong tambahkan plaster dulu
 ErrOkrConfidenceInvalid: Indeks kepercayaan diri silahkan masukkan bilangan bulat 0-100
+ErrOkrDepartmentOwnerOrAdminNotCancel: Hanya kepala divisi, operasi administrator
 ErrOkrInvalidKrScore: Anggota KR yang tidak valid
 ErrOkrIsFinishNotScoreInvalid: Telah menyelesaikan galat parameter yang tidak dinilai
 ErrOkrKeyResultAtLeastOne: Setidaknya satu hasil kunci
