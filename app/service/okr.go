@@ -13,6 +13,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"gorm.io/gorm"
@@ -3025,8 +3026,20 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 
 	return core.DB.Transaction(func(tx *gorm.DB) error {
 		updateLeaveFunc := func(kr *model.Okr) error {
+			// 更新kr参与人
+			if kr.Participant != "" {
+				ids := common.ExplodeInt(",", kr.Participant, true)
+				// 如果离职人员在参与人中，替换为新负责人
+				if common.InArrayInt(kr.Userid, ids) {
+					ids = common.ArrayRemove(ids, kr.Userid)
+					ids = append(ids, Userid)
+					kr.Participant = common.ArrayImplode(ids)
+				}
+			}
 			kr.Userid = Userid
 			kr.Status = 0
+			// 更新部门
+			kr.DepartmentId = common.ArrayImplode(user.Department)
 			return tx.Save(kr).Error
 		}
 
@@ -3036,8 +3049,20 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 				return e.New(constant.ErrOkrDepartmentOwnerOrAdminNotCancel)
 			}
 
+			// 更新O参与人
+			if obj.Participant != "" {
+				ids := common.ExplodeInt(",", obj.Participant, true)
+				// 如果离职人员在参与人中，替换为新负责人
+				if common.InArrayInt(obj.Userid, ids) {
+					ids = common.ArrayRemove(ids, obj.Userid)
+					ids = append(ids, Userid)
+					obj.Participant = common.ArrayImplode(ids)
+				}
+			}
 			obj.Userid = Userid
 			obj.Status = 0
+			// 更新部门
+			obj.DepartmentId = common.ArrayImplode(user.Department)
 			if err := tx.Save(obj).Error; err != nil {
 				return err
 			}
@@ -3080,6 +3105,44 @@ func (s *okrService) CheckLeavedUsersOkr() bool {
 		return false
 	}
 
+	return true
+}
+
+// 定时任务：检测是否有离职人员回归
+func (s *okrService) CheckBackedUsersOkr() bool {
+	// 检测恢复职位的人员 用户更新时间在一周内的
+	okrTable := core.DBTableName(&model.Okr{})
+	userTable := core.DBTableName(&model.User{})
+	var objsRecovered []*model.Okr
+
+	if err := core.DB.Table(okrTable+" AS okrs").
+		Select("okrs.*").
+		Joins(fmt.Sprintf(`JOIN %s users ON okrs.userid = users.userid`, userTable)).
+		Where("FIND_IN_SET(?, users.identity) = 0", "disable").
+		Where("users.updated_at >= ?", time.Now().AddDate(0, 0, -7)).
+		Where("okrs.status = ?", 2).
+		Find(&objsRecovered).Error; err != nil {
+		return false
+	}
+
+	if len(objsRecovered) == 0 {
+		return false
+	}
+
+	// 更新状态
+	if err := core.DB.Model(&objsRecovered).Updates(map[string]interface{}{"status": 0}).Error; err != nil {
+		return false
+	}
+
+	var mutex sync.Mutex
+
+	for _, obj := range objsRecovered {
+		go func(obj *model.Okr) {
+			mutex.Lock()
+			DootaskService.DialogGroupTransfer("", obj.DialogId, obj.Userid)
+			mutex.Unlock()
+		}(obj)
+	}
 	return true
 }
 

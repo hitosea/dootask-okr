@@ -19,6 +19,7 @@ func Crontab(c *cron.Cron) {
 	// 5秒检查离职/删除人员的OKR
 	_, _ = c.AddFunc("*/5 * * * * *", func() {
 		service.NewOkrService().CheckLeavedUsersOkr()
+		service.NewOkrService().CheckBackedUsersOkr()
 		service.NewOkrService().CheckDeletedUsersOkr()
 	})
 }
