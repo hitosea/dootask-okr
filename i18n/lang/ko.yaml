@@ -40,6 +40,7 @@ ErrOkrProgressNotEnough: kr는 아직 100% 가 되지 않았다
 ErrOkrProgressStatusInvalid: 진행 상태 인자 오류
 ErrOkrReplayCommentInvalid: kr 평가를 선택해 주세요
 ErrOkrReplayLengthInvalid: 내용이 너무 깁니다. 255 글자로 제한하십시오
+ErrOkrReplayStatusInvalid: 잘못된 콤보 상태입니다
 ErrOkrScoreInvalid: 별점은 0-10의 정수를 입력하십시오
 ErrOkrScoreTypeInvalid: 채점 형식 오류
 ErrOkrScoreWeightInvalid: 자체 평가 가중치와 상위 점수의 가중치를 합하면 100이 되어야 합니다

@@ -55,6 +55,7 @@ var (
 	ErrOkrCompletedReplay                 = "ErrOkrCompletedReplay"                 //请先添加复盘
 	ErrOkrScoredNotUpdate                 = "ErrOkrScoredNotUpdate"                 //评分不可修改
 	ErrOkrScoreTypeInvalid                = "ErrOkrScoreTypeInvalid"                //评分类型错误
+	ErrOkrReplayStatusInvalid             = "ErrOkrReplayStatusInvalid"             //无效的复盘状态
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

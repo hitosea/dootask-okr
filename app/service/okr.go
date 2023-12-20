@@ -2145,6 +2145,10 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
+	if obj.Status != 0 {
+		return nil, e.New(constant.ErrOkrReplayStatusInvalid)
+	}
+
 	// 检查关键结果是否已评分
 	for _, kr := range obj.KeyResults {
 		if kr.Score == -1 || kr.SuperiorScore == -1 {

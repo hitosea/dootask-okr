@@ -40,6 +40,7 @@ ErrOkrProgressNotEnough: Die KR liegt noch nicht bei 100%
 ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrReplayCommentInvalid: Wählen sie die infrarot-analyse
 ErrOkrReplayLengthInvalid: Die inhalte sind zu lang und bitte auf 255 zeichen beschränkt
+ErrOkrReplayStatusInvalid: Die kaputte aktiv ist
 ErrOkrScoreInvalid: Bitte geben sie einen ganzzahligen wert Von 0 bis 10 ein
 ErrOkrScoreTypeInvalid: 'Fehlertyp: beurteilung abgebrochen'
 ErrOkrScoreWeightInvalid: Die bewertung selbst und die beurteilung der vorgesetzten müssen in relation zu 100 liegen
