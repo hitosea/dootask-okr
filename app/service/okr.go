@@ -1227,6 +1227,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		Select("replay.*, GROUP_CONCAT(replay.id ORDER BY replay.created_at DESC) as replay_ids, okr.visible_range, okr.parent_id").
 		Joins(fmt.Sprintf(`LEFT JOIN %s okr ON replay.okr_id = okr.id`, okrTable)).
 		Where("okr.status = 0").
+		Where("okr.deleted_at IS NULL").
 		Group("replay.okr_id").
 		Order("replay.created_at DESC")
 
@@ -2152,7 +2153,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果有空复盘记录，则不创建， 直接更新复盘记录
 		if !s.hasReplay(req.OkrId) {
-			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(&replay).Scan(&replay).Error; err != nil {
+			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "replay": 1}).Scan(&replay).Error; err != nil {
 				return err
 			}
 		} else {
