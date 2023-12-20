@@ -93,11 +93,11 @@
                     {{ $t('分配OKR') }}
                 </h3>
             </template>
-            <n-select v-model:value="assignUserId" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" class="flex-1 overflow-hidden"
+            <n-select v-model:value="assignUserId" :options="assignOptions" :on-blur="getAssignList" :on-search="getAssignList" class="flex-1 overflow-hidden"
                 filterable :placeholder="$t('请选择用户')" clearable>
                 <template #action>
-                    <div v-if="principalLastPage > principalPage" quaternary
-                        class=" h-full w-full whitespace-nowrap text-center" @click.stop="getPrincipalList('more')">
+                    <div v-if="assignLastPage > assignPage" quaternary
+                        class=" h-full w-full whitespace-nowrap text-center" @click.stop="getAssignList('more')">
                         {{ $t('更多...') }}
                     </div>
                     <div v-else quaternary class=" h-full w-full whitespace-nowrap text-center">
@@ -107,7 +107,7 @@
             </n-select>
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <n-button quaternary @click="assignShow = false">{{ $t('取消') }}</n-button>
+                    <n-button secondary strong @click="assignShow = false">{{ $t('取消') }}</n-button>
                     <n-button type="primary" :loading="assignLoadIng > 0" @click="submitAssign">{{ $t('确定') }}</n-button>
                 </div>
             </template>
@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { DataTableColumn } from 'naive-ui';
 import { useMessage } from "@/utils/messageAll"
-import { getOwnerList } from '@/api/modules/created'
+import { getOwnerList ,getUserList} from '@/api/modules/created'
 import { getLeaveList, okrDelete, okrAssign } from '@/api/modules/okrList'
 import { UserStore } from '@/store/user'
 import { NButton, DataTableRowKey } from 'naive-ui'
@@ -153,6 +153,9 @@ const assignId  = ref(0)
 const assignUserId  = ref(null)
 const assignShow  = ref(false)
 const assignLoadIng  = ref(0)
+const assignOptions = ref([])
+const assignPage = ref(1)
+const assignLastPage = ref(99999)
 
 const tableLoadIng = ref(0)
 const tableKeyWord = ref('')
@@ -258,7 +261,6 @@ const getPrincipalList = (type:any) => {
     }
     getOwnerList(sendata).then(({ data }) => {
         principalOptions.value = data.data?.map(item=>{
-
             return {
                 label: item.nickname,
                 value: item.userid,
@@ -266,6 +268,37 @@ const getPrincipalList = (type:any) => {
         }) || []
         
         principalLastPage.value = data.last_page
+    })
+}
+
+//用户列表
+const getAssignList = (type:any) => {
+    let keyWord = '';
+    if (type == 'init' || type === false) {
+        assignPage.value = 1
+        assignOptions.value = ([
+            { label: $t('全部'), value: null }
+        ])
+    } else if(type == 'more') {
+        assignPage.value++
+    } else if(typeof type != 'object'){
+        keyWord = type + ''
+    }
+    const sendata = {
+        status: '2',
+        page: assignPage.value,
+        page_size: 20,
+        keyword: keyWord,
+    }
+    getUserList(sendata).then(({ data }) => {
+        assignOptions.value = data.data?.map(item=>{
+            return {
+                label: item.nickname,
+                value: item.userid,
+            }
+        }) || []
+        
+        assignLastPage.value = data.last_page
     })
 }
 
@@ -312,6 +345,7 @@ const handleAssign = (rowData) => {
     }else{
         assignId.value = 0
     }
+    getAssignList('init')
     assignUserId.value = null
     assignShow.value = true
 }
