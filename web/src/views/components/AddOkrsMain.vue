@@ -572,7 +572,12 @@ const loadDatePickers = () => {
                                     })
                                 }
                                 else {
-                                    item.time = this.value;
+                                    if (this.value[0] && this.value[1]) {
+                                        item.time = this.value;
+                                    } else {
+                                        item.time = null
+                                    }
+                                    
                                     nextTick(() => {
                                         formRefs.value?.forEach(element => {   
                                             element.validate((errors) => {  
