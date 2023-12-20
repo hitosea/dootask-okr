@@ -41,7 +41,7 @@
             <template #footer>
                 <div class="button-box flex justify-end mt-0">
                     <div class="flex flex-1 md:flex-initial items-center gap-4">
-                        <n-button class="flex-1 md:flex-initial" :loading="loadIng" strong secondary @click="handleClose">
+                        <n-button class="flex-1 md:flex-initial md:block hidden" :loading="loadIng" strong secondary @click="handleClose">
                             {{ props.inputShow || changeShow || selfShow? $t('取消') : $t('关闭') }}
                         </n-button>
                         <n-button class="flex-1 md:flex-initial" :loading="loadIng"
