@@ -63,7 +63,7 @@
                     class=" hidden md:flex"
                     v-model:page="tablePage"
                     :default-page-size="tablePageSize"
-                    :page-sizes="[10,20,30,40,50]"
+                    :page-sizes="[10, 20, 30, 50, 100]"
                     :page-count="tableLastPage"
                     size="medium"
                     show-quick-jumper
@@ -71,7 +71,7 @@
                     :on-update:page="onPage"
                     :on-update:page-size="onPageSize"
                 />
-                <n-pagination class="pagination-web md:hidden flex" simple v-model:page="tablePage" :page-count="tableLastPage" />
+                <n-pagination class="pagination-web md:hidden flex" simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" />
             </div>
         </div>
     </div>

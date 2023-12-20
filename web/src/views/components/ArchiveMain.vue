@@ -13,7 +13,7 @@
             </n-button>
         </div>
         <div class="mt-16 flex flex-col flex-1">
-            <div>
+            <div class="mb-16">
                 <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" :loading="loadIng"
                     style="--n-td-color-hover-modal:#ffffff" />
             </div>
@@ -23,7 +23,7 @@
                     :on-update:page="onPage" :on-update:page-size="onPageSize" />
             </div>
             <div class="flex md:hidden justify-center shrink-0 mt-auto">
-                <n-pagination class="pagination-web" simple v-model:page="tablePage" :page-count="tableTotal" />
+                <n-pagination class="pagination-web" simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal" />
             </div>
         </div>
 

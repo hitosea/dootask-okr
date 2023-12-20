@@ -395,7 +395,7 @@
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2">
                         <div class="md:pl-24 pr-[10px]">
-                            <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid"
+                            <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid && detailData.status == '0'"
                                 :class="detailData.score < 0 ? 'text-text-tips opacity-50' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="okrfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
