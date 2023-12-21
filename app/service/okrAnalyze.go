@@ -39,7 +39,8 @@ func (s *okrAnalyzeService) GetOverallDepartment(user *interfaces.UserInfoResp) 
  */
 func (s *okrAnalyzeService) GetOverallCompleteness(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzeOverall, error) {
 	var data interfaces.OkrAnalyzeOverall
-	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0 and deleted_at is null")
+	okrTable := core.DBTableName(&model.Okr{})
+	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
 		db = db.Where("find_in_set(?,department_id)", department)
 	}
@@ -67,31 +68,27 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB
 		if department > 0 {
-			db = db.Table(userTable+" AS user").Joins(fmt.Sprintf(`
-					LEFT JOIN (
-						SELECT okr.userid, 
-							COUNT(*) as total, 
-							SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
-						FROM %s okr
-						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
-						where okr.parent_id = 0 
-							and okr.canceled = 0 
-							and okr.deleted_at is null 
-							and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
-						GROUP BY okr.userid
-					) b on user.userid = b.userid
-					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, departmentTable, department, department, departmentTable)).
-				Select(`
-					user.userid as department_id, 
-					user.nickname as department_name, 
-					SUM(ifnull(b.total,0)) total, 
-					SUM(ifnull(b.completed,0)) completed
-				`).
-				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
-				Where("user.bot = 0").
-				Group("user.userid").
-				Order("SUM(b.completed) / SUM(b.total) desc")
+			db = db.Raw(fmt.Sprintf(`
+				SELECT 
+					user.userid as department_id,
+					user.nickname as department_name,
+					( 
+						SELECT count(*) from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					) as total,
+					ifnull((
+						SELECT SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as completed
+				FROM %s AS user 
+				LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				WHERE user.bot = 0  and (find_in_set(%d,user.department) or depts.parent_id = %d)  
+				GROUP BY user.userid
+				ORDER BY total desc
+			`, okrTable, okrTable, userTable, departmentTable, department, department))
 		} else {
 			db = db.Raw(fmt.Sprintf(`
 				select
@@ -144,7 +141,8 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
  */
 func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzeScore, error) {
 	var data interfaces.OkrAnalyzeScore
-	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0 and deleted_at is null")
+	okrTable := core.DBTableName(&model.Okr{})
+	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
 		db = db.Where("find_in_set(?,department_id)", department)
 	}
@@ -181,34 +179,45 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB
 		if department > 0 {
-			db = db.Table(userTable+" AS user").Joins(fmt.Sprintf(`
-					LEFT JOIN (
-						SELECT okr.userid, 
-							COUNT(*) as total, 
-							SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored, 
-							SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three, 
-							SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven, 
-							SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
-						FROM %s okr
-						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
-						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
-						and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
-						GROUP BY okr.userid
-					) b on user.userid = b.userid
-					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, departmentTable, department, department, departmentTable)).
-				Select(`
+			db = db.Raw(fmt.Sprintf(`
+				SELECT 
 					user.userid as department_id,
 					user.nickname as department_name,
-					SUM(ifnull(b.total,0)) total,
-					SUM(ifnull(b.unscored,0)) unscored,
-					SUM(ifnull(b.zero_to_three,0)) zero_to_three,
-					SUM(ifnull(b.three_to_seven,0)) three_to_seven,
-					SUM(ifnull(b.seven_to_ten,0)) seven_to_ten
-				`).
-				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
-				Group("user.userid").
-				Order("SUM(b.total) desc")
+					( 
+						SELECT count(*) from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					) as total,
+					ifnull((
+						SELECT SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END) as unscored
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as unscored,
+					ifnull((
+						SELECT SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END) as zero_to_three
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as zero_to_three,
+					ifnull((
+						SELECT SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as three_to_seven,
+					ifnull((
+						SELECT SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as seven_to_ten
+				FROM %s AS user 
+				LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				WHERE user.bot = 0  and (find_in_set(%d,user.department) or depts.parent_id = %d)  
+				GROUP BY user.userid
+				ORDER BY total desc
+			`, okrTable, okrTable, okrTable, okrTable, okrTable, userTable, departmentTable, department, department))
 		} else {
 			db = db.Raw(fmt.Sprintf(`
 				select
@@ -267,7 +276,8 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
  */
 func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzePersonnelScoreRate, error) {
 	var data interfaces.OkrAnalyzePersonnelScoreRate
-	db := core.DB.Model(model.Okr{}).Where("parent_id = 0 and canceled = 0 and deleted_at is null")
+	okrTable := core.DBTableName(&model.Okr{})
+	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
 		db = db.Where("find_in_set(?,department_id)", department)
 	}
@@ -302,29 +312,33 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 		departmentTable := core.DBTableName(&model.UserDepartment{})
 		db := core.DB
 		if department > 0 {
-			db = db.Table(userTable+" AS user").Joins(fmt.Sprintf(`
-					LEFT JOIN (
-						SELECT okr.userid, 
-							count(*) as okr_total,
-							SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
-						FROM %s okr
-						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
-						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
-						and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
-						GROUP BY okr.userid
-					) b on user.userid = b.userid
-					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, departmentTable, department, department, departmentTable)).
-				Select(`
+			db = db.Raw(fmt.Sprintf(`
+				SELECT 
 					user.userid as department_id,
 					user.nickname as department_name,
-					SUM(ifnull(b.okr_total,0)) total,
-					SUM(ifnull(b.okr_total,0) - ifnull(b.completed,0)) unscored,
-					SUM(ifnull(b.completed,0)) already_reviewed
-				`).
-				Where("(find_in_set(?,user.department) or depts.parent_id = ?)", department, department).
-				Group("user.userid").
-				Order("SUM(b.okr_total) desc")
+					( 
+						SELECT count(*) from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					) as total,
+					ifnull((
+						SELECT count(*)  - SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as unscored
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as already_reviewed,
+					ifnull(( 
+						SELECT SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed
+						from %s as okr
+						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and find_in_set(depts.id,okr.department_id) 
+					),0) as completed
+				FROM %s AS user 
+				LEFT JOIN %s depts on find_in_set(depts.id,user.department)
+				WHERE user.bot = 0  and (find_in_set(%d,user.department) or depts.parent_id = %d)  
+				GROUP BY user.userid
+				ORDER BY total desc
+			`, okrTable, okrTable, okrTable, userTable, departmentTable, department, department))
 		} else {
 			db = db.Raw(fmt.Sprintf(`
 				select 
