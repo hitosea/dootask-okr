@@ -40,14 +40,16 @@ func (s *okrAnalyzeService) GetOverallDepartment(user *interfaces.UserInfoResp) 
 func (s *okrAnalyzeService) GetOverallCompleteness(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzeOverall, error) {
 	var data interfaces.OkrAnalyzeOverall
 	okrTable := core.DBTableName(&model.Okr{})
+	departmentTable := core.DBTableName(&model.UserDepartment{})
 	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
-		db = db.Where("find_in_set(?,department_id)", department)
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)`, departmentTable))
+		db = db.Where("find_in_set(?,department_id) or depts.parent_id = ?", department, department)
 	}
-	if err := db.Session(&core.Session).Count(&data.Total).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Count(&data.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where(&model.Okr{Completed: 1}).Count(&data.Completed).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Where(&model.Okr{Completed: 1}).Count(&data.Completed).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -142,23 +144,25 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 func (s *okrAnalyzeService) GetScore(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzeScore, error) {
 	var data interfaces.OkrAnalyzeScore
 	okrTable := core.DBTableName(&model.Okr{})
+	departmentTable := core.DBTableName(&model.UserDepartment{})
 	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
-		db = db.Where("find_in_set(?,department_id)", department)
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)`, departmentTable))
+		db = db.Where("find_in_set(?,department_id) or depts.parent_id = ?", department, department)
 	}
-	if err := db.Session(&core.Session).Count(&data.Total).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Count(&data.Total).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score < 0").Count(&data.Unscored).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Where("score < 0").Count(&data.Unscored).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score >= 0 and score <= 3").Count(&data.ZeroToThree).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Where("score >= 0 and score <= 3").Count(&data.ZeroToThree).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score > 3 and score <= 7").Count(&data.ThreeToSeven).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Where("score > 3 and score <= 7").Count(&data.ThreeToSeven).Error; err != nil {
 		return nil, err
 	}
-	if err := db.Session(&core.Session).Where("score > 7 and score <= 10").Count(&data.SevenToTen).Error; err != nil {
+	if err := db.Session(&core.Session).Distinct("okr.id").Where("score > 7 and score <= 10").Count(&data.SevenToTen).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -277,17 +281,19 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 func (s *okrAnalyzeService) GetPersonnelScoreRate(user *interfaces.UserInfoResp, department int) (*interfaces.OkrAnalyzePersonnelScoreRate, error) {
 	var data interfaces.OkrAnalyzePersonnelScoreRate
 	okrTable := core.DBTableName(&model.Okr{})
+	departmentTable := core.DBTableName(&model.UserDepartment{})
 	db := core.DB.Table(okrTable + " AS okr").Where("okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null")
 	if department > 0 {
-		db = db.Where("find_in_set(?,department_id)", department)
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)`, departmentTable))
+		db = db.Where("find_in_set(?,department_id) or depts.parent_id = ?", department, department)
 	}
 	// 总okr数量
-	if err := db.Session(&core.Session).Select("Count(*) as total").Find(&data.Total).Error; err != nil {
+	if err := db.Session(&core.Session).Select("Count(distinct okr.id) as total").Find(&data.Total).Error; err != nil {
 		return nil, err
 	}
 	// 检查部门表是否存在
 	if !strings.Contains(config.CONF.System.Dsn, "sqlite") {
-		if err := db.Session(&core.Session).Select("Count(*) as completed").Where("score > -1").Find(&data.Completed).Error; err != nil {
+		if err := db.Session(&core.Session).Select("Count(distinct okr.id) as completed").Where("score > -1").Find(&data.Completed).Error; err != nil {
 			return nil, err
 		}
 	} else {
