@@ -204,7 +204,7 @@
                                     <n-tooltip trigger="hover" v-if="item.kr_score == '0'" :disabled="item.score == -1">
                                         <template #trigger>
                                             <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
-                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score,item.can_superior_update_score)">
+                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                                 <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                                 <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                             </div>
@@ -219,7 +219,7 @@
                                     <n-tooltip trigger="hover" v-else>
                                         <template #trigger>
                                             <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1"
-                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score,item.can_superior_update_score)">
+                                                @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                                 <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                                 <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                                 </p>
@@ -350,12 +350,12 @@
                                         </div>
                                         <div v-if="item.kr_score == '0'"
                                             class="flex flex-1 items-center justify-center cursor-pointer"
-                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score,item.can_superior_update_score)">
+                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                             <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
                                             <p class="text-text-li opacity-50 text-12">{{ $t('评分') }}</p>
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer"
-                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score,item.can_superior_update_score)">
+                                            @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                             <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
                                             <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
                                             </p>
@@ -380,11 +380,14 @@
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 1" :on-scroll="onScrollLogList">
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList"
                             v-if="logList.length">
-                            <userAvatar :userUrl="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" :disable="item.user_disable_at"></userAvatar>
+                            <userAvatar :userUrl="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')"
+                                :disable="item.user_disable_at"></userAvatar>
                             <div class="flex flex-col gap-3">
-                                <p class="text-14 leading-[16px]" ><span :class="item.user_disable_at!=''?' opacity-80 line-through text-text-li':'text-primary-color'">{{ item.user_nickname }}</span><span
-                                        class="text-12 text-text-li opacity-60 ml-8">{{ utils.GoDateHMS(item.created_at)
-                                        }}</span></p>
+                                <p class="text-14 leading-[16px]"><span
+                                        :class="item.user_disable_at != '' ? ' opacity-80 line-through text-text-li' : 'text-primary-color'">{{
+                                            item.user_nickname }}</span><span class="text-12 text-text-li opacity-60 ml-8">{{
+        utils.GoDateHMS(item.created_at)
+    }}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span
                                         class=" font-normal">{{ item.content }}</span></h4>
                             </div>
@@ -395,7 +398,8 @@
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2">
                         <div class="md:pl-24 pr-[10px]">
-                            <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid && detailData.status == '0'"
+                            <p class="cursor-pointer mb-20"
+                                v-if="userInfo.userid == detailData.userid && detailData.status == '0'"
                                 :class="detailData.score < 0 ? 'text-text-tips opacity-50' : 'text-primary-color'"
                                 @click="handleAddMultiple"> <i class="okrfont mr-4 text-16 ">&#xe6f2;</i><span
                                     class="text-14">{{ $t('添加复盘') }}</span></p>
@@ -438,7 +442,8 @@
 
     <!-- 更新评分 -->
     <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow"
-        :canOwnerUpdateScore="canOwnerUpdateScore" :canSuperiorUpdateScore="canSuperiorUpdateScore" :userid="detailData.userid" :superiorUser="superiorUser" @close="handleCloseMarks">
+        :canOwnerUpdateScore="canOwnerUpdateScore" :canSuperiorUpdateScore="canSuperiorUpdateScore"
+        :userid="detailData.userid" :superiorUser="superiorUser" @close="handleCloseMarks">
     </MarkVue>
 
     <!-- 强提示 -->
@@ -565,7 +570,7 @@ const getDetail = (type) => {
                 if (type == 'openMark') {
                     detailData.value.key_results.map((item) => {
                         if (item.id == openMarkId.value) {
-                            handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score,item.can_superior_update_score)
+                            handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)
                         }
                     })
                     openMarkId.value = 0
@@ -855,11 +860,12 @@ const handleCloseConfidenes = (type) => {
 }
 
 //打开评分
-const handleMark = (id, scores, superior_score, progress, can_owner_update_score,can_superior_update_score) => {
+const handleMark = (id, scores, superior_score, progress, can_owner_update_score, can_superior_update_score) => {
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
-        if (scores < 0  && detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.userid != userInfo.userid) return message.error($t('负责人未评分'))
+        if (scores < 0 && detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.userid != userInfo.userid) return message.error($t('负责人未评分'))
+        if (detailData.value.superior_user == null) return message.error($t('暂无上级'))
         markId.value = id
         score.value = scores
         superiorScore.value = superior_score
@@ -887,7 +893,7 @@ const handleMark = (id, scores, superior_score, progress, can_owner_update_score
         if (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && superior_score > -1) {
             inputShow.value = false
         }
-         //评完分的时候
+        //评完分的时候
         if (scores > -1 && superior_score > -1) {
             inputShow.value = false
         }
@@ -1363,5 +1369,4 @@ defineExpose({
     .n-scrollbar-rail {
         @apply right-0;
     }
-}
-</style>
+}</style>
