@@ -23,7 +23,7 @@
                     :on-update:page="onPage" :on-update:page-size="onPageSize" />
             </div>
             <div class="flex md:hidden justify-center shrink-0 flex-[0_0_auto] mt-auto">
-                <n-pagination class="pagination-web" simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal" />
+                <n-pagination class="pagination-web" simple  v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal" :on-update:page="onPage"/>
             </div>
         </div>
 

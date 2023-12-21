@@ -1,5 +1,5 @@
 <template >
-    <n-modal v-model:show="showModal">
+    <n-modal v-model:show="showModal" >
         <n-card class="w-[420px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
 
@@ -11,7 +11,7 @@
             <p class=" text-text-li text-14 pl-[40px]">{{ props.content }}</p>
             <template #footer>
                 <div class="flex justify-end">
-                    <n-button type="primary" size="small" @click="() => { emit('close') }">
+                    <n-button type="primary" size="small" @click="handleClose">
                         {{ $t('确定') }}
                     </n-button>
                 </div>
@@ -39,8 +39,18 @@ const props = defineProps({
         type: Number,
         default: 1,
     },
+    tipsClose :{
+        type: Number,
+        default: 0,
+    },
 })
-
+const handleClose = ()=>{
+    if(props.tipsClose == 1){
+        emit('close',1)
+    }else{
+        emit('close',0)
+    }
+}
 
 </script>
 <style lang="less" scoped>

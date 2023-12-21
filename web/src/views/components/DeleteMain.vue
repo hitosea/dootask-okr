@@ -74,7 +74,7 @@
                 />
                 </div>
                 <div class="md:hidden flex">
-                    <n-pagination class="pagination-web " simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" />
+                    <n-pagination class="pagination-web " simple  v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" :on-update:page="onPage"/>
                 </div>
             </div>
         </div>
