@@ -73,11 +73,15 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 							COUNT(*) as total, 
 							SUM(CASE WHEN okr.completed != 0 THEN 1 ELSE 0 END) as completed 
 						FROM %s okr
-						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
+						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
+						where okr.parent_id = 0 
+							and okr.canceled = 0 
+							and okr.deleted_at is null 
+							and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
 					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, department, departmentTable)).
+				`, okrTable, departmentTable, department, department, departmentTable)).
 				Select(`
 					user.userid as department_id, 
 					user.nickname as department_name, 
@@ -186,11 +190,13 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 							SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END) as three_to_seven, 
 							SUM(CASE WHEN score > 7 and score <= 10 THEN 1 ELSE 0 END) as seven_to_ten
 						FROM %s okr
-						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
+						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
+						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
 					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, department, departmentTable)).
+				`, okrTable, departmentTable, department, department, departmentTable)).
 				Select(`
 					user.userid as department_id,
 					user.nickname as department_name,
@@ -302,11 +308,13 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 							count(*) as okr_total,
 							SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as completed 
 						FROM %s okr
-						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null and find_in_set(%d,okr.department_id)
+						LEFT JOIN %s depts on find_in_set(depts.id,okr.department_id)
+						where okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
+						and (find_in_set(%d,okr.department_id) or depts.parent_id = %d)
 						GROUP BY okr.userid
 					) b on user.userid = b.userid
 					LEFT JOIN %s depts on find_in_set(depts.id,user.department)
-				`, okrTable, department, departmentTable)).
+				`, okrTable, departmentTable, department, department, departmentTable)).
 				Select(`
 					user.userid as department_id,
 					user.nickname as department_name,
