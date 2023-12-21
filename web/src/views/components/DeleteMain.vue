@@ -48,8 +48,8 @@
                 </n-button>
             </div>
         </div>
-        <div class="mt-16 flex flex-col flex-1">
-            <div>
+        <div class="mt-16 flex flex-col flex-1 overflow-hidden">
+            <div class="flex-1 overflow-auto">
                 <n-data-table
                     :columns="tableColumns"
                     :data="tableData"
@@ -58,7 +58,7 @@
                     @update:checked-row-keys="handleCheck"
                 />
             </div>
-            <div class="pagination mt-auto flex justify-center">
+            <div class="pagination mt-auto flex justify-center shrink-0 flex-0">
                 <n-pagination
                     class=" hidden md:flex"
                     v-model:page="tablePage"

@@ -12,17 +12,17 @@
                 {{ $t('搜索') }}
             </n-button>
         </div>
-        <div class="mt-16 flex flex-col flex-1">
-            <div class="mb-16">
+        <div class="mt-16 flex flex-col flex-1 overflow-hidden">
+            <div class="mb-16 flex-1 overflow-auto">
                 <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" :loading="loadIng"
                     style="--n-td-color-hover-modal:#ffffff" />
             </div>
-            <div class="mt-auto md:flex hidden justify-center shrink-0">
+            <div class="mt-auto md:flex hidden justify-center flex-[0_0_auto] shrink-0">
                 <n-pagination v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal"
                     size="medium" :page-sizes="[10, 20, 30, 50, 100]" show-quick-jumper show-size-picker
                     :on-update:page="onPage" :on-update:page-size="onPageSize" />
             </div>
-            <div class="flex md:hidden justify-center shrink-0 mt-auto">
+            <div class="flex md:hidden justify-center shrink-0 flex-[0_0_auto] mt-auto">
                 <n-pagination class="pagination-web" simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal" />
             </div>
         </div>
