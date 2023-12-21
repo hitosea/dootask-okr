@@ -6,7 +6,7 @@
             </template>
             <template #header>
                 <h3 class="flex items-center text-16 font-medium text-title-color"> <n-icon
-                        class="mr-12 text-[rgb(237,64,20)]" size="28" :component="CloseCircleSharp" />{{ $t('温馨提示') }}</h3>
+                        class="mr-12 " :class="props.color" size="28" :component="icon==1 ? CloseCircleSharp : AlertCircleSharp" />{{ $t('温馨提示') }}</h3>
             </template>
             <p class=" text-text-li text-14 pl-[40px]">{{ props.content }}</p>
             <template #footer>
@@ -20,7 +20,7 @@
     </n-modal>
 </template>
 <script setup lang="ts">
-import { CloseCircleSharp } from '@vicons/ionicons5'
+import { CloseCircleSharp ,AlertCircleSharp } from '@vicons/ionicons5'
 
 const showModal = ref(false)
 
@@ -30,7 +30,15 @@ const props = defineProps({
     content: {
         type: String,
         default: '',
-    }
+    },
+    color:{
+        type: String,
+        default: 'text-[rgb(237,64,20)]',
+    },
+    icon :{
+        type: Number,
+        default: 1,
+    },
 })
 
 

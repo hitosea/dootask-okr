@@ -447,7 +447,7 @@
     </MarkVue>
 
     <!-- 强提示 -->
-    <TipsModal :show="showModal" :content="tipsContent" @close="() => { showModal = false }"></TipsModal>
+    <TipsModal :show="showModal" :color="tipsColor" :icon="tipsIcon" :content="tipsContent" @close="() => { showModal = false; tipsIcon = 1;tipsColor = 'text-[rgb(237,64,20)]' }"></TipsModal>
 
     <!-- 提示窗 -->
     <WarningPopup v-model:show="WarningShow" :title="OTitle" :content="OContent" @submit="handleSubmit"
@@ -492,6 +492,8 @@ const detailData = ref<any>({})
 const message = useMessage()
 const showModal = ref(false)
 const tipsContent = ref('')
+const tipsColor = ref('text-[rgb(237,64,20)]')
+const tipsIcon = ref(1)
 const scrollbarRef = ref(null)
 const pageOkrDetailRef = ref(null)
 
@@ -588,7 +590,11 @@ const getDetail = (type) => {
         }
     })
         .catch(({ msg }) => {
-            message.error(msg)
+            tipsContent.value = msg
+            tipsColor.value = 'text-[#f90]'
+            tipsIcon.value = 2
+            showModal.value = true
+            
         })
         .finally(() => {
             if (type == 'first') loadIng.value = false
