@@ -135,7 +135,7 @@
 
                                 <!-- pc -->
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]"
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px] cursor-pointer"
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
@@ -145,7 +145,7 @@
 
                                 <!-- app -->
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px]"
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px] cursor-pointer"
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>

@@ -1,5 +1,5 @@
 <template >
-    <n-modal v-model:show="showModal" >
+    <n-modal v-model:show="showModal" :on-after-leave="()=>{ emit('reset') }">
         <n-card class="w-[420px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
 
@@ -24,7 +24,7 @@ import { CloseCircleSharp ,AlertCircleSharp } from '@vicons/ionicons5'
 
 const showModal = ref(false)
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close','reset'])
 
 const props = defineProps({
     content: {

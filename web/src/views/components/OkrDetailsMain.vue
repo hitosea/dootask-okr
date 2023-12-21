@@ -6,33 +6,34 @@
             <div
                 class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover v-if="detailData.completed == '0'" class="okr-more-button-popover" placement="bottom"
-                        :show="showPopover" trigger="manual" @clickoutside="showPopover = false"
-                        :z-index="modalTransferIndex()" raw :show-arrow="true">
+                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual"
+                        @clickoutside="handleClosePopover(1)" :z-index="modalTransferIndex()" raw :show-arrow="true">
                         <template #trigger>
-                            <div @click="showPopover = !showPopover" v-if="detailData.completed == '0'"
-                                class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
-                                :class="detailData.completed == '0' || detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                            <div @click="showPopover = !showPopover">
+                                <div v-if="detailData.completed == '0'"
+                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
+                                    :class="detailData.completed == '0' || detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                                </div>
+                                <div v-if="detailData.completed == '1'"
+                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
+                                    :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                                    <n-icon v-if="detailData.completed == '1'"
+                                        :class="detailData.completed == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
+                                        :component="CheckmarkSharp" />
+                                </div>
                             </div>
                         </template>
                         <div class="flex flex-col">
-                            <p @click="handleCancel">
+                            <p v-if="detailData.completed == '0'" @click="handleCancel">
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
-                            <p @click="handleWarningShow(2)"> {{ $t('归档') }}</p>
+                            <p @click="handleWarningShow(2)"> {{detailData.status == '1'? $t('还原归档') : $t('归档') }}</p>
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
                                 $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
-                    <div v-if="detailData.completed == '1'"
-                        class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid "
-                        :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                        <n-icon v-if="detailData.completed == '1'"
-                            :class="detailData.completed == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
-                            :component="CheckmarkSharp" />
-                    </div>
 
                     <n-tag v-if="detailData.canceled == '1'">{{ $t('已取消') }} </n-tag>
                     <n-tag v-if="detailData.completed == '1'" type="success">{{ $t('已完成') }}</n-tag>
@@ -52,7 +53,7 @@
                         </p>
                     </div>
                     <n-popover class="okr-more-button-popover" placement="bottom" :show="showMorePopover" trigger="manual"
-                        @clickoutside="showMorePopover = false" :z-index="modalTransferIndex()" raw :show-arrow="true">
+                        @clickoutside="handleClosePopover(2)" :z-index="modalTransferIndex()" raw :show-arrow="true">
                         <template #trigger>
                             <i @click="showMorePopover = !showMorePopover"
                                 class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
@@ -62,7 +63,7 @@
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
-                            <p @click="handleWarningShow(2)"> {{ $t('归档') }}</p>
+                            <p @click="handleWarningShow(2)">  {{detailData.status == '1'? $t('还原归档') : $t('归档') }}</p>
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
                                 $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
@@ -447,7 +448,8 @@
     </MarkVue>
 
     <!-- 强提示 -->
-    <TipsModal :show="showModal" :color="tipsColor" :icon="tipsIcon" :tipsClose="tipsClose" :content="tipsContent" @close="handleTipsClose"></TipsModal>
+    <TipsModal :show="showModal" :color="tipsColor" :icon="tipsIcon" :tipsClose="tipsClose" :content="tipsContent"
+        @close="handleTipsClose" @reset="handleTipsreset"></TipsModal>
 
     <!-- 提示窗 -->
     <WarningPopup v-model:show="WarningShow" :title="OTitle" :content="OContent" @submit="handleSubmit"
@@ -455,7 +457,7 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate, okrArchive, okrDelete } from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate, okrArchive, okrDelete ,okrArchiveRestore} from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
@@ -596,7 +598,7 @@ const getDetail = (type) => {
             tipsIcon.value = 2
             tipsClose.value = 1
             showModal.value = true
-            
+
         })
         .finally(() => {
             if (type == 'first') loadIng.value = false
@@ -627,7 +629,6 @@ const handleFollowOkr = () => {
 
 //
 const handleNav = (index) => {
-
     navActive.value = index
     if (navActive.value == 0 && window.innerWidth < 768) {
         loadDialogWrappers()
@@ -947,6 +948,18 @@ const handleCancel = () => {
         })
 }
 
+const handleClosePopover = (e) => {
+    if (e == 1) {
+        setTimeout(() => {
+            showPopover.value = false
+        }, 10)
+    } else {
+        setTimeout(() => {
+            showMorePopover.value = false
+        }, 10)
+    }
+}
+
 const handleWarningShow = (e) => {
     showPopover.value = false
     showMorePopover.value = false
@@ -957,8 +970,13 @@ const handleWarningShow = (e) => {
         OType.value = e;
     }
     if (e == 2) {
-        OTitle.value = $t('归档')
-        OContent.value = $t('确定要归档') + `【${detailData.value.title}】？`
+        if(detailData.status == '1'){
+            OTitle.value = $t('归档')
+            OContent.value = $t('确定要归档') + `【${detailData.value.title}】？`
+        }else{
+            OTitle.value = $t('还原归档')
+            OContent.value = $t('确定要还原') + `【${detailData.value.title}】？`
+        }
         OType.value = e;
     }
 }
@@ -971,14 +989,6 @@ const handleSubmit = () => {
     if (OType.value == 2) {
         handleArchive()
     }
-}
-
-// Tips弹窗处理
-const handleTipsClose = () => {
-    showModal.value = false; 
-    tipsIcon.value = 1;
-    tipsClose.value = 0;
-    tipsColor.value = 'text-[rgb(237,64,20)]'
 }
 
 
@@ -1002,6 +1012,41 @@ const handleArchive = () => {
             WarningShow.value = false
             loadIng.value = false
         })
+}
+
+//还原归档目标
+const handleRestore = () => {
+    loadIng.value = true
+    showPopover.value = false
+    showMorePopover.value = false
+    okrArchiveRestore({
+        id: detailData.value.id,
+    }).then(({ data }) => {
+        message.success($t('操作成功'))
+        emit('close')
+        emit('getList')
+    })
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
+        .finally(() => {
+            WarningShow.value = false
+            loadIng.value = false
+        })
+}
+
+// Tips弹窗处理
+const handleTipsClose = (e) => {
+    showModal.value = false;
+    if (e == 1) {
+        emit('close')
+    }
+}
+// Tips弹窗处理
+const handleTipsreset = () => {
+    tipsIcon.value = 1;
+    tipsClose.value = 0;
+    tipsColor.value = 'text-[rgb(237,64,20)]'
 }
 
 //删除目标
@@ -1387,4 +1432,5 @@ defineExpose({
     .n-scrollbar-rail {
         @apply right-0;
     }
-}</style>
+}
+</style>

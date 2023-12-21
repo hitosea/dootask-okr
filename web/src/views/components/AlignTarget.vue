@@ -20,12 +20,12 @@
                 </div>
             </div>
 
-            <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid)">{{
+            <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" :class="item.deleted_at ? 'line-through  opacity-50':''" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid,item.deleted_at)">{{
                 item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
                 <h4 class="a-t-title-s mr-[36px]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid)"
-                    :class="item.deleted_at == null ? '' : 'line-through opacity-25'">{{
+                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid,item.deleted_at)"
+                    :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{
                         item.title }}</h3>
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
@@ -166,7 +166,8 @@ const colorStatus = (color) => {
     return result
 }
 
-const handleDetail = (id, userid) => {
+const handleDetail = (id, userid,deleted_at) => {
+    if(deleted_at) return
     emit('openDetail', id, userid)
 }
 
