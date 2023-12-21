@@ -177,6 +177,9 @@ const handleGetOkrArchive = (e) => {
     }).then(({ data }) => {
         tableData.value = (data.data || [])
         tableTotal.value = data.last_page
+        if(e==1){
+            emit('close', 1)
+        }
     })
         .catch(({ msg }) => {
 

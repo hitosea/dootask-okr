@@ -3,7 +3,7 @@
         @after-leave="closeDrawer" @after-enter="showDrawer" :z-index="103" :trap-focus="false">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
-            @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="()=>{  emit('getList') }" @upData="(id)=>{ emit('upData',id) }"
+            @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="(e)=>{  emit('getList',e) }" @upData="(id)=>{ emit('upData',id) }"
             @openDetail="(id,userid)=>{ emit('openDetail',id,userid)}"
             ></OkrDetailsMain>
         </n-card>

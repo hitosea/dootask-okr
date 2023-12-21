@@ -1027,7 +1027,7 @@ const handleRestore = () => {
         id: detailData.value.id,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        emit('getList')     
+        emit('getList',1)     
         emit('close') 
     })
         .catch(({ msg }) => {
