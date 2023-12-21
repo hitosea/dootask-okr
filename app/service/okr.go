@@ -1039,7 +1039,7 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 0").Order("canceled,completed asc, ascription asc, created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
-	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -1049,9 +1049,17 @@ func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param inte
 			return nil, err
 		}
 		var sql []string
+		// 如果指定评分人员，除了以上条件外，还可以看到所有顶级部门负责人/没有部门的超管的OKR
+		if s.GetSettingSuperiorUserId() == user.Userid {
+			topOwnerUserids, _ := s.GetTopDepartmentOwner()
+			if len(topOwnerUserids) > 0 {
+				sql = append(sql, fmt.Sprintf("userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+			}
+		}
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
+
 		db = db.Where(strings.Join(sql, " OR "))
 
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
@@ -1233,7 +1241,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 
 	var allWhere []string
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
-	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -1243,6 +1251,13 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 			return nil, err
 		}
 		var sql []string
+		// 如果指定评分人员，除了以上条件外，还可以看到所有顶级部门负责人/没有部门的超管的OKR
+		if s.GetSettingSuperiorUserId() == user.Userid {
+			topOwnerUserids, _ := s.GetTopDepartmentOwner()
+			if len(topOwnerUserids) > 0 {
+				sql = append(sql, fmt.Sprintf("replay.okr_userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+			}
+		}
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
 		}
@@ -1479,7 +1494,7 @@ func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr
 		return true
 	}
 
-	// OKR的所有者可以查看和全公司可见
+	// OKR的所有者可以查看和全公司可见 1-全公司 2-仅相关成员 3-仅部门成员
 	if user.Userid == obj.Userid || obj.VisibleRange == 1 {
 		return true
 	}
@@ -1491,7 +1506,7 @@ func (s *okrService) hasPermission(user *interfaces.UserInfoResp, obj *model.Okr
 	}
 
 	// 仅相关成员/仅部门成员
-	if obj.VisibleRange == 2 || obj.VisibleRange == 3 {
+	if (common.InArrayInt(user.Userid, s.GetSuperiorUserIds(obj, user)) && obj.VisibleRange == 2) || obj.VisibleRange == 3 {
 		departmentIds := common.ExplodeInt(",", obj.DepartmentId, true)
 		departmentIds, _, _ = s.GetDepartmentsBySearchDeptId(departmentIds)
 		for _, deptId := range departmentIds {
@@ -1949,6 +1964,32 @@ func (s *okrService) SendSuperiorUserIdsLv1(okr *model.Okr, user *interfaces.Use
 	// 	go DootaskService.DialogGroupAdduser(user.Token, okr.DialogId, common.ArrayUniqueInt(ownerids)) // 新增对话成员
 	// }
 	return nil
+}
+
+// 获取所有顶级部门负责人/没有部门的管理员
+func (s *okrService) GetTopDepartmentOwner() ([]int, error) {
+	var ownerids []int
+	// 获取所有顶级部门负责人
+	var topDepartment []model.UserDepartment
+	err := core.DB.Model(&model.UserDepartment{}).Where("parent_id = 0").Find(&topDepartment).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range topDepartment {
+		ownerids = append(ownerids, v.OwnerUserid)
+	}
+	// 获取没有部门的管理员
+	var users []model.User
+	err = core.DB.Model(&model.User{}).
+		Where("FIND_IN_SET(?, identity) > 0 AND (department = '' OR department = ',,')", "admin").
+		Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range users {
+		ownerids = append(ownerids, v.Userid)
+	}
+	return common.ArrayUniqueInt(ownerids), nil
 }
 
 // 取消/重启目标
@@ -2815,7 +2856,7 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 	db := core.DB.Model(&model.Okr{}).Preload("User").Preload("ArchiveUser").Where("parent_id = 0").Where("status = 1")
 
 	// 用户不是超级管理员时，根据自己的权限获取
-	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -2825,6 +2866,13 @@ func (s *okrService) GetArchiveList(user *interfaces.UserInfoResp, objective str
 			return nil, err
 		}
 		var sql []string
+		// 如果指定评分人员，除了以上条件外，还可以看到所有顶级部门负责人/没有部门的超管的OKR
+		if s.GetSettingSuperiorUserId() == user.Userid {
+			topOwnerUserids, _ := s.GetTopDepartmentOwner()
+			if len(topOwnerUserids) > 0 {
+				sql = append(sql, fmt.Sprintf("userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+			}
+		}
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
@@ -2912,7 +2960,7 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 		Where("okrs.status IN (?)", []int{1, 2})
 
 	// 用户不是超级管理员时，根据自己的权限获取
-	if !user.IsAdmin() && s.GetSettingSuperiorUserId() != user.Userid {
+	if !user.IsAdmin() {
 		if len(user.Department) == 0 {
 			return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
 		}
@@ -2922,6 +2970,13 @@ func (s *okrService) GetLeaveList(user *interfaces.UserInfoResp, objective strin
 			return nil, err
 		}
 		var sql []string
+		// 如果指定评分人员，除了以上条件外，还可以看到所有顶级部门负责人/没有部门的超管的OKR
+		if s.GetSettingSuperiorUserId() == user.Userid {
+			topOwnerUserids, _ := s.GetTopDepartmentOwner()
+			if len(topOwnerUserids) > 0 {
+				sql = append(sql, fmt.Sprintf("okrs.userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+			}
+		}
 		for _, departmentId := range departments {
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okrs.department_id) > 0", departmentId))
 		}
@@ -3028,6 +3083,12 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 		return e.New(constant.ErrOkrNoData)
 	}
 
+	// 获取分配人员信息
+	var assignedUser model.User
+	if err := core.DB.Model(&model.User{}).Where("userid = ?", Userid).First(&assignedUser).Error; err != nil {
+		return err
+	}
+
 	return core.DB.Transaction(func(tx *gorm.DB) error {
 		updateLeaveFunc := func(kr *model.Okr) error {
 			// 更新kr参与人
@@ -3037,13 +3098,14 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 				if common.InArrayInt(kr.Userid, ids) {
 					ids = common.ArrayRemove(ids, kr.Userid)
 					ids = append(ids, Userid)
-					kr.Participant = common.ArrayImplode(ids)
+					kr.Participant = common.ArrayImplode(common.ArrayUniqueInt(ids))
 				}
 			}
 			kr.Userid = Userid
 			kr.Status = 0
+			kr.ScoreNum = 0
 			// 更新部门
-			kr.DepartmentId = common.ArrayImplode(user.Department)
+			kr.DepartmentId = assignedUser.Department
 			return tx.Save(kr).Error
 		}
 
@@ -3060,13 +3122,13 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 				if common.InArrayInt(obj.Userid, ids) {
 					ids = common.ArrayRemove(ids, obj.Userid)
 					ids = append(ids, Userid)
-					obj.Participant = common.ArrayImplode(ids)
+					obj.Participant = common.ArrayImplode(common.ArrayUniqueInt(ids))
 				}
 			}
 			obj.Userid = Userid
 			obj.Status = 0
 			// 更新部门
-			obj.DepartmentId = common.ArrayImplode(user.Department)
+			obj.DepartmentId = assignedUser.Department
 			if err := tx.Save(obj).Error; err != nil {
 				return err
 			}
