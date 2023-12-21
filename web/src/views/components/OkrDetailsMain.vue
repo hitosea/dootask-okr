@@ -28,7 +28,7 @@
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
-                            <p @click="handleWarningShow(2)"> {{detailData.status == '1'? $t('还原归档') : $t('归档') }}</p>
+                            <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
                                 $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
@@ -63,7 +63,7 @@
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
-                            <p @click="handleWarningShow(2)">  {{detailData.status == '1'? $t('还原归档') : $t('归档') }}</p>
+                            <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
                             <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
                                 $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
@@ -457,7 +457,7 @@
 </template>
 <script setup lang="ts">
 import { CheckmarkSharp } from '@vicons/ionicons5'
-import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate, okrArchive, okrDelete ,okrArchiveRestore} from '@/api/modules/okrList'
+import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate, okrArchive, okrDelete, okrArchiveRestore } from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
 import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
@@ -970,12 +970,12 @@ const handleWarningShow = (e) => {
         OType.value = e;
     }
     if (e == 2) {
-        if(detailData.status == '1'){
-            OTitle.value = $t('归档')
-            OContent.value = $t('确定要归档') + `【${detailData.value.title}】？`
-        }else{
+        if (detailData.value.status == '1') {
             OTitle.value = $t('还原归档')
             OContent.value = $t('确定要还原') + `【${detailData.value.title}】？`
+        } else {
+            OTitle.value = $t('归档')
+            OContent.value = $t('确定要归档') + `【${detailData.value.title}】？`
         }
         OType.value = e;
     }
@@ -987,10 +987,10 @@ const handleSubmit = () => {
         handleDelete()
     }
     if (OType.value == 2) {
-        if(detailData.status == '1'){
-            handleArchive()
-        }else{
+        if (detailData.value.status == '1') {
             handleRestore()
+        } else {
+            handleArchive()
         }
     }
 }
@@ -1027,8 +1027,8 @@ const handleRestore = () => {
         id: detailData.value.id,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        emit('close')
-        emit('getList')
+        emit('getList')     
+        emit('close') 
     })
         .catch(({ msg }) => {
             message.error(msg)

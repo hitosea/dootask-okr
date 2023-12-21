@@ -168,8 +168,7 @@ const columns = ref<DataTableColumn[]>([
 ])
 
 // 归档列表
-const handleGetOkrArchive = () => {
-
+const handleGetOkrArchive = (e) => {
     loadIng.value = true
     getOkrArchive({
         objective: objective.value,
@@ -205,7 +204,7 @@ const handleRestore = () => {
         id: OId.value,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        handleGetOkrArchive();
+        handleGetOkrArchive('');
         emit('close', 1)
     })
         .catch(({ msg }) => {
@@ -224,7 +223,7 @@ const handleDelete = () => {
         id: OId.value,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        handleGetOkrArchive();
+        handleGetOkrArchive('');
     })
         .catch(({ msg }) => {
             message.error(msg)
@@ -238,22 +237,22 @@ const handleDelete = () => {
 
 const onSearch = () => {
     tablePage.value = 1
-    handleGetOkrArchive();
+    handleGetOkrArchive('');
 }
 
 // 分页
 const onPage = (page) => {
     tablePage.value = page
-    handleGetOkrArchive()
+    handleGetOkrArchive('')
 }
 const onPageSize = (pageSize) => {
     tablePage.value = 1
     tablePageSize.value = pageSize
-    handleGetOkrArchive()
+    handleGetOkrArchive('')
 }
 
 onMounted(() => {
-    handleGetOkrArchive();
+    handleGetOkrArchive('');
 })
 
 
