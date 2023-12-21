@@ -865,7 +865,7 @@ const handleMark = (id, scores, superior_score, progress, can_owner_update_score
         superiorScore.value = superior_score
         canOwnerUpdateScore.value = can_owner_update_score
         canSuperiorUpdateScore.value = can_superior_update_score
-        superiorUser.value = detailData.value.superior_user[0] || 1
+        superiorUser.value = (detailData.value.superior_user[0] || 1)
 
         //自己评分的时候
         if (userInfo.userid == detailData.value.userid && scores < 0) {
