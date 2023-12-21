@@ -2498,8 +2498,11 @@ func (s *okrService) CancelAlignObjective(userid, okrId, alignOkrId int) error {
 	}
 
 	// 取消kr对齐目标动态记录
-	okr, err := s.GetObjectiveById(alignOkrId)
-	if err != nil {
+	var okr *model.Okr
+	if err = core.DB.Unscoped().Preload("ParentOKr").Where("id = ?", alignOkrId).First(&okr).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return e.New(constant.ErrOkrNoData)
+		}
 		return err
 	}
 
