@@ -2617,7 +2617,9 @@ func (s *okrService) GetOkrLogList(user *interfaces.UserInfoResp, okrId, page, p
 	}
 	for _, log := range logs {
 		for _, user := range userList {
-			if user.Userid == log.Userid {
+			var confirmUser model.User
+			core.DB.Model(&model.User{}).Where("userid = ?", user.Userid).First(&confirmUser)
+			if user.Userid == log.Userid && confirmUser.Userid > 0 {
 				log.UserAvatar = user.Userimg
 				log.UserNickname = user.Nickname
 				log.UserDisableAt = user.DisableAt
