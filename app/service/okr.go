@@ -1255,11 +1255,11 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		if s.GetSettingSuperiorUserId() == user.Userid {
 			topOwnerUserids, _ := s.GetTopDepartmentOwner()
 			if len(topOwnerUserids) > 0 {
-				sql = append(sql, fmt.Sprintf("replay.okr_userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+				sql = append(sql, fmt.Sprintf("okr.userid in (%s)", common.ArrayImplode(topOwnerUserids)))
 			}
 		}
 		for _, departmentId := range departments {
-			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
 		}
 		allWhere = append(allWhere, "okr.parent_id = 0")
 		allWhere = append(allWhere, "("+strings.Join(sql, " OR ")+")")
@@ -1292,7 +1292,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 				}
 			}
 		}
-		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR replay.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
+		db = db.Where("("+strings.Join(allWhere, " AND ")+" OR okr.userid = ? OR FIND_IN_SET(?, okr.participant) > 0)", user.Userid, user.Userid)
 	}
 
 	// 超级管理员可以通过部门筛选
@@ -1304,7 +1304,7 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 		}
 		var admSql []string
 		for _, departmentId := range admDepartments {
-			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, replay.okr_department_id) > 0", departmentId))
+			admSql = append(admSql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
 		}
 		db = db.Where(strings.Join(admSql, " OR "))
 	}
@@ -1312,20 +1312,20 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 	// 目标id筛选(兼容手机端详情)
 	okrId := param.OkrId
 	if okrId != 0 {
-		db = db.Where("replay.okr_id = ?", okrId)
+		db = db.Where("okr.id = ?", okrId)
 	}
 
 	// 部门负责人可以通过人员筛选
 	userid := param.Userid
 	if userid != 0 {
-		db = db.Where("replay.userid = ?", userid)
+		db = db.Where("okr.userid = ?", userid)
 	}
 
 	// 目标筛选
 	objective := param.Objective
 	if objective != "" {
 		objective = common.SearchTextFilter(objective)
-		db = db.Where("replay.okr_title LIKE ?", "%"+objective+"%")
+		db = db.Where("okr.title LIKE ?", "%"+objective+"%")
 	}
 
 	// 时间筛选
