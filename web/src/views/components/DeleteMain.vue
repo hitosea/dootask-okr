@@ -59,8 +59,9 @@
                 />
             </div>
             <div class="pagination mt-auto flex justify-center shrink-0 flex-0">
-                <n-pagination
-                    class=" hidden md:flex"
+                <div  class=" hidden md:flex">
+                    <n-pagination
+                   
                     v-model:page="tablePage"
                     :default-page-size="tablePageSize"
                     :page-sizes="[10, 20, 30, 50, 100]"
@@ -71,7 +72,10 @@
                     :on-update:page="onPage"
                     :on-update:page-size="onPageSize"
                 />
-                <n-pagination class="pagination-web md:hidden flex" simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" />
+                </div>
+                <div class="md:hidden flex">
+                    <n-pagination class="pagination-web " simple :on-update:page="onPage" v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" />
+                </div>
             </div>
         </div>
     </div>
