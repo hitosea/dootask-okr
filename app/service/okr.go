@@ -1966,6 +1966,34 @@ func (s *okrService) SendSuperiorUserIdsLv1(okr *model.Okr, user *interfaces.Use
 	return nil
 }
 
+// 获取部门链路负责人
+func (s *okrService) GetLinkSuperiorUserIds(okr *model.Okr) []int {
+	var ownerids []int
+	if okr.DepartmentId != "" {
+		departmentIds := common.ExplodeInt(",", okr.DepartmentId, true)
+		if len(departmentIds) > 0 {
+			var UserDepartmentOwner []model.UserDepartment
+			err := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departmentIds).Find(&UserDepartmentOwner).Error
+			if err != nil {
+				return nil
+			}
+			var UserDepartmentOwnerSuper model.UserDepartment
+			for _, v := range UserDepartmentOwner {
+				if v.ParentId > 0 {
+					err := core.DB.Model(&model.UserDepartment{}).Where("id = ?", v.ParentId).Find(&UserDepartmentOwnerSuper).Error
+					if err != nil {
+						return nil
+					}
+					ownerids = append(ownerids, UserDepartmentOwnerSuper.OwnerUserid)
+				}
+				ownerids = append(ownerids, v.OwnerUserid)
+			}
+		}
+	}
+
+	return common.ArrayUniqueInt(ownerids)
+}
+
 // 获取所有顶级部门负责人/没有部门的管理员
 func (s *okrService) GetTopDepartmentOwner() ([]int, error) {
 	var ownerids []int
@@ -3111,7 +3139,7 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 
 		for _, obj := range objs {
 			// 仅限部门负责人、管理员操作
-			if !user.IsAdmin() && !common.InArrayInt(user.Userid, s.GetSuperiorUserIds(obj, user)) {
+			if !user.IsAdmin() && !common.InArrayInt(user.Userid, s.GetLinkSuperiorUserIds(obj)) {
 				return e.New(constant.ErrOkrDepartmentOwnerOrAdminNotCancel)
 			}
 
