@@ -32,7 +32,7 @@
         </WarningPopup>
 
         <!-- OKR详情 -->
-        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getlist="handleGetOkrArchive"
+        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getList="handleGetOkrArchive"
             @close="() => { okrDetailsShow = false }" />
 
     </div>

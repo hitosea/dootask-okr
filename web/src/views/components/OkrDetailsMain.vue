@@ -987,7 +987,11 @@ const handleSubmit = () => {
         handleDelete()
     }
     if (OType.value == 2) {
-        handleArchive()
+        if(detailData.status == '1'){
+            handleArchive()
+        }else{
+            handleRestore()
+        }
     }
 }
 
