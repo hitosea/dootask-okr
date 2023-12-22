@@ -43,6 +43,7 @@ const themeOverrides = {
             feedbackHeightMedium: "16px",
             feedbackFontSizeMedium: "12px",
             labelTextColor:"#606266",
+            feedbackTextColorError:"#FF0000",
         },
         Dialog:{
             padding:"24px",
