@@ -10,15 +10,15 @@
                         @clickoutside="handleClosePopover(1)" :z-index="modalTransferIndex()" raw :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover">
-                                <div v-if="detailData.completed == '0'"
-                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
-                                    :class="detailData.completed == '0' || detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                </div>
-                                <div v-if="detailData.completed == '1'"
+                                <div v-if="detailData.completed == '0' && detailData.canceled == '0'"
                                     class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                     :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                    <n-icon v-if="detailData.completed == '1'"
-                                        :class="detailData.completed == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
+                                </div>
+                                <div v-if="detailData.completed == '1' || detailData.canceled == '1'"
+                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
+                                    :class="detailData.completed == '0'&& detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                                    <n-icon v-if="detailData.completed == '1' || detailData.canceled == '1'"
+                                        :class="detailData.completed == '0'&& detailData.canceled == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
                                         :component="CheckmarkSharp" />
                                 </div>
                             </div>
