@@ -46,7 +46,7 @@
                 </n-button>
             </div>
             <div class="flex-1 flex items-center mt-16 mb-12 md:mb-0 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
-                <div class="hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 text-text-li">
+                <div class="hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 text-text-li font-medium">
                     {{ $t('类型') }}
                 </div>
                 <div class="hidden md:flex">

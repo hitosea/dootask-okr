@@ -473,7 +473,7 @@ body.window-portrait {
 }
 </style>
 <style>
-.okr .delete-box .n-checkbox .n-checkbox-box{
+.delete-box .n-checkbox .n-checkbox-box{
     border-radius: 4px !important;
 }
 </style>
