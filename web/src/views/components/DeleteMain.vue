@@ -56,7 +56,6 @@
                     :columns="tableColumns"
                     :data="tableData"
                     striped
-                    :bordered="false"
                     :loading="tableLoadIng > 0"
                     :row-key="(row) => row.id"
                     @update:checked-row-keys="handleCheck"
