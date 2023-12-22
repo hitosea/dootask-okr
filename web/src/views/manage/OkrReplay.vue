@@ -101,7 +101,7 @@
                 </div>
             </div>
         </n-scrollbar>
-        <n-drawer v-model:show="active" default-height="362px" placement="bottom" resizable>
+        <n-drawer v-model:show="active" default-height="370px" placement="bottom" resizable>
 
             <n-drawer-content class="screen-d">
                 <template #header>

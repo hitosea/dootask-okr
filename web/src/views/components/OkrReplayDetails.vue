@@ -3,7 +3,7 @@
         <n-data-table  :columns="columns" :data="tableData" :single-line="false" :hover="false"
             style="--n-merged-td-color-hover:#ffffff" size="large"/>
     </div>
-    <div class="flex flex-col gap-[16px] mt-16 md:mt-[24px]" v-if="props.okrReplayList.replays">
+    <div class="flex flex-col md:gap-[16px] gap-[12px] mt-16 md:mt-[24px]" v-if="props.okrReplayList.replays">
         <div class="bg-[#F4F5F7] p-[16px] rounded-lg cursor-pointer" v-for="(item, index) in props.okrReplayList.replays"
             @click="openActive(index)">
             <div class="flex items-center justify-between">
@@ -11,7 +11,7 @@
                 <img class="ml-8 w-15" :src="index == active ? utils.apiUrl(packUp) : utils.apiUrl(unfold)" />
             </div>
             <template v-if="index == active">
-                <div class="bg-[#fff] border-[#F2F2F2] border-[1px] rounded-lg overflow-hidden mt-24">
+                <div class="bg-[#fff] border-[#F2F2F2] border-[1px] rounded-lg overflow-hidden mt-12 md:mt-24">
                     <div class="flex items-center  px-[16px] text-text-li text-14"
                         :class="(indexs + 1) < (item.kr_history || []).length ? 'border-solid border-0 border-b-[1px] border-[#F2F2F2]' : ''"
                         v-for="(items, indexs) in item.kr_history">
@@ -27,10 +27,10 @@
                     </div>
                 </div>
                 <div class="replay-details">
-                    <h3 class="mb-12 text-text-li text-20 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}
+                    <h3 class="md:mb-12 mb-6 text-text-li md:text-20 text-18 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}
                     </h3>
                     <p class="text-text-li text-14" v-html="item.review"></p>
-                    <h3 class="mt-24 mb-12 text-text-li text-20 font-medium flex justify-between items-center ">{{
+                    <h3 class="mt-24 mb-12 text-text-li md:text-20 text-18 font-medium flex justify-between items-center ">{{
                         $t('问题与不足')
                     }}
                     </h3>
@@ -334,7 +334,7 @@ const handleAddMultiple = () => {
 
 <style lang="less" scoped>
 .replay-details {
-    @apply mt-24;
+    @apply mt-12 md:mt-24;
 }
 
 </style>

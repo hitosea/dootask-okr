@@ -5,7 +5,7 @@
         <div class="mt-16" v-if="showUserSelect">
             <UserSelects/>
         </div>
-        <p class="mt-8 text-xs text-[#515A6E]">{{ $t('单选：指定可评分部门及部门负责人OKR的人员。') }}</p>
+        <p class="mt-8 text-xs text-[#515A6E] opacity-50">{{ $t('单选：指定可评分部门及部门负责人OKR的人员。') }}</p>
 
         <p class="mt-24 font-medium text-[#303133]">{{ $t('评分规则') }}</p>
         <div class="mt-16 font-medium">
@@ -29,7 +29,7 @@
                 </n-form-item>
             </n-form>
         </div>
-        <p class=" text-xs text-[#515A6E]">{{ $t('自评与上级的占比总和需等于100%。') }}</p>
+        <p class=" text-xs text-[#515A6E] opacity-50">{{ $t('自评与上级的占比总和需等于100%。') }}</p>
     </div>
 </template>
 <script setup lang="ts">
