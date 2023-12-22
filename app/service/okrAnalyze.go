@@ -323,12 +323,12 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 					user.userid as department_id,
 					user.nickname as department_name,
 					( 
-						SELECT count(t.okr_id) from %s as okr
+						SELECT count(*) from %s as okr
 						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
 						and find_in_set(depts.id,okr.department_id) 
 					) as total,
 					ifnull((
-						SELECT count(t.okr_id)  - SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as unscored
+						SELECT count(*)  - SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as unscored
 						from %s as okr
 						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
 						and find_in_set(depts.id,okr.department_id) 
