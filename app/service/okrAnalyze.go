@@ -227,7 +227,7 @@ func (s *okrAnalyzeService) GetDeptScore(user *interfaces.UserInfoResp, departme
 				select
 					department_id,
 					department_name,
-					count(*) as total,
+					count(t.okr_id) as total,
 					ifnull( SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END), 0) as unscored,
 					ifnull( SUM(CASE WHEN score >= 0 and score <= 3 THEN 1 ELSE 0 END), 0) as zero_to_three,
 					ifnull( SUM(CASE WHEN score > 3 and score <= 7 THEN 1 ELSE 0 END), 0) as three_to_seven,
@@ -323,12 +323,12 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 					user.userid as department_id,
 					user.nickname as department_name,
 					( 
-						SELECT count(*) from %s as okr
+						SELECT count(t.okr_id) from %s as okr
 						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
 						and find_in_set(depts.id,okr.department_id) 
 					) as total,
 					ifnull((
-						SELECT count(*)  - SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as unscored
+						SELECT count(t.okr_id)  - SUM(CASE WHEN okr.score > -1 THEN 1 ELSE 0 END) as unscored
 						from %s as okr
 						WHERE okr.userid = user.userid and okr.parent_id = 0 and okr.canceled = 0 and okr.deleted_at is null 
 						and find_in_set(depts.id,okr.department_id) 
@@ -350,9 +350,9 @@ func (s *okrAnalyzeService) GetDeptScoreProportion(user *interfaces.UserInfoResp
 				select 
 					department_id, 
 					department_name,
-					count(*) as total, 
+					count(t.okr_id) as total, 
 					ifnull(SUM(CASE WHEN score > -1 THEN 1 ELSE 0 END),0) as already_reviewed,
-					ifnull(count(*),0) - ifnull(SUM(CASE WHEN score > -1 THEN 1 ELSE 0 END),0) as unscored
+					ifnull(count(t.okr_id),0) - ifnull(SUM(CASE WHEN score > -1 THEN 1 ELSE 0 END),0) as unscored
 				FROM(
 					SELECT 
 						DISTINCT b.okr_id,
