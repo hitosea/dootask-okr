@@ -186,6 +186,7 @@ type OkrLogParams struct {
 	ConfidenceChange     []int    `json:"confidence_change,omitempty"`      // 信心指数变更
 	TimeChange           []string `json:"time_change,omitempty"`            // 时间变更
 	StatusChange         []string `json:"status_change,omitempty"`          // 状态变更
+	UserChange           []string `json:"user_change,omitempty"`            // 人员变更
 }
 
 // 离职/删除人员列表分页请求
