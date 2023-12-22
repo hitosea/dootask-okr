@@ -700,6 +700,15 @@ const handleGetLogList = () => {
                 if (item.content.includes('修改对齐目标')) {
                     item.content = $t('修改对齐目标')
                 }
+                if (item.content.includes('OKR归档')) {
+                    item.content = $t('OKR归档')
+                }
+                if (item.content.includes('OKR取消归档')) {
+                    item.content = $t('OKR取消归档')
+                }
+                if (item.content.includes('重新分配负责人')) {
+                    item.content = $t('重新分配负责人') + ": " + item.records.user_change[0] || '-' + ' => ' + item.records.user_change[1]
+                }
                 if (item.content.includes('取消对齐目标')) {
                     let parent_title = ''
                     item.records.parent_title ? parent_title = ' => ' + item.records.parent_title : ''
