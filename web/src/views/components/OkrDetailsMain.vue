@@ -71,7 +71,7 @@
                     </n-popover>
 
                 </div>
-                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] "
+                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] z-[10]"
                     src="@/assets/images/icon/complete.png" />
             </div>
 
@@ -80,7 +80,7 @@
                     <h3 id="detailTop"
                         class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
-                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
+                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden z-[10]"
                             src="@/assets/images/icon/complete.png" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
