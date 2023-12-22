@@ -750,17 +750,7 @@ const handleGetLogList = () => {
     }
 }
 
-//复盘下一页
-// const onScrollReplayList = (e) => {
-//     if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
-//         // 重新请求数据
-//         if (!loadIng.value) {
-//             replayListPage.value ++
-//             handleGetReplayList()
-//         }
-//     }
-// }
-
+// 下一页
 const nextReplayList = (e) => {
     // 重新请求数据
     if (!loadIng.value) {
@@ -1027,8 +1017,8 @@ const handleRestore = () => {
         id: detailData.value.id,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        emit('getList',1)     
-        emit('close') 
+        emit('getList',1)
+        emit('close')
     })
         .catch(({ msg }) => {
             message.error(msg)

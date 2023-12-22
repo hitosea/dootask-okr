@@ -157,11 +157,6 @@ const handleSubmit = (type) => {
     })
 }
 
-// 显示Drawer
-const showDrawer = () => {
-  
-}
-
 // 关闭Drawer
 const closeDrawer = () => {
     unmountUserSelectsApps()
@@ -195,9 +190,5 @@ defineExpose({
 <style lang="less" scoped>
 :deep(.n-input-number){
     width: 100%;
-}
-
-body.window-portrait {
-
 }
 </style>
