@@ -66,6 +66,7 @@ const themeOverrides = {
             thPaddingMedium:"8px",
             tdPaddingMedium:"8px",
             thPaddingLarge:"8px",
+            emptyPadding:'13px 0'
         },
         Popover:{
             borderRadius:"8px",

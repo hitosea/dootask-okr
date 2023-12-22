@@ -24,8 +24,8 @@
                             </div>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
-                                {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
+                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
+                                {{ detailData.canceled == '0'  ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
@@ -59,7 +59,7 @@
                                 class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
+                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
@@ -707,7 +707,7 @@ const handleGetLogList = () => {
                     item.content = $t('OKR取消归档')
                 }
                 if (item.content.includes('重新分配负责人')) {
-                    item.content = $t('重新分配负责人') + ": " + item.records.user_change[0] || '-' + ' => ' + item.records.user_change[1]
+                    item.content = $t('重新分配负责人') + ": " + (item.records.user_change[0] || '-') + ' => ' + item.records.user_change[1]
                 }
                 if (item.content.includes('取消对齐目标')) {
                     let parent_title = ''

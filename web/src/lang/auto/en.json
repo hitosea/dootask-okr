@@ -376,5 +376,9 @@
     "还原归档": "Restore archive",
     "共": "common",
     "条": "strip",
-    "页": "Page"
+    "页": "Page",
+    "没有相关数据": "No relevant data",
+    "OKR归档": "OKR archive",
+    "OKR取消归档": "OKR unarchive",
+    "重新分配负责人": "Reassign responsible person"
 }

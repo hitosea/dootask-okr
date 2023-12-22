@@ -60,7 +60,11 @@
                     :loading="tableLoadIng > 0"
                     :row-key="(row) => row.id"
                     @update:checked-row-keys="handleCheck"
-                />
+                >
+                <template #empty>
+                    <p>{{ $t('没有相关数据') }}</p>
+                </template>
+            </n-data-table>
             </div>
             <div class="pagination mt-auto flex justify-center shrink-0 flex-0">
                 <div  class=" hidden md:flex">

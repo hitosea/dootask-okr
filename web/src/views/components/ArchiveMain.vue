@@ -15,8 +15,12 @@
         </div>
         <div class="mt-16 flex flex-col flex-1 overflow-hidden">
             <div class="mb-16 flex-1 overflow-auto">
-                <n-data-table :columns="columns" :data="tableData" :hover="false" :bordered="false" striped :loading="loadIng"
-                    style="--n-td-color-hover-modal:#ffffff"/>
+                <n-data-table :columns="columns" :data="tableData" :hover="false" striped :loading="loadIng"
+                    style="--n-td-color-hover-modal:#ffffff">
+                <template #empty>
+                    <p>{{ $t('没有相关数据') }}</p>
+                </template>
+                </n-data-table>
             </div>
             <div class="mt-auto md:flex hidden justify-center flex-[0_0_auto] shrink-0">
                 <n-pagination v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage"
