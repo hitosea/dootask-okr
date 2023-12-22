@@ -183,7 +183,6 @@ onMounted(() => {
 defineExpose({
     handleSubmit,
     closeDrawer,
-    showDrawer,
 })
 </script>
 
