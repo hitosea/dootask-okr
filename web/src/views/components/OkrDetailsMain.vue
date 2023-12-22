@@ -35,7 +35,7 @@
                         </div>
                     </n-popover>
 
-                    <n-tag v-if="detailData.canceled == '1'">{{ $t('已取消') }} </n-tag>
+                    <n-tag v-if="detailData.canceled == '1'" type="success">{{ $t('已取消') }} </n-tag>
                     <n-tag v-if="detailData.completed == '1'" type="success">{{ $t('已完成') }}</n-tag>
                     <n-tag v-if="detailData.status == '1'">{{ $t('已归档') }}</n-tag>
                     <p class="flex items-center text-text-li opacity-50 text-14">
