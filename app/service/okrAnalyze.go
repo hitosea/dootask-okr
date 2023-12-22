@@ -96,7 +96,7 @@ func (s *okrAnalyzeService) GetDeptCompleteness(user *interfaces.UserInfoResp, d
 				select
 					department_id,
 					department_name,
-					count(*) as total,
+					count(t.okr_id) as total,
 					ifnull( SUM(CASE WHEN completeds != 0 THEN 1 ELSE 0 END), 0) as completed
 				FROM(
 					SELECT
