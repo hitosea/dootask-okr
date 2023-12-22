@@ -3,11 +3,11 @@
         <div class="delete-box-search">
             <div class="flex flex-1 gap-[16px]">
                 <div class="delete-box-search-input">
-                    <p class="delete-box-search-title text-text-li shrink-0">{{ $t('目标名称') }}</p>
+                    <p class="delete-box-search-title text-text-li shrink-0 font-medium">{{ $t('目标名称') }}</p>
                     <n-input v-model:value="tableKeyWord" :placeholder="$t('目标名称')" clearable />
                 </div>
                 <div class="flex items-center overflow-hidden" >
-                    <p class="delete-box-search-title text-text-li mr-8 ">{{ $t('负责人') }}</p>
+                    <p class="delete-box-search-title text-text-li mr-8 font-medium">{{ $t('负责人') }}</p>
                     <n-select v-model:value="principalValue" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" :class="isAdmin ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
@@ -223,6 +223,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     type: 'primary',
                     style:{
                         height:'auto',
+                        padding:'5px',
                     },
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
@@ -237,6 +238,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     type: 'primary',
                     style:{
                         height:'auto',
+                        padding:'5px',
                     },
                     onClick:  _ => handleAssign(rowData)
                 },
@@ -248,6 +250,8 @@ const tableColumns = ref<DataTableColumn[]>([
                     type: 'error',
                     style:{
                         height:'auto',
+                        padding:'5px',
+                        color:'#FF0000'
                     },
                     onClick: _ => {
                         popupShow.value = true

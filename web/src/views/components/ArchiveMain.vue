@@ -2,7 +2,7 @@
     <div class="archive-box">
         <div class="archive-box-search">
             <div class="archive-search-input">
-                <p class=" text-text-li shrink-0">{{ $t('目标名称') }}</p><n-input v-model:value="objective" :loading="loadIng"
+                <p class=" text-text-li shrink-0 font-medium">{{ $t('目标名称') }}</p><n-input v-model:value="objective" :loading="loadIng"
                     :placeholder="$t('目标名称')" clearable />
             </div>
             <n-button :loading="loadIng" type="primary" size="small" @click="onSearch">
@@ -99,7 +99,7 @@ const columns = ref<DataTableColumn[]>([
     {
         title: $t('完成时间'),
         key: 'end_at',
-        minWidth: 200,
+        minWidth: 150,
         render(rowData) {
             return h('div', {
             }, utils.GoDateHMS(rowData.end_at || 0))
@@ -107,7 +107,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         title: $t('归档时间'),
-        minWidth: 200,
+        minWidth: 150,
         key: 'archive_at',
         render(rowData) {
             return h('div', {
@@ -116,7 +116,7 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         title: $t('归档人员'),
-        minWidth: 100,
+        minWidth: 180,
         key: 'nickname',
         render(rowData) {
             return h('div', {

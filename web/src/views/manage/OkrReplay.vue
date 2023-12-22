@@ -4,7 +4,7 @@
         <div class="flex flex-wrap flex-col 2xl:flex-row 2xl:items-center flex-[0_0_auto]">
             <div class="hidden md:flex items-center mb-16  min-w-full">
                 <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
-                    <div class="mb-2 mr-8 text-text-li whitespace-nowrap">
+                    <div class="mb-2 mr-8 text-text-li whitespace-nowrap font-medium">
                         {{ $t('部门') }}
                     </div>
                     <n-select v-model:value="departmentsvalue" :options="departments" clearable
@@ -13,7 +13,7 @@
 
                 <div class=" flex items-center overflow-hidden"
                     :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
-                    <div class="text-text-li mr-8 whitespace-nowrap">
+                    <div class="text-text-li mr-8 whitespace-nowrap font-medium">
                         {{ $t('负责人') }}
                     </div>
                     <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser"
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="flex items-center" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' : ''">
-                    <div class="mr-8 ml-16 whitespace-nowrap text-text-li">{{ $t('时间') }}</div>
+                    <div class="mr-8 ml-16 whitespace-nowrap text-text-li font-medium">{{ $t('时间') }}</div>
                     <div v-if="showDatePickers" :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
                         class="okr-date-picker-waps ">
                         <DatePickers />

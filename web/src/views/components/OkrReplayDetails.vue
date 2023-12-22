@@ -30,7 +30,7 @@
                     <h3 class="md:mb-12 mb-6 text-text-li md:text-20 text-18 font-medium flex justify-between items-center ">{{ $t('价值与收获') }}
                     </h3>
                     <p class="text-text-li text-14" v-html="item.review"></p>
-                    <h3 class="mt-24 mb-12 text-text-li md:text-20 text-18 font-medium flex justify-between items-center ">{{
+                    <h3 class="md:mt-24 mt-20 mb-12 text-text-li md:text-20 text-18 font-medium flex justify-between items-center ">{{
                         $t('问题与不足')
                     }}
                     </h3>
