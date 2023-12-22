@@ -3130,6 +3130,9 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 	if err := core.DB.Model(&model.UserBasic{}).Where("userid = ?", Userid).First(&assignedUser).Error; err != nil {
 		return err
 	}
+	if assignedUser.Userid == 0 {
+		assignedUser.Nickname = "-"
+	}
 
 	return core.DB.Transaction(func(tx *gorm.DB) error {
 		updateLeaveFunc := func(kr *model.Okr) error {
@@ -3167,6 +3170,7 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 					obj.Participant = common.ArrayImplode(common.ArrayUniqueInt(ids))
 				}
 			}
+			oldUserid := obj.Userid
 			obj.Userid = Userid
 			obj.Status = 0
 			// 更新部门
@@ -3180,8 +3184,11 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 			}
 
 			//
-			objUser := &model.UserBasic{}
-			core.DB.Model(&model.UserBasic{}).Where("userid = ?", obj.Userid).First(&objUser)
+			var objUser model.UserBasic
+			core.DB.Model(&model.UserBasic{}).Where("userid = ?", oldUserid).First(&objUser)
+			if objUser.Userid == 0 {
+				objUser.Nickname = "-"
+			}
 			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "重新分配负责人", interfaces.OkrLogParams{
 				UserChange: []string{objUser.Nickname, assignedUser.Nickname},
 			}); err != nil {
