@@ -10,6 +10,7 @@ const themeOverrides = {
             borderColor:"#e8e8e8",
             borderRadius:"4px",
             textColor2:"#606266",
+            errorColor:"#FF0000",
         },
         Button:{
             paddingMedium:'11px 36px',
@@ -30,7 +31,7 @@ const themeOverrides = {
             color:"rgba(167, 171, 181, 0.1)",
             textColor:"#A7ABB5",
             fontSizeMedium:"12px",
-            heightMedium:'20px',
+            heightMedium:'24px',
             textColorError:"#F5222D",
             colorError:"#FFF1FO",
         },
@@ -44,6 +45,7 @@ const themeOverrides = {
             feedbackFontSizeMedium: "12px",
             labelTextColor:"#606266",
             feedbackTextColorError:"#FF0000",
+            asteriskColor:"#FF0000",
         },
         Dialog:{
             padding:"24px",

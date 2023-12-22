@@ -4,7 +4,7 @@
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0"
             :class="navActive == 0 ? 'navActive' : ''">
             <div
-                class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
+                class="hidden md:flex min-h-[40px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
                     <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual"
                         @clickoutside="handleClosePopover(1)" :z-index="modalTransferIndex()" raw :show-arrow="true">
