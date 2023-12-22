@@ -7,23 +7,29 @@
             </div>
             <n-button :loading="loadIng" type="primary" size="small" @click="onSearch">
                 <template #icon>
-                    <i class="okrfont">&#xe72a;</i>
+                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                 </template>
                 {{ $t('搜索') }}
             </n-button>
         </div>
         <div class="mt-16 flex flex-col flex-1 overflow-hidden">
             <div class="mb-16 flex-1 overflow-auto">
-                <n-data-table :columns="columns" :data="tableData" :single-line="false" :hover="false" :loading="loadIng"
-                    style="--n-td-color-hover-modal:#ffffff" />
+                <n-data-table :columns="columns" :data="tableData" :hover="false" :bordered="false" striped :loading="loadIng"
+                    style="--n-td-color-hover-modal:#ffffff"/>
             </div>
             <div class="mt-auto md:flex hidden justify-center flex-[0_0_auto] shrink-0">
-                <n-pagination v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal"
-                    size="medium" :page-sizes="[10, 20, 30, 50, 100]" show-quick-jumper show-size-picker
-                    :on-update:page="onPage" :on-update:page-size="onPageSize" />
+                <n-pagination v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage"
+                    size="medium" :page-sizes="[10, 20, 30, 50, 100]" show-quick-jumper
+                    show-size-picker :on-update:page="onPage" :on-update:page-size="onPageSize">
+                    <template #prefix> {{ $t('共') }} {{ tableTotal }} {{ $t('条') }}
+                    </template>
+                    <template #suffix>{{ $t('页') }}</template>
+                </n-pagination>
             </div>
             <div class="flex md:hidden justify-center shrink-0 flex-[0_0_auto] mt-auto">
-                <n-pagination class="pagination-web" simple  v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableTotal" :on-update:page="onPage"/>
+                <n-pagination class="pagination-web" simple v-model:page="tablePage" v-model:page-size="tablePageSize"
+                    :page-count="tableLastPage" :on-update:page="onPage" />
             </div>
         </div>
 
@@ -46,7 +52,7 @@ import utils from '@/utils/utils';
 import { useMessage } from "@/utils/messageAll"
 
 const message = useMessage()
-
+const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)
@@ -54,6 +60,7 @@ const objective = ref('')
 
 const tablePage = ref(1);
 const tablePageSize = ref(20);
+const tableLastPage = ref(0);
 const tableTotal = ref(0);
 const tableData = ref<any>([])
 
@@ -176,8 +183,9 @@ const handleGetOkrArchive = (e) => {
         page_size: tablePageSize.value,
     }).then(({ data }) => {
         tableData.value = (data.data || [])
-        tableTotal.value = data.last_page
-        if(e==1){
+        tableLastPage.value = data.last_page
+        tableTotal.value = data.count
+        if (e == 1) {
             emit('close', 1)
         }
     })
@@ -274,8 +282,8 @@ onMounted(() => {
 }
 </style >
 <style >
-.pagination-web .n-pagination .n-pagination-item.n-pagination-item--disabled.n-pagination-item--active,
-.n-pagination .n-pagination-item.n-pagination-item--disabled.n-pagination-item--button {
+.pagination-web .n-pagination-item.n-pagination-item--disabled.n-pagination-item--active,
+.pagination-web .n-pagination-item.n-pagination-item--disabled.n-pagination-item--button {
     background: none;
     border: none;
 }
@@ -283,7 +291,11 @@ onMounted(() => {
 .pagination-web .n-pagination-quick-jumper {
     width: 30px;
 }
-.pagination-web .n-pagination-quick-jumper .n-input{
+
+.pagination-web .n-pagination-quick-jumper .n-input {
     background: none;
+}
+.n-data-table .n-data-table-td{
+    padding: 12px 8px;
 }
 </style>

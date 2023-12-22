@@ -1,7 +1,7 @@
 <template>
     <div class=" hidden md:block">
         <n-data-table  :columns="columns" :data="tableData" :single-line="false" :hover="false"
-            style="--n-merged-td-color-hover:#ffffff" />
+            style="--n-merged-td-color-hover:#ffffff" size="large"/>
     </div>
     <div class="flex flex-col gap-[16px] mt-16 md:mt-[24px]" v-if="props.okrReplayList.replays">
         <div class="bg-[#F4F5F7] p-[16px] rounded-lg cursor-pointer" v-for="(item, index) in props.okrReplayList.replays"
@@ -39,7 +39,7 @@
             </template>
         </div>
     </div>
-    <div class="flex mt-[16px] justify-center flex-col items-center" v-else>
+    <div class="flex mt-[24px] justify-center flex-col items-center" v-else>
         <img class="w-[120px]" :src="utils.apiUrl(notDataSvg)" />
         <p class="text-[14px] text-text-tips mt-[16px]">{{ $t('暂无复盘') }}</p>
         <n-button class="mt-16 px-16" type="primary" ghost @click="handleAddMultiple">
@@ -129,6 +129,10 @@ const columns = ref<DataTableColumn[]>([
             let arr = []
             arr.push(
                 h('span', {
+                    style: {
+                        color: "#515A6E",
+                        fontSize: "14px",
+                    },
                     class: 'line-clamp-2'
                 }, rowData.O)
             )
@@ -332,4 +336,5 @@ const handleAddMultiple = () => {
 .replay-details {
     @apply mt-24;
 }
+
 </style>

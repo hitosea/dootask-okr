@@ -23,7 +23,8 @@
                 </div>
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i class="okrfont">&#xe72a;</i>
+                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -31,7 +32,8 @@
             <div class="delete-box-search-btn-row">
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i class="okrfont">&#xe72a;</i>
+                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -53,6 +55,8 @@
                 <n-data-table
                     :columns="tableColumns"
                     :data="tableData"
+                    striped
+                    :bordered="false"
                     :loading="tableLoadIng > 0"
                     :row-key="(row) => row.id"
                     @update:checked-row-keys="handleCheck"
@@ -71,7 +75,11 @@
                     show-size-picker
                     :on-update:page="onPage"
                     :on-update:page-size="onPageSize"
-                />
+                >
+                <template #prefix> {{ $t('共') }} {{ tableTotal }} {{ $t('条') }}
+                    </template>
+                    <template #suffix>{{ $t('页') }}</template>
+            </n-pagination>
                 </div>
                 <div class="md:hidden flex">
                     <n-pagination class="pagination-web " simple  v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" :on-update:page="onPage"/>
@@ -131,6 +139,7 @@ import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
 import { getUserInfo } from '@/api/modules/user';
 const { proxy } = getCurrentInstance();
+const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const emit = defineEmits(['close'])
 
@@ -212,6 +221,9 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'primary',
+                    style:{
+                        height:'auto',
+                    },
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
                         okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
@@ -223,6 +235,9 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'primary',
+                    style:{
+                        height:'auto',
+                    },
                     onClick:  _ => handleAssign(rowData)
                 },
                 { default: () => $t('分配') }
@@ -231,6 +246,9 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'error',
+                    style:{
+                        height:'auto',
+                    },
                     onClick: _ => {
                         popupShow.value = true
                         popupTitle.value = $t('删除')

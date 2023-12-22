@@ -7,7 +7,6 @@ const themeOverrides = {
             primaryColorHover: "#a2d98d",
             heightMedium: "32px",
             heightLarge: "36px",
-            inputColor:"#F4F5F7",
             borderColor:"#F4F5F7",
             borderRadius:"4px",
             textColor2:"#606266",
@@ -21,6 +20,8 @@ const themeOverrides = {
         Input: {
             heightSmall: "30px",
             borderRadius: "4px",
+            color:"#F4F5F7",
+            colorFocus:"#F4F5F7",
         },
         Tag:{
             borderRadius: "4px",
@@ -59,6 +60,7 @@ const themeOverrides = {
             thTextColor:"#606266",
             thPaddingMedium:"8px",
             tdPaddingMedium:"8px",
+            thPaddingLarge:"8px",
         },
         Popover:{
             borderRadius:"8px",
@@ -72,6 +74,9 @@ const themeOverrides = {
         },
         Drawer:{
             bodyPadding:"16px 24px 24px 24px",
+        },
+        Pagination:{
+            buttonColor:"#ffffff"
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
