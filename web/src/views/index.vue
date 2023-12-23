@@ -6,7 +6,7 @@
                 <h2 :class="searchShow ? 'title-active' : ''">{{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
-            <div class="okr-right">
+            <div class="okr-right z-[2]">
                 <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
                     :class="searchShow || searchObject ? 'search-active' : ''">
                     <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ inputName }}</span>
@@ -330,7 +330,7 @@ const handleSettingShow = () => {
         }
 
         .okr-right {
-            @apply flex items-center gap-4 md:gap-6 z-[2];
+            @apply flex items-center gap-4 ;
 
             .add-button,
             .more-button,

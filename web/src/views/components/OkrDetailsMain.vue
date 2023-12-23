@@ -4,28 +4,28 @@
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0"
             :class="navActive == 0 ? 'navActive' : ''">
             <div
-                class="hidden md:flex min-h-[36px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
+                class="hidden md:flex min-h-[40px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
                     <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual"
                         @clickoutside="handleClosePopover(1)" :z-index="modalTransferIndex()" raw :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover">
-                                <div v-if="detailData.completed == '0'"
-                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
-                                    :class="detailData.completed == '0' || detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                </div>
-                                <div v-if="detailData.completed == '1'"
+                                <div v-if="detailData.completed == '0' && detailData.canceled == '0'"
                                     class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
                                     :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                    <n-icon v-if="detailData.completed == '1'"
-                                        :class="detailData.completed == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
+                                </div>
+                                <div v-if="detailData.completed == '1' || detailData.canceled == '1'"
+                                    class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer"
+                                    :class="detailData.completed == '0'&& detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
+                                    <n-icon v-if="detailData.completed == '1' || detailData.canceled == '1'"
+                                        :class="detailData.completed == '0'&& detailData.canceled == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14"
                                         :component="CheckmarkSharp" />
                                 </div>
                             </div>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
-                                {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
+                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
+                                {{ detailData.canceled == '0'  ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
@@ -35,7 +35,7 @@
                         </div>
                     </n-popover>
 
-                    <n-tag v-if="detailData.canceled == '1'">{{ $t('已取消') }} </n-tag>
+                    <n-tag v-if="detailData.canceled == '1'" type="success">{{ $t('已取消') }} </n-tag>
                     <n-tag v-if="detailData.completed == '1'" type="success">{{ $t('已完成') }}</n-tag>
                     <n-tag v-if="detailData.status == '1'">{{ $t('已归档') }}</n-tag>
                     <p class="flex items-center text-text-li opacity-50 text-14">
@@ -59,7 +59,7 @@
                                 class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
+                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
@@ -71,7 +71,7 @@
                     </n-popover>
 
                 </div>
-                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] "
+                <img v-if="detailData.completed == '1'" class="absolute right-24 -bottom-[50px] z-[10]"
                     src="@/assets/images/icon/complete.png" />
             </div>
 
@@ -80,7 +80,7 @@
                     <h3 id="detailTop"
                         class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
-                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden"
+                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden z-[10]"
                             src="@/assets/images/icon/complete.png" />
                     </h3>
                     <div class="mt-16 md:mt-24 flex flex-col gap-4">
@@ -175,9 +175,9 @@
                                     </template>
                                     <template
                                         v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
-                                        <i class="okrfont mr-4 text-12 ml-24 "
-                                            :class="isOverdue(item) ? 'text-[#ED4014]' : ''"> &#xe6e8;</i>
-                                        <p :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
+                                        <i class="okrfont mr-4 text-12 ml-24"
+                                            :class="isOverdue(item) ? 'text-[#ED4014]' : ''">&#xe6e8;</i>
+                                        <p class="whitespace-nowrap" :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
                                             expiresFormat(item.end_at) }}</p>
                                     </template>
                                 </div>
@@ -700,6 +700,15 @@ const handleGetLogList = () => {
                 if (item.content.includes('修改对齐目标')) {
                     item.content = $t('修改对齐目标')
                 }
+                if (item.content.includes('OKR归档')) {
+                    item.content = $t('OKR归档')
+                }
+                if (item.content.includes('OKR取消归档')) {
+                    item.content = $t('OKR取消归档')
+                }
+                if (item.content.includes('重新分配负责人')) {
+                    item.content = $t('重新分配负责人') + ": " + (item.records.user_change[0] || '-') + ' => ' + item.records.user_change[1]
+                }
                 if (item.content.includes('取消对齐目标')) {
                     let parent_title = ''
                     item.records.parent_title ? parent_title = ' => ' + item.records.parent_title : ''
@@ -750,17 +759,7 @@ const handleGetLogList = () => {
     }
 }
 
-//复盘下一页
-// const onScrollReplayList = (e) => {
-//     if (e.target.scrollTop + e.target.offsetHeight + 10 >= e.target.scrollHeight) {
-//         // 重新请求数据
-//         if (!loadIng.value) {
-//             replayListPage.value ++
-//             handleGetReplayList()
-//         }
-//     }
-// }
-
+// 下一页
 const nextReplayList = (e) => {
     // 重新请求数据
     if (!loadIng.value) {
@@ -1027,8 +1026,8 @@ const handleRestore = () => {
         id: detailData.value.id,
     }).then(({ data }) => {
         message.success($t('操作成功'))
-        emit('getList',1)     
-        emit('close') 
+        emit('getList',1)
+        emit('close')
     })
         .catch(({ msg }) => {
             message.error(msg)
@@ -1193,8 +1192,9 @@ const loadUserSelects = () => {
                             addIcon: ((item.participant).split(',').map(h => Number(h))).filter(value => value !== 0).length == 0,
                         },
                         on: {
-                            "on-show-change": (show: any, values: any) => {
+                            "on-show-change": (show: any) => {
                                 if (!show) {
+                                    let values = app.$children[0].values;
                                     if (item.participant != values.join(',')) {
                                         item.participant = values.join(',');
                                         participantChange(item, e.getAttribute('formkey'))

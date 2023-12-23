@@ -2836,6 +2836,10 @@ func (s *okrService) ArchiveOkr(user *interfaces.UserInfoResp, okrId int) error 
 			if err := s.operateKeyResults(obj, updateFunc); err != nil {
 				return err
 			}
+			//
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "OKR归档", nil); err != nil {
+				return err
+			}
 
 			return nil
 		})
@@ -2874,6 +2878,11 @@ func (s *okrService) ArchiveRestoreOkr(user *interfaces.UserInfoResp, okrId int)
 		}
 
 		if err := s.operateKeyResults(obj, updateFunc); err != nil {
+			return err
+		}
+
+		//
+		if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "OKR取消归档", nil); err != nil {
 			return err
 		}
 
@@ -3117,9 +3126,12 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 	}
 
 	// 获取分配人员信息
-	var assignedUser model.User
-	if err := core.DB.Model(&model.User{}).Where("userid = ?", Userid).First(&assignedUser).Error; err != nil {
+	var assignedUser model.UserBasic
+	if err := core.DB.Model(&model.UserBasic{}).Where("userid = ?", Userid).First(&assignedUser).Error; err != nil {
 		return err
+	}
+	if assignedUser.Userid == 0 {
+		assignedUser.Nickname = "-"
 	}
 
 	return core.DB.Transaction(func(tx *gorm.DB) error {
@@ -3158,6 +3170,7 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 					obj.Participant = common.ArrayImplode(common.ArrayUniqueInt(ids))
 				}
 			}
+			oldUserid := obj.Userid
 			obj.Userid = Userid
 			obj.Status = 0
 			// 更新部门
@@ -3167,6 +3180,18 @@ func (s *okrService) UpdateLeaveOkr(user *interfaces.UserInfoResp, Userid int, o
 			}
 
 			if err := s.operateKeyResults(obj, updateLeaveFunc); err != nil {
+				return err
+			}
+
+			//
+			var objUser model.UserBasic
+			core.DB.Model(&model.UserBasic{}).Where("userid = ?", oldUserid).First(&objUser)
+			if objUser.Userid == 0 {
+				objUser.Nickname = "-"
+			}
+			if err := s.InsertOkrLogTx(tx, obj.Id, user.Userid, "update", "重新分配负责人", interfaces.OkrLogParams{
+				UserChange: []string{objUser.Nickname, assignedUser.Nickname},
+			}); err != nil {
 				return err
 			}
 

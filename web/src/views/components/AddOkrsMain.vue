@@ -62,7 +62,7 @@
 
                 <n-form-item :label="$t('对齐目标')">
                     <div @click="handleGoal"
-                        class="w-full h-[32px] bg-[#F4F5F7] border-[1px] border-[#F4F5F7] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
+                        class="w-full h-[32px] bg-[#fff] border-[1px] border-[#e8e8e8] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
                         <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'"
                             class=" text-14">{{ formValue.align_objective?.length > 0
                                 ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
@@ -135,7 +135,7 @@
 
                                 <!-- pc -->
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px] cursor-pointer"
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#fff] border-[1px] border-[#e8e8e8] border-solid rounded-[4px] cursor-pointer"
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
@@ -145,7 +145,7 @@
 
                                 <!-- app -->
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('参与人')">
-                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#F4F5F7] rounded-[4px] cursor-pointer"
+                                    <div v-if="showUserSelect" class="w-full min-h-[32px] bg-[#fff] border-[1px] border-[#e8e8e8] border-solid rounded-[4px] cursor-pointer"
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
@@ -173,7 +173,7 @@
         @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 </template>
 <script setup lang="ts">
-import { watch } from "vue";
+import { watch, ref } from 'vue';
 
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import ItemList from "./ItemList.vue";
@@ -430,9 +430,9 @@ const loadUserSelects = () => {
                             avatarSize: 23,
                         },
                         on: {
-                            "on-show-change": (show: any, values: any) => {
+                            "on-show-change": (show: any) => {
                                 if (!show) {
-                                    item.participant = values;
+                                    item.participant = app.$children[0].values;
                                 }
                             }
                         }
@@ -557,11 +557,9 @@ const loadDatePickers = () => {
                                         formValue.value.time = null
                                     }
                                     nextTick(() => {
-                                        formRef.value?.validate((errors) => {                                  
+                                        formRef.value?.validate((errors) => {
                                             if (errors) {
                                                 const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
-                                                console.log(errorList);
-                                                
                                                 errorList[0].scrollIntoView({
                                                     block: 'center',
                                                     behavior: 'smooth',
@@ -577,10 +575,10 @@ const loadDatePickers = () => {
                                     } else {
                                         item.time = null
                                     }
-                                    
+
                                     nextTick(() => {
-                                        formRefs.value?.forEach(element => {   
-                                            element.validate((errors) => {  
+                                        formRefs.value?.forEach(element => {
+                                            element.validate((errors) => {
                                                 if (errors) {
                                                     const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
                                                     errorList[0].scrollIntoView({

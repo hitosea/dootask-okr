@@ -270,7 +270,7 @@ const loadComplete = () => {
     completeEcharts.value.setOption({
         series: [{
             type: 'pie',
-            radius: ['70%', '90%'],
+            radius: ['65%', '90%'],
             avoidLabelOverlap: false,
             label: {
                 position: 'center',
@@ -280,7 +280,7 @@ const loadComplete = () => {
                 rich: {
                     p: {
                         fontSize: 22,
-                        fontWeight: '600',
+                        fontWeight: 'bold',
                     },
                     span: {
                         color: '#515A6E',
@@ -309,7 +309,7 @@ const loadScoreDistribute = () => {
     scoreDistributeEcharts.value.setOption({
         series: [{
             type: 'pie',
-            radius: ['70%', '90%'],
+            radius: ['65%', '90%'],
             avoidLabelOverlap: false,
             label: {
                 position: 'center',
@@ -354,7 +354,7 @@ const loadScoreRate = () => {
     scoreScoreRate.value.setOption({
         series: [{
             type: 'pie',
-            radius: ['70%', '90%'],
+            radius: ['65%', '90%'],
             avoidLabelOverlap: false,
             label: {
                 position: 'center',
@@ -364,7 +364,7 @@ const loadScoreRate = () => {
                 rich: {
                     p: {
                         fontSize: 22,
-                        fontWeight: '600',
+                        fontWeight: 'bold',
                     },
                     span: {
                         color: '#515A6E',

@@ -3,11 +3,11 @@
         <div class="delete-box-search">
             <div class="flex flex-1 gap-[16px]">
                 <div class="delete-box-search-input">
-                    <p class="delete-box-search-title text-text-li shrink-0">{{ $t('目标名称') }}</p>
+                    <p class="delete-box-search-title text-text-li shrink-0 font-medium">{{ $t('目标名称') }}</p>
                     <n-input v-model:value="tableKeyWord" :placeholder="$t('目标名称')" clearable />
                 </div>
                 <div class="flex items-center overflow-hidden" >
-                    <p class="delete-box-search-title text-text-li mr-8 ">{{ $t('负责人') }}</p>
+                    <p class="delete-box-search-title text-text-li mr-8 font-medium">{{ $t('负责人') }}</p>
                     <n-select v-model:value="principalValue" :options="principalOptions" :on-blur="getPrincipalList" :on-search="getPrincipalList" :class="isAdmin ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
@@ -23,7 +23,8 @@
                 </div>
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i class="okrfont">&#xe72a;</i>
+                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -31,7 +32,8 @@
             <div class="delete-box-search-btn-row">
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i class="okrfont">&#xe72a;</i>
+                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -53,10 +55,15 @@
                 <n-data-table
                     :columns="tableColumns"
                     :data="tableData"
+                    striped
                     :loading="tableLoadIng > 0"
                     :row-key="(row) => row.id"
                     @update:checked-row-keys="handleCheck"
-                />
+                >
+                <template #empty>
+                    <p>{{ $t('没有相关数据') }}</p>
+                </template>
+            </n-data-table>
             </div>
             <div class="pagination mt-auto flex justify-center shrink-0 flex-0">
                 <div  class=" hidden md:flex">
@@ -71,7 +78,11 @@
                     show-size-picker
                     :on-update:page="onPage"
                     :on-update:page-size="onPageSize"
-                />
+                >
+                <template #prefix> {{ $t('共') }} {{ tableTotal }} {{ $t('条') }}
+                    </template>
+                    <template #suffix>{{ $t('页') }}</template>
+            </n-pagination>
                 </div>
                 <div class="md:hidden flex">
                     <n-pagination class="pagination-web " simple  v-model:page="tablePage" v-model:page-size="tablePageSize" :page-count="tableLastPage" :on-update:page="onPage"/>
@@ -131,6 +142,7 @@ import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
 import { getUserInfo } from '@/api/modules/user';
 const { proxy } = getCurrentInstance();
+const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
 const emit = defineEmits(['close'])
 
@@ -212,6 +224,10 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'primary',
+                    style:{
+                        height:'auto',
+                        padding:'5px',
+                    },
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
                         okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
@@ -223,6 +239,10 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'primary',
+                    style:{
+                        height:'auto',
+                        padding:'5px',
+                    },
                     onClick:  _ => handleAssign(rowData)
                 },
                 { default: () => $t('分配') }
@@ -231,6 +251,11 @@ const tableColumns = ref<DataTableColumn[]>([
                     quaternary: true,
                     size: 'small',
                     type: 'error',
+                    style:{
+                        height:'auto',
+                        padding:'5px',
+                        color:'#FF0000'
+                    },
                     onClick: _ => {
                         popupShow.value = true
                         popupTitle.value = $t('删除')
@@ -451,7 +476,7 @@ body.window-portrait {
 }
 </style>
 <style>
-.okr .delete-box .n-checkbox .n-checkbox-box{
+.delete-box .n-checkbox .n-checkbox-box{
     border-radius: 4px !important;
 }
 </style>

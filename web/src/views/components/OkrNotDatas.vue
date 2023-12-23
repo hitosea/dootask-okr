@@ -1,10 +1,10 @@
 <template>
     <div class=" w-full h-full flex mt-[100px] md:mt-[10%] items-center flex-col">
         <div v-if="props.types">
-            <img class="mr-6 -mt-2 w-80" :src="utils.apiUrl(notSearchSvg)" />
+            <img class="mr-6 -mt-2 w-[120px]" :src="utils.apiUrl(notSearchSvg)" />
         </div>
         <div v-if="!props.types && !props.loadIng">
-            <img class="mr-6 -mt-2 w-80" :src="utils.apiUrl(notDataSvg)" />
+            <img class="mr-6 -mt-2 w-[120px]" :src="utils.apiUrl(notDataSvg)" />
         </div>
         <div v-if="props.types" class="text-[#515A6E] text-14 text-opacity-50 text-center">
             <div class="mb-10" v-if="props.msg">{{ $t('没有找到匹配的结果') }}</div>

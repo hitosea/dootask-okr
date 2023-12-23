@@ -1,9 +1,9 @@
 <template >
     <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 34px;max-width: 998px;width: 90%;"
+        :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 24px;max-width: 998px;width: 90%;"
         :trap-focus="false">
         <n-drawer-content :title="$t('离职/删除人员OKR')" closable>
-            <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
+            <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[24px] right-[20px] overflow-hidden">
                 <div class="flex-auto overflow-hidden">
                     <DeleteMain @close="(e, id) => { emit('close', e, id)}"></DeleteMain>
                 </div>

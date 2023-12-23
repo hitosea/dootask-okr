@@ -373,5 +373,12 @@
     "请选择评分人员": "Please select a rater",
     "全系统": "Whole system",
     "暂无上级": "No superior yet",
-    "还原归档": "Restore archive"
+    "还原归档": "Restore archive",
+    "共": "common",
+    "条": "strip",
+    "页": "Page",
+    "没有相关数据": "No relevant data",
+    "OKR归档": "OKR archive",
+    "OKR取消归档": "OKR unarchive",
+    "重新分配负责人": "Reassign responsible person"
 }
