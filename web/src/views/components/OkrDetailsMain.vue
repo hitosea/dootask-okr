@@ -175,9 +175,9 @@
                                     </template>
                                     <template
                                         v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
-                                        <i class="okrfont mr-4 text-12 ml-24 "
-                                            :class="isOverdue(item) ? 'text-[#ED4014]' : ''"> &#xe6e8;</i>
-                                        <p :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
+                                        <i class="okrfont mr-4 text-12 ml-24"
+                                            :class="isOverdue(item) ? 'text-[#ED4014]' : ''">&#xe6e8;</i>
+                                        <p class="whitespace-nowrap" :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
                                             expiresFormat(item.end_at) }}</p>
                                     </template>
                                 </div>
@@ -1192,8 +1192,9 @@ const loadUserSelects = () => {
                             addIcon: ((item.participant).split(',').map(h => Number(h))).filter(value => value !== 0).length == 0,
                         },
                         on: {
-                            "on-show-change": (show: any, values: any) => {
+                            "on-show-change": (show: any) => {
                                 if (!show) {
+                                    let values = app.$children[0].values;
                                     if (item.participant != values.join(',')) {
                                         item.participant = values.join(',');
                                         participantChange(item, e.getAttribute('formkey'))

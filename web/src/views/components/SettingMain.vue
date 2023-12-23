@@ -68,14 +68,13 @@ const loadUserSelects = () => {
                             avatarSize: 36,
                             addIcon: false,
                             avatarName: true,
-                            forcedRadio: true,
                             showDisable: true,
-                            multipleMax: 100,
+                            multipleMax: 1,
                         },
                         on: {
-                            "on-show-change": (show: any, values: any) => {
+                            "on-show-change": (show: any) => {
                                 if (!show) {
-                                    formModel.value.score_department_user = values[0]
+                                    formModel.value.score_department_user = app.$children[0].values[0]
                                 }
                             }
                         }
@@ -157,6 +156,11 @@ const handleSubmit = (type) => {
     })
 }
 
+// 显示Drawer
+const showDrawer = () => {
+
+}
+
 // 关闭Drawer
 const closeDrawer = () => {
     unmountUserSelectsApps()
@@ -183,6 +187,7 @@ onMounted(() => {
 defineExpose({
     handleSubmit,
     closeDrawer,
+    showDrawer
 })
 </script>
 

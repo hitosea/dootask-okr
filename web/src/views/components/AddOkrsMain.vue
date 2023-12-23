@@ -173,7 +173,7 @@
         @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 </template>
 <script setup lang="ts">
-import { watch } from "vue";
+import { watch, ref } from 'vue';
 
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
 import ItemList from "./ItemList.vue";
@@ -430,9 +430,9 @@ const loadUserSelects = () => {
                             avatarSize: 23,
                         },
                         on: {
-                            "on-show-change": (show: any, values: any) => {
+                            "on-show-change": (show: any) => {
                                 if (!show) {
-                                    item.participant = values;
+                                    item.participant = app.$children[0].values;
                                 }
                             }
                         }
@@ -557,11 +557,9 @@ const loadDatePickers = () => {
                                         formValue.value.time = null
                                     }
                                     nextTick(() => {
-                                        formRef.value?.validate((errors) => {                                  
+                                        formRef.value?.validate((errors) => {
                                             if (errors) {
                                                 const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
-                                                console.log(errorList);
-                                                
                                                 errorList[0].scrollIntoView({
                                                     block: 'center',
                                                     behavior: 'smooth',
@@ -577,10 +575,10 @@ const loadDatePickers = () => {
                                     } else {
                                         item.time = null
                                     }
-                                    
+
                                     nextTick(() => {
-                                        formRefs.value?.forEach(element => {   
-                                            element.validate((errors) => {  
+                                        formRefs.value?.forEach(element => {
+                                            element.validate((errors) => {
                                                 if (errors) {
                                                     const errorList = (document as any).querySelectorAll('.n-form-item-feedback--error')
                                                     errorList[0].scrollIntoView({
