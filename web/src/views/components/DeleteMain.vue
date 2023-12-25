@@ -55,9 +55,11 @@
                 <n-data-table
                     :columns="tableColumns"
                     :data="tableData"
+                    :hover="false"
                     striped
                     :loading="tableLoadIng > 0"
                     :row-key="(row) => row.id"
+                    style="--n-td-color-hover-modal:#ffffff"
                     @update:checked-row-keys="handleCheck"
                 >
                 <template #empty>
