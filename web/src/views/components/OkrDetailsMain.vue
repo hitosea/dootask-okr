@@ -939,6 +939,11 @@ const handleCloseMarks = (type) => {
 
 // 取消O
 const handleCancel = () => {
+    if (detailData.value.status == '1') {
+        tipsContent.value = $t('OKR已归档')
+        showModal.value = true
+        return
+    }
     if (userInfo.userid != detailData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
