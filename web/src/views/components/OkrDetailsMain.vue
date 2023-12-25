@@ -939,6 +939,8 @@ const handleCloseMarks = (type) => {
 
 // 取消O
 const handleCancel = () => {
+    showPopover.value = false
+    showMorePopover.value = false
     if (detailData.value.status == '1') {
         tipsContent.value = $t('OKR已归档')
         showModal.value = true
