@@ -85,3 +85,6 @@ body.window-portrait .okr-nav-back{
     background: rgba(135, 208, 104, 0.2);
     white-space: nowrap;
 }
+button:focus {
+	outline: 0;
+}

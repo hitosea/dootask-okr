@@ -13,7 +13,6 @@
             <p class=" text-text-li text-14 pl-[40px]">{{ props.content }}</p>
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    
                     <n-button strong secondary @click="() => { emit('close') }">
                         {{ $t('取消') }}
                     </n-button>
