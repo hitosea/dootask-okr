@@ -220,14 +220,12 @@ const tableColumns = ref<DataTableColumn[]>([
         key: "action",
         render(rowData:any) {
             return [h(
-                NButton,{
-                    quaternary: true,
-                    size: 'small',
-                    type: 'primary',
+                'span',{
                     style:{
                         height:'auto',
                         padding:'5px',
                     },
+                    class:' text-primary-color cursor-pointer',
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
                         okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
@@ -235,27 +233,23 @@ const tableColumns = ref<DataTableColumn[]>([
                 },
                 { default: () => $t('查看') }
             ), h(
-                NButton,{
-                    quaternary: true,
-                    size: 'small',
-                    type: 'primary',
+                'span',{
                     style:{
                         height:'auto',
                         padding:'5px',
                     },
+                    class:' text-primary-color cursor-pointer',
                     onClick:  _ => handleAssign(rowData)
                 },
                 { default: () => $t('分配') }
             ), isAdmin ? h(
-                NButton,{
-                    quaternary: true,
-                    size: 'small',
-                    type: 'error',
+                'span',{
                     style:{
                         height:'auto',
                         padding:'5px',
                         color:'#FF0000'
                     },
+                    class:'cursor-pointer',
                     onClick: _ => {
                         popupShow.value = true
                         popupTitle.value = $t('删除')

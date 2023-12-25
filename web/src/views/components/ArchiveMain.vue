@@ -42,7 +42,7 @@
         </WarningPopup>
 
         <!-- OKR详情 -->
-        <OkrDetailsModal :id="okrDetailsId" :show="okrDetailsShow" @getList="handleGetOkrArchive"
+        <OkrDetailsModal :id="okrDetailsId" @openDetail="handleOpenDetail" :show="okrDetailsShow" @getList="handleGetOkrArchive"
             @close="() => { okrDetailsShow = false }" />
 
     </div>
@@ -248,12 +248,18 @@ const handleDelete = () => {
             showModal.value = false
         })
 }
-
+//点击对齐目标名字再次打开
+const handleOpenDetail = (id)=>{
+    okrDetailsId.value = id
+    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: id })
+}
 
 const onSearch = () => {
     tablePage.value = 1
     handleGetOkrArchive('');
 }
+
+
 
 // 分页
 const onPage = (page) => {

@@ -24,7 +24,7 @@
                             </div>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
+                            <p v-if="detailData.completed == '0'" @click="handleCancel">
                                 {{ detailData.canceled == '0'  ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
@@ -59,7 +59,7 @@
                                 class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0' && detailData.status == '0'" @click="handleCancel">
+                            <p v-if="detailData.completed == '0' " @click="handleCancel">
                                 {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
@@ -810,6 +810,11 @@ const closeModal = () => {
 
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
+    if (detailData.value.status == '1') {
+        tipsContent.value = $t('OKR已归档')
+        showModal.value = true
+        return
+    }
     if (userInfo.userid != detailData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
@@ -844,6 +849,11 @@ const handleCloseDedree = (type, progress) => {
 
 //打开信心
 const handleConfidence = (id, confidences, score) => {
+    if (detailData.value.status == '1') {
+        tipsContent.value = $t('OKR已归档')
+        showModal.value = true
+        return
+    }
     if (userInfo.userid != detailData.value.userid) {
         tipsContent.value = $t('仅限负责人操作')
         showModal.value = true
@@ -869,6 +879,11 @@ const handleCloseConfidenes = (type) => {
 
 //打开评分
 const handleMark = (id, scores, superior_score, progress, can_owner_update_score, can_superior_update_score) => {
+    if (detailData.value.status == '1') {
+        tipsContent.value = $t('OKR已归档')
+        showModal.value = true
+        return
+    }
     if (userInfo.userid == detailData.value.userid || (detailData.value.superior_user?.indexOf(userInfo.userid) != -1 && detailData.value.superior_user?.indexOf(userInfo.userid) != undefined)) {
         if (detailData.value.canceled == '1') return message.error($t('O目标已取消无法操作'))
         if (progress < 100) return message.error($t('KR进度尚未达到100%'))
@@ -939,7 +954,10 @@ const handleCancel = () => {
         emit('upData', detailData.value.id)
         getDetail('')
     })
-        .catch(ResultDialog)
+        .catch(({msg})=>{
+            tipsContent.value = msg
+            showModal.value = true
+        })
         .finally(() => {
             showPopover.value = false
             showMorePopover.value = false
@@ -1005,8 +1023,8 @@ const handleArchive = () => {
         id: detailData.value.id,
     }).then(({ msg }) => {
         message.success($t('操作成功'))
-        emit('close')
-        emit('getList')
+        emit('getList',1)
+        getDetail('')  
     })
         .catch(({ msg }) => {
             message.error(msg)
@@ -1027,7 +1045,7 @@ const handleRestore = () => {
     }).then(({ data }) => {
         message.success($t('操作成功'))
         emit('getList',1)
-        emit('close')
+        getDetail('')
     })
         .catch(({ msg }) => {
             message.error(msg)
