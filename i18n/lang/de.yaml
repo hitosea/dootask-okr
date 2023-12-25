@@ -14,6 +14,7 @@ ErrNoPermission: Begrenzter zugang.
 ErrOkrAdminNotCancel: Es ist nur für administrator geöffnet
 ErrOkrArchiveStatusInvalid: Fehler im archiv
 ErrOkrArchiveStatusNotCompleted: Nur ein archiv nach dem status als erledigt, ausgeliehen und ausgeschieden ist
+ErrOkrArchivedStatusInvalid: OKR hat die akten ausgepackt
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
 ErrOkrCanceled: O ziel nicht betriebsbereit
 ErrOkrCompleted: O ziel nicht erreichbar
@@ -54,6 +55,7 @@ ErrOkrTimeFormat: Format ist falsch
 ErrOkrTimeInvalid: Der anfangszeitraum darf nicht größer sein als das ende. Bitte wählen sie die passende zeitspanne erneut
 ErrOkrTitleLengthInvalid: Die überschrift ist viel zu lang und wird bitte auf 255 zeichen beschränkt
 ErrOkrTypeInvalid: Fehlerhafter zieltyp fehler
+ErrOkrUserDisabled: Den verantwortlichen gibt es nicht. Bitte verteilen sie ihn neu
 ErrOkrVisibleRangeInvalid: Fehler im parameter des zieleintrags
 ErrRequestTimeout: Wir Bitten um mehr zeit.
 ErrTypeNotLogin: Nicht eingegeben.

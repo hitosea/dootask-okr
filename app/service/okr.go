@@ -2031,9 +2031,9 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
-	// 已归档/离职的okr状态不可修改
-	if kr.Status > 0 {
-		return nil, e.New(constant.ErrOkrStatusInvalid)
+	// 已归档状态不可修改
+	if kr.Status == 1 {
+		return nil, e.New(constant.ErrOkrArchivedStatusInvalid)
 	}
 
 	// 更新取消状态
@@ -2862,6 +2862,14 @@ func (s *okrService) ArchiveRestoreOkr(user *interfaces.UserInfoResp, okrId int)
 	if err != nil {
 		return err
 	}
+
+	// 检查用户是否离职或删除
+	var checkUser model.UserBasic
+	core.DB.Model(&model.User{}).Where("userid = ?", obj.Userid).First(&checkUser)
+	if checkUser.Userid == 0 || checkUser.DisableAt != "" {
+		return e.New(constant.ErrOkrUserDisabled)
+	}
+
 	// 已归档才可以还原
 	if obj.Status != 1 {
 		return e.New(constant.ErrOkrArchiveStatusInvalid)

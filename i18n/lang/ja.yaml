@@ -14,6 +14,7 @@ ErrNoPermission: 権限が足りません。
 ErrOkrAdminNotCancel: 操作は管理者のみです
 ErrOkrArchiveStatusInvalid: ファイリングエラーです。
 ErrOkrArchiveStatusNotCompleted: '[完了、キャンセル]のステータスファイリングに限ります。'
+ErrOkrArchivedStatusInvalid: OKRは保存済みです
 ErrOkrAscriptionInvalid: ターゲット・ホーム・パラメータ・エラー
 ErrOkrCanceled: ターゲットOキャンセル操作不能です
 ErrOkrCompleted: O標的完了操作不能です
@@ -54,6 +55,7 @@ ErrOkrTimeFormat: 時間フォーマットが間違っています。
 ErrOkrTimeInvalid: 開始時間は終了時間より長くしてはいけませんので、適切な時間帯を選び直してください
 ErrOkrTitleLengthInvalid: タイトルが長すぎますので255文字以内にしてください
 ErrOkrTypeInvalid: ターゲットタイプパラメータエラーです
+ErrOkrUserDisabled: 担当者がいませんので、担当者を再配置してください
 ErrOkrVisibleRangeInvalid: 目標可視範囲パラメータエラーです
 ErrRequestTimeout: 超過をお願いします
 ErrTypeNotLogin: 未登録です

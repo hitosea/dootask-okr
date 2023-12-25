@@ -14,6 +14,7 @@ ErrNoPermission: Manque de pouvoirs
 ErrOkrAdminNotCancel: Action réservée aux administrateurs
 ErrOkrArchiveStatusInvalid: Erreur dans l’état des archives
 ErrOkrArchiveStatusNotCompleted: Dossier de statut pour [terminé, annulé] seulement
+ErrOkrArchivedStatusInvalid: OKR est archivé
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
 ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel
@@ -54,6 +55,7 @@ ErrOkrTimeFormat: Format de l’heure incorrect
 ErrOkrTimeInvalid: L’heure de début ne peut pas être plus grande que l’heure de fin, veuillez sélectionner une nouvelle période appropriée
 ErrOkrTitleLengthInvalid: Le contenu du titre est trop long, veuillez le limiter à 255 caractères
 ErrOkrTypeInvalid: Type de cible paramètre erreur
+ErrOkrUserDisabled: Le responsable n’existe pas, réaffecter le responsable
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré
 ErrTypeNotLogin: Pas de login
