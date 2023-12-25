@@ -2027,13 +2027,13 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
-	if kr.Userid != userid {
-		return nil, e.New(constant.ErrOkrOwnerNotCancel)
-	}
-
 	// 已归档状态不可修改
 	if kr.Status == 1 {
 		return nil, e.New(constant.ErrOkrArchivedStatusInvalid)
+	}
+
+	if kr.Userid != userid {
+		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
 	// 更新取消状态
@@ -2858,7 +2858,7 @@ func (s *okrService) ArchiveOkr(user *interfaces.UserInfoResp, okrId int) error 
 
 // 还原归档目标
 func (s *okrService) ArchiveRestoreOkr(user *interfaces.UserInfoResp, okrId int) error {
-	obj, err := s.getObjectiveAndCheckPermission(user, okrId)
+	obj, err := s.GetObjectiveByIdWithKeyResults(okrId)
 	if err != nil {
 		return err
 	}
@@ -2868,6 +2868,11 @@ func (s *okrService) ArchiveRestoreOkr(user *interfaces.UserInfoResp, okrId int)
 	core.DB.Model(&model.User{}).Where("userid = ?", obj.Userid).First(&checkUser)
 	if checkUser.Userid == 0 || checkUser.DisableAt != "" {
 		return e.New(constant.ErrOkrUserDisabled)
+	}
+
+	// 仅限目标负责人、管理员操作
+	if obj.Userid != user.Userid && !user.IsAdmin() {
+		return e.New(constant.ErrOkrOwnerOrAdminNotCancel)
 	}
 
 	// 已归档才可以还原
