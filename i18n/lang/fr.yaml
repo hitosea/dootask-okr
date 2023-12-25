@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: La somme des pondérations d’autoévaluation et de n
 ErrOkrScored: 'KR évalué non opérationnel: {{.detail}}'
 ErrOkrScoredNotUpdate: Les notes ne sont pas modifiables
 ErrOkrScoredNotUpdateProgress: Aucune modification de la progression n’est autorisée après le score
+ErrOkrStatusInvalid: Erreur d’état cible
 ErrOkrSuperiorScored: Supérieur a noté
 ErrOkrTimeEmpty: Le temps ne peut pas être vide
 ErrOkrTimeFormat: Format de l’heure incorrect

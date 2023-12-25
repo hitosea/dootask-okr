@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: The sum of the self-rated weight and the parent rating
 ErrOkrScored: 'KR has been scored and cannot operate: {{.detail}}'
 ErrOkrScoredNotUpdate: Score is not modifiable
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
+ErrOkrStatusInvalid: Target status error
 ErrOkrSuperiorScored: Superior rated
 ErrOkrTimeEmpty: Time cannot be empty
 ErrOkrTimeFormat: Time format error

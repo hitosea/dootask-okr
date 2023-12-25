@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: Die bewertung selbst und die beurteilung der vorgesetz
 ErrOkrScored: 'Die infrarot-anlage ist nicht gültig: {{.detail}}'
 ErrOkrScoredNotUpdate: Die punktzahl wird nicht mehr korrigiert.
 ErrOkrScoredNotUpdateProgress: Der durchsuchungsbefehl ist nicht zulässig nach punktzahl
+ErrOkrStatusInvalid: Falsche koordinaten.
 ErrOkrSuperiorScored: An die vorgesetzten.
 ErrOkrTimeEmpty: Die zeit ist nicht Leer
 ErrOkrTimeFormat: Format ist falsch

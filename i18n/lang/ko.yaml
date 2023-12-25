@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: 자체 평가 가중치와 상위 점수의 가중치�
 ErrOkrScored: kr 채점 오류:{{.detail}}
 ErrOkrScoredNotUpdate: 평점 수정 불가능
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
+ErrOkrStatusInvalid: 대상 상태 오류
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
 ErrOkrTimeEmpty: 시간을 비워 두면 안 된다
 ErrOkrTimeFormat: 잘못된 시간 형식

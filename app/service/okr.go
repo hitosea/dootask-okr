@@ -2031,6 +2031,11 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, e.New(constant.ErrOkrOwnerNotCancel)
 	}
 
+	// 已归档/离职的okr状态不可修改
+	if kr.Status > 0 {
+		return nil, e.New(constant.ErrOkrStatusInvalid)
+	}
+
 	// 更新取消状态
 	var record interfaces.OkrLogParams
 	if kr.Canceled == 0 {

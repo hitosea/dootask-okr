@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: 自評權重和上級評分權重相加必須等於100
 ErrOkrScored: KR已評分無法操作：{{.detail}}
 ErrOkrScoredNotUpdate: 評分不可修改
 ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度
+ErrOkrStatusInvalid: 目標狀態錯誤
 ErrOkrSuperiorScored: 上級已評分
 ErrOkrTimeEmpty: 時間不能爲空
 ErrOkrTimeFormat: 時間格式錯誤

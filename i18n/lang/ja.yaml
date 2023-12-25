@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: 自己評価の重みと上級者の採点の重みを
 ErrOkrScored: KR已採点不能操作:{{.detail}}
 ErrOkrScoredNotUpdate: 採点は変更不可です
 ErrOkrScoredNotUpdateProgress: 採点後の進捗修正は認められません。
+ErrOkrStatusInvalid: ターゲット・ステータス・エラー
 ErrOkrSuperiorScored: 上級機関が採点しました
 ErrOkrTimeEmpty: 時間を空けることはできません
 ErrOkrTimeFormat: 時間フォーマットが間違っています。

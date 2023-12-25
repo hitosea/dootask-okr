@@ -47,6 +47,7 @@ ErrOkrScoreWeightInvalid: Antara penilaian diri dan penilaian yang lebih tinggi,
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi
 ErrOkrScoredNotUpdate: Nilai tidak bisa dimodifikasi
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
+ErrOkrStatusInvalid: Status target salah
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTimeEmpty: Waktu tidak boleh kosong
 ErrOkrTimeFormat: Galat format waktu
