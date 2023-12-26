@@ -14,6 +14,7 @@ ErrNoPermission: Insufficient authority
 ErrOkrAdminNotCancel: Administrators only
 ErrOkrArchiveStatusInvalid: Archive status error
 ErrOkrArchiveStatusNotCompleted: Status archiving for Completed, Cancelled only
+ErrOkrArchivedStatusInvalid: OKR has been filed
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
 ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated
@@ -47,12 +48,14 @@ ErrOkrScoreWeightInvalid: The sum of the self-rated weight and the parent rating
 ErrOkrScored: 'KR has been scored and cannot operate: {{.detail}}'
 ErrOkrScoredNotUpdate: Score is not modifiable
 ErrOkrScoredNotUpdateProgress: You are not allowed to modify the progress after scoring
+ErrOkrStatusInvalid: Target status error
 ErrOkrSuperiorScored: Superior rated
 ErrOkrTimeEmpty: Time cannot be empty
 ErrOkrTimeFormat: Time format error
 ErrOkrTimeInvalid: The start time cannot be later than the end time. Select a new time range
 ErrOkrTitleLengthInvalid: The title is too long. Please limit it to 255 characters
 ErrOkrTypeInvalid: The target type parameter is incorrect
+ErrOkrUserDisabled: The responsible person does not exist. Please reassign the responsible person
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
 ErrRequestTimeout: Request timeout
 ErrTypeNotLogin: Not logged in

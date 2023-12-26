@@ -14,6 +14,7 @@ ErrNoPermission: 권한이 부족합니다.
 ErrOkrAdminNotCancel: 운영자에게만 허용됩니다
 ErrOkrArchiveStatusInvalid: 압축 파일 상태 오류
 ErrOkrArchiveStatusNotCompleted: 완료된 상태, 취소된 상태만 압축 파일
+ErrOkrArchivedStatusInvalid: okr은 정리되어 있다
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
 ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
 ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다
@@ -47,12 +48,14 @@ ErrOkrScoreWeightInvalid: 자체 평가 가중치와 상위 점수의 가중치�
 ErrOkrScored: kr 채점 오류:{{.detail}}
 ErrOkrScoredNotUpdate: 평점 수정 불가능
 ErrOkrScoredNotUpdateProgress: 채점 후 진행 상태 수정은 허용되지 않습니다
+ErrOkrStatusInvalid: 대상 상태 오류
 ErrOkrSuperiorScored: 상부에서 이미 평점을 매겼다.
 ErrOkrTimeEmpty: 시간을 비워 두면 안 된다
 ErrOkrTimeFormat: 잘못된 시간 형식
 ErrOkrTimeInvalid: 시작 시간이 종료 시간보다 길어서는 안 되니, 적합한 시간대를 다시 선택하세요
 ErrOkrTitleLengthInvalid: 제목이 너무 깁니다. 255 글자로 제한하십시오
 ErrOkrTypeInvalid: 대상 형식 인자 오류
+ErrOkrUserDisabled: 담당자가 없으니 책임자를 재배치해 주세요
 ErrOkrVisibleRangeInvalid: 대상 표시 범위 인자 오류
 ErrRequestTimeout: 요청 시간 초과
 ErrTypeNotLogin: 로그인하지 않음

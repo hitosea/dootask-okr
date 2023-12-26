@@ -56,6 +56,9 @@ var (
 	ErrOkrScoredNotUpdate                 = "ErrOkrScoredNotUpdate"                 //评分不可修改
 	ErrOkrScoreTypeInvalid                = "ErrOkrScoreTypeInvalid"                //评分类型错误
 	ErrOkrReplayStatusInvalid             = "ErrOkrReplayStatusInvalid"             //无效的复盘状态
+	ErrOkrStatusInvalid                   = "ErrOkrStatusInvalid"                   //目标状态错误
+	ErrOkrArchivedStatusInvalid           = "ErrOkrArchivedStatusInvalid"           //OKR已归档
+	ErrOkrUserDisabled                    = "ErrOkrUserDisabled"                    //负责人不存在，请重新分配负责人
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

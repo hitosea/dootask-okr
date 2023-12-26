@@ -14,6 +14,7 @@ ErrNoPermission: Tidak cukup izin
 ErrOkrAdminNotCancel: Hanya administrator
 ErrOkrArchiveStatusInvalid: Kesalahan pengarsipan
 ErrOkrArchiveStatusNotCompleted: Berkas status saja [selesai, dibatalkan]
+ErrOkrArchivedStatusInvalid: OKR sudah diamankan
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
 ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai
@@ -47,12 +48,14 @@ ErrOkrScoreWeightInvalid: Antara penilaian diri dan penilaian yang lebih tinggi,
 ErrOkrScored: KR telah dinilai tidak dapat dioperasi
 ErrOkrScoredNotUpdate: Nilai tidak bisa dimodifikasi
 ErrOkrScoredNotUpdateProgress: Tak boleh merevisi kemajuan setelah dinilai
+ErrOkrStatusInvalid: Status target salah
 ErrOkrSuperiorScored: Lebih tinggi dinilai
 ErrOkrTimeEmpty: Waktu tidak boleh kosong
 ErrOkrTimeFormat: Galat format waktu
 ErrOkrTimeInvalid: Waktu untuk memulai tidak lebih dari waktu untuk mengakhiri. Silahkan pilih kembali periode yang sesuai
 ErrOkrTitleLengthInvalid: Judul konten terlalu panjang, tolong batasi sampai di bawah 255 karakter
 ErrOkrTypeInvalid: Parameter jenis target salah
+ErrOkrUserDisabled: Orang yang bertanggung jawab tidak ada
 ErrOkrVisibleRangeInvalid: Target terlihat parameter salah
 ErrRequestTimeout: Waktu permintaan
 ErrTypeNotLogin: Tidak login

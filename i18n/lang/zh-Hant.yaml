@@ -14,6 +14,7 @@ ErrNoPermission: 權限不足
 ErrOkrAdminNotCancel: 僅限管理員操作
 ErrOkrArchiveStatusInvalid: 歸檔狀態錯誤
 ErrOkrArchiveStatusNotCompleted: 僅限【已完成，已取消】的狀態歸檔
+ErrOkrArchivedStatusInvalid: OKR已歸檔
 ErrOkrAscriptionInvalid: 目標歸屬參數錯誤
 ErrOkrCanceled: O目標已取消無法操作
 ErrOkrCompleted: O目標已完成無法操作
@@ -47,12 +48,14 @@ ErrOkrScoreWeightInvalid: 自評權重和上級評分權重相加必須等於100
 ErrOkrScored: KR已評分無法操作：{{.detail}}
 ErrOkrScoredNotUpdate: 評分不可修改
 ErrOkrScoredNotUpdateProgress: 評分後不允許修改進度
+ErrOkrStatusInvalid: 目標狀態錯誤
 ErrOkrSuperiorScored: 上級已評分
 ErrOkrTimeEmpty: 時間不能爲空
 ErrOkrTimeFormat: 時間格式錯誤
 ErrOkrTimeInvalid: 開始時間不能大於結束時間，請重新選擇合適的時間段
 ErrOkrTitleLengthInvalid: 標題內容過長，請限制在255個字符以內
 ErrOkrTypeInvalid: 目標類型參數錯誤
+ErrOkrUserDisabled: 負責人不存在，請重新分配負責人
 ErrOkrVisibleRangeInvalid: 目標可見範圍參數錯誤
 ErrRequestTimeout: 請求超時
 ErrTypeNotLogin: 未登錄
