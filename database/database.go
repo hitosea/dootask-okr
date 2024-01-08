@@ -3,6 +3,7 @@ package database
 import (
 	"dootask-okr/app/core"
 	"dootask-okr/app/model"
+	"dootask-okr/config"
 	"dootask-okr/database/migrations"
 	"dootask-okr/database/seeders"
 	"os"
@@ -12,7 +13,7 @@ import (
 
 func Init() error {
 	options := &gormigrate.Options{
-		TableName:                 "migrations",
+		TableName:                 config.CONF.System.Prefix + "okr_migrations",
 		IDColumnName:              "id",
 		IDColumnSize:              255,
 		UseTransaction:            true,
@@ -23,6 +24,16 @@ func Init() error {
 	// 判断是否是mysql
 	if db.Dialector.Name() == "mysql" {
 		db = db.Set("gorm:table_options", "CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+	}
+
+	// 删除旧的迁移文件
+	exists := db.Migrator().HasTable("migrations")
+	if exists {
+		var count int64
+		db.Raw("SELECT COUNT(*) FROM migrations WHERE id = ?", "2023071001-add-table-okr").Count(&count)
+		if count > 0 {
+			db.Exec("DROP TABLE IF EXISTS migrations")
+		}
 	}
 
 	one := db.Migrator().HasTable(&model.Okr{})

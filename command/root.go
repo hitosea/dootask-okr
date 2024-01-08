@@ -35,6 +35,9 @@ var rootCommand = &cobra.Command{
 		if config.CONF.System.Cache == "" {
 			config.CONF.System.Cache = common.RunDir("/.cache")
 		}
+		if config.CONF.System.Prefix == "" {
+			config.CONF.System.Prefix = "pre_"
+		}
 		if config.CONF.System.Dsn == "" {
 			config.CONF.System.Dsn = fmt.Sprintf("sqlite3://%s/%s", config.CONF.System.Cache, "database.db")
 		}
@@ -104,7 +107,7 @@ func Execute() {
 	flags.StringVar(&system.Port, "port", "", "端口号，默认：5566")
 	flags.StringVar(&system.Mode, "mode", "release", "运行模式，可选：debug|test|release")
 	flags.StringVar(&system.Cache, "cache", "", "数据缓存目录，默认：{RunDir}/.cache")
-
+	flags.StringVar(&config.CONF.System.Prefix, "prefix", os.Getenv("MYSQL_PREFIX"), "数据前缀")
 	mysqlDsn := fmt.Sprintf("mysql://%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		os.Getenv("MYSQL_USERNAME"),
 		os.Getenv("MYSQL_PASSWORD"),

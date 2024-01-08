@@ -34,8 +34,8 @@ func InDB(str string) (*gorm.DB, error) {
 	dbConfig := &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "pre_", // 表名前缀
-			SingularTable: false,  // true:单数 false:复数，统一和原dootask复数表名，此时，`User` 的表名应该是 `t_users`
+			TablePrefix:   config.CONF.System.Prefix, // 表名前缀
+			SingularTable: false,                     // true:单数 false:复数，统一和原dootask复数表名，此时，`User` 的表名应该是 `t_users`
 		},
 	}
 

@@ -1,12 +1,13 @@
 package config
 
 type System struct {
-	Mode  string `mapstructure:"mode"`
-	Host  string `mapstructure:"host"`
-	Port  string `mapstructure:"port"`
-	Cache string `mapstructure:"cache"`
-	Dsn   string `mapstructure:"dsn"`
-	Start string `mapstructure:"start"`
+	Mode   string `mapstructure:"mode"`
+	Host   string `mapstructure:"host"`
+	Port   string `mapstructure:"port"`
+	Cache  string `mapstructure:"cache"`
+	Dsn    string `mapstructure:"dsn"`
+	Start  string `mapstructure:"start"`
+	Prefix string `mapstructure:"prefix"`
 }
 
 type Jwt struct {
