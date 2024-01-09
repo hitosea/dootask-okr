@@ -263,7 +263,7 @@
         </div>
 
         <div
-            class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[2px] border-[#F2F3F5] ">
+            class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[1px] border-[#F2F3F5] ">
             <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white"
                 :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
@@ -1461,5 +1461,8 @@ defineExpose({
     .n-scrollbar-rail {
         @apply right-0;
     }
+}
+:deep(.dialog-wrapper .dialog-footer) {
+    padding-right: 0;
 }
 </style>
