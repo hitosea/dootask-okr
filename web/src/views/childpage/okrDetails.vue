@@ -43,8 +43,8 @@ const showPopover = ref(false)
 const cancel = ref(0)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 
-if (route.query.id != undefined) {
-    id.value = Number(route.query.id)
+if (route.query.id != undefined || route.query.data != undefined) {
+    id.value = Number(route.query.id || route.query.data)
     userid.value = Number(route.query.userid)
 }
 

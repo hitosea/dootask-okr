@@ -1031,7 +1031,7 @@ const handleArchive = () => {
     }).then(({ msg }) => {
         message.success($t('操作成功'))
         emit('getList',1)
-        getDetail('')  
+        getDetail('')
     })
         .catch(({ msg }) => {
             message.error(msg)

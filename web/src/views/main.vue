@@ -61,7 +61,7 @@ const handleOpenDetail = (id)=>{
     if (window.innerWidth < 910) {
             router.push({
                 path: globalStore.baseRoute + '/okrDetails',
-                query: { data: id },
+                query: { id: id },
             })
         }
         else {
