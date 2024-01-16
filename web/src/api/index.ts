@@ -1,15 +1,17 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from 'axios'
 import utils from "../utils/utils";
 import {GlobalStore} from "../store";
+import {UserStore} from "../store/user";
 import {ResultData} from "./interface/base";
 import {CODE} from "./constant";
+import { I18nGlobal } from "@/lang"
 
 const config = {
     timeout: 60000, // 请求超时时间毫秒
     withCredentials: true, // 异步请求携带cookie
     headers: {
         // 设置后端需要的传参类型
-        'Content-Type': 'application/json',     
+        'Content-Type': 'application/json',
     },
 }
 
@@ -28,9 +30,9 @@ class RequestHttp {
          */
         this.service.interceptors.request.use(
             function (config) {
-                config.baseURL = GlobalStore().baseUrl + '/apps/okr/api/v1' 
-                config.headers.Token = JSON.parse(localStorage.getItem("UserState"))?.info?.token
-                config.headers.Language = localStorage.getItem("lang")
+                config.baseURL = GlobalStore().baseUrl + '/apps/okr/api/v1'
+                config.headers.Token = UserStore().info?.token
+                config.headers.Language = I18nGlobal.locale.value
                 return config
             },
             function (error) {

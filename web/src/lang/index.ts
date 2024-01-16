@@ -9,7 +9,7 @@ import auto_zhHant from "./auto/zh-hant.json"
 
 const i18n = createI18n({
     legacy: false,
-    locale: localStorage.getItem("lang") || "zh",
+    locale: localStorage.getItem("__language:type__") || "zh",
     fallbackLocale: "zh",
     globalInjection: true,
     messages: {

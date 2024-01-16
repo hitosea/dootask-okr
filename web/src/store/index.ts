@@ -3,7 +3,6 @@ import { createPinia, defineStore } from "pinia"
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { ConfigProviderProps, createDiscreteApi, darkTheme, useOsTheme } from "naive-ui";
 import { GlobalState } from "./interface"
-import piniaPersistConfig from "./config/pinia-persist"
 import { I18nGlobal } from "@/lang"
 
 export const GlobalStore = defineStore({
@@ -74,7 +73,7 @@ export const GlobalStore = defineStore({
             this.themeName = name
         },
         setLanguage(language: any) {
-            localStorage.setItem("lang", (I18nGlobal.locale.value = this.language = language));
+            I18nGlobal.locale.value = this.language = language
         },
         setVues(vues: any) {
             window.Vues = vues;
@@ -140,8 +139,7 @@ export const GlobalStore = defineStore({
         isPortrait(){
             return document.querySelector('.window-portrait') ? 1 : 0;
         }
-    },
-    persist: piniaPersistConfig("GlobalState"),
+    }
 });
 
 //
