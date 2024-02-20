@@ -1267,7 +1267,9 @@ const within24Hours = (date) => {
 }
 
 const expiresFormat = (date) => {
-    return webTs.countDownFormat(date, nowTime.value)
+    const Dates = new Date(utils.TimeHandle(date));
+    const timestamp = Dates.getTime();
+    return webTs.countDownFormat(timestamp, nowTime.value)
 }
 
 
