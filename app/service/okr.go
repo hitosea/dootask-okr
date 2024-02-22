@@ -2279,7 +2279,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	// 开始事务
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果有空复盘记录，则不创建， 直接更新复盘记录
-		if !s.hasReplay(req.OkrId) {
+		if s.hasOkrReplay(req.OkrId) && !s.hasReplay(req.OkrId) {
 			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "replay": 1}).Scan(&replay).Error; err != nil {
 				return err
 			}
@@ -2329,11 +2329,18 @@ func (s *okrService) GetReplayDetail(id int) (*model.OkrReplay, error) {
 	return &replay, nil
 }
 
-// 是否已复盘 false-未复盘 true-已复盘
+// 是否有历史复盘 true-已复盘 false-未复盘
 func (s *okrService) hasReplay(okrId int) bool {
 	var replay model.OkrReplay
 	core.DB.Preload("KrHistory").Where("okr_id = ?", okrId).First(&replay)
 	return len(replay.KrHistory) > 0
+}
+
+// 是否主表有复盘 true-已复盘 false-未复盘
+func (s *okrService) hasOkrReplay(okrId int) bool {
+	var replay model.OkrReplay
+	core.DB.Where("okr_id = ?", okrId).First(&replay)
+	return replay.Id > 0
 }
 
 // 获取目标所属名称
