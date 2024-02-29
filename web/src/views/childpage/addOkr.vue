@@ -1,9 +1,9 @@
 <template >
     <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalTransferIndex + 1 }">
-        <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe704;</i>
+        <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
         <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ okrEdit ? $t('编辑OKR') :
             $t('添加OKR') }}</h2>
-        <i @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
+        <i @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-22">&#xe684;</i>
     </div>
     <div class="relative pt-[76px] pb-32 pl-16 pr-2 bg-[#fff]" :style="{ 'z-index': modalTransferIndex }">
         <AddOkrsMain ref="AddOkrsRef" :edit="okrEdit" :editData="okrEditData" :labelPlacement="'top'" :labelAlign="'left'"

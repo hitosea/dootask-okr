@@ -1,6 +1,6 @@
 <template >
     <div class="delete-box nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalTransferIndex + 1 }">
-        <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe704;</i>
+        <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
         <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('设置')}}</h2>
         <i @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
     </div>

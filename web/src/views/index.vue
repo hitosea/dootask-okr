@@ -20,9 +20,11 @@
                     <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
                 </n-button>
-                <n-button class="add-button" type="tertiary" @click="handleAdd" :loading="btnLoading>0" circle>
-                    <i v-if="APP_BASE_APPLICATION && btnLoading == 0" class="ivu-icon ivu-icon-md-add"></i>
-                    <i v-else-if="btnLoading == 0" class="okrfont">&#xe6f2;</i>
+                <n-button class="add-button" type="tertiary" @click="handleAdd" circle>
+                    <n-spin size="small" :show="btnLoading>0">
+                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-md-add"></i>
+                        <i v-else class="okrfont">&#xe6f2;</i>
+                    </n-spin>
                 </n-button>
                 <n-button class="more-button" type="tertiary" @click="moreButtonPopoverShow = true" circle>
                     <n-popover class="okr-more-button-popover"
@@ -234,7 +236,6 @@ const handleEdit = (data) => {
 const handleAdd = () => {
     btnLoading.value = 1
     getUserInfo().then(({ data }) => {
-        setTimeout(()=>{
             if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
                 tipsContent.value = $t('您当前未加入任何部门，不能发起！')
                 showModal.value = true
@@ -243,7 +244,6 @@ const handleAdd = () => {
             else{
                 addShow.value = proxy.$openChildPage('/addOkr')
             }
-        },200)
     })
     .catch()
     .finally(()=>{
