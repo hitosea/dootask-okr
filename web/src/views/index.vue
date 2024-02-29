@@ -7,10 +7,11 @@
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
             <div class="okr-right z-[2]">
-                <div class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
-                    :class="searchShow || searchObject ? 'search-active' : ''">
+                <n-button class="search-button" @mouseover="() => { searchShow = true }" @mouseout="() => { searchShow = false }"
+                    :class="searchShow || searchObject ? 'search-active' : ''" circle>
                     <span class="search-button-span border-[rgba(142,142,143,0.5)] h-[16px] leading-4" v-show="searchShow || searchObject">{{ inputName }}</span>
                     <n-input
+                        ref="searchInputRef"
                         v-show="searchShow || searchObject"
                         v-model:value="searchObject"
                         class="border-none"
@@ -18,12 +19,12 @@
                         :placeholder="$t('请输入目标 (O)')"/>
                     <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
-                </div>
-                <div class="add-button" type="tertiary" @click="handleAdd">
-                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-md-add"></i>
-                    <i v-else class="okrfont">&#xe6f2;</i>
-                </div>
-                <div class="more-button" type="tertiary" @click="moreButtonPopoverShow = true">
+                </n-button>
+                <n-button class="add-button" type="tertiary" @click="handleAdd" :loading="btnLoading>0" circle>
+                    <i v-if="APP_BASE_APPLICATION && btnLoading == 0" class="ivu-icon ivu-icon-md-add"></i>
+                    <i v-else-if="btnLoading == 0" class="okrfont">&#xe6f2;</i>
+                </n-button>
+                <n-button class="more-button" type="tertiary" @click="moreButtonPopoverShow = true" circle>
                     <n-popover class="okr-more-button-popover"
                     :show="moreButtonPopoverShow"
                     @clickoutside="moreButtonPopoverShow = false"
@@ -43,7 +44,7 @@
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
                         </div>
                     </n-popover>
-                </div>
+                </n-button>
             </div>
         </div>
         <div class="okr-tabs">
@@ -118,6 +119,7 @@ const isSingle = proxy.$globalStore.isSingle()
 const pageTitle = ref("OKR管理")
 const loadIng = ref(false)
 const route = useRoute()
+const searchInputRef = ref(null)
 const pageOkrRef = ref(null)
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
@@ -137,7 +139,7 @@ const tabsName = ref('created')
 
 const showModal = ref(false)
 const tipsContent = ref('')
-
+const btnLoading = ref(0)
 
 let editData = {}
 
@@ -149,6 +151,17 @@ watch(route,(newValue)=>{
         }
     })
 },{immediate:true})
+
+watch(searchShow,(newValue)=>{
+    nextTick(()=>{
+        if (newValue) {
+            setTimeout(()=>{
+                searchInputRef.value?.focus()
+            },100)
+        }
+    })
+},{immediate:true})
+
 
 if (route.query.active == undefined) {
     router.replace({
@@ -219,18 +232,25 @@ const handleEdit = (data) => {
 
 //添加OKR
 const handleAdd = () => {
+    btnLoading.value = 1
     getUserInfo().then(({ data }) => {
-        if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
-            tipsContent.value = $t('您当前未加入任何部门，不能发起！')
-            showModal.value = true
-            return
-        }
-        else{
-            addShow.value = proxy.$openChildPage('/addOkr')
-        }
+        setTimeout(()=>{
+            if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
+                tipsContent.value = $t('您当前未加入任何部门，不能发起！')
+                showModal.value = true
+                return
+            }
+            else{
+                addShow.value = proxy.$openChildPage('/addOkr')
+            }
+        },200)
     })
     .catch()
-    .finally()
+    .finally(()=>{
+        setTimeout(()=>{
+            btnLoading.value = 0
+        },300)
+    })
 }
 
 const handleClose = (e, id) => {
@@ -340,6 +360,7 @@ const handleSettingShow = () => {
                 i {
                     @apply text-20 text-emoji-users-color;
                 }
+                text-align: left;
             }
 
             .search-button {

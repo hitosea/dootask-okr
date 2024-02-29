@@ -5,7 +5,7 @@ import { routes } from "./routes/routes"
 import I18n from "./lang/index"
 import createDemoRouter from "./routes"
 import initGlobal from "./global"
-import "./assets/styles/index.css"
+import "./assets/styles/index.less"
 import directives from "@/directives/index"
 import { handleMicroData,fixBugForVueRouter4 } from "./microapp"
 
