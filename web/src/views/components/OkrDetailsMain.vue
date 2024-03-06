@@ -89,13 +89,12 @@
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('起止时间') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
-                                <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{
-        utils.GoDate(detailData.end_at || 0) }}</span>
-                            <div v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
-                                <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at)
-                                    }}</n-tag>
-                                <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
-                            </div>
+                                <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{utils.GoDate(detailData.end_at || 0) }}</span>
+                                <div v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
+                                    <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at)
+                                        }}</n-tag>
+                                    <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
+                                </div>
                             </p>
 
                         </div>
@@ -105,8 +104,7 @@
                                 <i class="okrfont icon-item text-[#BBBBBB]">&#xe6ec;</i>
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('优先级') }}</span>
                             </p>
-                            <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority
-                                }}</span>
+                            <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority}}</span>
                         </div>
 
 
@@ -126,8 +124,7 @@
                     <div class="hidden md:flex flex-col mt-20 gap-4 min-h-[60px]">
                         <div class="flex flex-col" v-for="(item, index) in detailData.key_results">
                             <div class="flex items-start">
-                                <span class=" text-primary-color text-12 leading-[20px] mr-8 shrink-0">KR{{ index + 1
-                                    }}</span>
+                                <span class=" text-primary-color text-12 leading-[20px] mr-8 shrink-0">KR{{ index + 1}}</span>
                                 <h4 class=" text-text-li text-14 font-normal leading-[20px]">{{ item.title }}</h4>
                             </div>
                             <div class="flex items-center justify-between mt-4">
@@ -229,8 +226,7 @@
             <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white" :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
-                    <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{
-        $t('对齐') }}
+                    <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{$t('对齐') }}
                     </li>
                     <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
                     </li>
@@ -247,8 +243,7 @@
                         <div class="flex md:hidden flex-col gap-3 min-h-[60px]">
                             <div class="flex flex-col bg-[#fff] px-16 pt-24 rounded-lg" v-for="(item, index) in detailData.key_results">
                                 <div class="flex items-center">
-                                    <h4 class=" text-text-li text-14 font-normal text-left break-all">{{ item.title
-                                        }}</h4>
+                                    <h4 class=" text-text-li text-14 font-normal text-left break-all">{{ item.title }}</h4>
                                 </div>
                                 <div class="flex flex-col justify-between mt-12">
                                     <div class="flex items-center justify-between">
@@ -262,8 +257,7 @@
                                                 <n-avatar v-if="!showUserSelect" round :size="20" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                             </div>
                                             <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 " :class="item.participant.split(',').length == 4 ? 'ml-6' : ''">
-                                                <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
-        item.participant.split(',').length - 4 }}</span>
+                                                <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{item.participant.split(',').length - 4 }}</span>
                                             </div>
                                         </div>
                                         <div class="flex items-center" v-if="!expiresFormat(item.end_at) || detailData.completed == '1' || detailData.canceled == '1'">
@@ -320,33 +314,25 @@
                         <div class="flex text-start mb-[24px] md:pl-24 pr-[10px] " v-for="item in logList" v-if="logList.length">
                             <userAvatar :userUrl="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" :disable="item.user_disable_at"></userAvatar>
                             <div class="flex flex-col gap-3">
-                                <p class="text-14 leading-[16px]"><span :class="item.user_disable_at != '' ? ' opacity-80 line-through text-text-li' : 'text-primary-color'">{{
-        item.user_nickname }}</span><span class="text-12 text-text-li opacity-60 ml-8">{{
-        utils.GoDateHMS(item.created_at)
-    }}</span></p>
+                                <p class="text-14 leading-[16px]"><span :class="item.user_disable_at != '' ? ' opacity-80 line-through text-text-li' : 'text-primary-color'">{{item.user_nickname }}</span>
+                                <span class="text-12 text-text-li opacity-60 ml-8">{{utils.GoDateHMS(item.created_at)}}</span></p>
                                 <h4 class="text-14 leading-[18px] text-title-color font-normal"> <span class=" font-normal">{{ item.content }}</span></h4>
                             </div>
                         </div>
-                        <p v-else class="text-12 mt-20 text-text-tips text-center ">{{ $t('暂无动态') }}</p>
-                        <p @click="nextLogList" v-if="logListLastPage > logListPage" class="text-12 mt-20 mb-20 text-text-tips text-center block md:hidden">{{ $t('点击加载更多') }}</p>
+                        <p v-else-if="!loadIngR" class="text-12 mt-20 text-center text-[#909399]">{{ $t('暂无动态') }}</p>
+                        <p @click="nextLogList" v-if="logListLastPage > logListPage" class="text-12 mt-20 mb-20 text-center block md:hidden text-[#909399]">{{ $t('点击加载更多') }}</p>
                     </n-scrollbar>
                     <n-scrollbar class="mt-16 md:mt-0 px-16 md:px-0" v-if="navActive == 2">
                         <div class="md:pl-24 pr-[10px]">
                             <p class="cursor-pointer mb-20" v-if="userInfo.userid == detailData.userid && detailData.status == '0'" :class="detailData.score < 0 ? 'text-text-tips opacity-50' : 'text-primary-color'" @click="handleAddMultiple"> <i class="okrfont mr-4 text-16 ">&#xe6f2;</i><span class="text-14">{{ $t('添加复盘') }}</span></p>
                             <div class="flex flex-col gap-3" v-if="replayList.length">
                                 <div class="flex items-center justify-between cursor-pointer" v-for="item in replayList" @click="handleCheckMultiple(item.id)">
-                                    <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ({{
-        utils.GoDate(item.created_at) }})</h4>
-                                    <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at)
-                                        }}
-                                    </p>
+                                    <h4 class="text-14 text-text-li font-normal">{{ $t('复盘') }} ( {{utils.GoDate(item.created_at) }})</h4>
+                                    <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}</p>
                                 </div>
                             </div>
-                            
-                            <p v-if="replayList.length == 0" class="text-12 mt-20 mb-20 text-text-tips text-center ">{{ $t('暂无复盘') }}
-                            </p>
-                            <p @click="nextReplayList" v-if="replayListLastPage > replayListPage" class="text-12 mt-20 mb-20 text-text-tips text-center ">{{ $t('点击加载更多') }}
-                            </p>
+                            <p v-if="replayList.length == 0 && !loadIngR && !(userInfo.userid == detailData.userid && detailData.status == '0')" class="text-14 mt-20 mb-20 text-center text-[#909399]">{{ $t('暂无复盘') }}</p>
+                            <p @click="nextReplayList" v-if="replayListLastPage > replayListPage && !loadIngR" class="text-12 mt-20 mb-20 text-center text-[#909399]">{{ $t('点击加载更多') }}</p>
                         </div>
                     </n-scrollbar>
                 </div>
