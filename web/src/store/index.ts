@@ -35,6 +35,10 @@ export const GlobalStore = defineStore({
         okrEditData: null,
         okrEdit: false,
         doubleSkip: null,
+        //
+        openAppChildPage: null,
+        openChildWindow: null,
+        openWebTabWindow: null,
     }),
     actions: {
         async init() {
@@ -80,6 +84,11 @@ export const GlobalStore = defineStore({
         },
         setElectron(electron: any) {
             this.electron = electron;
+        },
+        setOpenWindoMethod(data: any) {
+            this.openAppChildPage = data.openAppChildPage || null;
+            this.openChildWindow = data.openChildWindow || null;
+            this.openWebTabWindow = data.openWebTabWindow || null;
         },
         appSetup() {
             return {

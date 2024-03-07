@@ -31,7 +31,10 @@ export interface GlobalState {
     okrEditData: any
     okrEdit: boolean
     doubleSkip: any,
-    modalList: Array<any>
+    modalList: Array<any>,
+    openAppChildPage: any,
+    openChildWindow: any,
+    openWebTabWindow: any
 }
 
 export interface UserState {

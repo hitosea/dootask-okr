@@ -7,7 +7,7 @@
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
-                <n-tooltip v-if="proxy.$globalStore.electron && !isSingle" trigger="hover">
+                <n-tooltip v-if="proxy.$globalStore.openChildWindow && !isSingle" trigger="hover">
                     <template #trigger>
                         <div class="open-new-win" type="tertiary" @click="openNewWin">
                             <i class="okrfont open">&#xe776;</i>
@@ -424,12 +424,12 @@ const getData = () => {
 
 // 新窗口打开
 const openNewWin = () => {
-    proxy.$globalStore.electron.sendMessage('windowRouter', {
+    proxy.$globalStore.openChildWindow({
         name: `okr`,
-        path: `single/apps/okr/analysis`,
+        path: `/single/apps/okr/analysis`,
         force: false,
         config: {
-            title: pageTitle.value,
+            title: pageTitle,
             titleFixed: true,
             parent: null,
             width: Math.min(window.screen.availWidth, pageOkrAnalysisRef.value.clientWidth + 72),

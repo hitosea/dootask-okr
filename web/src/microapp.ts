@@ -12,6 +12,7 @@ const initGlobaStore = (data: any) => {
     globalStore.setLanguage(data.languages?.languageType)
     globalStore.setVues(data.vues)
     globalStore.setElectron(data.electron)
+    globalStore.setOpenWindoMethod(data)
     userStore.setUserInfo(data.userInfo)
 }
 

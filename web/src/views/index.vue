@@ -40,7 +40,7 @@
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="proxy.$globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="proxy.$globalStore.openChildWindow && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
                             <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -298,9 +298,9 @@ const modalTransferIndex = () => {
 
 // 新窗口打开
 const openNewWin = () => {
-    proxy.$globalStore.electron.sendMessage('windowRouter', {
+    proxy.$globalStore.openChildWindow({
         name: `okr`,
-        path: `single/apps/okr/list?tab=${tabsName.value}`,
+        path: `/single/apps/okr/list?tab=${tabsName.value}`,
         force: false,
         config: {
             title: 'OKR ' + $t(pageTitle.value),

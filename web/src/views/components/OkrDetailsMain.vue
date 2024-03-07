@@ -19,7 +19,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
+                            <p v-if="globalStore.openChildWindow && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
         $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
@@ -1064,7 +1064,7 @@ const handleAddMultiple = () => {
         showModal.value = true
         return
     }
-    if (detailData.value.score < 0) return message.error($t('KR评分未完成'))
+    if (detailData.value.score < 0) return message.error( 'KR ' + $t('评分未完成'))
     if (!proxy.$openChildPage('/addMultiple')) {
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
@@ -1227,9 +1227,9 @@ const colorStatus = (color) => {
 
 // 新窗口打开
 const openNewWin = () => {
-    globalStore.electron.sendMessage('windowRouter', {
+    globalStore.openChildWindow({
         name: `okr-detail-${props.id}`,
-        path: `single/apps/okr/okrDetails?id=${props.id}`,
+        path: `/single/apps/okr/okrDetails?id=${props.id}`,
         force: false,
         config: {
             title: $t('OKR明细'),
