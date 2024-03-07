@@ -331,7 +331,7 @@
                                     <p class="text-12 text-text-li opacity-60">{{ utils.GoDateHMS(item.created_at) }}</p>
                                 </div>
                             </div>
-                            <p v-if="replayList.length == 0 && !loadIngR && !(userInfo.userid == detailData.userid && detailData.status == '0')" class="text-14 mt-20 mb-20 text-center text-[#909399]">{{ $t('暂无复盘') }}</p>
+                            <p v-if="replayList.length == 0 && !loadIngR && !(userInfo.userid == detailData.userid && detailData.status == '0')" class="text-14 mt-20 mb-20 text-center text-[#909399]">{{ $t('暂无数据') }}</p>
                             <p @click="nextReplayList" v-if="replayListLastPage > replayListPage && !loadIngR" class="text-12 mt-20 mb-20 text-center text-[#909399]">{{ $t('点击加载更多') }}</p>
                         </div>
                     </n-scrollbar>
@@ -595,7 +595,7 @@ const handleGetLogList = () => {
         }).then(({ data }) => {
             data.data.map(item => {
                 if (item.content.includes('创建OKR')) {
-                    item.content = $t('创建OKR')
+                    item.content = $t('创建') + ' OKR'
                 }
                 if (item.content.includes('修改O目标标题')) {
                     item.content = $t('修改O目标标题') + ": " + item.records.title_change[0] + ' => ' + item.records.title_change[1]
@@ -610,10 +610,10 @@ const handleGetLogList = () => {
                     item.content = $t('修改对齐目标')
                 }
                 if (item.content.includes('OKR归档')) {
-                    item.content = $t('OKR归档')
+                    item.content = 'OKR ' + $t('归档')
                 }
                 if (item.content.includes('OKR取消归档')) {
-                    item.content = $t('OKR取消归档')
+                    item.content = 'OKR ' + $t('取消归档')
                 }
                 if (item.content.includes('重新分配负责人')) {
                     item.content = $t('重新分配负责人') + ": " + (item.records.user_change[0] || '-') + ' => ' + item.records.user_change[1]
@@ -648,10 +648,10 @@ const handleGetLogList = () => {
                     item.content = $t('上级打分') + ": " + item.records.title
                 }
                 if (item.content.includes('添加KR')) {
-                    item.content = $t('添加KR') + ": " + item.records.title
+                    item.content = $t('添加') + " KR: " + item.records.title
                 }
                 if (item.content.includes('删除KR')) {
-                    item.content = $t('删除KR') + ": " + item.records.title
+                    item.content = $t('删除') + " KR: " + item.records.title
                 }
                 logList.value.push(item)
             })
@@ -720,7 +720,7 @@ const closeModal = () => {
 //打开进度
 const handleSchedule = (id, progress, progress_status, score) => {
     if (detailData.value.status == '1') {
-        tipsContent.value = $t('OKR已归档')
+        tipsContent.value = 'OKR ' + $t('已归档')
         showModal.value = true
         return
     }
@@ -759,7 +759,7 @@ const handleCloseDedree = (type, progress) => {
 //打开信心
 const handleConfidence = (id, confidences, score) => {
     if (detailData.value.status == '1') {
-        tipsContent.value = $t('OKR已归档')
+        tipsContent.value = 'OKR ' + $t('已归档')
         showModal.value = true
         return
     }
@@ -789,7 +789,7 @@ const handleCloseConfidenes = (type) => {
 //打开评分
 const handleMark = (id, scores, superior_score, progress, can_owner_update_score, can_superior_update_score) => {
     if (detailData.value.status == '1') {
-        tipsContent.value = $t('OKR已归档')
+        tipsContent.value = 'OKR ' + $t('已归档')
         showModal.value = true
         return
     }
@@ -851,7 +851,7 @@ const handleCancel = () => {
     showPopover.value = false
     showMorePopover.value = false
     if (detailData.value.status == '1') {
-        tipsContent.value = $t('OKR已归档')
+        tipsContent.value = 'OKR ' + $t('已归档')
         showModal.value = true
         return
     }

@@ -13,19 +13,19 @@ export const routes = [
     {
         name: "List",
         path: "/:catchAll(.*)/list",
-        meta: { title:  I18n.global.t('OKR管理')},
+        meta: { title: 'OKR ' + I18n.global.t('管理')},
         component: Index
     },
     {
         name: "Analysis",
         path: "/:catchAll(.*)/analysis",
-        meta: { title:  I18n.global.t('OKR结果分析')},
+        meta: { title: 'OKR ' + I18n.global.t('结果分析')},
         component: Analysis
     },
     {
         name: "addOkr",
         path: "/:catchAll(.*)/addOkr",
-        meta: { title:  I18n.global.t('添加/编辑OKR')},
+        meta: { title:  I18n.global.t('添加/编辑') + ' OKR'},
         component: addOkr
     },
     {
@@ -43,19 +43,19 @@ export const routes = [
     {
         name: "deletePersonnel",
         path: "/:catchAll(.*)/deletePersonnel",
-        meta: { title:  I18n.global.t('离职/删除人员OKR')},
+        meta: { title:  I18n.global.t('离职/删除人员') + ' OKR'},
         component: dimission
     },
     {
         name: "archive",
         path: "/:catchAll(.*)/archive",
-        meta: { title:  I18n.global.t('已归档OKR')},
+        meta: { title:  I18n.global.t('已归档') + ' OKR'},
         component: archive
     },
     {
         name: "setting",
         path: "/:catchAll(.*)/setting",
-        meta: { title:  I18n.global.t('OKR设置')},
+        meta: { title: 'OKR ' + I18n.global.t('设置')},
         component: setting
     },
     {

@@ -25,7 +25,7 @@ import notDataSvg from "@/assets/images/icon/notData.svg";
 const props = defineProps({
     msg: {
         type: String,
-        default: ()=> $t('暂无OKR'),
+        default: ()=> $t('暂无数据'),
     },
     types: {
         type: Boolean,

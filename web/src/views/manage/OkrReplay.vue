@@ -64,7 +64,7 @@
             </div>
         </div>
         <div>
-            <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无复盘')"
+            <OkrNotDatas v-if="items.length == 0 && !loadIng && !onscrolloading" :loadIng="loadIng" :msg="$t('暂无数据')"
                 :types="searchObject != ''"></OkrNotDatas>
             <OkrLoading v-if="loadIng"></OkrLoading>
         </div>

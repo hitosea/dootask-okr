@@ -10,9 +10,9 @@
                     <template v-slot:content v-if="props.searchObject == '' && !loadIng">
                         <div class="mt-5"><s></s>
                             <div>
-                                <n-button type="primary" ghost @click="handleAdd">
+                                <n-button type="primary" ghost @click="handleAdd" :loading="btnLoading">
                                     <i class="okrfont mr-5">&#xe731;</i>
-                                    {{ $t('创建OKR') }}
+                                    {{ $t('添加') }} Objective
                                 </n-button>
                             </div>
                         </div>
@@ -41,6 +41,10 @@ const PersonalStatisticsRef = ref(null)
 
 const searchTime = ref(null)
 const props = defineProps({
+    btnLoading: {
+        type: Boolean,
+        default: false,
+    },
     searchObject: {
         type: String,
         default: "",

@@ -2,7 +2,7 @@
     <div ref="pageOkrDetailRef" :class="isSingle ? ['bg-white'] : ['bg-[#FAFAFA]']" class="page-okr-details  min-h-full flex relative" :style="{ 'z-index': modalTransferIndex }">
         <div v-if="!isSingle" class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
-            <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('OKR详情') }}</h2>
+            <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
             <n-popover placement="bottom-end" :show="showPopover" :z-index="modalTransferIndex" @clickoutside="showPopover = false">
                 <template #trigger>
                     <i @click="showPopover = !showPopover" class="okrfont text-22 mr-4 z-[2]">&#xe6e9;</i>

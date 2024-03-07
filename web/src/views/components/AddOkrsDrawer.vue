@@ -2,7 +2,7 @@
     <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
         :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
         :trap-focus="false">
-        <n-drawer-content :title="props.edit ? $t('编辑OKR') : $t('添加OKR')" closable>
+        <n-drawer-content :title="(props.edit ? $t('编辑') : $t('添加')) + ' Objective'" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
                 <div class=" flex-auto overflow-hidden">
                     <AddOkrsMain ref="AddOkrsRef" :edit="props.edit" :editData="props.editData"

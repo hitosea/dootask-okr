@@ -107,7 +107,7 @@
             </template>
             <template #header>
                 <h3 class="flex items-center text-16 font-medium text-title-color">
-                    {{ $t('分配OKR') }}
+                    {{ $t('分配') }} OKR
                 </h3>
             </template>
             <n-select v-model:value="assignUserId" :options="assignOptions" :on-blur="getAssignList" :on-search="getAssignList" class="flex-1 overflow-hidden"

@@ -3,7 +3,7 @@
         <div class="okr-title">
             <div class="flex items-center">
                 <div class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
-                <h2 :class="searchShow ? 'title-active' : ''">{{ $t(pageTitle) }}</h2>
+                <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
             <div class="okr-right z-[2]">
@@ -41,8 +41,8 @@
                         </template>
                         <div class="flex flex-col">
                             <p v-if="proxy.$globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
-                            <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档OKR') }}</p>
-                            <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员OKR') }}</p>
+                            <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
+                            <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
                         </div>
                     </n-popover>
@@ -53,7 +53,7 @@
             <n-tabs type="line" :value="tabsName" animated :on-update:value="changeTabs">
                 <n-tab-pane :tab="$t('我创建的')" name="created">
                     <div class="okr-scrollbar">
-                        <Icreated ref="ICreatedRef" :searchObject="searchObject" @edit="handleEdit" @add="handleAdd"/>
+                        <Icreated ref="ICreatedRef" :searchObject="searchObject" :btnLoading="btnLoading > 0" @edit="handleEdit" @add="handleAdd"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane :tab="$t('我参与的')" name="katılım">
@@ -61,7 +61,7 @@
                         <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('部门OKR')" name="dept">
+                <n-tab-pane :tab="$t('部门') + ' OKR'" name="dept">
                     <div class="okr-scrollbar">
                         <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
@@ -71,7 +71,7 @@
                         <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('OKR复盘')" name="review">
+                <n-tab-pane :tab="'OKR ' + $t('复盘')" name="review">
                     <div class="okr-scrollbar">
                         <OkrReplay ref="OkrReplayRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
@@ -118,7 +118,7 @@ const isDepartmentOwner = UserStore().isDepartmentOwner()
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const router = useRouter()
 const isSingle = proxy.$globalStore.isSingle()
-const pageTitle = ref("OKR管理")
+const pageTitle = ref("管理")
 const loadIng = ref(false)
 const route = useRoute()
 const searchInputRef = ref(null)
@@ -182,13 +182,13 @@ const inputName = computed(()=>{
         return $t('我参与的')
     }
     if(tabsName.value == 'dept'){
-        return $t('部门OKR')
+        return $t('部门') + ' OKR'
     }
     if(tabsName.value == 'attention'){
         return $t('我关注的')
     }
     if(tabsName.value == 'review'){
-        return $t('OKR复盘')
+        return 'OKR ' + $t('复盘')
     }
 })
 
@@ -303,7 +303,7 @@ const openNewWin = () => {
         path: `single/apps/okr/list?tab=${tabsName.value}`,
         force: false,
         config: {
-            title: $t(pageTitle.value),
+            title: 'OKR ' + $t(pageTitle.value),
             titleFixed: true,
             parent: null,
             width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),

@@ -23,12 +23,12 @@
                 <n-scrollbar>
                     <n-grid x-gap="24" cols="1 600:2 800:3">
 
-                        <!-- OKR整体平均完成度 -->
+                        <!-- 整体平均完成度 -->
                         <n-gi class="bg-white mb-12 md:mb-20">
                             <n-spin :show="loadIng" size="small">
                                 <div class="list-body">
                                     <div class="echarts-pie">
-                                        <div class="text-16 font-medium">{{ $t('OKR整体平均完成度') }}</div>
+                                        <div class="text-16 font-medium">{{ $t('整体平均完成度') }}</div>
                                         <div class="pie">
                                             <div id="degreeOfCompletion"></div>
                                         </div>
@@ -46,7 +46,7 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium">
-                                            {{ tabsValue == 0 ? $t('各部门OKR平均完成度') : $t('各人员OKR平均完成度') }}
+                                            {{ tabsValue == 0 ? $t('各部门平均完成度') : $t('各人员平均完成度') }}
                                         </div>
                                         <div class="text-14 text-center py-50"
                                             v-if="analyzeDatas.deptCompletes?.length == 0">{{ $t('暂无数据') }}</div>
@@ -69,7 +69,7 @@
                             <n-spin :show="loadIng" size="small">
                                 <div class="list-body">
                                     <div class="echarts-pie">
-                                        <div class="text-16 font-medium">{{ $t('OKR评分分布') }}</div>
+                                        <div class="text-16 font-medium">{{ $t('评分分布') }}</div>
                                         <div class="pie">
                                             <div id="scoreDistribution"></div>
                                         </div>
@@ -99,7 +99,7 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium">
-                                            {{ tabsValue == 0 ? $t('各部门OKR评分分布') : $t('各人员OKR评分分布') }}
+                                            {{ tabsValue == 0 ? $t('各部门评分分布') : $t('各人员评分分布') }}
                                         </div>
                                         <div class="text-14 text-center py-50" v-if="analyzeDatas.deptScores?.length == 0">
                                             {{ $t('暂无数据') }}</div>
@@ -134,7 +134,7 @@
                             <n-spin :show="loadIng" size="small">
                                 <div class="list-body">
                                     <div class="echarts-pie">
-                                        <div class="text-16 flex font-medium">{{ $t('OKR评分率') }}
+                                        <div class="text-16 flex font-medium">{{ $t('评分率') }}
                                             <n-tooltip trigger="hover" :width="widthWindow < 768 ? 200 : 300">
                                                 <template #trigger>
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
@@ -164,7 +164,7 @@
                                     <n-divider class="py-8" />
                                     <div class="list-progress">
                                         <div class="text-16 font-medium flex">
-                                            {{ tabsValue == 0 ? $t('OKR部门评分占比') : $t('OKR个人评分占比') }}
+                                            {{ tabsValue == 0 ? $t('部门评分占比') : $t('个人评分占比') }}
                                             <n-tooltip trigger="hover">
                                                 <template #trigger>
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
@@ -208,7 +208,7 @@ import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
 
 const { proxy } = getCurrentInstance();
-const pageTitle = $t('OKR结果分析')
+const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
 const loadIng = ref(false)
 const tabsValue = ref<any>(null)
@@ -259,7 +259,7 @@ const widthWindow = computed(() => {
     return window.innerWidth
 })
 
-// OKR整体平均完成度
+// 整体平均完成度
 const completeEcharts = ref(null);
 const loadComplete = () => {
     if(!document.getElementById('degreeOfCompletion')){
@@ -314,7 +314,7 @@ const loadScoreDistribute = () => {
             label: {
                 position: 'center',
                 formatter: () => {
-                    return '{p|' + data.total + '}' + '\n {span|' + $t('OKR数量') + '}';
+                    return '{p|' + data.total + '}' + '\n {span|OKR ' + $t('数量') + '}';
                 },
                 rich: {
                     p: {
@@ -343,7 +343,7 @@ const loadScoreDistribute = () => {
     });
 }
 
-// OKR整体平均完成度
+// 整体平均完成度
 const scoreScoreRate = ref(null);
 const loadScoreRate = () => {
     if(!document.getElementById('scoreRatingRate')){
@@ -393,7 +393,7 @@ const getData = () => {
     const params = {
         department: tabsValue.value
     }
-    // OKR整体平均完成度
+    // 整体平均完成度
     http.getAnalyzeComplete(params).then(({ data }) => {
         analyzeDatas.value.completes = data
         loadComplete()

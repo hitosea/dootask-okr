@@ -1,7 +1,7 @@
 <template >
     <div class="setting-main-okr">
 
-        <p class="font-medium text-[#303133]">{{ $t('评分部门OKR') }}</p>
+        <p class="font-medium text-[#303133]">{{ $t('评分部门') }} OKR</p>
         <div class="mt-16" v-if="showUserSelect">
             <UserSelects/>
         </div>

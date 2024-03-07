@@ -20,8 +20,8 @@
                             <span class="text-primary-color text-12 mr-4">KR{{ indexs + 1 }}</span> {{ items.title }}
                         </div>
                         <div class="flex-[3] py-[14px] md:pl-16 border-solid border-0  md:border-l-[1px] border-[#F2F2F2]">
-                            <span class="inline-block md:hidden text-primary-color text-12 mr-4">KR{{ indexs + 1 }}</span> 
-                            <span class="inline-block md:hidden font-medium">{{ $t('评价：') }}</span> 
+                            <span class="inline-block md:hidden text-primary-color text-12 mr-4">KR{{ indexs + 1 }}</span>
+                            <span class="inline-block md:hidden font-medium">{{ $t('评价：') }}</span>
                             {{ items.evaluate == 1 ? $t('做得好的') : $t('可提升的') }}
                         </div>
                     </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="flex mt-[24px] justify-center flex-col items-center" v-else>
         <img class="w-[120px]" :src="utils.apiUrl(notDataSvg)" />
-        <p class="text-[14px] text-text-tips mt-[16px]">{{ $t('暂无复盘') }}</p>
+        <p class="text-[14px] text-text-tips mt-[16px]">{{ $t('暂无数据') }}</p>
         <n-button class="mt-16 px-16" type="primary" ghost @click="handleAddMultiple">
             <i class="okrfont mr-5">&#xe731;</i>
             {{ $t('添加复盘') }}
