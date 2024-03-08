@@ -402,5 +402,8 @@
     "管理": "gérer",
     "结果分析": "Analyse des résultats",
     "添加/编辑": "Ajouter/Modifier",
-    "评分未完成": "Notation non complétée"
+    "评分未完成": "Notation non complétée",
+    "已完成评分的 OKR 所占比例，一个 OKR 里负责人与上级都完成评分，才能计为完成评分的 OKR": "La proportion d'OKR qui ont été notés. Ce n'est que lorsque la personne responsable et le supérieur d'un OKR ont terminé de noter qu'ils peuvent être comptés comme OKR notés.",
+    "各个部门完成 OKR 评分的所占比例": "La proportion de scores OKR complétés par chaque département",
+    "各个人员完成 OKR 评分的所占比例": "La proportion de scores OKR complétés par chaque personne"
 }

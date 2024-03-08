@@ -402,5 +402,8 @@
     "管理": "mengelola",
     "结果分析": "Analisis hasil",
     "添加/编辑": "Tambahkan/Edit",
-    "评分未完成": "Penilaian belum selesai"
+    "评分未完成": "Penilaian belum selesai",
+    "已完成评分的 OKR 所占比例，一个 OKR 里负责人与上级都完成评分，才能计为完成评分的 OKR": "Proporsi OKR yang telah dinilai. Hanya ketika penanggung jawab dan atasan dalam suatu OKR telah selesai mencetak, barulah dapat dihitung sebagai OKR yang telah dinilai.",
+    "各个部门完成 OKR 评分的所占比例": "Proporsi skor OKR yang diselesaikan oleh masing-masing departemen",
+    "各个人员完成 OKR 评分的所占比例": "Proporsi skor OKR yang diselesaikan oleh setiap orang"
 }

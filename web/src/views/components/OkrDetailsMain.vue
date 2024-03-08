@@ -19,7 +19,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.openChildWindow && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
+                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
         $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
@@ -368,7 +368,6 @@
 import { CheckmarkSharp } from '@vicons/ionicons5'
 import { getOkrDetail, okrFollow, getLogList, getReplayList, okrCancel, alignUpdate, participantUpdate, okrArchive, okrDelete, okrArchiveRestore } from '@/api/modules/okrList'
 import AlignTarget from "@/views/components/AlignTarget.vue";
-import { ResultDialog } from "@/api"
 import utils from '@/utils/utils';
 import { useMessage } from "@/utils/messageAll"
 import SelectAlignment from '@/views/components/SelectAlignment.vue'
@@ -1227,7 +1226,7 @@ const colorStatus = (color) => {
 
 // 新窗口打开
 const openNewWin = () => {
-    globalStore.openChildWindow({
+    const param = {
         name: `okr-detail-${props.id}`,
         path: `/single/apps/okr/okrDetails?id=${props.id}`,
         force: false,
@@ -1240,7 +1239,8 @@ const openNewWin = () => {
             minWidth: 600,
             minHeight: 450,
         }
-    });
+    }
+    globalStore.openChildWindow ? globalStore.openChildWindow(param) : globalStore.electron.sendMessage('windowRouter', param);
 }
 
 

@@ -7,7 +7,7 @@
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
-                <n-tooltip v-if="proxy.$globalStore.openChildWindow && !isSingle" trigger="hover">
+                <n-tooltip v-if="proxy.$globalStore.electron && !isSingle" trigger="hover">
                     <template #trigger>
                         <div class="open-new-win" type="tertiary" @click="openNewWin">
                             <i class="okrfont open">&#xe776;</i>
@@ -140,7 +140,7 @@
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
                                                 </template>
                                                 <p class="max-w-[300px]">
-                                                    {{ $t('已完成评分的OKR所占比例，一个OKR里负责人与上级都完成评分，才能计为完成评分的OKR') }}</p>
+                                                    {{ $t('已完成评分的 OKR 所占比例，一个 OKR 里负责人与上级都完成评分，才能计为完成评分的 OKR') }}</p>
                                             </n-tooltip>
                                         </div>
                                         <div class="pie">
@@ -169,7 +169,7 @@
                                                 <template #trigger>
                                                     <img class="ml-8 w-15" :src="utils.apiUrl(tipsSvgfrom)" />
                                                 </template>
-                                                {{ tabsValue == 0 ? $t('各个部门完成OKR评分的所占比例') : $t('各个人员完成OKR评分的所占比例') }}
+                                                {{ tabsValue == 0 ? $t('各个部门完成 OKR 评分的所占比例') : $t('各个人员完成 OKR 评分的所占比例') }}
                                             </n-tooltip>
                                         </div>
                                         <div class="text-14 text-center py-50"
@@ -424,7 +424,7 @@ const getData = () => {
 
 // 新窗口打开
 const openNewWin = () => {
-    proxy.$globalStore.openChildWindow({
+    const param = {
         name: `okr`,
         path: `/single/apps/okr/analysis`,
         force: false,
@@ -437,7 +437,9 @@ const openNewWin = () => {
             minWidth: 600,
             minHeight: 450,
         }
-    });
+    }
+    //
+    proxy.$globalStore.openChildWindow ? proxy.$globalStore.openChildWindow(param) : proxy.$globalStore.electron.sendMessage('windowRouter', param);
 }
 
 
