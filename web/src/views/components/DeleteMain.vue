@@ -103,7 +103,7 @@
     <n-modal v-model:show="assignShow" >
         <n-card class="w-[480px] max-w-[90%]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <template #header-extra>
-                <i class="okrfont cursor-pointer" @click="assignShow=false">&#xe6e5;</i>
+                <i class="okrfont cursor-pointer text-[#999]" @click="assignShow=false">&#xe6e5;</i>
             </template>
             <template #header>
                 <h3 class="flex items-center text-16 font-medium text-title-color">

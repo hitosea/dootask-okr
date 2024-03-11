@@ -235,7 +235,7 @@
                     <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                     </li>
                 </ul>
-                <i v-if="!isSingle" class="okrfont text-16 cursor-pointer text-[#A7ABB5] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
+                <i v-if="!isSingle" class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">

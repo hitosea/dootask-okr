@@ -104,7 +104,7 @@
                 <template #header>
                     <div class="flex w-full items-center justify-between text-text-li text-16 md:text-18">
                         {{ $t('筛选') }}
-                        <i class="okrfont text-text-tips" @click="active = false">&#xe6e5;</i>
+                        <i class="okrfont text-[#999]" @click="active = false">&#xe6e5;</i>
                     </div>
                 </template>
                 <div class="flex flex-col h-full">

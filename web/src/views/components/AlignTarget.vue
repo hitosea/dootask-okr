@@ -1,20 +1,18 @@
 <template >
     <div class="align-target">
-        <div class="a-t-list" v-for="item in dataList" v-if="dataList">
+        <div class="a-t-list" v-for="item in dataList" v-if="dataList && !loadIng">
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
                 <span class="a-t-tabs text-[#8BCF70] w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
-                }}</span>
+                    }}</span>
                 <n-tooltip trigger="hover" v-if="item?.alias && item?.alias[0]">
                     <template #trigger>
-                        <span v-if="item.alias[0]" class="a-t-tab-b "
-                            :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
-                                item.alias[0] }} {{ item.alias.length > 1 ? '+' + (item.alias.length - 1) : '' }}</span>
+                        <span v-if="item.alias[0]" class="a-t-tab-b " :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
+                            item.alias[0] }} {{ item.alias.length > 1 ? '+' + (item.alias.length - 1) : '' }}</span>
                     </template>
                     {{ item.alias.join(',') }}
                 </n-tooltip>
 
-                <div v-if="item.align_objective"
-                    class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
+                <div v-if="item.align_objective" class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
                     <div class="w-[4px] h-1 bg-text-tips rotate-45 absolute right-0 top-[-3px]"></div>
                     <div class="w-[4px] h-1 bg-text-tips -rotate-45 absolute right-0 top-[1px]"></div>
                 </div>
@@ -24,32 +22,31 @@
                 item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
                 <h4 class="a-t-title-s mr-[36px]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid,item.deleted_at)"
-                    :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{
-                        item.title }}</h3>
+                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid,item.deleted_at)" :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{
+                    item.title }}</h3>
             </div>
-            <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer"
-                :class="cancelShow ? 'md:mr-24' : ''">
-                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false"
-                    :offset-degree="180" :stroke-width="15" :color="colorStatus(item.progress_status)" status="success"
-                    :percentage="item.progress" />
+            <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'md:mr-24' : ''">
+                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false" :offset-degree="180" :stroke-width="15" :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
             </div>
             <n-tooltip trigger="hover" v-if="props.cancelShow">
                 <template #trigger>
-                    <i v-if="props.cancelShow" class="okrfont cursor-pointer text-[#A7ABB5] ml-auto hidden md:block"
-                        @click="alignCancel(item.id)">
+                    <i v-if="props.cancelShow" class="okrfont cursor-pointer text-[#A7ABB5] ml-auto hidden md:block" @click="alignCancel(item.id)">
                         &#xe680;</i>
                 </template>
                 {{ $t('取消对齐') }}
             </n-tooltip>
         </div>
 
-        <div v-else class="flex flex-initial items-center justify-center">
+        <div v-if="!dataList && !loadIng" class="flex flex-initial items-center justify-center">
             <div>
                 <img class="w-[60px]" :src="utils.apiUrl(notDataSvg)" />
                 <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
             </div>
+        </div>
+
+        <div v-if="loadIng" class="flex justify-center">
+            <n-spin size="small" :show="loadIng"></n-spin>
         </div>
         <InfoModal v-model:show="infoShow" :title="infoTitle" :content="infoContent" @submit="handleSubmit" @close="handleCancel"></InfoModal>
     </div>

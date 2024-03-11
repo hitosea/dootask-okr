@@ -7,7 +7,7 @@
                 <h3 class="text-16 md:text-18 text-title-color ">{{ $t('选择对齐目标') }}</h3>
             </template>
             <template #header-extra>
-                <i class="okrfont text-16 cursor-pointer text-[#A7ABB5]" @click="handleClose">&#xe6e5;</i>
+                <i class="okrfont text-16 cursor-pointer text-[#999]" @click="handleClose">&#xe6e5;</i>
             </template>
             <div class="flex flex-col flex-1 overflow-hidden">
                 <n-input v-model:value="searchName" placeholder="搜索" :autofocus="false" :on-update:value="searchInput">
