@@ -86,6 +86,10 @@ const themeOverrides = {
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
+        common: {
+            primaryColor: "#8bcf70",
+            primaryColorHover: "#a2d98d",
+        },
         Button:{
             textColorPrimary:'#000',
             textColorHoverPrimary:'#000',
