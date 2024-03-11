@@ -86,6 +86,13 @@ const themeOverrides = {
         },
     },
     darkThemeOverrides:<GlobalThemeOverrides>  {
+        Button:{
+            textColorPrimary:'#000',
+            textColorHoverPrimary:'#000',
+            textColorPressedPrimary:'#000',
+            textColorFocusPrimary:'#000',
+            textColorDisabledPrimary:'#000',
+        },
         // common: {
         //     primaryColor: "#67a050",
         //     primaryColorHover: "#568342",
