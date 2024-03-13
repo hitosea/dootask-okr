@@ -2910,14 +2910,20 @@ func (s *okrService) GetByAlignListByOkrId(user *interfaces.UserInfoResp, okrId 
 				return "KR"
 			}(),
 			AlignObjective: func() string {
-				if align.CurrentOkr.ParentId > 0 {
-					o, err := s.GetObjectiveById(align.CurrentOkr.ParentId)
+				if align.AlignOkr.Id > 0 {
+					o, err := s.GetObjectiveById(align.AlignOkr.Id)
 					if err != nil {
 						return ""
 					}
 					return o.Title
 				}
 				return ""
+			}(),
+			AlignObjectivePrefix: func() string {
+				if align.AlignOkr.ParentId == 0 {
+					return "O"
+				}
+				return "KR"
 			}(),
 		})
 	}

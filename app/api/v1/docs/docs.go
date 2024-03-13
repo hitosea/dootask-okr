@@ -2680,14 +2680,18 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "alias": {
-                    "description": "目标别名",
+                    "description": "对齐目标别名",
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
                 "align_objective": {
-                    "description": "对齐目标",
+                    "description": "被对齐目标",
+                    "type": "string"
+                },
+                "align_objective_prefix": {
+                    "description": "被对齐目标前缀",
                     "type": "string"
                 },
                 "archive_at": {
@@ -2765,7 +2769,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "prefix": {
-                    "description": "前缀",
+                    "description": "对齐目标前缀",
                     "type": "string"
                 },
                 "priority": {

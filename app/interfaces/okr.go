@@ -76,9 +76,10 @@ type OkrAlignResp struct {
 // OKR被对齐目标响应
 type OkrByAlignResp struct {
 	*model.Okr
-	Prefix         string   `json:"prefix"`          // 前缀
-	AlignObjective string   `json:"align_objective"` // 对齐目标
-	Alias          []string `json:"alias"`           // 目标别名
+	Prefix               string   `json:"prefix"`                 // 对齐目标前缀
+	Alias                []string `json:"alias"`                  // 对齐目标别名
+	AlignObjective       string   `json:"align_objective"`        // 被对齐目标
+	AlignObjectivePrefix string   `json:"align_objective_prefix"` // 被对齐目标前缀
 }
 
 // OKR部门列表请求
