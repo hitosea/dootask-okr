@@ -300,8 +300,6 @@ watch(() => props.multipleId, (newValue) => {
                 superior_review.value = data.superior_review
                 superior_review_open.value = data.superior_review ? false : true   
                 if (props.multipleId != 0 && !data.superior_review && props.superiorUser.includes(userInfo.userid)) {
-                    console.log(123123);
-                    
                     emit('canComment')
                 }
             })
