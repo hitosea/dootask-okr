@@ -2586,7 +2586,7 @@ func (s *okrService) CreateReplaySuperiorReview(userid int, req interfaces.OkrRe
 	var replay model.OkrReplay
 
 	// 获取或创建复盘记录
-	if err := core.DB.First(&replay, model.OkrReplay{Id: req.Id, Userid: userid}).Error; err != nil {
+	if err := core.DB.First(&replay, model.OkrReplay{Id: req.Id}).Error; err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
