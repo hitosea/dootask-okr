@@ -48,6 +48,11 @@
                 <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
                     maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')" />
                 <p class="mt-6 md:mt-8" v-else v-html="problem"></p>
+                <h3 class="mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{
+                    $t('上级评论') }}</h3>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
+                    maxlength="255" show-count :placeholder="$t('上级评论')" />
+                <p class="mt-6 md:mt-8" v-else v-html="problem"></p>
             </div>
         </div>
     </n-scrollbar>

@@ -1,4 +1,4 @@
-<template >
+<template>
     <div class="align-target">
         <div class="a-t-list" v-for="item in dataList" v-if="dataList && !loadIng">
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
@@ -7,26 +7,28 @@
                 <n-tooltip trigger="hover" v-if="item?.alias && item?.alias[0]">
                     <template #trigger>
                         <span v-if="item.alias[0]" class="a-t-tab-b " :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
-                            item.alias[0] }} {{ item.alias.length > 1 ? '+' + (item.alias.length - 1) : '' }}</span>
+            item.alias[0] }} {{ item.alias.length > 1 ? '+' + (item.alias.length - 1) : '' }}</span>
                     </template>
                     {{ item.alias.join(',') }}
                 </n-tooltip>
 
-                <div v-if="item.align_objective" class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
+                <div v-if="item.align_objective"
+                    class="absolute border-solid border-0 border-l border-t border-text-tips h-[calc(100%-2px)] w-[calc(100%-10px)] top-[-14px] left-[10px] rounded-tl-lg">
                     <div class="w-[4px] h-1 bg-text-tips rotate-45 absolute right-0 top-[-3px]"></div>
                     <div class="w-[4px] h-1 bg-text-tips -rotate-45 absolute right-0 top-[1px]"></div>
                 </div>
             </div>
 
-            <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" :class="item.deleted_at ? 'line-through  opacity-50':''" v-if="!item.align_objective" @click="handleDetail(item.id, item.userid,item.deleted_at)">{{
-                item.title }}</h3>
+            <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" :class="item.deleted_at ? 'line-through  opacity-50' : ''" v-if="!item.align_objective"
+                @click="handleDetail(item.id, item.userid, item.deleted_at)">{{ item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
                 <h4 class="a-t-title-s mr-[36px]">{{ item.align_objective }}</h4>
-                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid,item.deleted_at)" :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{
-                    item.title }}</h3>
+                <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid, item.deleted_at)"
+                    :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{ item.title }}</h3>
             </div>
             <div v-if="props.progressShow" class="flex ml-auto min-w-[55px] items-center cursor-pointer" :class="cancelShow ? 'md:mr-24' : ''">
-                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false" :offset-degree="180" :stroke-width="15" :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
+                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                    :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
             </div>
             <n-tooltip trigger="hover" v-if="props.cancelShow">
@@ -121,7 +123,7 @@ const alignCancel = (itemID) => {
 const handleSubmit = () => {
     const upData = {
         okr_id: props.id,
-        align_okr_id:  infoId.value,
+        align_okr_id: infoId.value,
     }
     loadIng.value = true
     getAlignCancel(upData)
@@ -163,8 +165,8 @@ const colorStatus = (color) => {
     return result
 }
 
-const handleDetail = (id, userid,deleted_at) => {
-    if(deleted_at) return
+const handleDetail = (id, userid, deleted_at) => {
+    if (deleted_at) return
     emit('openDetail', id, userid)
 }
 

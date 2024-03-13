@@ -53,15 +53,15 @@ setTimeout(() => {
 }, 0);
 
 // 监听打开
-const openDetail = (id, userId) => {
+const openDetail = (changeId, userId) => {
     router.replace({
         path: route.path,
         query: {
-            id: id,
+            id: changeId,
             userid: userId,
         },
     })
-    id.value = id
+    id.value = changeId
     userid.value = userId
 }
 
