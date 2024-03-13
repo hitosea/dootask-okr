@@ -246,5 +246,6 @@ type OkrReplayListReq struct {
 // OKR复盘列表请求
 type OkrReplayResp struct {
 	*model.OkrReplay
-	ReplayIds string `json:"replay_ids"` // 复盘集合
+	ReplayIds    string `json:"replay_ids"`    // 复盘集合
+	SuperiorUser []int  `json:"superior_user"` // 上级用户
 }

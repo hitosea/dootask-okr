@@ -1572,6 +1572,12 @@ func (s *okrService) GetReplayList(user *interfaces.UserInfoResp, param interfac
 			core.DB.Model(&model.OkrReplay{}).Preload("KrHistory").Where("id IN (?)", replayIds).Order("created_at ASC").Find(&replay.Replays)
 		}
 		replay.ObjectiveNum = s.ObjectiveNumDepartmentOrUser(replay.OkrId, replay.OkrUserid, replay.OkrAscription, replay.OkrDepartmentId) // O排序
+		// 获取上级评分用户id
+		var obj model.Okr
+		if err := core.DB.Where("id = ?", replay.OkrId).First(&obj).Error; err != nil {
+			return nil, err
+		}
+		replay.SuperiorUser = s.GetSuperiorUserIds(&obj, user)
 	}
 
 	return interfaces.PaginationRsp(page, pageSize, count, replays), nil
