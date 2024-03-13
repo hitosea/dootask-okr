@@ -626,6 +626,18 @@ func (s *okrService) GetObjectiveById(id int) (*model.Okr, error) {
 	return &obj, nil
 }
 
+// 根据id获取目标（删除的也能获取）
+func (s *okrService) GetUnscopedObjectiveById(id int) (*model.Okr, error) {
+	var obj model.Okr
+	if err := core.DB.Unscoped().Preload("ParentOKr").Where("id = ?", id).First(&obj).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
+		return nil, err
+	}
+	return &obj, nil
+}
+
 // 根据id获取是关键结果的目标
 func (s *okrService) GetObjectiveByIdIsKeyResult(id int) (*model.Okr, error) {
 	var obj model.Okr
@@ -656,7 +668,7 @@ func (s *okrService) GetParentOkrAndKeyResultsIdsById(id int) ([]int, error) {
 	var parentOkr model.Okr
 
 	// 获取父级OKR和关键结果
-	if err := core.DB.Model(&model.Okr{}).Preload("KeyResults").Where("id = ?", id).First(&parentOkr).Error; err != nil {
+	if err := core.DB.Model(&model.Okr{}).Unscoped().Preload("KeyResults").Where("id = ?", id).First(&parentOkr).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return nil, e.New(constant.ErrOkrNoData)
 		}
@@ -2881,7 +2893,11 @@ func (s *okrService) GetByAlignListByOkrId(user *interfaces.UserInfoResp, okrId 
 	}
 	// 获取对齐目标
 	var byAlignOkrs []*model.OkrAlign
-	if err := core.DB.Unscoped().Preload("CurrentOkr").Preload("AlignOkr").Model(&model.OkrAlign{}).Where("align_okr_id in (?)", allOkrIds).Find(&byAlignOkrs).Error; err != nil {
+	if err := core.DB.Unscoped().Preload("CurrentOkr", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Preload("AlignOkr", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Model(&model.OkrAlign{}).Where("align_okr_id in (?)", allOkrIds).Find(&byAlignOkrs).Error; err != nil {
 		return nil, err
 	}
 
@@ -2911,7 +2927,7 @@ func (s *okrService) GetByAlignListByOkrId(user *interfaces.UserInfoResp, okrId 
 			}(),
 			AlignObjective: func() string {
 				if align.AlignOkr.Id > 0 {
-					o, err := s.GetObjectiveById(align.AlignOkr.Id)
+					o, err := s.GetUnscopedObjectiveById(align.AlignOkr.Id)
 					if err != nil {
 						return ""
 					}
