@@ -18,6 +18,8 @@ definitions:
         type: integer
       ascription:
         type: integer
+      auto_sync:
+        type: integer
       can_owner_update_score:
         description: KR负责人是否能修改评分
         type: boolean
@@ -210,6 +212,9 @@ definitions:
       ascription:
         description: 归属 1-部门 2-个人
         type: integer
+      auto_sync:
+        description: 是否自动同步
+        type: integer
       end_at:
         description: 结束时间
         type: string
@@ -325,6 +330,9 @@ definitions:
       review:
         description: 价值与收获
         type: string
+      superior_review:
+        description: 上级评价
+        type: string
     required:
     - comments
     - okr_id
@@ -351,6 +359,8 @@ definitions:
       archive_userid:
         type: integer
       ascription:
+        type: integer
+      auto_sync:
         type: integer
       can_owner_update_score:
         description: KR负责人是否能修改评分
@@ -465,6 +475,9 @@ definitions:
       align_objective:
         description: 对齐目标
         type: string
+      auto_sync:
+        description: 是否自动同步
+        type: integer
       end_at:
         description: 结束时间
         type: string
@@ -541,6 +554,8 @@ definitions:
       archive_userid:
         type: integer
       ascription:
+        type: integer
+      auto_sync:
         type: integer
       can_owner_update_score:
         description: KR负责人是否能修改评分
@@ -703,6 +718,8 @@ definitions:
           $ref: '#/definitions/model.OkrReplay'
         type: array
       review:
+        type: string
+      superior_review:
         type: string
       updated_at:
         type: string
@@ -930,6 +947,16 @@ paths:
       - application/json
       description: 获取对齐目标列表
       parameters:
+      - description: 归属 1-部门 2-个人
+        in: query
+        name: ascription
+        required: true
+        type: integer
+      - description: okr id
+        in: query
+        name: id
+        required: true
+        type: integer
       - description: 目标（O）
         in: query
         name: objective
@@ -1250,6 +1277,68 @@ paths:
       summary: 取消/重启目标
       tags:
       - Okr
+  /okr/company/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取全公司OKR列表
+      parameters:
+      - description: 是否已完成未评分 0-未完成 1-已完成
+        in: query
+        name: completed
+        type: integer
+      - description: 部门id
+        in: query
+        name: department_id
+        type: integer
+      - description: 结束时间
+        in: query
+        name: end_at
+        type: string
+      - description: 目标（O）
+        in: query
+        name: objective
+        type: string
+      - description: 当前页，默认:1
+        in: query
+        name: page
+        type: integer
+      - description: 每页显示数量，默认:50，最大:100
+        in: query
+        name: page_size
+        type: integer
+      - description: 开始时间
+        in: query
+        name: start_at
+        type: string
+      - description: 类型 1-承诺型 2-挑战型
+        in: query
+        name: type
+        type: integer
+      - description: 用户id
+        in: query
+        name: userid
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/interfaces.Pagination'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/interfaces.OkrResp'
+                        type: array
+                    type: object
+              type: object
+      summary: 获取全公司OKR列表
+      tags:
+      - Okr
   /okr/confidence/update:
     post:
       consumes:
@@ -1331,10 +1420,6 @@ paths:
       - description: 是否已完成未评分 0-未完成 1-已完成
         in: query
         name: completed
-        type: integer
-      - description: 部门id
-        in: query
-        name: department_id
         type: integer
       - description: 结束时间
         in: query

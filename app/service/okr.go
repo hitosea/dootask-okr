@@ -69,6 +69,7 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		Ascription:   param.Ascription,
 		VisibleRange: param.VisibleRange,
 		ProjectId:    param.ProjectId,
+		AutoSync:     param.AutoSync,
 		StartAt:      startAt,
 		EndAt:        endAt,
 	}
@@ -186,6 +187,7 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 	obj.Type = param.Type                 // 类型优先赋值
 	obj.Priority = param.Priority         // 优先级优先赋值
 	obj.ProjectId = param.ProjectId       // 项目优先赋值
+	obj.AutoSync = param.AutoSync         // 自动同步优先赋值
 
 	var participantIds []int // 所有参与人
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
@@ -416,6 +418,7 @@ func (s *okrService) createKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultCre
 		Priority:     obj.Priority,
 		Ascription:   obj.Ascription,
 		VisibleRange: obj.VisibleRange,
+		AutoSync:     obj.AutoSync,
 		Participant:  kr.Participant,
 		Title:        kr.Title,
 		Confidence:   kr.Confidence,
@@ -546,6 +549,7 @@ func (s *okrService) updateKeyResult(tx *gorm.DB, kr *interfaces.OkrKeyResultUpd
 	keyResult.Type = obj.Type
 	keyResult.Priority = obj.Priority
 	keyResult.ProjectId = obj.ProjectId
+	keyResult.AutoSync = obj.AutoSync
 	keyResult.Participant = kr.Participant
 	keyResult.Title = kr.Title
 	keyResult.Confidence = kr.Confidence
@@ -870,6 +874,7 @@ func (s *okrService) CreateOkrReplayTx(tx *gorm.DB, userid int, obj *model.Okr) 
 		OkrPriority:     obj.Priority,
 		Review:          "",
 		Problem:         "",
+		SuperiorReview:  "",
 		Replay:          2,
 	}
 	if err := tx.Create(&replay).Error; err != nil {
@@ -1032,9 +1037,186 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
 
+// 获取对齐目标列表
+// 1.2版本 部门：显示并只可对齐本部门的OKR 个人：显示并可对齐（可跨部门）本账号参与或负责的OKR
+func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, ascription int, objective string, page, pageSize int) (*interfaces.Pagination, error) {
+	var (
+		okrs     []*model.Okr
+		count    int64
+		err      error
+		okrTable = core.DBTableName(&model.Okr{})
+	)
+
+	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").
+		Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").
+		Where("okr.status = 0").
+		Order("okr.created_at desc")
+
+	if len(user.Department) > 0 && ascription == 1 {
+		departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+		if err != nil {
+			return nil, err
+		}
+		db = db.Scopes(departmentScope(departments))
+	} else {
+		db = db.Where("(okr.ascription = 2 AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
+	}
+
+	if objective != "" {
+		objective = common.SearchTextFilter(objective)
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son ON okr.id = son.parent_id`, okrTable)).
+			Where(`(okr.title LIKE ? OR son.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
+	}
+
+	if err = db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&okrs).Error; err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
+}
+
+func departmentScope(departments []int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		var sql []string
+		for _, departmentId := range departments {
+			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, okr.department_id) > 0", departmentId))
+		}
+		return db.Where("(" + strings.Join(sql, " OR ") + ") AND okr.ascription = 1")
+	}
+}
+
 // 部门的OKR列表
 // 1.高级搜索 2.仅包含部门/及部门其他人员的OKR（通过可见范围控制是否看到部门其他同级人员的）3.按创建时间倒序显示 4.部门的OKR置顶（多个的时候多个都置顶，按创建时间倒序）
 func (s *okrService) GetDepartmentList(user *interfaces.UserInfoResp, param interfaces.OkrDepartmentListReq, page, pageSize int) (*interfaces.Pagination, error) {
+	var objs []*model.Okr
+	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 0").Order("canceled,completed asc, ascription asc, created_at desc")
+
+	// 1.2版本超管去掉部门筛选（仅可查看当前账号所属部门的OKR）
+	if len(user.Department) == 0 {
+		return interfaces.PaginationRsp(page, pageSize, 0, nil), nil
+	}
+	departments, _, err := s.GetDepartmentsBySearchDeptId(user.Department)
+	if err != nil {
+		return nil, err
+	}
+	var sql []string
+	// 如果指定评分人员，除了以上条件外，还可以看到所有顶级部门负责人/没有部门的超管的OKR
+	if s.GetSettingSuperiorUserId() == user.Userid {
+		topOwnerUserids, _ := s.GetTopDepartmentOwner()
+		if len(topOwnerUserids) > 0 {
+			sql = append(sql, fmt.Sprintf("userid in (%s)", common.ArrayImplode(topOwnerUserids)))
+		}
+	}
+	for _, departmentId := range departments {
+		sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
+	}
+
+	db = db.Where(strings.Join(sql, " OR "))
+
+	departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
+	// 判断是否是普通组员
+	var department model.UserDepartment
+	departDb.Session(&core.Session).Where("owner_userid = ?", user.Userid).First(&department)
+	if department.Id == 0 {
+		// 普通组员的权限
+		// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
+		// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
+		db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
+	} else {
+		// 判断是否是顶级部门负责人
+		var departmentTop model.UserDepartment
+		departDb.Session(&core.Session).Where("parent_id = 0").Where("owner_userid = ?", user.Userid).First(&departmentTop)
+		// 判断是否是同级小组负责人
+		var departmentSameLevel []model.UserDepartment
+		departDb.Session(&core.Session).Where("parent_id > 0").Where("owner_userid = ?", user.Userid).Find(&departmentSameLevel)
+		if len(departmentSameLevel) > 0 {
+			// 小组负责人可以看到自己所在小组的所有OKR
+			var sqlSame []string
+			for _, department := range departmentSameLevel {
+				sqlSame = append(sqlSame, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", department.Id))
+			}
+
+			if departmentTop.Id == 0 {
+				db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
+			}
+		}
+	}
+
+	// 部门负责人可以通过人员筛选
+	userid := param.Userid
+	if userid != 0 {
+		db = db.Where("userid = ?", userid)
+	}
+
+	// 目标筛选
+	objective := param.Objective
+	if objective != "" {
+		objective = common.SearchTextFilter(objective)
+		db = db.Where("title LIKE ?", "%"+objective+"%")
+	}
+
+	// 时间筛选
+	startAtStr := param.StartAt
+	endAtStr := param.EndAt
+	if startAtStr != "" && endAtStr != "" {
+		startAt, err := common.ParseTime(startAtStr)
+		if err != nil {
+			return nil, e.New(constant.ErrOkrTimeFormat)
+		}
+		endAt, err := common.ParseTime(endAtStr)
+		if err != nil {
+			return nil, e.New(constant.ErrOkrTimeFormat)
+		}
+		db = db.Where("(start_at >= ? AND start_at <= ?) OR (end_at >= ? AND end_at <= ?) OR (start_at <= ? AND end_at >= ?)", startAt, endAt, startAt, endAt, startAt, endAt)
+	}
+
+	// 类型筛选
+	typeInt := param.Type
+	if typeInt != 0 {
+		db = db.Where("type = ?", typeInt)
+	}
+
+	// 已完成未评分筛选 Completed 0-未完成 1-已完成
+	completed := param.Completed
+	if completed != 0 {
+		if completed == 1 {
+			db = db.Where("progress >= 100 and score = -1")
+		} else {
+			db = db.Where("progress < 100")
+		}
+	}
+
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&objs).Error; err != nil {
+		return nil, err
+	}
+
+	var okrs []*interfaces.OkrResp
+	for _, obj := range objs {
+		okrs = append(okrs, &interfaces.OkrResp{
+			Okr: obj,
+		})
+	}
+
+	okrs, err = s.GetObjectivesWithDetails(okrs, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
+}
+
+// 全公司的OKR列表
+// 1.高级搜索 2.仅包含部门/及部门其他人员的OKR（通过可见范围控制是否看到部门其他同级人员的）3.按创建时间倒序显示 4.部门的OKR置顶（多个的时候多个都置顶，按创建时间倒序）
+func (s *okrService) GetCompanyList(user *interfaces.UserInfoResp, param interfaces.OkrCompanyListReq, page, pageSize int) (*interfaces.Pagination, error) {
 	var objs []*model.Okr
 	db := core.DB.Model(&model.Okr{}).Where("parent_id = 0").Where("status = 0").Order("canceled,completed asc, ascription asc, created_at desc")
 
@@ -2246,6 +2428,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrPriority:     obj.Priority,
 		Review:          req.Review,
 		Problem:         req.Problem,
+		SuperiorReview:  req.SuperiorReview,
 		Replay:          1, // 1-已复盘 2-未复盘
 	}
 
@@ -2280,7 +2463,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果有空复盘记录，则不创建， 直接更新复盘记录
 		if s.hasOkrReplay(req.OkrId) && !s.hasReplay(req.OkrId) {
-			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "replay": 1}).Scan(&replay).Error; err != nil {
+			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "superior_review": req.SuperiorReview, "replay": 1}).Scan(&replay).Error; err != nil {
 				return err
 			}
 		} else {

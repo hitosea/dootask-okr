@@ -52,6 +52,7 @@ func Init() error {
 		migrations.AddTableOkrSetting,
 		migrations.AddTableOkrPushLog,
 		migrations.AddTableOkr11Version,
+		migrations.AddTableOkr12Version,
 	})
 
 	if err := m.Migrate(); err != nil {

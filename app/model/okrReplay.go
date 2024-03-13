@@ -16,6 +16,7 @@ type OkrReplay struct {
 	OkrPriority     string              `gorm:"type:varchar(10);comment:优先级" json:"okr_priority"`
 	Review          string              `gorm:"type:varchar(255);comment:价值与收获" json:"review"`
 	Problem         string              `gorm:"type:varchar(255);comment:问题与不足" json:"problem"`
+	SuperiorReview  string              `gorm:"type:varchar(255);comment:上级评论" json:"superior_review"`
 	Replay          int                 `gorm:"default:1;comment:是否复盘 1-已复盘 2-未复盘" json:"replay"`
 	CreatedAt       time.Time           `gorm:"autoCreateTime;comment:创建时间" json:"created_at"`
 	UpdatedAt       time.Time           `gorm:"autoUpdateTime;comment:更新时间" json:"updated_at"`

@@ -112,6 +112,20 @@ const docTemplate = `{
                 "summary": "获取对齐目标列表",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "归属 1-部门 2-个人",
+                        "name": "ascription",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
@@ -655,6 +669,109 @@ const docTemplate = `{
                 }
             }
         },
+        "/okr/company/list": {
+            "get": {
+                "description": "获取全公司OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取全公司OKR列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "是否已完成未评分 0-未完成 1-已完成",
+                        "name": "completed",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "部门id",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "end_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标（O）",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "start_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型 1-承诺型 2-挑战型",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "userid",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/okr/confidence/update": {
             "post": {
                 "description": "更新信心指数",
@@ -789,12 +906,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "是否已完成未评分 0-未完成 1-已完成",
                         "name": "completed",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "部门id",
-                        "name": "department_id",
                         "in": "query"
                     },
                     {
@@ -2191,6 +2302,9 @@ const docTemplate = `{
                 "ascription": {
                     "type": "integer"
                 },
+                "auto_sync": {
+                    "type": "integer"
+                },
                 "can_owner_update_score": {
                     "description": "KR负责人是否能修改评分",
                     "type": "boolean"
@@ -2473,6 +2587,10 @@ const docTemplate = `{
                     "description": "归属 1-部门 2-个人",
                     "type": "integer"
                 },
+                "auto_sync": {
+                    "description": "是否自动同步",
+                    "type": "integer"
+                },
                 "end_at": {
                     "description": "结束时间",
                     "type": "string"
@@ -2622,6 +2740,10 @@ const docTemplate = `{
                 "review": {
                     "description": "价值与收获",
                     "type": "string"
+                },
+                "superior_review": {
+                    "description": "上级评价",
+                    "type": "string"
                 }
             }
         },
@@ -2656,6 +2778,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "ascription": {
+                    "type": "integer"
+                },
+                "auto_sync": {
                     "type": "integer"
                 },
                 "can_owner_update_score": {
@@ -2829,6 +2954,10 @@ const docTemplate = `{
                     "description": "对齐目标",
                     "type": "string"
                 },
+                "auto_sync": {
+                    "description": "是否自动同步",
+                    "type": "integer"
+                },
                 "end_at": {
                     "description": "结束时间",
                     "type": "string"
@@ -2923,6 +3052,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "ascription": {
+                    "type": "integer"
+                },
+                "auto_sync": {
                     "type": "integer"
                 },
                 "can_owner_update_score": {
@@ -3162,6 +3294,9 @@ const docTemplate = `{
                     }
                 },
                 "review": {
+                    "type": "string"
+                },
+                "superior_review": {
                     "type": "string"
                 },
                 "updated_at": {

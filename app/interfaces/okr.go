@@ -12,6 +12,7 @@ type OkrBaseReq struct {
 	VisibleRange   int    `json:"visible_range"`               // 可见范围  1-全公司 2-仅相关成员 3-仅部门成员
 	AlignObjective string `json:"align_objective"`             // 对齐目标
 	ProjectId      int    `json:"project_id"`                  // 项目id
+	AutoSync       int    `json:"auto_sync"`                   // 是否自动同步
 	StartAt        string `json:"start_at" binding:"required"` // 开始时间
 	EndAt          string `json:"end_at" binding:"required"`   // 结束时间
 }
@@ -74,6 +75,17 @@ type OkrAlignResp struct {
 
 // OKR部门列表请求
 type OkrDepartmentListReq struct {
+	Userid    int    `form:"userid" json:"userid"`       // 用户id
+	Objective string `form:"objective" json:"objective"` // 目标（O）
+	StartAt   string `form:"start_at" json:"start_at"`   // 开始时间
+	EndAt     string `form:"end_at" json:"end_at"`       // 结束时间
+	Type      int    `form:"type" json:"type"`           // 类型 1-承诺型 2-挑战型
+	Completed int    `form:"completed" json:"completed"` // 是否已完成未评分 0-未完成 1-已完成
+	*Pages
+}
+
+// OKR全公司列表请求
+type OkrCompanyListReq struct {
 	DepartmentId int    `form:"department_id" json:"department_id"` // 部门id
 	Userid       int    `form:"userid" json:"userid"`               // 用户id
 	Objective    string `form:"objective" json:"objective"`         // 目标（O）
@@ -117,10 +129,11 @@ type OkrConfidenceUpdateReq struct {
 
 // 添加复盘请求
 type OkrReplayCreateReq struct {
-	OkrId    int                 `json:"okr_id" binding:"required"`   // okr id
-	Comments []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
-	Review   string              `json:"review"`                      // 价值与收获
-	Problem  string              `json:"problem"`                     // 问题与不足
+	OkrId          int                 `json:"okr_id" binding:"required"`   // okr id
+	Comments       []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
+	Review         string              `json:"review"`                      // 价值与收获
+	Problem        string              `json:"problem"`                     // 问题与不足
+	SuperiorReview string              `json:"superior_review"`             // 上级评价
 }
 
 // 复盘评价
@@ -160,6 +173,13 @@ type OkrReplayIdListReq struct {
 // 列表基础分页请求
 type OkrListBaseReq struct {
 	Objective string `form:"objective" json:"objective"` // 目标（O）
+	*Pages
+}
+
+// 对齐目标列表请求
+type OkrAlignListReq struct {
+	Ascription int    `form:"ascription,default=2" binding:"required" json:"ascription"` // 归属 1-部门 2-个人
+	Objective  string `form:"objective" json:"objective"`                                // 目标（O）
 	*Pages
 }
 

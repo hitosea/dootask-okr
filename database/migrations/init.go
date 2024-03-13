@@ -163,3 +163,28 @@ var AddTableOkr11Version = &gormigrate.Migration{
 		return nil
 	},
 }
+
+// 更改okr表 新增1.2版本需求字段 AddTableOkr12Version
+var AddTableOkr12Version = &gormigrate.Migration{
+	ID: "2024031212-add-table-okr-12version",
+	Migrate: func(tx *gorm.DB) error {
+		columns := []string{"auto_sync"}
+		for _, column := range columns {
+			if !tx.Migrator().HasColumn(&model.Okr{}, column) {
+				if err := tx.Migrator().AddColumn(&model.Okr{}, column); err != nil {
+					return err
+				}
+			}
+		}
+
+		columns2 := []string{"superior_review"}
+		for _, column := range columns2 {
+			if !tx.Migrator().HasColumn(&model.OkrReplay{}, column) {
+				if err := tx.Migrator().AddColumn(&model.OkrReplay{}, column); err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	},
+}

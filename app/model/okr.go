@@ -34,6 +34,7 @@ type Okr struct {
 	ScoreNum               int            `gorm:"default:0;comment:评分次数" json:"score_num"`
 	ScoreCompletedAt       *time.Time     `gorm:"comment:评分完成时间" json:"score_completed_at"`
 	Status                 int            `gorm:"default:0;comment:状态 0-正常 1-已归档 2-人员离职/删除" json:"status"`
+	AutoSync               int            `gorm:"default:0;comment:是否自动同步 0-否 1-是" json:"auto_sync"`
 	ArchiveUserid          int            `gorm:"default:0;comment:归档人员Id" json:"archive_userid"`
 	ArchiveAt              *time.Time     `gorm:"comment:归档时间" json:"archive_at"`
 	StartAt                time.Time      `gorm:"comment:开始时间" json:"start_at"`

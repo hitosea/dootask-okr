@@ -160,6 +160,34 @@ func (api *BaseApi) OkrDepartmentList() {
 }
 
 // @Tags Okr
+// @Summary 获取全公司OKR列表
+// @Description 获取全公司OKR列表
+// @Accept json
+// @Param request query interfaces.OkrCompanyListReq true "request"
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
+// @Router /okr/company/list [get]
+func (api *BaseApi) OkrCompanyList() {
+	var param = interfaces.OkrCompanyListReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 类型
+	if param.Type > 0 && !common.InArrayInt(param.Type, []int{1, 2}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrTypeInvalid, nil)
+		return
+	}
+	// 是否已完成未评分
+	if !common.InArrayInt(param.Completed, []int{0, 1}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrIsFinishNotScoreInvalid, nil)
+		return
+	}
+	result, err := service.OkrService.GetCompanyList(api.Userinfo, param, param.Page, param.PageSize)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
 // @Summary 获取关注的OKR列表
 // @Description 获取关注的OKR列表
 // @Accept json
@@ -431,13 +459,13 @@ func (api *BaseApi) OkrAlignCancel() {
 // @Summary 获取对齐目标列表
 // @Description 获取对齐目标列表
 // @Accept json
-// @Param request query interfaces.OkrListBaseReq true "request"
+// @Param request query interfaces.OkrAlignListReq true "request"
 // @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]model.Okr}}
 // @Router /okr/align/list [get]
 func (api *BaseApi) OkrAlignList() {
-	var param = interfaces.OkrListBaseReq{}
+	var param = interfaces.OkrAlignListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetAlignList(api.Userinfo, param.Objective, param.Page, param.PageSize)
+	result, err := service.OkrService.GetMyAlignList(api.Userinfo, param.Ascription, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
