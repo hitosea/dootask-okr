@@ -650,6 +650,25 @@ func (s *okrService) GetObjectiveByIdWithKeyResults(id int) (*model.Okr, error) 
 	return &obj, nil
 }
 
+// 根据id获取父级OKR及其关键结果的ID数组
+func (s *okrService) GetParentOkrAndKeyResultsIdsById(id int) ([]int, error) {
+	var ids []int
+	var parentOkr model.Okr
+
+	// 获取父级OKR和关键结果
+	if err := core.DB.Model(&model.Okr{}).Preload("KeyResults").Where("id = ?", id).First(&parentOkr).Error; err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return nil, e.New(constant.ErrOkrNoData)
+		}
+		return nil, err
+	}
+	ids = append(ids, parentOkr.Id)
+	for _, kr := range parentOkr.KeyResults {
+		ids = append(ids, kr.Id)
+	}
+	return ids, nil
+}
+
 // 获取我的OkR列表
 // 1.可通过目标（O）搜索 2.仅显示我发起的OKR（个人仅能看到个人的）3.按创建时间倒序显示
 func (s *okrService) GetMyList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
@@ -1077,6 +1096,7 @@ func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, okrId int, as
 		}
 		db = db.Scopes(departmentScope(departments))
 	} else {
+		fmt.Println("ascription", ascription)
 		db = db.Where("(okr.ascription = 2 AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
 	}
 
@@ -1105,6 +1125,44 @@ func departmentScope(departments []int) func(db *gorm.DB) *gorm.DB {
 		}
 		return db.Where("(" + strings.Join(sql, " OR ") + ") AND okr.ascription = 1")
 	}
+}
+
+// 获取被对齐目标列表 1.2版本
+func (s *okrService) GetByAlignList(user *interfaces.UserInfoResp, okrId int, objective string, page, pageSize int) (*interfaces.Pagination, error) {
+	var (
+		okrs     []*model.Okr
+		count    int64
+		err      error
+		okrTable = core.DBTableName(&model.Okr{})
+	)
+	// 根据okrId获取o和kr共同ids
+	var alignOkrIds []int
+	alignOkrIds, _ = s.GetParentOkrAndKeyResultsIdsById(okrId)
+	if len(alignOkrIds) == 0 {
+		return nil, nil
+	}
+	//
+	db := core.DB.Table(okrTable+" AS okr").Select("DISTINCT okr.*").
+		Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").
+		Where("okr.status = 0").
+		Where("okr.id != ?", okrId).
+		Order("okr.created_at desc")
+
+	if objective != "" {
+		objective = common.SearchTextFilter(objective)
+		db = db.Joins(fmt.Sprintf(`LEFT JOIN %s AS son ON okr.id = son.parent_id`, okrTable)).
+			Where(`(okr.title LIKE ? OR son.title LIKE ?)`, "%"+objective+"%", "%"+objective+"%")
+	}
+
+	if err = db.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Preload("KeyResults").Offset((page - 1) * pageSize).Limit(pageSize).Find(&okrs).Error; err != nil {
+		return nil, err
+	}
+
+	return interfaces.PaginationRsp(page, pageSize, count, okrs), nil
 }
 
 // 部门的OKR列表
@@ -2452,7 +2510,6 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		OkrPriority:     obj.Priority,
 		Review:          req.Review,
 		Problem:         req.Problem,
-		SuperiorReview:  req.SuperiorReview,
 		Replay:          1, // 1-已复盘 2-未复盘
 	}
 
@@ -2487,7 +2544,7 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		// 如果有空复盘记录，则不创建， 直接更新复盘记录
 		if s.hasOkrReplay(req.OkrId) && !s.hasReplay(req.OkrId) {
-			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "superior_review": req.SuperiorReview, "replay": 1}).Scan(&replay).Error; err != nil {
+			if err := tx.Model(&model.OkrReplay{}).Where("okr_id = ?", req.OkrId).Updates(map[string]interface{}{"review": req.Review, "problem": req.Problem, "replay": 1}).Scan(&replay).Error; err != nil {
 				return err
 			}
 		} else {
@@ -2509,6 +2566,26 @@ func (s *okrService) CreateOkrReplay(userid int, req interfaces.OkrReplayCreateR
 		return nil, err
 	}
 
+	return &replay, nil
+}
+
+// 复盘上级评价
+func (s *okrService) CreateReplaySuperiorReview(userid int, req interfaces.OkrReplaySuperiorReviewReq) (*model.OkrReplay, error) {
+	var replay model.OkrReplay
+
+	// 获取或创建复盘记录
+	if err := core.DB.First(&replay, model.OkrReplay{Id: req.Id, Userid: userid}).Error; err != nil {
+		return nil, e.New(constant.ErrOkrNoData)
+	}
+
+	// 更新上级评论
+	if replay.SuperiorReview == "" {
+		if err := core.DB.Model(&replay).Updates(model.OkrReplay{SuperiorReview: req.SuperiorReview}).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, e.New(constant.ErrOkrReplaySuperiorReviewExist)
+	}
 	return &replay, nil
 }
 
@@ -2793,6 +2870,59 @@ func (s *okrService) GetAlignListByOkrId(user *interfaces.UserInfoResp, okrId in
 	}
 
 	return okrAlignResps, nil
+}
+
+// 获取被对齐目标列表by目标id
+func (s *okrService) GetByAlignListByOkrId(user *interfaces.UserInfoResp, okrId int) ([]*interfaces.OkrByAlignResp, error) {
+	var allOkrIds []int
+	allOkrIds, _ = s.GetParentOkrAndKeyResultsIdsById(okrId)
+	if len(allOkrIds) == 0 {
+		return nil, nil
+	}
+	// 获取对齐目标
+	var byAlignOkrs []*model.OkrAlign
+	if err := core.DB.Unscoped().Preload("CurrentOkr").Preload("AlignOkr").Model(&model.OkrAlign{}).Where("align_okr_id in (?)", allOkrIds).Find(&byAlignOkrs).Error; err != nil {
+		return nil, err
+	}
+
+	var OkrByAlignResps []*interfaces.OkrByAlignResp
+	for _, align := range byAlignOkrs {
+		OkrByAlignResps = append(OkrByAlignResps, &interfaces.OkrByAlignResp{
+			Okr: align.CurrentOkr,
+			Alias: func() []string {
+				if align.CurrentOkr.ParentId == 0 {
+					// 个人或部门
+					return s.getOwningAlias(align.CurrentOkr.Ascription, align.CurrentOkr.Userid, align.CurrentOkr.DepartmentId)
+				}
+				// 参与人
+				ids := common.ExplodeInt(",", align.CurrentOkr.Participant, true)
+				var nicknames []string
+				if err := core.DB.Model(&model.User{}).Where("userid in (?)", ids).Pluck("nickname", &nicknames).Error; err != nil {
+					return nil
+				}
+				// 去除空值
+				return common.ArrayStringRemoveEmpty(nicknames)
+			}(),
+			Prefix: func() string {
+				if align.CurrentOkr.ParentId == 0 {
+					return "O"
+				}
+				return "KR"
+			}(),
+			AlignObjective: func() string {
+				if align.CurrentOkr.ParentId > 0 {
+					o, err := s.GetObjectiveById(align.CurrentOkr.ParentId)
+					if err != nil {
+						return ""
+					}
+					return o.Title
+				}
+				return ""
+			}(),
+		})
+	}
+
+	return OkrByAlignResps, nil
 }
 
 // tx新增动态日志

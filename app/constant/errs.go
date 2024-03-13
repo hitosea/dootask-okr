@@ -59,6 +59,7 @@ var (
 	ErrOkrStatusInvalid                   = "ErrOkrStatusInvalid"                   //目标状态错误
 	ErrOkrArchivedStatusInvalid           = "ErrOkrArchivedStatusInvalid"           //OKR已归档
 	ErrOkrUserDisabled                    = "ErrOkrUserDisabled"                    //负责人不存在，请重新分配负责人
+	ErrOkrReplaySuperiorReviewExist       = "ErrOkrReplaySuperiorReviewExist"       //上级已评价，请不要重复评价
 
 	// dootask
 	ErrDooTaskDataFormat           = "ErrDooTaskDataFormat"           //数据格式错误

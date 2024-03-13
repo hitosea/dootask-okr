@@ -10,6 +10,8 @@ type OkrAlign struct {
 	AlignOkrId int       `gorm:"default:0;comment:对齐目标okrId" json:"align_okr_id"`
 	CreatedAt  time.Time `gorm:"autoCreateTime;comment:创建时间" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"autoUpdateTime;comment:更新时间" json:"updated_at"`
+	CurrentOkr *Okr      `gorm:"ForeignKey:OkrId" json:"current_okr,omitempty"`
+	AlignOkr   *Okr      `gorm:"ForeignKey:AlignOkrId" json:"align_okr,omitempty"`
 }
 
 var OkrAlignModel = OkrAlign{}

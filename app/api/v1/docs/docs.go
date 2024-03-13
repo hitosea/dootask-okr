@@ -115,20 +115,18 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "归属 1-部门 2-个人",
                         "name": "ascription",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "okr id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "okr_id",
                         "in": "query"
                     },
                     {
@@ -545,6 +543,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "排除的id",
+                        "name": "exclude_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
                         "in": "query"
@@ -623,6 +627,50 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/interfaces.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/by/align/detail": {
+            "get": {
+                "description": "获取被对齐目标by目标id",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取被对齐目标by目标id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/interfaces.OkrByAlignResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1144,6 +1192,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "排除的id",
+                        "name": "exclude_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
                         "in": "query"
@@ -1392,6 +1446,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "排除的id",
+                        "name": "exclude_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "目标（O）",
                         "name": "objective",
                         "in": "query"
@@ -1530,6 +1590,12 @@ const docTemplate = `{
                 ],
                 "summary": "获取参与的OKR列表",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "排除的id",
+                        "name": "exclude_ids",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "目标（O）",
@@ -1913,6 +1979,49 @@ const docTemplate = `{
                                                     }
                                                 }
                                             ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/replay/superior/review": {
+            "post": {
+                "description": "添加上级评价",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "复盘上级评价",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.OkrReplaySuperiorReviewReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.OkrReplay"
                                         }
                                     }
                                 }
@@ -2567,6 +2676,150 @@ const docTemplate = `{
                 }
             }
         },
+        "interfaces.OkrByAlignResp": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "目标别名",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "align_objective": {
+                    "description": "对齐目标",
+                    "type": "string"
+                },
+                "archive_at": {
+                    "type": "string"
+                },
+                "archive_user": {
+                    "$ref": "#/definitions/model.UserBasic"
+                },
+                "archive_userid": {
+                    "type": "integer"
+                },
+                "ascription": {
+                    "type": "integer"
+                },
+                "auto_sync": {
+                    "type": "integer"
+                },
+                "can_owner_update_score": {
+                    "description": "KR负责人是否能修改评分",
+                    "type": "boolean"
+                },
+                "can_superior_update_score": {
+                    "description": "KR上级是否能修改评分",
+                    "type": "boolean"
+                },
+                "canceled": {
+                    "type": "integer"
+                },
+                "completed": {
+                    "type": "integer"
+                },
+                "confidence": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "department_id": {
+                    "type": "string"
+                },
+                "dialog_id": {
+                    "type": "integer"
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "key_results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Okr"
+                    }
+                },
+                "kr_score": {
+                    "description": "KR总评分",
+                    "type": "number"
+                },
+                "objective_num": {
+                    "description": "O的数字编号",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "parent_okr": {
+                    "$ref": "#/definitions/model.Okr"
+                },
+                "parent_title": {
+                    "description": "父级目标标题",
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "string"
+                },
+                "prefix": {
+                    "description": "前缀",
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "progress_status": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "description": "个人评分和O总评分",
+                    "type": "number"
+                },
+                "score_completed_at": {
+                    "type": "string"
+                },
+                "score_num": {
+                    "type": "integer"
+                },
+                "start_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "superior_score": {
+                    "description": "上级评分",
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.UserBasic"
+                },
+                "userid": {
+                    "type": "integer"
+                },
+                "visible_range": {
+                    "type": "integer"
+                }
+            }
+        },
         "interfaces.OkrCreateReq": {
             "type": "object",
             "required": [
@@ -2740,6 +2993,18 @@ const docTemplate = `{
                 "review": {
                     "description": "价值与收获",
                     "type": "string"
+                }
+            }
+        },
+        "interfaces.OkrReplaySuperiorReviewReq": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "description": "复盘 id",
+                    "type": "integer"
                 },
                 "superior_review": {
                     "description": "上级评价",

@@ -418,6 +418,30 @@ func (api *BaseApi) OkrReplayCreate() {
 }
 
 // @Tags Okr
+// @Summary 复盘上级评价
+// @Description 添加上级评价
+// @Accept json
+// @Param request body interfaces.OkrReplaySuperiorReviewReq true "request"
+// @Success 200 {object} interfaces.Response{data=model.OkrReplay}
+// @Router /okr/replay/superior/review [post]
+func (api *BaseApi) OkrReplaySuperiorReview() {
+	var param = interfaces.OkrReplaySuperiorReviewReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	// 限制255
+	if !common.IsChineseCharCountValid(param.SuperiorReview) {
+		helper.ErrorWith(api.Context, constant.ErrOkrReplayLengthInvalid, nil)
+		return
+	}
+	result, err := service.OkrService.CreateReplaySuperiorReview(api.Userinfo.Userid, param)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
 // @Summary 复盘详情
 // @Description 复盘详情
 // @Accept json
@@ -522,6 +546,25 @@ func (api *BaseApi) OkrAlignDetail() {
 	var param = interfaces.OkrIdReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
 	result, err := service.OkrService.GetAlignListByOkrId(api.Userinfo, param.Id)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+
+	helper.Success(api.Context, result)
+}
+
+// @Tags Okr
+// @Summary 获取被对齐目标by目标id
+// @Description 获取被对齐目标by目标id
+// @Accept json
+// @Param request query interfaces.OkrIdReq true "request"
+// @Success 200 {object} interfaces.Response{data=[]interfaces.OkrByAlignResp}
+// @Router /okr/by/align/detail [get]
+func (api *BaseApi) OkrByAlignDetail() {
+	var param = interfaces.OkrIdReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetByAlignListByOkrId(api.Userinfo, param.Id)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

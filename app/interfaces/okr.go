@@ -73,6 +73,14 @@ type OkrAlignResp struct {
 	Alias          []string `json:"alias"`           // 目标别名
 }
 
+// OKR被对齐目标响应
+type OkrByAlignResp struct {
+	*model.Okr
+	Prefix         string   `json:"prefix"`          // 前缀
+	AlignObjective string   `json:"align_objective"` // 对齐目标
+	Alias          []string `json:"alias"`           // 目标别名
+}
+
 // OKR部门列表请求
 type OkrDepartmentListReq struct {
 	Userid    int    `form:"userid" json:"userid"`       // 用户id
@@ -129,11 +137,16 @@ type OkrConfidenceUpdateReq struct {
 
 // 添加复盘请求
 type OkrReplayCreateReq struct {
-	OkrId          int                 `json:"okr_id" binding:"required"`   // okr id
-	Comments       []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
-	Review         string              `json:"review"`                      // 价值与收获
-	Problem        string              `json:"problem"`                     // 问题与不足
-	SuperiorReview string              `json:"superior_review"`             // 上级评价
+	OkrId    int                 `json:"okr_id" binding:"required"`   // okr id
+	Comments []*OkrReplayComment `json:"comments" binding:"required"` // 复盘评价
+	Review   string              `json:"review"`                      // 价值与收获
+	Problem  string              `json:"problem"`                     // 问题与不足
+}
+
+// 复盘上级评价
+type OkrReplaySuperiorReviewReq struct {
+	Id             int    `json:"id" binding:"required"` // 复盘 id
+	SuperiorReview string `json:"superior_review"`       // 上级评价
 }
 
 // 复盘评价

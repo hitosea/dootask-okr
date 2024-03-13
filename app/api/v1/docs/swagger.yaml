@@ -204,6 +204,105 @@ definitions:
         description: 0-3分
         type: integer
     type: object
+  interfaces.OkrByAlignResp:
+    properties:
+      alias:
+        description: 目标别名
+        items:
+          type: string
+        type: array
+      align_objective:
+        description: 对齐目标
+        type: string
+      archive_at:
+        type: string
+      archive_user:
+        $ref: '#/definitions/model.UserBasic'
+      archive_userid:
+        type: integer
+      ascription:
+        type: integer
+      auto_sync:
+        type: integer
+      can_owner_update_score:
+        description: KR负责人是否能修改评分
+        type: boolean
+      can_superior_update_score:
+        description: KR上级是否能修改评分
+        type: boolean
+      canceled:
+        type: integer
+      completed:
+        type: integer
+      confidence:
+        type: integer
+      created_at:
+        type: string
+      department_id:
+        type: string
+      dialog_id:
+        type: integer
+      end_at:
+        type: string
+      id:
+        type: integer
+      key_results:
+        items:
+          $ref: '#/definitions/model.Okr'
+        type: array
+      kr_score:
+        description: KR总评分
+        type: number
+      objective_num:
+        description: O的数字编号
+        type: string
+      parent_id:
+        type: integer
+      parent_okr:
+        $ref: '#/definitions/model.Okr'
+      parent_title:
+        description: 父级目标标题
+        type: string
+      participant:
+        type: string
+      prefix:
+        description: 前缀
+        type: string
+      priority:
+        type: string
+      progress:
+        type: integer
+      progress_status:
+        type: integer
+      project_id:
+        type: integer
+      score:
+        description: 个人评分和O总评分
+        type: number
+      score_completed_at:
+        type: string
+      score_num:
+        type: integer
+      start_at:
+        type: string
+      status:
+        type: integer
+      superior_score:
+        description: 上级评分
+        type: number
+      title:
+        type: string
+      type:
+        type: integer
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/model.UserBasic'
+      userid:
+        type: integer
+      visible_range:
+        type: integer
+    type: object
   interfaces.OkrCreateReq:
     properties:
       align_objective:
@@ -330,12 +429,20 @@ definitions:
       review:
         description: 价值与收获
         type: string
+    required:
+    - comments
+    - okr_id
+    type: object
+  interfaces.OkrReplaySuperiorReviewReq:
+    properties:
+      id:
+        description: 复盘 id
+        type: integer
       superior_review:
         description: 上级评价
         type: string
     required:
-    - comments
-    - okr_id
+    - id
     type: object
   interfaces.OkrResp:
     properties:
@@ -950,17 +1057,15 @@ paths:
       - description: 归属 1-部门 2-个人
         in: query
         name: ascription
-        required: true
-        type: integer
-      - description: okr id
-        in: query
-        name: id
-        required: true
         type: integer
       - description: 目标（O）
         in: query
         name: objective
         type: string
+      - description: id
+        in: query
+        name: okr_id
+        type: integer
       - description: 当前页，默认:1
         in: query
         name: page
@@ -1202,6 +1307,10 @@ paths:
       - application/json
       description: OKR归档列表
       parameters:
+      - description: 排除的id
+        in: query
+        name: exclude_ids
+        type: string
       - description: 目标（O）
         in: query
         name: objective
@@ -1251,6 +1360,32 @@ paths:
           schema:
             $ref: '#/definitions/interfaces.Response'
       summary: OKR还原归档目标
+      tags:
+      - Okr
+  /okr/by/align/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取被对齐目标by目标id
+      parameters:
+      - description: okr id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/interfaces.OkrByAlignResp'
+                  type: array
+              type: object
+      summary: 获取被对齐目标by目标id
       tags:
       - Okr
   /okr/cancel:
@@ -1557,6 +1692,10 @@ paths:
       - application/json
       description: 获取关注的OKR列表
       parameters:
+      - description: 排除的id
+        in: query
+        name: exclude_ids
+        type: string
       - description: 目标（O）
         in: query
         name: objective
@@ -1703,6 +1842,10 @@ paths:
       - application/json
       description: 获取我的OKR列表
       parameters:
+      - description: 排除的id
+        in: query
+        name: exclude_ids
+        type: string
       - description: 目标（O）
         in: query
         name: objective
@@ -1783,6 +1926,10 @@ paths:
       - application/json
       description: 获取参与的OKR列表
       parameters:
+      - description: 排除的id
+        in: query
+        name: exclude_ids
+        type: string
       - description: 目标（O）
         in: query
         name: objective
@@ -2013,6 +2160,31 @@ paths:
                     type: object
               type: object
       summary: 获取复盘列表by目标id
+      tags:
+      - Okr
+  /okr/replay/superior/review:
+    post:
+      consumes:
+      - application/json
+      description: 添加上级评价
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.OkrReplaySuperiorReviewReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/interfaces.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OkrReplay'
+              type: object
+      summary: 复盘上级评价
       tags:
       - Okr
   /okr/score:

@@ -42,6 +42,7 @@ ErrOkrProgressStatusInvalid: 進度狀態參數錯誤
 ErrOkrReplayCommentInvalid: 請選擇KR評價
 ErrOkrReplayLengthInvalid: 內容過長，請限制在255個字符以內
 ErrOkrReplayStatusInvalid: 無效的覆盤狀態
+ErrOkrReplaySuperiorReviewExist: 上級已評價，請不要重複評價
 ErrOkrScoreInvalid: 評分請輸入0-10的整數
 ErrOkrScoreTypeInvalid: 評分類型錯誤
 ErrOkrScoreWeightInvalid: 自評權重和上級評分權重相加必須等於100

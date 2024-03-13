@@ -37,8 +37,8 @@ monitor:
 translate:
 	cd web && npm run translate && cd ../
 
-doc:
-	go generate
+base:
+	go generate && go run main.go translate
 
 # 提示 fresh: No such file or directory 时解決辦法
 # go install github.com/pilu/fresh@latest
