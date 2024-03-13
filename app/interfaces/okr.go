@@ -172,14 +172,16 @@ type OkrReplayIdListReq struct {
 
 // 列表基础分页请求
 type OkrListBaseReq struct {
-	Objective string `form:"objective" json:"objective"` // 目标（O）
+	Objective  string `form:"objective" json:"objective"`     // 目标（O）
+	ExcludeIds string `form:"exclude_ids" json:"exclude_ids"` // 排除的id
 	*Pages
 }
 
 // 对齐目标列表请求
 type OkrAlignListReq struct {
-	Ascription int    `form:"ascription,default=2" binding:"required" json:"ascription"` // 归属 1-部门 2-个人
-	Objective  string `form:"objective" json:"objective"`                                // 目标（O）
+	OkrId      int    `form:"okr_id" json:"okr_id"`                   // id
+	Ascription int    `form:"ascription,default=2" json:"ascription"` // 归属 1-部门 2-个人
+	Objective  string `form:"objective" json:"objective"`             // 目标（O）
 	*Pages
 }
 

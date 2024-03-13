@@ -465,12 +465,11 @@ func (api *BaseApi) OkrAlignCancel() {
 func (api *BaseApi) OkrAlignList() {
 	var param = interfaces.OkrAlignListReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
-	result, err := service.OkrService.GetMyAlignList(api.Userinfo, param.Ascription, param.Objective, param.Page, param.PageSize)
+	result, err := service.OkrService.GetMyAlignList(api.Userinfo, param.OkrId, param.Ascription, param.Objective, param.Page, param.PageSize)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-
 	helper.Success(api.Context, result)
 }
 

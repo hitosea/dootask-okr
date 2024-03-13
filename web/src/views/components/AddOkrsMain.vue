@@ -169,7 +169,7 @@
 
         </div>
     </n-scrollbar>
-    <SelectAlignment :value="selectAlignmentShow" :editData="formValue.align_objective"
+    <SelectAlignment :value="selectAlignmentShow" :ascription="formValue.ascription" :editData="formValue.align_objective"
         @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 </template>
 <script setup lang="ts">
@@ -266,6 +266,12 @@ watch(() => props.edit, (newValue) => {
 watch(() => formValue.value.type, (newValue) => {
     if (newValue) {
         formValue.value.type == 1 ? formValue.value.priority = 'P0' : formValue.value.priority = 'P2'
+    }
+})
+
+watch(() => formValue.value.ascription, (newValue) => {
+    if (newValue) {
+        formValue.value.align_objective = null
     }
 })
 

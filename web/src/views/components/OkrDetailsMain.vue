@@ -396,8 +396,7 @@
         </div>
     </div>
     <!-- 对齐目标 -->
-    <SelectAlignment :value="selectAlignmentShow" :editData="detailData.align_objective" @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment">
-    </SelectAlignment>
+    <SelectAlignment :value="selectAlignmentShow" :okr="detailData" :editData="detailData.align_objective" @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- 更新进度   -->
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId" :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus"

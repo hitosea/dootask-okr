@@ -957,7 +957,7 @@ func (s *okrService) GetParticipantList(user *interfaces.UserInfoResp, objective
 
 // 获取对齐目标列表
 // 1. 显示所在部门（即我可见的）+　我参与的
-func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective string, page, pageSize int) (*interfaces.Pagination, error) {
+func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective, excludeIds string, page, pageSize int) (*interfaces.Pagination, error) {
 	var (
 		okrs     []*model.Okr
 		count    int64
@@ -966,7 +966,12 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 	)
 
 	// 已取消和已完成的OKR不显示 测试提出的需求
-	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").Where("okr.status = 0").Order("okr.created_at desc")
+	db := core.DB.Table(okrTable+" AS okr").
+		Select("DISTINCT okr.*").
+		Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").
+		Where("okr.status = 0").
+		Where("okr.id not in (?)", excludeIds).
+		Order("okr.created_at desc")
 
 	// 用户不是超级管理员时，只能看到自己所在部门的OKR
 	var allWhere []string
@@ -1039,17 +1044,30 @@ func (s *okrService) GetAlignList(user *interfaces.UserInfoResp, objective strin
 
 // 获取对齐目标列表
 // 1.2版本 部门：显示并只可对齐本部门的OKR 个人：显示并可对齐（可跨部门）本账号参与或负责的OKR
-func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, ascription int, objective string, page, pageSize int) (*interfaces.Pagination, error) {
+func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, okrId int, ascription int, objective string, page, pageSize int) (*interfaces.Pagination, error) {
 	var (
 		okrs     []*model.Okr
 		count    int64
 		err      error
 		okrTable = core.DBTableName(&model.Okr{})
 	)
-
-	db := core.DB.Table(okrTable + " AS okr").Select("DISTINCT okr.*").
+	//
+	if ascription == 0 {
+		if okrId > 0 {
+			var okr model.Okr
+			if err := core.DB.Where("id = ?", okrId).First(&okr).Error; err != nil {
+				return nil, err
+			}
+			ascription = okr.Ascription
+		} else {
+			ascription = 1
+		}
+	}
+	//
+	db := core.DB.Table(okrTable+" AS okr").Select("DISTINCT okr.*").
 		Where("okr.parent_id = 0 AND okr.canceled = 0 AND okr.completed = 0").
 		Where("okr.status = 0").
+		Where("okr.id != ?", okrId).
 		Order("okr.created_at desc")
 
 	if len(user.Department) > 0 && ascription == 1 {

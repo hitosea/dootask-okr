@@ -110,7 +110,7 @@
         @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
-    <SelectAlignment :value="selectAlignmentShow" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
+    <SelectAlignment :value="selectAlignmentShow" :okr="eidtItem" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->

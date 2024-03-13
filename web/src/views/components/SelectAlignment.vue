@@ -54,11 +54,11 @@
                 <div v-else class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
                         <img class="w-80" :src="utils.apiUrl(notSearchSvg)" />
-                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果1') }}</p>     
+                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果1') }}</p>
                     </div>
                     <div v-if="searchName =='' && okrList.length ==0">
                         <img class="w-80" :src="utils.apiUrl(notDataSvg)" />
-                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>     
+                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
                     </div>
                 </div>
             </div>
@@ -94,9 +94,17 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    okr: {
+        type: Object,
+        default: null,
+    },
     editData: {
         type: Object,
         default: null,
+    },
+    ascription: {
+        type: Number,
+        default: 0,
     },
 })
 
@@ -162,6 +170,8 @@ const getList = (type) => {
             objective: searchName.value,
             page: page.value,
             page_size: 20,
+            okr_id: props.okr?.id || 0,
+            ascription:  props.ascription || 0,
         }
         loadIng.value = true
         getAlignList(data).then(({ data }) => {
