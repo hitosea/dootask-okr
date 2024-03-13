@@ -43,4 +43,5 @@ export interface replayData {
     okr_progress?:any
     review?:any
     problem?:any
+    superior_review?:any
 }

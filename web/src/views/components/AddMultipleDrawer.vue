@@ -3,9 +3,12 @@
         :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
-                <AddMultipleMain ref="AddMultipleMainRef" :data="props.data" :multipleId="props.multipleId" @close="()=>{ emit('close') }" @loadIng="(e)=>{ loadIng = e }"></AddMultipleMain>
+                <AddMultipleMain ref="AddMultipleMainRef" :data="props.data" :multipleId="props.multipleId" :superiorUser="props.superiorUser" @canComment="()=>{canComment = true}" @close="()=>{ emit('close') }" @loadIng="(e)=>{ loadIng = e }"></AddMultipleMain>
                 <div class="button-box">
                     <n-button  v-if="props.multipleId == 0 " :loading="loadIng" type="primary" @click="handleSubmit">
+                        {{ $t('提交') }}
+                    </n-button>
+                    <n-button  v-if="canComment" :loading="loadIng" type="primary" @click="handleComment" >
                         {{ $t('提交') }}
                     </n-button>
                 </div>
@@ -18,6 +21,7 @@ import AddMultipleMain from './AddMultipleMain.vue';
 
 const show = ref(false)
 const loadIng = ref(false)
+const canComment = ref(false)
 const AddMultipleMainRef = ref(null)
 
 const props = defineProps({
@@ -28,6 +32,10 @@ const props = defineProps({
     multipleId: {
         type: Number,
         default: 0,
+    },
+    superiorUser: {
+        type: undefined,
+        default: [],
     },
 })
 
@@ -43,6 +51,10 @@ const showDrawer = () => {
 
 const handleSubmit = () => {
     AddMultipleMainRef.value.handleSubmit()
+}
+
+const handleComment = () => {
+    AddMultipleMainRef.value.handleComment()
 }
 
 </script>

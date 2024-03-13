@@ -39,7 +39,7 @@
                         $t('上级评价')
                     }}
                     </h3>
-                    <p class="text-text-li text-14" v-html="(item.problem || $t('无'))"></p>
+                    <p class="text-text-li text-14" v-html="(item.superior_review || $t('无'))"></p>
                 </div>
             </template>
         </div>

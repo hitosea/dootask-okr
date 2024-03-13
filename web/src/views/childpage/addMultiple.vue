@@ -4,10 +4,11 @@
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ multipleId == 0 ? $t('添加复盘') :$t('复盘详情') }}</h2>
             <i v-if="multipleId == 0" @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
+            <i v-if="canComment" @click="handleComment" class="okrfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>
         </div>
         <div class="pt-[52px] pb-32 pl-16 pr-16 flex flex-1 bg-[#FFF]">
-            <AddMultipleMain ref="AddMultipleMainRef" :data="addMultipleData" :multipleId="multipleId"
-                @loadIng="(e) => { loadIng = e }" @close="handleReturn"></AddMultipleMain>
+            <AddMultipleMain ref="AddMultipleMainRef" :data="addMultipleData" :multipleId="multipleId" :superiorUser="superiorUser"
+                @loadIng="(e) => { loadIng = e }" @canComment="()=>{canComment = true}" @close="handleReturn"></AddMultipleMain>
         </div>
     </div>
 </template>
@@ -19,16 +20,20 @@ import { GlobalStore } from '@/store';
 
 const router = useRouter()
 const loadIng = ref(false)
-
+const canComment = ref(false)
 const AddMultipleMainRef = ref(null)
 const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 const globalStore = GlobalStore()
-const {  multipleId,addMultipleData } = globalStore.multipleSetup()
+const {  multipleId,addMultipleData ,superiorUser} = globalStore.multipleSetup()
 
 //提交
 const handleSubmit = () => {
     if (loadIng.value) return;
     AddMultipleMainRef.value.handleSubmit()
+}
+const handleComment = () => {
+    if (loadIng.value) return;
+    AddMultipleMainRef.value.handleComment()
 }
 
 const handleReturn = () => {

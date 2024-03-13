@@ -26,6 +26,7 @@ export interface GlobalState {
     okrDetail: any
     addMultipleShow: any
     multipleId: number
+    superiorUser: any
     addMultipleData: any
     addMultipleChange: any
     okrEditData: any

@@ -65,6 +65,11 @@ export const replayDetail = (data) => {
     return http.post<replayData>("okr/replay/detail",data)
 }
 
+//复盘上级评论
+export const superiorReview = (data) => {
+    return http.post<PageReq>("/okr/replay/superior/review",data)
+}
+
 //更新参与人
 export const participantUpdate = (data) => {
     return http.post<PageReq>("okr/participant/update",data)

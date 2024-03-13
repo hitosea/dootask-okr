@@ -16,7 +16,7 @@
                     </template>
                 </n-input>
 
-                <n-checkbox-group  v-model:value="cities" class="flex mt-[16px] overflow-hidden" v-if="okrList.length > 0">
+                <n-checkbox-group  v-model:value="cities" class="flex mt-[16px] overflow-hidden" v-if="okrList.length > 0 && !loadIng">
                     <div class="flex flex-col flex-auto ">
                         <n-scrollbar class="max-h-full md:max-h-[300px]" :on-scroll="onScroll">
                             <div class="align-okr" v-for="(item, index) in okrList">
@@ -51,7 +51,7 @@
                         </n-scrollbar>
                     </div>
                 </n-checkbox-group>
-                <div v-else class="flex flex-initial items-center justify-center py-[60px]">
+                <div v-if="okrList.length == 0 && !loadIng" class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
                         <img class="w-80" :src="utils.apiUrl(notSearchSvg)" />
                         <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果1') }}</p>
@@ -60,6 +60,9 @@
                         <img class="w-80" :src="utils.apiUrl(notDataSvg)" />
                         <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
                     </div>
+                </div>
+                <div v-if="loadIng" class="flex justify-center py-[60px]">
+                    <n-spin size="small" :show="loadIng"></n-spin>
                 </div>
             </div>
             <template #footer>

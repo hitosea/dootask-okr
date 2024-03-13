@@ -2,6 +2,13 @@
     <div class="flex flex-col h-full">
         <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center md:mb-16 md:mt-24">
             <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
+                <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
+                    <div  class="mb-2 mr-8 text-text-li whitespace-nowrap font-medium">
+                        {{ $t('部门') }}
+                    </div>
+                    <n-select  v-model:value="departmentsvalue" :options="departments" clearable
+                        class="mr-16 flex-1 overflow-hidden" :placeholder="$t('全部')" />
+                </div>
 
                 <div class=" flex items-center overflow-hidden" :class="(userInfo == 'admin' || okrAdminOwner) ? 'flex-1' :'' ">
                     <div class="text-text-li mr-8 whitespace-nowrap font-medium">
@@ -101,6 +108,11 @@
                     </div>
                 </template>
                 <div class="flex flex-col h-full">
+                    <div v-if="(userInfo == 'admin' || okrAdminOwner)" class="whitespace-nowrap text-text-li mb-4">
+                        {{ $t('部门') }}
+                    </div>
+                    <n-select v-if="(userInfo == 'admin' || okrAdminOwner)" v-model:value="departmentsvalue" :options="departments" clearable
+                        class="mr-24" :placeholder="$t('全部')" />
 
                     <div class=" whitespace-nowrap text-text-li mb-4" :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">
                         {{ $t('负责人') }}
@@ -153,9 +165,10 @@
 
 <script lang="ts" setup>
 import OkrItems from '@/views/components/OkrItems.vue'
-import { getDepartmentOkrList } from '@/api/modules/department'
+import { getCompanyOkrList } from '@/api/modules/corporation'
 import { getOkrDetail } from '@/api/modules/okrList'
 import OkrNotDatas from "@/views/components/OkrNotDatas.vue"
+import { getDepartmentList } from '@/api/modules/department'
 import { getUserList } from '@/api/modules/created'
 import { getUserInfo } from '@/api/modules/user'
 import utils from '@/utils/utils'
@@ -175,6 +188,7 @@ const principalpage = ref(1)
 const last_page = ref(99999)
 const principallast_page = ref(99999)
 const list = ref([])
+const departmentsvalue = ref(null)
 const principalvalue = ref(null)
 const types = ref(null);
 const daterange = ref<[number, number]>([0,0])
@@ -186,6 +200,9 @@ const emit = defineEmits(['edit'])
 
 const showDatePickers = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 
+const departments = ref([
+    { label: $t('全部'), value: null },
+])
 const principal = ref([])
 const typeList = ref([
     { label: $t('全部'), value: null },
@@ -219,7 +236,7 @@ watch(() => active.value, (newValue) => {
 })
 
 const searchActive = computed(() => {
-    return  principalvalue.value != null || types.value != null || daterange.value[0] != 0 || daterange.value[1] != 0
+    return departmentsvalue.value != null || principalvalue.value != null || types.value != null || daterange.value[0] != 0 || daterange.value[1] != 0
 })
 
 const getUser = (keyword) => {
@@ -262,6 +279,16 @@ const getUser = (keyword) => {
 
 }
 
+const init = () => {
+    getDepartmentList().then(({ data }) => {
+        data.data.map(item => {
+            departments.value.push({
+                label: item.name,
+                value: item.id,
+            })
+        })
+    })
+}
 
 const resetGetList = () => {
     page.value = 1
@@ -279,6 +306,7 @@ const getList = (type) => {
         }
         const sendata = {
             completed: completednotrated.value ? 1 : 0,
+            department_id: departmentsvalue.value,
             end_at: daterange.value[1] ? utils.TimeHandle(daterange.value[1]) : '',
             objective: props.searchObject,
             page: type == 'updata' ? 1 : page.value,
@@ -287,7 +315,7 @@ const getList = (type) => {
             type: types.value == "0" ? null : types.value,
             userid: principalvalue.value,
         }
-        getDepartmentOkrList(sendata).then(({ data }) => {
+        getCompanyOkrList(sendata).then(({ data }) => {
             loadIng.value = false
             isloading.value = false
             onscrolloading.value = false
@@ -352,6 +380,7 @@ const principalClick = (type) => {
 
 //重置
 const handleReset = () => {
+    departmentsvalue.value = null
     principalvalue.value = null
     types.value = null
     daterange.value = [0,0]
@@ -456,6 +485,7 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
+    init()
     loadDatePickers()
     getList('search')
     handleGetUserInfo();

@@ -167,7 +167,7 @@ const colorStatus = (color) => {
 
 const handleDetail = (id, userid, deleted_at) => {
     if (deleted_at) return
-    emit('openDetail', id, userid)
+    emit('openDetail', id, userid,'open')
 }
 
 watch(() => props.value, (newValue) => {

@@ -66,6 +66,11 @@
                         <OkrDepartment ref="OkrDepartmentRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
                 </n-tab-pane>
+                <n-tab-pane :tab="$t('全公司') + ' OKR'" name="all">
+                    <div class="okr-scrollbar">
+                        <OkrCorporation ref="OkrCorporationRef" :searchObject="searchObject" @edit="handleEdit"/>
+                    </div>
+                </n-tab-pane>
                 <n-tab-pane :tab="$t('我关注的')" name="attention">
                     <div class="okr-scrollbar">
                         <OkrFollow ref="OkrFollowRef" :searchObject="searchObject" @edit="handleEdit"/>
@@ -107,6 +112,7 @@ import OkrReplay from '@/views/manage/OkrReplay.vue'
 import OkrFollow from '@/views/manage/OkrFollow.vue'
 import OkrParticipant from '@/views/manage/OkrParticipant.vue'
 import OkrDepartment from './manage/OkrDepartment.vue';
+import OkrCorporation from './manage/OkrCorporation.vue'
 import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
@@ -126,6 +132,7 @@ const pageOkrRef = ref(null)
 const ICreatedRef = ref(null)
 const OkrParticipantRef = ref(null)
 const OkrDepartmentRef = ref(null)
+const OkrCorporationRef = ref(null)
 const OkrFollowRef = ref(null)
 const OkrReplayRef = ref(null)
 
@@ -184,6 +191,9 @@ const inputName = computed(()=>{
     if(tabsName.value == 'dept'){
         return $t('部门') + ' OKR'
     }
+    if(tabsName.value == 'all'){
+        return $t('全公司') + ' OKR'
+    }
     if(tabsName.value == 'attention'){
         return $t('我关注的')
     }
@@ -213,6 +223,9 @@ const reLoadList = () => {
     }
     if (tabsName.value == 'dept') {
         OkrDepartmentRef.value.resetGetList('search')
+    }
+    if (tabsName.value == 'all') {
+        OkrCorporationRef.value.resetGetList('search')
     }
     if (tabsName.value == 'attention') {
         OkrFollowRef.value.resetGetList('search')
@@ -265,6 +278,9 @@ const handleClose = (e, id) => {
     if (tabsName.value == 'dept' && e == 1) {
         OkrDepartmentRef.value.resetGetList('search')
     }
+    if (tabsName.value == 'all' && e == 1) {
+        OkrCorporationRef.value.resetGetList('search')
+    }
     if (tabsName.value == 'attention' && e == 1) {
         OkrFollowRef.value.resetGetList('search')
     }
@@ -278,6 +294,9 @@ const handleClose = (e, id) => {
     }
     if (tabsName.value == 'dept' && e == 2) {
         OkrDepartmentRef.value.upData(id)
+    }
+    if (tabsName.value == 'all' && e == 2) {
+        OkrCorporationRef.value.upData(id)
     }
     if (tabsName.value == 'attention' && e == 2) {
         OkrFollowRef.value.upData(id)

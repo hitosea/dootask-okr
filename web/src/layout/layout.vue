@@ -2,7 +2,7 @@
     <n-layout class="root-layout">
         <router-view />
         <!-- 新增复盘 -->
-        <AddMultipleDrawer v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" @close="handleCloseMultiple"></AddMultipleDrawer>
+        <AddMultipleDrawer v-model:show="addMultipleShow" :data="addMultipleData" :multipleId="multipleId" :superiorUser="superiorUser" @close="handleCloseMultiple"></AddMultipleDrawer>
     </n-layout>
 </template>
 
@@ -18,7 +18,7 @@ import AddMultipleDrawer from '@/views/components/AddMultipleDrawer.vue';
 const userStore = UserStore()
 const loadingBar = useLoadingBar()
 const globalStore = GlobalStore()
-const { addMultipleShow, multipleId,addMultipleData} = globalStore.multipleSetup()
+const { addMultipleShow, multipleId,addMultipleData ,superiorUser} = globalStore.multipleSetup()
 
 //关闭复盘
 const handleCloseMultiple = () => {

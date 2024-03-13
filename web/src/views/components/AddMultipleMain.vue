@@ -1,35 +1,30 @@
-<template >
+<template>
     <n-scrollbar class="h-full">
         <div class="flex flex-col shrink-0 h-full">
             <h3 class="text-text-li text-18 font-medium mb-16  hidden md:block">OKR</h3>
-            <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false"
-                style="--n-td-color-hover-modal:#ffffff" />
+            <n-data-table class="hidden md:block" :columns="columns" :data="tableData" :single-line="false" :hover="false" style="--n-td-color-hover-modal:#ffffff" />
             <div class="flex flex-col md:hidden pt-24 md:pt-0" v-if="props.data">
                 <h3 class=" text-text-li text-14 font-normal md:font-medium flex justify-between items-center">{{
-                    $t('目标（O）') }} <span class="text-primary-color">{{ props.data.progress }}%</span></h3>
-                <div
-                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 text-14 text-text-li font-normal">
+                $t('目标（O）') }} <span class="text-primary-color">{{ props.data.progress }}%</span></h3>
+                <div class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 text-14 text-text-li font-normal">
                     {{ props.data.title }}
                 </div>
                 <h3 class="mt-16 text-text-li text-14 font-normal md:font-medium flex justify-between items-center ">{{
-                    $t('关键KR') }}</h3>
-                <div v-for="(item, index) in tableData"
-                    class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 ">
+                $t('关键KR') }}</h3>
+                <div v-for="(item, index) in tableData" class="border-solid border-[1px] border-[#F2F2F2] rounded mt-8 md:mt-12 p-16 ">
                     <h3 class="text-14 text-text-li font-normal"><span class="mr-8 text-12 text-[#515a6E] opacity-50">KR{{
-                        index +
-                        1 }}</span>{{ item.KR }}</h3>
+                index +
+                1 }}</span>{{ item.KR }}</h3>
                     <div class="mt-12 flex items-center">
                         <p class="text-12 text-text-li flex-1 border-solid border-0 border-r-[1px] border-[#F2F2F2]">{{
-                            $t('KR完成度:') }}<span class=" text-primary-color">&nbsp;{{ item.KRcomplete }}</span></p>
-                        <p
-                            class="text-12 text-text-li flex-1 text-center border-solid border-0 border-r-[1px] border-[#F2F2F2]">
+                $t('KR完成度:') }}<span class=" text-primary-color">&nbsp;{{ item.KRcomplete }}</span></p>
+                        <p class="text-12 text-text-li flex-1 text-center border-solid border-0 border-r-[1px] border-[#F2F2F2]">
                             {{ $t('KR评分:') }}<span class=" text-primary-color">&nbsp;{{ item.KRMark }}</span></p>
                         <div class="flex-1 flex justify-end">
-                            <n-select v-if="props.multipleId == 0" class="w-[95%]" :placeholder="$t('评价')"
-                                :options="itemOptions" :disabled="props.multipleId > 0"
+                            <n-select v-if="props.multipleId == 0" class="w-[95%]" :placeholder="$t('评价')" :options="itemOptions" :disabled="props.multipleId > 0"
                                 v-model:value="tableData[index].evaluate"></n-select>
                             <p v-else class="text-12 text-text-li flex-1 text-center "><span class="">{{
-                                tableData[index].evaluate == 1 ? $t('做得好的') : $t('可提升的') }}</span></p>
+                tableData[index].evaluate == 1 ? $t('做得好的') : $t('可提升的') }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -39,35 +34,39 @@
                 <!-- <TEditor v-if="props.multipleId == 0" v-model:value="review" :readOnly="false"></TEditor>
                 <div v-else v-html="review"></div> -->
                 <h3 class="mt-8 md:mt-12 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{
-                    $t('价值与收获') }}</h3>
-                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea"
-                    maxlength="255" show-count :placeholder="$t('我们从过程中学到了什么新东西')" />
+                $t('价值与收获') }}</h3>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="review" type="textarea" maxlength="255" show-count
+                    :placeholder="$t('我们从过程中学到了什么新东西')" />
                 <p class="mt-6 md:mt-8" v-else v-html="review"></p>
                 <h3 class="mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{
-                    $t('问题与不足') }}</h3>
-                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
-                    maxlength="255" show-count :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')" />
+                $t('问题与不足') }}</h3>
+                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea" maxlength="255" show-count
+                    :placeholder="$t('请描述出现的某个问题并针对该问题展开分析')" />
                 <p class="mt-6 md:mt-8" v-else v-html="problem"></p>
-                <h3 class="mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{
-                    $t('上级评论') }}</h3>
-                <n-input v-if="props.multipleId == 0" class="mt-8" :rows="8" v-model:value="problem" type="textarea"
-                    maxlength="255" show-count :placeholder="$t('上级评论')" />
-                <p class="mt-6 md:mt-8" v-else v-html="problem"></p>
+                <h3 v-if="props.multipleId != 0" class="mt-16 text-text-li text-18 md:text-20 font-medium flex justify-between items-center ">{{
+                $t('上级评论') }}</h3>
+                <n-input v-if="props.multipleId != 0 && superior_review_open && props.superiorUser.includes(userInfo.userid)" class="mt-8" :rows="8" v-model:value="superior_review"
+                    type="textarea" maxlength="255" show-count :placeholder="$t('请输入评论')" />
+                <p class="mt-6 md:mt-8" v-if="props.multipleId != 0 && !superior_review_open" v-html="superior_review || $t('无')"></p>
             </div>
         </div>
     </n-scrollbar>
 </template>
 <script setup lang="ts">
 import { NSelect, DataTableColumn } from 'naive-ui';
-import { replayCreate, replayDetail } from '@/api/modules/okrList'
+import { replayCreate, replayDetail ,superiorReview} from '@/api/modules/okrList'
 import { useMessage } from "@/utils/messageAll"
 import { GlobalStore } from '@/store';
+import { UserStore } from '@/store/user'
 
+const userInfo = UserStore().info
 const globalStore = GlobalStore()
 const message = useMessage()
 const loadIng = ref(false)
 const review = ref(``)
 const problem = ref(``)
+const superior_review = ref(``)
+const superior_review_open = ref(false)
 
 const props = defineProps({
     data: {
@@ -77,6 +76,10 @@ const props = defineProps({
     multipleId: {
         type: Number,
         default: 0,
+    },
+    superiorUser: {
+        type: undefined,
+        default: [],
     },
 })
 
@@ -178,7 +181,7 @@ const itemOptions = ref([
 ])
 
 
-const emit = defineEmits(['close', 'loadIng'])
+const emit = defineEmits(['close', 'loadIng', 'canComment'])
 
 const closeDrawer = () => {
     tableData.value = []
@@ -218,6 +221,28 @@ const handleSubmit = () => {
         })
 
 }
+//添加上级评论
+const handleComment = () => {
+    const upData = {
+        id: props.multipleId,
+        superior_review: superior_review.value,
+    }
+    loadIng.value = true
+    superiorReview(upData)
+        .then(({ msg }) => {
+            message.success($t('添加成功'))
+            emit('close')
+            globalStore.$patch((state) => {
+                state.addMultipleChange = !state.addMultipleChange
+            })
+        })
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
+        .finally(() => {
+            loadIng.value = false
+        })
+}
 
 watch(() => props.data, (newValue) => {
     if (newValue && props.multipleId == 0) {
@@ -244,6 +269,7 @@ watch(() => props.data, (newValue) => {
 //查看详情
 watch(() => props.multipleId, (newValue) => {
     if (newValue) {
+
         const upData = {
             id: newValue,
         }
@@ -271,6 +297,13 @@ watch(() => props.multipleId, (newValue) => {
                 }
                 review.value = data.review || $t('无')
                 problem.value = data.problem || $t('无')
+                superior_review.value = data.superior_review
+                superior_review_open.value = data.superior_review ? false : true   
+                if (props.multipleId != 0 && !data.superior_review && props.superiorUser.includes(userInfo.userid)) {
+                    console.log(123123);
+                    
+                    emit('canComment')
+                }
             })
             .catch(({ msg }) => {
                 message.error(msg)
@@ -287,15 +320,17 @@ watch(() => loadIng.value, (newValue) => {
 
 defineExpose({
     closeDrawer,
-    handleSubmit
+    handleSubmit,
+    handleComment
 })
 
 </script>
-<style lang="less" >
+<style lang="less">
 .n-base-select-option__content {
     @apply text-12 md:text-14;
 }
 
 .n-data-table .n-data-table-th {
     @apply bg-[#F8F8F9];
-}</style>
+}
+</style>

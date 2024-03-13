@@ -40,7 +40,14 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-6">
-                    <i class="okrfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe6ac;</i>
+                    <n-tooltip trigger="hover" v-if="returnList.length > 0">
+                        <template #trigger>
+                            <i class="okrfont icon-title text-[#A7ACB6] cursor-pointer" @click="handleReturn">&#xe6ac;</i>
+                        </template>
+                        {{ $t('返回上一个') }}
+                    </n-tooltip>
+
+
                     <i v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" class="okrfont icon-title text-[#A7ACB6]"
                         @click="handleEdit">&#xe779;</i>
 
@@ -396,7 +403,8 @@
         </div>
     </div>
     <!-- 对齐目标 -->
-    <SelectAlignment :value="selectAlignmentShow" :okr="detailData" :editData="detailData.align_objective" @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
+    <SelectAlignment :value="selectAlignmentShow" :okr="detailData" :editData="detailData.align_objective" @close="() => { selectAlignmentShow = false }"
+        @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- 更新进度   -->
     <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId" :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus"
@@ -447,6 +455,7 @@ const route = useRoute()
 const globalStore = GlobalStore()
 const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') && route.name == 'okrDetails' ? 1 : 0)
 const userSelectApps = ref([]);
+const returnList = ref([]);
 const navActive = ref(0)
 const alignActive = ref(0)
 const dialogWrappersApp = ref()
@@ -755,6 +764,7 @@ const handleGetReplayList = () => {
             })
     }
 }
+
 
 //编辑
 const handleEdit = () => {
@@ -1072,7 +1082,13 @@ const handleAlignActive = (e) => {
 }
 
 // 点击对齐目标跳转
-const openDetail = (id, userid) => {
+const openDetail = (id, userid,type) => {
+    if(type=='open'){
+        returnList.value.push({
+        id: props.id,
+        userid: detailData.value.userid,
+    })
+    }
     emit('openDetail', id, userid)
     userSelectApps.value.forEach(app => {
         let dom = document.createElement("UserSelects")
@@ -1080,7 +1096,6 @@ const openDetail = (id, userid) => {
         app.$el.replaceWith(dom);
         app.$destroy()
     })
-
     nextTick(() => {
         scrollbarRef.value.scrollTo({ top: 0 })
         getDetail('')
@@ -1092,8 +1107,19 @@ const openDetail = (id, userid) => {
         else {
             navActive.value = 0
         }
+        if(type=='return'){
+            returnList.value.pop()
+        }
     })
 }
+
+//返回上一个详情页
+const handleReturn = () => {
+    const id = returnList.value[returnList.value.length - 1].id
+    const userid = returnList.value[returnList.value.length - 1].userid
+    openDetail(id,userid,'return')
+}
+
 
 // 加载聊天组件
 const loadDialogWrappers = () => {
@@ -1151,6 +1177,7 @@ const handleCheckMultiple = (id) => {
         })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
+            state.superiorUser = detailData.value.superior_user
             state.multipleId = id
             state.doubleSkip = true
         })
@@ -1159,6 +1186,7 @@ const handleCheckMultiple = (id) => {
         closeModal()
         globalStore.$patch((state) => {
             state.multipleId = id
+            state.superiorUser = detailData.value.superior_user
             state.addMultipleShow = true
         })
     }

@@ -31,6 +31,7 @@ export const GlobalStore = defineStore({
         addMultipleShow: false,
         addMultipleChange: false,
         multipleId: 0,
+        superiorUser:[],
         addMultipleData: null,
         okrEditData: null,
         okrEdit: false,
@@ -117,6 +118,9 @@ export const GlobalStore = defineStore({
                 }),
                 multipleId: computed(() => {
                     return this.multipleId ;
+                }),
+                superiorUser: computed(() => {
+                    return this.superiorUser ;
                 }),
                 addMultipleData: computed(() => {
                     return this.addMultipleData ;
