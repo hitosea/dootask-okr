@@ -256,6 +256,9 @@ func (api *BaseApi) OkrDetail() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
+	//
+	service.OkrProgressService.SyncKrProgress(nil, 64)
+	//
 	helper.Success(api.Context, result)
 }
 
@@ -298,7 +301,7 @@ func (api *BaseApi) OkrUpdateProgress() {
 		helper.ErrorWith(api.Context, constant.ErrOkrProgressStatusInvalid, nil)
 		return
 	}
-	result, err := service.OkrService.UpdateProgressAndStatus(api.Userinfo, param)
+	result, err := service.OkrProgressService.UpdateProgressAndStatus(nil, api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
@@ -494,6 +497,7 @@ func (api *BaseApi) OkrAlignList() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
+
 	helper.Success(api.Context, result)
 }
 

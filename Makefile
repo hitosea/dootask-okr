@@ -20,28 +20,28 @@ watch:
     fi
 	$(GOCGO) air
 
-release:
+release: base
 	cd web && npm run build && cd ../ && rm -f main
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
 	OCKER_BUILDKIT=1 docker buildx build --push -t hitosea2020/okr:0.5.2 --platform linux/amd64,linux/arm64 .
 
-build:
+build: base
 	cd web && npm run build && cd ../
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go main
 
+dev: monitor
 monitor:
+	lsof -i :5566 | grep runner-bu | awk '{print $$2}' | xargs kill -9
 	lsof -i :5567 | grep node | awk '{print $$2}' | xargs kill -9
 	cd web && nohup npm run dev > ../output.log >&1 & cd ../
+	@if [ ! -f ${HOME}/go/bin/fresh ]; then \
+        go install github.com/pilu/fresh@latest; \
+    fi
 	${HOME}/go/bin/fresh -c ./fresh.conf
 
-translate:
-	cd web && npm run translate && cd ../
-
 base:
+	cd web && npm run translate && cd ../
 	go generate && go run main.go translate
-
-# 提示 fresh: No such file or directory 时解決辦法
-# go install github.com/pilu/fresh@latest
 
 # 提示 air: No such file or directory 时解決辦法
 # go install github.com/cosmtrek/air@latest

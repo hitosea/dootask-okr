@@ -405,5 +405,10 @@
     "评分未完成": "Notation non complétée",
     "已完成评分的 OKR 所占比例，一个 OKR 里负责人与上级都完成评分，才能计为完成评分的 OKR": "La proportion d'OKR qui ont été notés. Ce n'est que lorsque la personne responsable et le supérieur d'un OKR ont terminé de noter qu'ils peuvent être comptés comme OKR notés.",
     "各个部门完成 OKR 评分的所占比例": "La proportion de scores OKR complétés par chaque département",
-    "各个人员完成 OKR 评分的所占比例": "La proportion de scores OKR complétés par chaque personne"
+    "各个人员完成 OKR 评分的所占比例": "La proportion de scores OKR complétés par chaque personne",
+    "上级评论": "Commentaires supérieurs",
+    "请输入评论": "Merci de saisir un commentaire",
+    "被对齐目标": "Cible alignée",
+    "返回上一个": "Retour au précédent",
+    "上级评价": "Évaluation supérieure"
 }

@@ -405,5 +405,10 @@
     "评分未完成": "Rating not completed",
     "已完成评分的 OKR 所占比例，一个 OKR 里负责人与上级都完成评分，才能计为完成评分的 OKR": "The proportion of OKRs that have been scored. Only when both the person in charge and the superior in an OKR have finished scoring can it be counted as OKRs that have been scored.",
     "各个部门完成 OKR 评分的所占比例": "The proportion of OKR scores completed by each department",
-    "各个人员完成 OKR 评分的所占比例": "The proportion of OKR scores completed by each person"
+    "各个人员完成 OKR 评分的所占比例": "The proportion of OKR scores completed by each person",
+    "上级评论": "Superior comments",
+    "请输入评论": "Please enter a comment",
+    "被对齐目标": "Aligned target",
+    "返回上一个": "Return to previous",
+    "上级评价": "Superior evaluation"
 }
