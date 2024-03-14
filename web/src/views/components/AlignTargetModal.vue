@@ -5,7 +5,7 @@
                 <div class="headr-nav gap-[32px]">
                     <h3 :class="active == 0 ? 'active' : ''">
                         <span @click="handleActive(0)">{{ $t('对齐目标') }}</span>
-                        <i v-if="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid" class="okrfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
+                        <i v-if="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid" class="okrfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
                     </h3>
                     <h3 :class="active == 1 ? 'active' : ''">
                         <span @click="handleActive(1)">{{ $t('被对齐目标') }}</span>
@@ -15,7 +15,7 @@
             <template #header-extra>
                 <i class="okrfont text-16 cursor-pointer text-[#999]" @click="handleClose">&#xe6e5;</i>
             </template>
-            <AlignTarget :value="props.value" :id="props.eidtItem.id" :userid="props.eidtItem.userid" :cancelShow="props.eidtItem.canceled == '0' && props.eidtItem.completed == '0' && userInfo.userid == props.eidtItem.userid" @unalign="handleUnalign" @openDetail="openDetail"></AlignTarget>
+            <AlignTarget :value="props.value" :active="active" :id="props.editItem.id" :userid="props.editItem.userid" :cancelShow="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid" @unalign="handleUnalign" @openDetail="openDetail"></AlignTarget>
         </n-card>
     </n-modal>
 </template>
@@ -32,7 +32,7 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    eidtItem: {
+    editItem: {
         type: undefined,
         default: {},
     },
@@ -43,7 +43,7 @@ const emit = defineEmits(['close', 'upData', 'openSelectAlignment', 'openDetail'
 
 
 const handleOpenSelect = () => {
-    emit('openSelectAlignment', props.eidtItem)
+    emit('openSelectAlignment', props.editItem)
     emit('close')
 }
 

@@ -47,6 +47,15 @@
                     </n-radio-group>
                 </n-form-item>
 
+                <n-form-item  :label="$t('进度')" path="auto_sync">
+                    <n-radio-group v-model:value="formValue.auto_sync" name="radiogroup3" >
+                        <n-space>
+                            <n-radio :value="0">{{ $t('不同步') }}</n-radio>
+                            <n-radio :value="1">{{ $t('自动同步') }}</n-radio>
+                        </n-space>
+                    </n-radio-group>
+                </n-form-item>
+
                 <n-form-item :label="$t('周期')" path="time">
                     <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]">
                         <DatePickers type="cycle" />
@@ -225,6 +234,7 @@ const formValue = ref<any>({
     type: 1,
     priority: "P0",
     ascription: 1,
+    auto_sync: 0,
     visible_range: 1,
     time: null,
     align_objective: null,
@@ -373,6 +383,7 @@ const handleSubmit = () => {
             type: formValue.value.type,
             priority: formValue.value.priority,
             ascription: formValue.value.ascription,
+            auto_sync: formValue.value.auto_sync,
             visible_range: formValue.value.visible_range,
             start_at: utils.TimeHandle(formValue.value.time[0]),
             end_at: utils.TimeHandle(formValue.value.time[1], 1),

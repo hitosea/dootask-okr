@@ -16,6 +16,11 @@ export const getAlignDetail = (data) => {
     return http.get<PageReq>("okr/align/detail",data)
 }
 
+//获取被对齐的目标通过id
+export const getByAlignDetail = (data) => {
+    return http.get<PageReq>("okr/by/align/detail",data)
+}
+
 //取消对齐的目标
 export const getAlignCancel = (data) => {
     return http.get<PageReq>("okr/align/cancel",data)

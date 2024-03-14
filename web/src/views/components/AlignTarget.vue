@@ -1,9 +1,10 @@
 <template>
     <div class="align-target">
-        <div class="a-t-list" v-for="item in dataList" v-if="dataList && !loadIng">
+        <div class="a-t-list" v-for="item in dataList" v-if="dataList">
             <div class="a-t-tab flex-[0] text-[--n-color-target] mt-auto mb-[4px]">
-                <span class="a-t-tabs text-[#8BCF70] w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">{{ item.prefix
-                    }}</span>
+                <span class="a-t-tabs text-[#8BCF70] w-[24px] h-[16px] bg-[rgba(135,208,104,0.2)]">
+                    {{props.active == 0 ? item.prefix : item.align_objective_prefix }}
+                </span>
                 <n-tooltip trigger="hover" v-if="item?.alias && item?.alias[0]">
                     <template #trigger>
                         <span v-if="item.alias[0]" class="a-t-tab-b " :class="item.prefix == 'O' ? 'text-[#4D3EF5] bg-[#F3F0FF]' : 'text-[#0066FF] bg-[#EDF4FF]'">{{
@@ -22,7 +23,7 @@
             <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" :class="item.deleted_at ? 'line-through  opacity-50' : ''" v-if="!item.align_objective"
                 @click="handleDetail(item.id, item.userid, item.deleted_at)">{{ item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
-                <h4 class="a-t-title-s mr-[36px]">{{ item.align_objective }}</h4>
+                <h4 class="a-t-title-s mr-[36px]">{{ props.active == 0 ? item.align_objective :$t('被对齐')+ item.align_objective_prefix +"：" + item.align_objective }}</h4>
                 <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(item.parent_id, item.userid, item.deleted_at)"
                     :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{ item.title }}</h3>
             </div>
@@ -40,14 +41,14 @@
             </n-tooltip>
         </div>
 
-        <div v-if="!dataList && !loadIng" class="flex flex-initial items-center justify-center">
+        <div v-else class="flex flex-initial items-center justify-center">
             <div>
                 <img class="w-[60px]" :src="utils.apiUrl(notDataSvg)" />
                 <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('暂无数据') }}</p>
             </div>
         </div>
 
-        <div v-if="loadIng" class="flex justify-center">
+        <div v-if="loadIng" class="flex justify-center absolute bg-[rgba(255,255,255,0.6)] left-0 right-0 top-0 bottom-0">
             <n-spin size="small" :show="loadIng"></n-spin>
         </div>
         <InfoModal v-model:show="infoShow" :title="infoTitle" :content="infoContent" @submit="handleSubmit" @close="handleCancel"></InfoModal>
@@ -56,7 +57,7 @@
 
 <script setup lang="ts">
 import { useMessage } from "@/utils/messageAll"
-import { getAlignDetail, getAlignCancel } from '@/api/modules/okrList'
+import { getAlignDetail, getAlignCancel, getByAlignDetail } from '@/api/modules/okrList'
 import InfoModal from "./InfoModal.vue";
 import utils from "@/utils/utils";
 import notDataSvg from "@/assets/images/icon/notData.svg";
@@ -93,15 +94,37 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    active: {
+        type: Number,
+        default: 0,
+    },
 })
 
-
+//获取对齐的目标
 const getList = () => {
     const upData = {
         id: props.id,
     }
     loadIng.value = true
     getAlignDetail(upData)
+        .then(({ data }) => {
+            dataList.value = data
+        })
+        .catch(({ msg }) => {
+            message.error(msg)
+        })
+        .finally(() => {
+            loadIng.value = false
+        })
+}
+
+//获取被对齐的目标
+const getByList = () => {
+    const upData = {
+        id: props.id,
+    }
+    loadIng.value = true
+    getByAlignDetail(upData)
         .then(({ data }) => {
             dataList.value = data
         })
@@ -167,7 +190,7 @@ const colorStatus = (color) => {
 
 const handleDetail = (id, userid, deleted_at) => {
     if (deleted_at) return
-    emit('openDetail', id, userid,'open')
+    emit('openDetail', id, userid, 'open')
 }
 
 watch(() => props.value, (newValue) => {
@@ -175,6 +198,17 @@ watch(() => props.value, (newValue) => {
         getList()
     }
 }, { immediate: true })
+
+watch(() => props.active, (newValue, oldValue) => {
+    if (newValue != oldValue) {
+        if (newValue == 0) {
+            getList()
+        } else {
+            getByList()
+        }
+    }
+})
+
 
 defineExpose({
     getList
@@ -185,7 +219,7 @@ defineExpose({
 <style lang="less" scoped>
 .align-target {
 
-    @apply flex flex-col gap-4 w-full overflow-hidden;
+    @apply flex flex-col gap-4 w-full overflow-hidden relative min-h-24;
 
     .a-t-list {
         @apply flex items-center overflow-hidden;

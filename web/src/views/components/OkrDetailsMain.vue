@@ -243,7 +243,7 @@
                     </div>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true" :userid="detailData.userid"
+                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :active="alignActive" :progressShow="true" :userid="detailData.userid"
                             :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" @unalign="handleUnalign"
                             @openDetail="openDetail">
                         </AlignTarget>
@@ -346,7 +346,7 @@
                             <i class="okrfont text-12 text-[#8F8F8E] transition-all" :class="alignActive == 0 ? 'alignActive' : ''">&#xe745;</i>
                             {{ $t('对齐目标') }}
                         </div>
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true"
+                        <AlignTarget v-show="alignActive == 0" ref="AlignTargetRef" :value="props.show" :id="props.id" :active="alignActive" :progressShow="true"
                             :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" @unalign="handleUnalign"
                             @openDetail="openDetail">
                         </AlignTarget>
@@ -354,6 +354,10 @@
                             <i class="okrfont text-12 text-[#8F8F8E] transition-all" :class="alignActive == 1 ? 'alignActive' : ''">&#xe745;</i>
                             {{ $t('被对齐目标') }}
                         </div>
+                        <AlignTarget v-show="alignActive == 1" ref="AlignTargetRef" :value="props.show" :id="props.id" :active="alignActive" :progressShow="true"
+                            :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" @unalign="handleUnalign"
+                            @openDetail="openDetail">
+                        </AlignTarget>
                     </div>
                     <div class="text-center flex-1" v-show="navActive == 0">
                         <span v-if="!showDialogWrapper">{{ $t('子应用无法加载') }}</span>

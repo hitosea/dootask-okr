@@ -105,16 +105,16 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :eidtItem="eidtItem" @close="() => { alignTargetShow = false }"
+    <AlignTargetModal :value="alignTargetShow" :editItem="editItem" @close="() => { alignTargetShow = false }"
         @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }"
         @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
-    <SelectAlignment :value="selectAlignmentShow" :okr="eidtItem" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
+    <SelectAlignment :value="selectAlignmentShow" :okr="editItem" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->
-    <OkrDetailsModal ref="RefOkrDetails" :id="eidtId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
+    <OkrDetailsModal ref="RefOkrDetails" :id="editId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
         @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="() => { emit('getList') }"
         @openDetail="handleOpenDetail"></OkrDetailsModal>
 </template>
@@ -145,9 +145,9 @@ const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 const loadIng = ref(false)
 const message = useMessage()
-const eidtId = ref(0)
+const editId = ref(0)
 const userId = ref(0)
-const eidtItem = ref({})
+const editItem = ref({})
 
 const RefOkrDetails = ref(null)
 
@@ -162,8 +162,8 @@ const emit = defineEmits(['upData', 'edit', 'getList'])
 
 //对齐
 const handleTarget = (e, item) => {
-    eidtItem.value = item
-    eidtId.value = item.id
+    editItem.value = item
+    editId.value = item.id
     userId.value = item.userid
     if (e == 1) {
         alignTargetShow.value = true
@@ -186,7 +186,7 @@ const handleOpenDetail = (id, userid) => {
         userid: userid,
     })
     if (okrDetailsShow.value) {
-        eidtId.value = id
+        editId.value = id
     }
 }
 
@@ -212,13 +212,13 @@ const handleFollowOkr = (id) => {
 const submitSelectAlignment = (e) => {
     const upData = {
         align_objective: e.join(','),
-        id: eidtId.value,
+        id: editId.value,
     }
     loadIng.value = true
     alignUpdate(upData)
         .then(({ msg }) => {
             message.success($t('操作成功'))
-            emit('upData', eidtId.value)
+            emit('upData', editId.value)
         })
         .catch(ResultDialog)
         .finally(() => {
