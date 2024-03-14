@@ -256,9 +256,7 @@ func (api *BaseApi) OkrDetail() {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return
 	}
-	//
-	service.OkrProgressService.SyncKrProgress(nil, 64)
-	//
+
 	helper.Success(api.Context, result)
 }
 
