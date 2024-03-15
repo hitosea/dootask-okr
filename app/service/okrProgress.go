@@ -27,7 +27,7 @@ func NewOkrProgressService() *okrProgressService {
 	}
 }
 
-// 同步所有kr对齐的进度
+// 同步所有我(o)对齐的kr的进度
 func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId int) error {
 	if tx == nil {
 		tx = core.DB
@@ -67,7 +67,7 @@ func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId int) error
 	return err
 }
 
-// 同步当前KR对齐的进度
+// 同步当前KR的进度
 func (s *okrProgressService) SyncKrProgress(tx *gorm.DB, krId int) (*model.Okr, error) {
 	if tx == nil {
 		tx = core.DB
