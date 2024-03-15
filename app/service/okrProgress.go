@@ -36,7 +36,7 @@ func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId int) error
 	alignTable := core.DBTableName(&model.OkrAlign{})
 	okrTable := core.DBTableName(&model.Okr{})
 	var okr *model.Okr
-	if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("id = ?", okrId).First(&okr).Error; err != nil {
+	if err := tx.Where("id = ?", okrId).First(&okr).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return e.New(constant.ErrOkrNoData)
 		}
@@ -174,7 +174,7 @@ func (s *okrProgressService) UpdateProgressAndStatus(tx *gorm.DB, user *interfac
 		}
 		krs := objWithKrs.KeyResults
 
-		allCompleted := true
+		allCompleted := 1
 		sumProgress := 0
 		for _, item := range krs {
 			// 更新 KR 进度值
@@ -183,7 +183,7 @@ func (s *okrProgressService) UpdateProgressAndStatus(tx *gorm.DB, user *interfac
 			}
 			// 进度全部完成 100%
 			if item.Progress < 100 {
-				allCompleted = false
+				allCompleted = 0
 			}
 			// 计算总进度值
 			sumProgress += item.Progress
@@ -196,20 +196,11 @@ func (s *okrProgressService) UpdateProgressAndStatus(tx *gorm.DB, user *interfac
 		}
 
 		// 更新总目标的状态是否完成
-		if allCompleted {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Updates(map[string]interface{}{
-				"Completed": 1,
-				"Progress":  progress,
-			}).Error; err != nil {
-				return err
-			}
-		} else {
-			if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Updates(map[string]interface{}{
-				"Completed": 0,
-				"Progress":  progress,
-			}).Error; err != nil {
-				return err
-			}
+		if err := tx.Model(&model.Okr{}).Where("id = ?", kr.ParentId).Updates(map[string]interface{}{
+			"Completed": allCompleted,
+			"Progress":  progress,
+		}).Error; err != nil {
+			return err
 		}
 
 		return nil

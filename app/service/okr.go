@@ -87,13 +87,6 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 		}
 		obj.DialogId = dialogId
 
-		// 对齐目标
-		if param.AlignObjective != "" {
-			if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, true, tx); err != nil {
-				return err
-			}
-		}
-
 		// 关键结果
 		for _, kr := range param.KeyResults {
 			// 去掉kr.Participant中的0或0,
@@ -132,6 +125,11 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	if len(participantIds) > 0 {
 		go DootaskService.DialogGroupAdduser(user.Token, obj.DialogId, common.ArrayUniqueInt(participantIds)) // 新增对话成员
 		go DootaskService.DialogOkrPush(obj, user.Token, 1, common.ArrayUniqueInt(participantIds))            // 推送对话消息
+	}
+
+	// 对齐目标
+	if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, true); err != nil {
+		return nil, err
 	}
 
 	return obj, nil
@@ -310,17 +308,15 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 			return err
 		}
 
-		// 更新对齐目标
-		if param.AlignObjective != "" {
-			if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, false, tx); err != nil {
-				return err
-			}
-		}
-
 		return nil
 	})
 
 	if err != nil {
+		return nil, err
+	}
+
+	// 更新对齐目标
+	if err := s.updateAlignment(obj, user.Userid, param.AlignObjective, false); err != nil {
 		return nil, err
 	}
 
@@ -590,6 +586,8 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 	delAlignmentDiffIds := common.ArrayDifferenceAddProcessing(ids, alignmentIds)
 	for _, alignmentId := range delAlignmentDiffIds {
 		db.Where("okr_id = ?", obj.Id).Where("align_okr_id = ?", alignmentId).Delete(&model.OkrAlign{})
+		// 重新计算进度kr
+		OkrProgressService.SyncKrProgress(nil, alignmentId)
 	}
 
 	// 计算新增的差集
@@ -610,6 +608,9 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 			return err
 		}
 	}
+
+	// 重新计算进度o
+	OkrProgressService.SyncAllParentProgress(db, obj.Id)
 
 	return nil
 }
@@ -2732,6 +2733,9 @@ func (s *okrService) CancelAlignObjective(userid, okrId, alignOkrId int) error {
 	if err := core.DB.Delete(&align).Error; err != nil {
 		return err
 	}
+
+	// 重新计算进度kr
+	OkrProgressService.SyncKrProgress(nil, alignOkrId)
 
 	return nil
 }
