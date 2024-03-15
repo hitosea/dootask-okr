@@ -32,7 +32,7 @@
                     :color="colorStatus(item.progress_status)" status="success" :percentage="item.progress" />
                 <p class="text-text-li opacity-50 text-12">{{ item.progress }}%</p>
             </div>
-            <n-tooltip trigger="hover" v-if="props.cancelShow">
+            <n-tooltip trigger="hover" v-if="props.cancelShow && props.active == 0">
                 <template #trigger>
                     <i v-if="props.cancelShow" class="okrfont cursor-pointer text-[#A7ABB5] ml-auto hidden md:block" @click="alignCancel(item.id)">
                         &#xe680;</i>
