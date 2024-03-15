@@ -410,5 +410,10 @@
     "请输入评论": "Merci de saisir un commentaire",
     "被对齐目标": "Cible alignée",
     "返回上一个": "Retour au précédent",
-    "上级评价": "Évaluation supérieure"
+    "上级评价": "Évaluation supérieure",
+    "进度": "calendrier",
+    "不同步": "Désynchronisés",
+    "自动同步": "Synchronisation automatique",
+    "被对齐": "Aligné",
+    "对齐的OKR进度将会同步至当前OKR": "La progression de l'OKR aligné sera synchronisée avec l'OKR actuel"
 }

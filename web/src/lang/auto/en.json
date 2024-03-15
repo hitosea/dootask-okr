@@ -410,5 +410,10 @@
     "请输入评论": "Please enter a comment",
     "被对齐目标": "Aligned target",
     "返回上一个": "Return to previous",
-    "上级评价": "Superior evaluation"
+    "上级评价": "Superior evaluation",
+    "进度": "schedule",
+    "不同步": "Out of sync",
+    "自动同步": "Automatic synchronization",
+    "被对齐": "Aligned",
+    "对齐的OKR进度将会同步至当前OKR": "Aligned OKR progress will be synchronized to the current OKR"
 }

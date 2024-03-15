@@ -1086,13 +1086,14 @@ const handleAlignActive = (e) => {
 }
 
 // 点击对齐目标跳转
-const openDetail = (id, userid,type) => {
-    if(type=='open'){
+const openDetail = (id, userid, type) => {
+    if (type == 'open') {
         returnList.value.push({
-        id: props.id,
-        userid: detailData.value.userid,
-    })
+            id: props.id,
+            userid: detailData.value.userid,
+        })
     }
+    alignActive.value = 0
     emit('openDetail', id, userid)
     userSelectApps.value.forEach(app => {
         let dom = document.createElement("UserSelects")
@@ -1111,7 +1112,7 @@ const openDetail = (id, userid,type) => {
         else {
             navActive.value = 0
         }
-        if(type=='return'){
+        if (type == 'return') {
             returnList.value.pop()
         }
     })
@@ -1121,7 +1122,7 @@ const openDetail = (id, userid,type) => {
 const handleReturn = () => {
     const id = returnList.value[returnList.value.length - 1].id
     const userid = returnList.value[returnList.value.length - 1].userid
-    openDetail(id,userid,'return')
+    openDetail(id, userid, 'return')
 }
 
 

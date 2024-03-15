@@ -48,7 +48,7 @@
                 </n-form-item>
 
                 <n-form-item  :label="$t('进度')" path="auto_sync">
-                    <n-radio-group v-model:value="formValue.auto_sync" name="radiogroup3" >
+                    <n-radio-group v-model:value="formValue.auto_sync" name="radiogroup4" @change="handleChangeSync">
                         <n-space>
                             <n-radio :value="0">{{ $t('不同步') }}</n-radio>
                             <n-radio :value="1">{{ $t('自动同步') }}</n-radio>
@@ -525,6 +525,13 @@ const handleRemoveKr = (index) => {
 // 对齐目标
 const handleGoal = () => {
     selectAlignmentShow.value = true
+}
+
+//进度同步改变
+const handleChangeSync = () => {
+    if (formValue.value.auto_sync == 1) {
+        message.info($t('对齐的OKR进度将会同步至当前OKR'))
+    }
 }
 
 // 点击参与人

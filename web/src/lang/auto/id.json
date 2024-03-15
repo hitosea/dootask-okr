@@ -410,5 +410,10 @@
     "请输入评论": "Silakan masukkan komentar",
     "被对齐目标": "Sasaran yang selaras",
     "返回上一个": "Kembali ke sebelumnya",
-    "上级评价": "Evaluasi unggul"
+    "上级评价": "Evaluasi unggul",
+    "进度": "jadwal",
+    "不同步": "Tidak sinkron",
+    "自动同步": "Sinkronisasi otomatis",
+    "被对齐": "Selaras",
+    "对齐的OKR进度将会同步至当前OKR": "Kemajuan OKR yang selaras akan disinkronkan dengan OKR saat ini"
 }
