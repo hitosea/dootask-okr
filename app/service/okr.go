@@ -587,7 +587,7 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 	for _, alignmentId := range delAlignmentDiffIds {
 		db.Where("okr_id = ?", obj.Id).Where("align_okr_id = ?", alignmentId).Delete(&model.OkrAlign{})
 		// 重新计算进度kr
-		OkrProgressService.SyncKrProgress(nil, alignmentId)
+		OkrProgressService.SyncKrProgress(nil, alignmentId, userid)
 	}
 
 	// 计算新增的差集
@@ -610,7 +610,7 @@ func (s *okrService) updateAlignment(obj *model.Okr, userid int, alignObjective 
 	}
 
 	// 重新计算进度o
-	OkrProgressService.SyncAllParentProgress(db, obj.Id)
+	OkrProgressService.SyncAllParentProgress(db, obj.Id, userid)
 
 	return nil
 }
@@ -2735,7 +2735,7 @@ func (s *okrService) CancelAlignObjective(userid, okrId, alignOkrId int) error {
 	}
 
 	// 重新计算进度kr
-	OkrProgressService.SyncKrProgress(nil, alignOkrId)
+	OkrProgressService.SyncKrProgress(nil, alignOkrId, userid)
 
 	return nil
 }

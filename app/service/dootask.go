@@ -255,6 +255,14 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 已经超时", oHtml, krHtml) // KR已超时（通知此KR参与人）
 	case 11:
 		text = fmt.Sprintf("您的成员 %v 有新的OKR %v", userNickname, oHtml) // 成员发起OKR（通知上级，只通知一级）
+	case 12:
+		text = fmt.Sprintf("您负责的OKR %v 进度已更新", oHtml) // O进度更新（通知发起人）
+	case 13:
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 进度已更新", oHtml, krHtml) // KR进度更新（通知此KR参与人）
+	case 14:
+		text = fmt.Sprintf("您负责的OKR %v 已完成", oHtml) // O已完成（马上通知发起人）
+	case 15:
+		text = fmt.Sprintf("您参与的OKR %v 中的KR %v 已完成", oHtml, krHtml) // KR已完成（马上通知此KR参与人）
 	}
 	// 循环推送
 	for _, userid := range userids {
