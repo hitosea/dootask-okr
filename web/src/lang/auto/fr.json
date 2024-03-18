@@ -415,5 +415,6 @@
     "不同步": "Désynchronisés",
     "自动同步": "Synchronisation automatique",
     "被对齐": "Aligné",
-    "对齐的OKR进度将会同步至当前OKR": "La progression de l'OKR aligné sera synchronisée avec l'OKR actuel"
+    "对齐的OKR进度将会同步至当前OKR": "La progression de l'OKR aligné sera synchronisée avec l'OKR actuel",
+    "进度自动更新": "Progression automatiquement mise à jour"
 }

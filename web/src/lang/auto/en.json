@@ -415,5 +415,6 @@
     "不同步": "Out of sync",
     "自动同步": "Automatic synchronization",
     "被对齐": "Aligned",
-    "对齐的OKR进度将会同步至当前OKR": "Aligned OKR progress will be synchronized to the current OKR"
+    "对齐的OKR进度将会同步至当前OKR": "Aligned OKR progress will be synchronized to the current OKR",
+    "进度自动更新": "Progress automatically updated"
 }

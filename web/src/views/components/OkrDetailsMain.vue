@@ -721,6 +721,9 @@ const handleGetLogList = () => {
                 if (item.content.includes('删除KR')) {
                     item.content = $t('删除') + " KR: " + item.records.title
                 }
+                if (item.content.includes('进度自动更新')) {
+                    item.content = $t('进度自动更新') + ": " + item.records.title + ' [ ' + item.records.progress_change[0] + '%' + ' => ' + item.records.progress_change[1] + '%' + ' ]'
+                }
                 logList.value.push(item)
             })
 
