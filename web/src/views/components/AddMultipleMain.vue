@@ -223,6 +223,7 @@ const handleSubmit = () => {
 }
 //添加上级评论
 const handleComment = () => {
+    if(!superior_review.value) return message.warning($t('请输入评论'))
     const upData = {
         id: props.multipleId,
         superior_review: superior_review.value,

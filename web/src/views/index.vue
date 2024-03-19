@@ -119,6 +119,7 @@ import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
+const userStore = UserStore();
 const isAdmin = UserStore().isAdmin()
 const isDepartmentOwner = UserStore().isDepartmentOwner()
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
@@ -348,6 +349,11 @@ const handleDeleteShow = () => {
 const handleSettingShow = () => {
     settingShow.value = proxy.$openChildPage('/setting')
 }
+
+// 刷新获取ORK UesrInfo
+onMounted(()=>{
+    userStore.refresh();
+})
 </script>
 
 <style lang="less" scoped>

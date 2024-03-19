@@ -44,6 +44,7 @@ const emit = defineEmits(['close'])
 
 const closeDrawer = () => {
     AddMultipleMainRef.value.closeDrawer()
+    canComment.value = false
 }
 
 const showDrawer = () => {
