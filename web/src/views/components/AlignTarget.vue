@@ -23,7 +23,7 @@
             <h3 class="a-t-title cursor-pointer w-[10px] mr-[36px]" :class="item.deleted_at ? 'line-through  opacity-50' : ''" v-if="!item.align_objective"
                 @click="handleDetail(item.id, item.userid, item.deleted_at)">{{ item.title }}</h3>
             <div class="flex-1 overflow-hidden" v-else>
-                <h4 class="a-t-title-s mr-[36px]">{{ props.active == 0 ? item.align_objective :$t('被对齐')+ item.align_objective_prefix +"：" + item.align_objective }}</h4>
+                <h4 class="a-t-title-s mr-[36px]">{{ props.active == 0 ? item.align_objective : $t('被对齐')+ item.align_objective_prefix +"：" + item.align_objective }}</h4>
                 <h3 class="a-t-title mr-[36px] cursor-pointer" @click="handleDetail(props.active == 0 ? item.parent_id : item.id, item.userid, item.deleted_at)"
                     :class="item.deleted_at == null ? '' : 'line-through opacity-50'">{{ item.title }}</h3>
             </div>
