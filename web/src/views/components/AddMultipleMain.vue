@@ -90,7 +90,7 @@ const columns = ref<DataTableColumn[]>([
     {
         title: $t('目标（O）'),
         key: 'O',
-        minWidth: 200,
+        width: 200,
         rowSpan: (rowData) => (rowData.lenght),
         render(rowData) {
             let arr = []
@@ -110,12 +110,12 @@ const columns = ref<DataTableColumn[]>([
     {
         title: $t('O完成度'),
         key: 'Ocomplete',
-        minWidth: 100,
+        width: 100,
         rowSpan: (rowData) => (rowData.lenght),
     },
     {
         title: $t('关键KR'),
-        minWidth: 200,
+        width: 200,
         key: 'KR',
         render(rowData, index) {
             let arr = []
@@ -139,18 +139,18 @@ const columns = ref<DataTableColumn[]>([
     },
     {
         title: $t('KR完成度'),
-        minWidth: 100,
+        width: 100,
         key: 'KRcomplete',
     },
     {
         title: $t('KR评分'),
-        minWidth: 100,
+        width: 100,
         key: 'KRMark',
     },
     {
         title: $t('评价'),
         key: 'evaluate',
-        minWidth: 150,
+        width: 150,
         render(rowData) {
             if (props.multipleId == 0) {
                 return h(NSelect, {
