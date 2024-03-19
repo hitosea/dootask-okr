@@ -1341,7 +1341,7 @@ func (s *okrService) GetCompanyList(user *interfaces.UserInfoResp, param interfa
 			// 普通组员的权限
 			// 1.可见范围 1-全公司 2-仅相关成员 3-仅部门成员
 			// 2.只能看到可见范围为1或3的OKR 或 可见范围为2且部门中包含自己的OKR
-			db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
+			db = db.Where("visible_range = 3 OR (visible_range = 2 AND ("+strings.Join(sql, " OR ")+") AND userid = ?) OR FIND_IN_SET(?, participant) > 0", user.Userid, user.Userid)
 		} else {
 			// 判断是否是顶级部门负责人
 			var departmentTop model.UserDepartment
@@ -1357,10 +1357,11 @@ func (s *okrService) GetCompanyList(user *interfaces.UserInfoResp, param interfa
 				}
 
 				if departmentTop.Id == 0 {
-					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
+					db = db.Where("visible_range = 3 OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
 				}
 			}
 		}
+		db = db.Or("visible_range = 1 AND parent_id = 0")
 	} else {
 		// v1.1新增指定人员审核部门okr功能，即相当于拥有管理员权限，可以看到所有部门的OKR
 		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR，除去有部门的超管
