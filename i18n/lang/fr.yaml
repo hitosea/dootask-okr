@@ -42,6 +42,7 @@ ErrOkrProgressStatusInvalid: Progrès statut paramètres erreur
 ErrOkrReplayCommentInvalid: Veuillez choisir KR évaluation
 ErrOkrReplayLengthInvalid: Le contenu est trop long. Veuillez le limiter à 255 caractères
 ErrOkrReplayStatusInvalid: Statut de contre-réponse invalide
+ErrOkrReplaySuperiorReviewEmpty: Veuillez entrer un commentaire
 ErrOkrReplaySuperiorReviewExist: Évalué par le supérieur, veuillez ne pas répéter l’évaluation
 ErrOkrScoreInvalid: Évaluation veuillez entrer un nombre entier de 0 à 10
 ErrOkrScoreTypeInvalid: Type de notation incorrect

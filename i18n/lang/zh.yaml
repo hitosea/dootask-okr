@@ -42,6 +42,7 @@ ErrOkrProgressStatusInvalid: 进度状态参数错误
 ErrOkrReplayCommentInvalid: 请选择KR评价
 ErrOkrReplayLengthInvalid: 内容过长，请限制在255个字符以内
 ErrOkrReplayStatusInvalid: 无效的复盘状态
+ErrOkrReplaySuperiorReviewEmpty: 请输入评论
 ErrOkrReplaySuperiorReviewExist: 上级已评价，请不要重复评价
 ErrOkrScoreInvalid: 评分请输入0-10的整数
 ErrOkrScoreTypeInvalid: 评分类型错误

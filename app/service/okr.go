@@ -2496,6 +2496,11 @@ func (s *okrService) CreateReplaySuperiorReview(userid int, req interfaces.OkrRe
 		return nil, e.New(constant.ErrOkrNoData)
 	}
 
+	// 判断评价内容是否为空
+	if req.SuperiorReview == "" {
+		return nil, e.New(constant.ErrOkrReplaySuperiorReviewEmpty)
+	}
+
 	// 更新上级评论
 	if replay.SuperiorReview == "" {
 		if err := core.DB.Model(&replay).Updates(model.OkrReplay{SuperiorReview: req.SuperiorReview}).Error; err != nil {

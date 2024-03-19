@@ -42,6 +42,7 @@ ErrOkrProgressStatusInvalid: Fehler im zeitplan
 ErrOkrReplayCommentInvalid: Wählen sie die infrarot-analyse
 ErrOkrReplayLengthInvalid: Die inhalte sind zu lang und bitte auf 255 zeichen beschränkt
 ErrOkrReplayStatusInvalid: Die kaputte aktiv ist
+ErrOkrReplaySuperiorReviewEmpty: Bitte geben sie eine bemerkung ein.
 ErrOkrReplaySuperiorReviewExist: Der vorgesetzte hat diese beurteilung abgelegt, daher bitte keine wiederholung
 ErrOkrScoreInvalid: Bitte geben sie einen ganzzahligen wert Von 0 bis 10 ein
 ErrOkrScoreTypeInvalid: 'Fehlertyp: beurteilung abgebrochen'

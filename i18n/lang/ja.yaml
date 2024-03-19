@@ -42,6 +42,7 @@ ErrOkrProgressStatusInvalid: 進捗状態パラメータエラーです
 ErrOkrReplayCommentInvalid: KRレビューをお願いします
 ErrOkrReplayLengthInvalid: 長すぎますので255文字までにしてください
 ErrOkrReplayStatusInvalid: 無効な復刻状態です
+ErrOkrReplaySuperiorReviewEmpty: コメントをお願いします。
 ErrOkrReplaySuperiorReviewExist: 上級機関が既に評価したのですから,重複して評価しないでください
 ErrOkrScoreInvalid: 採点は0-10の整数でお願いします。
 ErrOkrScoreTypeInvalid: 採点ミスです。
