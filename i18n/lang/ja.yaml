@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: ファイリングエラーです。
 ErrOkrArchiveStatusNotCompleted: '[完了、キャンセル]のステータスファイリングに限ります。'
 ErrOkrArchivedStatusInvalid: OKRは保存済みです
 ErrOkrAscriptionInvalid: ターゲット・ホーム・パラメータ・エラー
+ErrOkrAutoSyncInvalid: 自動同期パラメーターエラーです
 ErrOkrCanceled: ターゲットOキャンセル操作不能です
 ErrOkrCompleted: O標的完了操作不能です
 ErrOkrCompletedReplay: 復刻をお願いします。

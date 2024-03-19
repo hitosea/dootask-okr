@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: Fehler im archiv
 ErrOkrArchiveStatusNotCompleted: Nur ein archiv nach dem status als erledigt, ausgeliehen und ausgeschieden ist
 ErrOkrArchivedStatusInvalid: OKR hat die akten ausgepackt
 ErrOkrAscriptionInvalid: Fehler bei der zuweisung der zielperson
+ErrOkrAutoSyncInvalid: Automatische synchronisation fehler
 ErrOkrCanceled: O ziel nicht betriebsbereit
 ErrOkrCompleted: O ziel nicht erreichbar
 ErrOkrCompletedReplay: Bitte fügen sie zuerst die schaltfläche hinzu

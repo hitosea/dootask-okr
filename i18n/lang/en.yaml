@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: Archive status error
 ErrOkrArchiveStatusNotCompleted: Status archiving for Completed, Cancelled only
 ErrOkrArchivedStatusInvalid: OKR has been filed
 ErrOkrAscriptionInvalid: The destination attribution parameter is incorrect
+ErrOkrAutoSyncInvalid: The automatic synchronization parameter is incorrect
 ErrOkrCanceled: O The target has been cancelled and cannot be operated
 ErrOkrCompleted: O The target is complete and cannot be operated
 ErrOkrCompletedReplay: Please add a copy first

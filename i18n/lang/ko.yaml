@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: 압축 파일 상태 오류
 ErrOkrArchiveStatusNotCompleted: 완료된 상태, 취소된 상태만 압축 파일
 ErrOkrArchivedStatusInvalid: okr은 정리되어 있다
 ErrOkrAscriptionInvalid: 대상 소유권 인자가 잘못되었습니다
+ErrOkrAutoSyncInvalid: 자동 동기화 인자 오류
 ErrOkrCanceled: o 대상이 취소되어 수행할 수 없습니다
 ErrOkrCompleted: o 대상이 완료되었습니다. 수행할 수 없습니다
 ErrOkrCompletedReplay: 먼저 콤플렉스를 추가하세요

@@ -49,6 +49,11 @@ func (api *BaseApi) OkrCreate() {
 		helper.ErrorWith(api.Context, constant.ErrOkrVisibleRangeInvalid, nil)
 		return
 	}
+	// 自动同步
+	if !common.InArrayInt(param.AutoSync, []int{0, 1}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrAutoSyncInvalid, nil)
+		return
+	}
 	result, err := service.OkrService.Create(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -85,6 +90,11 @@ func (api *BaseApi) OkrUpdate() {
 	// 可见范围
 	if param.VisibleRange > 0 && !common.InArrayInt(param.VisibleRange, []int{1, 2, 3}) {
 		helper.ErrorWith(api.Context, constant.ErrOkrVisibleRangeInvalid, nil)
+		return
+	}
+	// 自动同步
+	if !common.InArrayInt(param.AutoSync, []int{0, 1}) {
+		helper.ErrorWith(api.Context, constant.ErrOkrAutoSyncInvalid, nil)
 		return
 	}
 	result, err := service.OkrService.Update(api.Userinfo, param)

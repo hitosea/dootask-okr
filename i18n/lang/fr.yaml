@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: Erreur dans l’état des archives
 ErrOkrArchiveStatusNotCompleted: Dossier de statut pour [terminé, annulé] seulement
 ErrOkrArchivedStatusInvalid: OKR est archivé
 ErrOkrAscriptionInvalid: Paramètre d’attribution de cible incorrect
+ErrOkrAutoSyncInvalid: Erreur automatique des paramètres de synchronisation
 ErrOkrCanceled: O cible annulée inopérable
 ErrOkrCompleted: O objectif atteint inopérationnel
 ErrOkrCompletedReplay: Veuillez d’abord ajouter une copie

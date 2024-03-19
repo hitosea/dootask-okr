@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: Kesalahan pengarsipan
 ErrOkrArchiveStatusNotCompleted: Berkas status saja [selesai, dibatalkan]
 ErrOkrArchivedStatusInvalid: OKR sudah diamankan
 ErrOkrAscriptionInvalid: Target milik di parameter yang salah
+ErrOkrAutoSyncInvalid: Parameter sinkronisasi otomatis salah
 ErrOkrCanceled: O target telah dibatalkan
 ErrOkrCompleted: O target selesai
 ErrOkrCompletedReplay: Tolong tambahkan plaster dulu

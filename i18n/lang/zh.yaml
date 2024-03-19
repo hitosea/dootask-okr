@@ -16,6 +16,7 @@ ErrOkrArchiveStatusInvalid: 归档状态错误
 ErrOkrArchiveStatusNotCompleted: 仅限【已完成，已取消】的状态归档
 ErrOkrArchivedStatusInvalid: OKR已归档
 ErrOkrAscriptionInvalid: 目标归属参数错误
+ErrOkrAutoSyncInvalid: 自动同步参数错误
 ErrOkrCanceled: O目标已取消无法操作
 ErrOkrCompleted: O目标已完成无法操作
 ErrOkrCompletedReplay: 请先添加复盘
