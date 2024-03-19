@@ -148,7 +148,7 @@ const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION_
 
 const emit = defineEmits(['close'])
 
-const isAdmin = UserStore().isAdmin()
+const isAdmin = UserStore().auth().isAdmin
 const okrAdminOwner = ref(false)
 const message = useMessage()
 

@@ -120,8 +120,7 @@ import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
 const userStore = UserStore();
-const isAdmin = UserStore().isAdmin()
-const isDepartmentOwner = UserStore().isDepartmentOwner()
+const {isAdmin ,isDepartmentOwner} = UserStore().auth()
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const router = useRouter()
 const isSingle = proxy.$globalStore.isSingle()

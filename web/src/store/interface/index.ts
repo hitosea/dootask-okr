@@ -40,6 +40,9 @@ export interface GlobalState {
 
 export interface UserState {
     info: User.Info
+    isAdmin:any
+    isOkrAdminOwner:any
+    isDepartmentOwner:any
 }
 
 export interface WsState {
