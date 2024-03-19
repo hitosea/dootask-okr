@@ -2,7 +2,7 @@
     <div class="flex flex-col h-full">
         <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center md:mb-16 md:mt-24">
             <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
-                <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
+                <div class=" flex items-center overflow-hidden w-full max-w-[240px]" >
                     <div  class="mb-2 mr-8 text-text-li whitespace-nowrap font-medium">
                         {{ $t('部门') }}
                     </div>
@@ -245,7 +245,7 @@ const getUser = (keyword) => {
     }
     keyWord.value = keyword  
     const sendata = {
-        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
+        dept_only: false,
         page: principalpage.value,
         page_size: 20,
         keyword: keyword,
@@ -360,7 +360,7 @@ const principalClick = (type) => {
         principalpage.value++
     }
     const sendata = {
-        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
+        dept_only: false,
         page: principalpage.value,
         page_size: 20,
         keyword: keyWord.value,
