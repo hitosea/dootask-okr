@@ -38,6 +38,7 @@
                             </div>
                         </div>
                     </n-form-item>
+                    <p class="mb-16 text-[#909399] text-14">{{ $t('注：进度一旦修改，将不再自动同步进度') }}</p>
                 </n-form>
             </div>
 

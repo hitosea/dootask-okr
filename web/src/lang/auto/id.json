@@ -415,5 +415,6 @@
     "自动同步": "Sinkronisasi otomatis",
     "被对齐": "Selaras",
     "对齐的OKR进度将会同步至当前OKR": "Kemajuan OKR yang selaras akan disinkronkan dengan OKR saat ini",
-    "进度自动更新": "Kemajuan diperbarui secara otomatis"
+    "进度自动更新": "Kemajuan diperbarui secara otomatis",
+    "注：进度一旦修改，将不再自动同步进度": "Catatan: Setelah kemajuan diubah, kemajuan tidak lagi disinkronkan secara otomatis."
 }
