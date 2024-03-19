@@ -47,7 +47,7 @@
                     </n-radio-group>
                 </n-form-item>
 
-                <n-form-item  :label="$t('进度')" path="auto_sync">
+                <n-form-item  :label="$t('进度')" path="auto_sync" >
                     <n-radio-group v-model:value="formValue.auto_sync" name="radiogroup4" @change="handleChangeSync">
                         <n-space>
                             <n-radio :value="0">{{ $t('不同步') }}</n-radio>
@@ -314,6 +314,12 @@ const rules = <any>{
         required: true,
         trigger: 'change',
         message: $t('请选择归属')
+    },
+    auto_sync: {
+        type: 'number',
+        required: true,
+        trigger: 'change',
+        message: $t('进度')
     },
     time: {
         type: 'array',
