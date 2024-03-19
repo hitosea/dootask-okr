@@ -54,7 +54,7 @@
                 <div v-if="okrList.length == 0 && !loadIng" class="flex flex-initial items-center justify-center py-[60px]">
                     <div v-if="searchName !='' && okrList.length ==0">
                         <img class="w-80" :src="utils.apiUrl(notSearchSvg)" />
-                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果1') }}</p>
+                        <p class="mt-10 text-[#515A6E] opacity-50 text-center">{{ $t('没有找到匹配的结果') }}</p>
                     </div>
                     <div v-if="searchName =='' && okrList.length ==0">
                         <img class="w-80" :src="utils.apiUrl(notDataSvg)" />
