@@ -2845,7 +2845,7 @@ func (s *okrService) GetByAlignListByOkrId(user *interfaces.UserInfoResp, okrId 
 			}(),
 			AlignObjectivePrefix: func() string {
 				if align.AlignOkr.ParentId == 0 {
-					return "O"
+					return ""
 				}
 				return "KR"
 			}(),
