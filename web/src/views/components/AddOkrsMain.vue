@@ -388,7 +388,7 @@ const handleSubmit = () => {
             title: formValue.value.title,
             type: formValue.value.type,
             priority: formValue.value.priority,
-            ascription: formValue.value.ascription,
+            ascription: departmentOwner ? formValue.value.ascription : 2,
             auto_sync: formValue.value.auto_sync,
             visible_range: formValue.value.visible_range,
             start_at: utils.TimeHandle(formValue.value.time[0]),
