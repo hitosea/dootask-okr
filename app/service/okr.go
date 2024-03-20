@@ -1331,7 +1331,7 @@ func (s *okrService) GetCompanyList(user *interfaces.UserInfoResp, param interfa
 			sql = append(sql, fmt.Sprintf("FIND_IN_SET(%d, department_id) > 0", departmentId))
 		}
 
-		db = db.Where("(" + strings.Join(sql, " OR ") + ")" + " OR visible_range = 1 AND parent_id = 0")
+		db = db.Where("("+strings.Join(sql, " OR ")+")"+" OR (visible_range = 1 AND parent_id = 0) OR (FIND_IN_SET(?, participant) > 0)", user.Userid)
 		departDb := core.DB.Model(&model.UserDepartment{}).Where("id in (?)", departments)
 		// 判断是否是普通组员
 		var department model.UserDepartment
@@ -1359,14 +1359,6 @@ func (s *okrService) GetCompanyList(user *interfaces.UserInfoResp, param interfa
 					db = db.Where("visible_range IN (1, 3) OR (visible_range = 2 AND ("+strings.Join(sqlSame, " OR ")+")) OR FIND_IN_SET(?, participant) > 0", user.Userid)
 				}
 			}
-		}
-	} else {
-		// v1.1新增指定人员审核部门okr功能，即相当于拥有管理员权限，可以看到所有部门的OKR
-		// 超管可以看到所有部门的OKR，不需要看到自己创建的OKR，除去有部门的超管
-		var adminUserIds []int
-		core.DB.Model(&model.User{}).Where("identity LIKE ?", "%,admin,%").Where("department IS NULL OR department = '' OR department = ',,'").Pluck("userid", &adminUserIds)
-		if len(adminUserIds) > 0 {
-			db = db.Where("department_id != '' OR userid NOT IN (?)", adminUserIds)
 		}
 	}
 
