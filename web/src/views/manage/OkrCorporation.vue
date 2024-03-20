@@ -108,10 +108,10 @@
                     </div>
                 </template>
                 <div class="flex flex-col h-full">
-                    <div v-if="(userInfo == 'admin' || okrAdminOwner)" class="whitespace-nowrap text-text-li mb-4">
+                    <div class="whitespace-nowrap text-text-li mb-4">
                         {{ $t('部门') }}
                     </div>
-                    <n-select v-if="(userInfo == 'admin' || okrAdminOwner)" v-model:value="departmentsvalue" :options="departments" clearable
+                    <n-select v-model:value="departmentsvalue" :options="departments" clearable
                         class="mr-24" :placeholder="$t('全部')" />
 
                     <div class=" whitespace-nowrap text-text-li mb-4" :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">

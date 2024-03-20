@@ -178,7 +178,7 @@
 
         </div>
     </n-scrollbar>
-    <SelectAlignment :value="selectAlignmentShow" :ascription="formValue.ascription" :editData="formValue.align_objective"
+    <SelectAlignment :value="selectAlignmentShow" :okr="formValue" :ascription="formValue.ascription" :editData="formValue.align_objective"
         @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
 </template>
 <script setup lang="ts">
