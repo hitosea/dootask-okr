@@ -231,7 +231,7 @@ const handleComment = () => {
     loadIng.value = true
     superiorReview(upData)
         .then(({ msg }) => {
-            message.success($t('添加成功'))
+            message.success($t('操作成功'))
             emit('close')
             globalStore.$patch((state) => {
                 state.addMultipleChange = !state.addMultipleChange
