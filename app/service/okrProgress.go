@@ -53,6 +53,8 @@ func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId, userid in
 		Joins(fmt.Sprintf(`LEFT JOIN %s align ON okrs.id = align.align_okr_id`, alignTable)).
 		Where("align.okr_id = ?", okr.Id).
 		Where("okrs.parent_id > 0").
+		Where("okrs.canceled = 0").
+		Where("okrs.deleted_at IS NULL").
 		Find(&parentKrs).Error
 	if err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
@@ -94,6 +96,8 @@ func (s *okrProgressService) SyncKrProgress(tx *gorm.DB, krId, userid int) (*mod
 			Select("okrs.*").
 			Joins(fmt.Sprintf(`LEFT JOIN %s align ON okrs.id = align.okr_id`, alignTable)).
 			Where("align.align_okr_id = ?", kr.Id).
+			Where("okrs.canceled = 0").
+			Where("okrs.deleted_at IS NULL").
 			Find(&subsetOKrs).Error
 		if err != nil {
 			if errors.Is(err, core.ErrRecordNotFound) {

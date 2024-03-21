@@ -2204,59 +2204,6 @@
                 }
             }
         },
-        "/okr/update/progress": {
-            "post": {
-                "description": "更新进度和进度状态",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Okr"
-                ],
-                "summary": "更新进度和进度状态",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "okr id",
-                        "name": "id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "进度 0-100",
-                        "name": "progress",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "进度状态 0-默认 1-正常 2-有风险 3-延期",
-                        "name": "status",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/interfaces.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/model.Okr"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/okr/user/basic": {
             "get": {
                 "description": "获取指定会员基础信息",

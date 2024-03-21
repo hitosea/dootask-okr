@@ -58,6 +58,7 @@ ErrOkrTimeFormat: 時間フォーマットが間違っています。
 ErrOkrTimeInvalid: 開始時間は終了時間より長くしてはいけませんので、適切な時間帯を選び直してください
 ErrOkrTitleLengthInvalid: タイトルが長すぎますので255文字以内にしてください
 ErrOkrTypeInvalid: ターゲットタイプパラメータエラーです
+ErrOkrTypePriorityInvalid: タイプと優先度が一致しません
 ErrOkrUserDisabled: 担当者がいませんので、担当者を再配置してください
 ErrOkrVisibleRangeInvalid: 目標可視範囲パラメータエラーです
 ErrRequestTimeout: 超過をお願いします

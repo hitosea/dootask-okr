@@ -2298,38 +2298,6 @@ paths:
       summary: 更新OKR
       tags:
       - Okr
-  /okr/update/progress:
-    post:
-      consumes:
-      - application/json
-      description: 更新进度和进度状态
-      parameters:
-      - description: okr id
-        in: formData
-        name: id
-        required: true
-        type: integer
-      - description: 进度 0-100
-        in: formData
-        name: progress
-        type: integer
-      - description: 进度状态 0-默认 1-正常 2-有风险 3-延期
-        in: formData
-        name: status
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/interfaces.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/model.Okr'
-              type: object
-      summary: 更新进度和进度状态
-      tags:
-      - Okr
   /okr/user/basic:
     get:
       consumes:

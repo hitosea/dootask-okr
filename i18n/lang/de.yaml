@@ -58,6 +58,7 @@ ErrOkrTimeFormat: Format ist falsch
 ErrOkrTimeInvalid: Der anfangszeitraum darf nicht größer sein als das ende. Bitte wählen sie die passende zeitspanne erneut
 ErrOkrTitleLengthInvalid: Die überschrift ist viel zu lang und wird bitte auf 255 zeichen beschränkt
 ErrOkrTypeInvalid: Fehlerhafter zieltyp fehler
+ErrOkrTypePriorityInvalid: Typ entspricht nicht den prioritäten
 ErrOkrUserDisabled: Den verantwortlichen gibt es nicht. Bitte verteilen sie ihn neu
 ErrOkrVisibleRangeInvalid: Fehler im parameter des zieleintrags
 ErrRequestTimeout: Wir Bitten um mehr zeit.

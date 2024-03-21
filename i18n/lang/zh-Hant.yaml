@@ -58,6 +58,7 @@ ErrOkrTimeFormat: 時間格式錯誤
 ErrOkrTimeInvalid: 開始時間不能大於結束時間，請重新選擇合適的時間段
 ErrOkrTitleLengthInvalid: 標題內容過長，請限制在255個字符以內
 ErrOkrTypeInvalid: 目標類型參數錯誤
+ErrOkrTypePriorityInvalid: 類型與優先級不匹配
 ErrOkrUserDisabled: 負責人不存在，請重新分配負責人
 ErrOkrVisibleRangeInvalid: 目標可見範圍參數錯誤
 ErrRequestTimeout: 請求超時

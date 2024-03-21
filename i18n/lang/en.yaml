@@ -58,6 +58,7 @@ ErrOkrTimeFormat: Time format error
 ErrOkrTimeInvalid: The start time cannot be later than the end time. Select a new time range
 ErrOkrTitleLengthInvalid: The title is too long. Please limit it to 255 characters
 ErrOkrTypeInvalid: The target type parameter is incorrect
+ErrOkrTypePriorityInvalid: The type does not match the priority
 ErrOkrUserDisabled: The responsible person does not exist. Please reassign the responsible person
 ErrOkrVisibleRangeInvalid: The target visibility parameter is incorrect
 ErrRequestTimeout: Request timeout

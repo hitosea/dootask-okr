@@ -135,6 +135,38 @@ func (s *okrService) Create(user *interfaces.UserInfoResp, param interfaces.OkrC
 	return obj, nil
 }
 
+// 更新OKR进度
+func (s *okrService) UpdateOkrProgress(user *interfaces.UserInfoResp, param interfaces.OkrUpdateProgressReq) (*model.Okr, error) {
+	obj, err := s.GetObjectiveByIdWithKeyResults(param.Id)
+	if err != nil {
+		return nil, e.New(constant.ErrOkrNoData)
+	}
+	// 先关闭 o 自动同步
+	if obj.AutoSync == 1 {
+		obj.AutoSync = 0
+		if err := core.DB.Save(obj).Error; err != nil {
+			return nil, err
+		}
+	}
+	// 关闭 kr 自动同步
+	for _, kr := range obj.KeyResults {
+		if kr.AutoSync == 1 {
+			kr.AutoSync = 0
+			if err := core.DB.Save(kr).Error; err != nil {
+				return nil, err
+			}
+		}
+	}
+	// 更新进度
+	result, err := OkrProgressService.UpdateProgressAndStatus(nil, user, param)
+	if err != nil {
+		return nil, err
+
+	}
+
+	return result, nil
+}
+
 // 更新目标
 func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrUpdateReq) (*model.Okr, error) {
 	obj, err := s.GetObjectiveByIdWithKeyResults(param.Id)
@@ -1092,7 +1124,7 @@ func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, okrId int, as
 			}
 			ascription = okr.Ascription
 		} else {
-			ascription = 1
+			ascription = 2
 		}
 	}
 	//
@@ -1109,7 +1141,6 @@ func (s *okrService) GetMyAlignList(user *interfaces.UserInfoResp, okrId int, as
 		}
 		db = db.Scopes(departmentScope(departments))
 	} else {
-		fmt.Println("ascription", ascription)
 		db = db.Where("(okr.ascription = 2 AND okr.userid = ?) OR FIND_IN_SET(?, okr.participant) > 0", user.Userid, user.Userid)
 	}
 
@@ -2232,6 +2263,9 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 		return nil, err
 	}
 
+	// 重新计算进度o
+	OkrProgressService.SyncAllParentProgress(nil, okrId, userid)
+
 	return kr, nil
 }
 
@@ -3063,8 +3097,7 @@ func (s *okrService) DeleteOkr(user *interfaces.UserInfoResp, okrId int) error {
 	if err != nil {
 		return err
 	}
-
-	return core.DB.Transaction(func(tx *gorm.DB) error {
+	err = core.DB.Transaction(func(tx *gorm.DB) error {
 		deleteFunc := func(kr *model.Okr) error {
 			return tx.Delete(kr).Error
 		}
@@ -3079,6 +3112,12 @@ func (s *okrService) DeleteOkr(user *interfaces.UserInfoResp, okrId int) error {
 
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+	// 重新计算进度o
+	OkrProgressService.SyncAllParentProgress(nil, okrId, user.Userid)
+	return nil
 }
 
 // 归档目标

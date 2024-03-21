@@ -39,6 +39,17 @@ func (api *BaseApi) OkrCreate() {
 		helper.ErrorWith(api.Context, constant.ErrOkrPriorityInvalid, nil)
 		return
 	}
+	// 类型的优先级归属判断
+	if common.InArrayInt(param.Type, []int{1, 2}) {
+		if param.Type == 1 && !common.InArray(param.Priority, []string{"P0", "P1"}) {
+			helper.ErrorWith(api.Context, constant.ErrOkrTypePriorityInvalid, nil)
+			return
+		}
+		if param.Type == 2 && !common.InArray(param.Priority, []string{"P2"}) {
+			helper.ErrorWith(api.Context, constant.ErrOkrTypePriorityInvalid, nil)
+			return
+		}
+	}
 	// 归属
 	if !common.InArrayInt(param.Ascription, []int{1, 2}) {
 		helper.ErrorWith(api.Context, constant.ErrOkrAscriptionInvalid, nil)
@@ -86,6 +97,17 @@ func (api *BaseApi) OkrUpdate() {
 	if !common.InArray(param.Priority, []string{"P0", "P1", "P2"}) {
 		helper.ErrorWith(api.Context, constant.ErrOkrPriorityInvalid, nil)
 		return
+	}
+	// 类型的优先级归属判断
+	if common.InArrayInt(param.Type, []int{1, 2}) {
+		if param.Type == 1 && !common.InArray(param.Priority, []string{"P0", "P1"}) {
+			helper.ErrorWith(api.Context, constant.ErrOkrTypePriorityInvalid, nil)
+			return
+		}
+		if param.Type == 2 && !common.InArray(param.Priority, []string{"P2"}) {
+			helper.ErrorWith(api.Context, constant.ErrOkrTypePriorityInvalid, nil)
+			return
+		}
 	}
 	// 可见范围
 	if param.VisibleRange > 0 && !common.InArrayInt(param.VisibleRange, []int{1, 2, 3}) {
@@ -296,6 +318,7 @@ func (api *BaseApi) OkrFollow() {
 // @Param request formData interfaces.OkrUpdateProgressReq true "request"
 // @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/update/progress [post]
+
 func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
@@ -309,7 +332,7 @@ func (api *BaseApi) OkrUpdateProgress() {
 		helper.ErrorWith(api.Context, constant.ErrOkrProgressStatusInvalid, nil)
 		return
 	}
-	result, err := service.OkrProgressService.UpdateProgressAndStatus(nil, api.Userinfo, param)
+	result, err := service.OkrService.UpdateOkrProgress(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
 		return

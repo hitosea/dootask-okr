@@ -21,6 +21,7 @@ var (
 	ErrOkrKrScoreNotComplete              = "ErrOkrKrScoreNotComplete"              //KR评分未完成
 	ErrOkrTypeInvalid                     = "ErrOkrTypeInvalid"                     //目标类型参数错误
 	ErrOkrPriorityInvalid                 = "ErrOkrPriorityInvalid"                 //目标优先级参数错误
+	ErrOkrTypePriorityInvalid             = "ErrOkrTypePriorityInvalid"             //类型与优先级不匹配
 	ErrOkrAscriptionInvalid               = "ErrOkrAscriptionInvalid"               //目标归属参数错误
 	ErrOkrVisibleRangeInvalid             = "ErrOkrVisibleRangeInvalid"             //目标可见范围参数错误
 	ErrOkrConfidenceInvalid               = "ErrOkrConfidenceInvalid"               //信心指数请输入0-100的整数

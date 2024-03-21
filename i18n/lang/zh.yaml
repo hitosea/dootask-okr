@@ -58,6 +58,7 @@ ErrOkrTimeFormat: 时间格式错误
 ErrOkrTimeInvalid: 开始时间不能大于结束时间，请重新选择合适的时间段
 ErrOkrTitleLengthInvalid: 标题内容过长，请限制在255个字符以内
 ErrOkrTypeInvalid: 目标类型参数错误
+ErrOkrTypePriorityInvalid: 类型与优先级不匹配
 ErrOkrUserDisabled: 负责人不存在，请重新分配负责人
 ErrOkrVisibleRangeInvalid: 目标可见范围参数错误
 ErrRequestTimeout: 请求超时

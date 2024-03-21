@@ -58,6 +58,7 @@ ErrOkrTimeFormat: Format de l’heure incorrect
 ErrOkrTimeInvalid: L’heure de début ne peut pas être plus grande que l’heure de fin, veuillez sélectionner une nouvelle période appropriée
 ErrOkrTitleLengthInvalid: Le contenu du titre est trop long, veuillez le limiter à 255 caractères
 ErrOkrTypeInvalid: Type de cible paramètre erreur
+ErrOkrTypePriorityInvalid: Le type ne correspond pas à la priorité
 ErrOkrUserDisabled: Le responsable n’existe pas, réaffecter le responsable
 ErrOkrVisibleRangeInvalid: Cible visible range paramètre incorrect
 ErrRequestTimeout: La demande a expiré
