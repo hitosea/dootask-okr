@@ -39,6 +39,10 @@ const props = defineProps({
     },
 })
 
+onMounted(()=>{
+    console.log(window.modalTransferIndex);
+    
+})
 
 const emit = defineEmits(['close'])
 

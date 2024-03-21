@@ -110,7 +110,7 @@
         @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
-    <SelectAlignment :value="selectAlignmentShow" :okr="editItem" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
+    <SelectAlignment :value="selectAlignmentShow" :okr="editItem" :ascription="ascription" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->
@@ -147,6 +147,7 @@ const loadIng = ref(false)
 const message = useMessage()
 const editId = ref(0)
 const userId = ref(0)
+const ascription = ref(0)
 const editItem = ref({})
 
 const RefOkrDetails = ref(null)
@@ -171,6 +172,7 @@ const handleTarget = (e, item) => {
         if (userInfo.userid != item.userid) return message.error($t('仅负责人可操作'))
         alignObjective.value = item.align_objective
         selectAlignmentShow.value = true
+        ascription.value = item.ascription
     }
 
 }

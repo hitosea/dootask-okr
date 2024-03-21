@@ -14,7 +14,7 @@
                     <div class="text-text-li mr-8 whitespace-nowrap font-medium">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" :class="(userInfo == 'admin' || okrAdminOwner) ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" :on-blur="handleOnblur" :class="(userInfo == 'admin' || okrAdminOwner) ? '' :'max-w-[225px] ' " class="flex-1 overflow-hidden"
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principallast_page > principalpage" quaternary
@@ -117,7 +117,7 @@
                     <div class=" whitespace-nowrap text-text-li mb-4" :class="(userInfo == 'admin' || okrAdminOwner) ? 'mt-16' : ''">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" class=""
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" :on-blur="handleOnblur" class=""
                         filterable :placeholder="$t('全部')" clearable>
                         <template #action>
                             <div v-if="principallast_page > principalpage" quaternary
@@ -239,7 +239,14 @@ const searchActive = computed(() => {
     return departmentsvalue.value != null || principalvalue.value != null || types.value != null || daterange.value[0] != 0 || daterange.value[1] != 0
 })
 
+const handleOnblur = () =>{
+    nextTick(()=>{
+        getUser('');
+    })
+}
+
 const getUser = (keyword) => {
+
     if (keyword == '') {
         principalpage.value = 1
     }
