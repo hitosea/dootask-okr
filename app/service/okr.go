@@ -141,19 +141,22 @@ func (s *okrService) UpdateOkrProgress(user *interfaces.UserInfoResp, param inte
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
-	// 先关闭 o 自动同步
-	if obj.AutoSync == 1 {
-		obj.AutoSync = 0
-		if err := core.DB.Save(obj).Error; err != nil {
-			return nil, err
-		}
-	}
-	// 关闭 kr 自动同步
-	for _, kr := range obj.KeyResults {
-		if kr.AutoSync == 1 {
-			kr.AutoSync = 0
-			if err := core.DB.Save(kr).Error; err != nil {
+	//
+	if obj.ParentId != 0 {
+		// 先关闭 o 自动同步
+		if obj.ParentOKr.AutoSync == 1 {
+			obj.ParentOKr.AutoSync = 0
+			if err := core.DB.Save(obj.ParentOKr).Error; err != nil {
 				return nil, err
+			}
+		}
+		// 关闭 kr 自动同步
+		for _, kr := range obj.ParentOKr.KeyResults {
+			if kr.AutoSync == 1 {
+				kr.AutoSync = 0
+				if err := core.DB.Save(kr).Error; err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -342,6 +345,14 @@ func (s *okrService) Update(user *interfaces.UserInfoResp, param interfaces.OkrU
 
 		return nil
 	})
+
+	// 自动同步当前进度
+	if param.AutoSync == 1 {
+		for _, kr := range param.KeyResults {
+			OkrProgressService.SyncKrProgress(nil, kr.Id, user.Userid)
+		}
+		OkrProgressService.SyncKrProgress(nil, param.Id, user.Userid)
+	}
 
 	if err != nil {
 		return nil, err

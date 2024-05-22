@@ -119,6 +119,7 @@ func (api *BaseApi) OkrUpdate() {
 		helper.ErrorWith(api.Context, constant.ErrOkrAutoSyncInvalid, nil)
 		return
 	}
+	//
 	result, err := service.OkrService.Update(api.Userinfo, param)
 	if err != nil {
 		helper.ErrorWith(api.Context, err.Error(), nil)
@@ -318,7 +319,6 @@ func (api *BaseApi) OkrFollow() {
 // @Param request formData interfaces.OkrUpdateProgressReq true "request"
 // @Success 200 {object} interfaces.Response{data=model.Okr}
 // @Router /okr/update/progress [post]
-
 func (api *BaseApi) OkrUpdateProgress() {
 	var param = interfaces.OkrUpdateProgressReq{}
 	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
