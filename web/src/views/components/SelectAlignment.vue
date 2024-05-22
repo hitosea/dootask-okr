@@ -170,15 +170,13 @@ const handleSubmit = () => {
 }
 
 const getList = (type) => {
-    console.log(props.ascription);
-    
     if (last_page.value >= page.value || type == 'search') {
         const data = {
             objective: searchName.value,
             page: page.value,
             page_size: 20,
             okr_id: props.okr?.id || 0,
-            ascription: departmentOwner.value ? props.ascription || 2 : 2,
+            ascription: departmentOwner.value ? (props.ascription || props.okr.ascription || 2) : 2,
         }
         loadIng.value = true
         getAlignList(data).then(({ data }) => {
