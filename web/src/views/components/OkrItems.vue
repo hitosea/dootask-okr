@@ -1,13 +1,11 @@
-<template >
+<template>
     <div class="okr-item-main">
         <div class="okr-item-box" @click="handleOpenDetail(item.id, item.userid)" v-for="(item) in props.list">
 
-            <div class="okr-item-progress hidden md:block"
-                :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
-                <n-progress :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'" indicator-text-color="#87D068"
-                    type="circle" :percentage="item.progress" :offset-degree="180" :stroke-width="8">
-                    <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span
-                            class="text-12">%</span></p>
+            <div class="okr-item-progress hidden md:block" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
+                <n-progress :color="item.canceled == '1' ? '#A7ABB5' : '#87D068'" indicator-text-color="#87D068" type="circle" :percentage="item.progress" :offset-degree="180"
+                    :stroke-width="8">
+                    <p v-if="item.canceled == '0'" class="text-primary-color text-14">{{ item.progress }}<span class="text-12">%</span></p>
                     <p v-else class="text-[#A7ABB5] text-12 scale-[0.8333] origin-center break-keep">{{ $t('已取消') }}</p>
                 </n-progress>
             </div>
@@ -16,17 +14,14 @@
             <div class="okr-list" :class="item.completed == '1' || item.canceled == '1' ? 'opacity-60' : ''">
                 <div class="okr-title">
                     <div class="okr-title-l">
-                        <h3 class="leading-[1.4]"
-                            :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span
-                                class="h-[16px] " :class="pStatus(item.priority)">{{ item.priority }}</span>{{
-                                    item.objective_num || ('O' + item.id) }}：{{ item.title }}</h3>
+                        <h3 class="leading-[1.4]" :class="item.completed == '1' || item.canceled == '1' ? 'line-through' : ''"> <span class="h-[16px] "
+                                :class="pStatus(item.priority)">{{ item.priority }}</span>{{
+            item.objective_num || ('O' + item.id) }}：{{ item.title }}</h3>
                     </div>
                     <div class="okr-title-r">
-                        <i class="okrfont okr-title-star text-[16px]"
-                            v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
+                        <i class="okrfont okr-title-star text-[16px]" v-if="item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe683;</i>
-                        <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]"
-                            v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'"
+                        <i class="okrfont md:pr-16 text-[#8F8F8E] text-[16px]" v-if="!item.is_follow && item.completed == '0' && item.canceled == '0'"
                             @click.stop="handleFollowOkr(item.id)">&#xe679;</i>
                         <i class="okrfont okr-title-icon text-[16px]">&#xe671;</i>
                         <p>{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
@@ -57,8 +52,7 @@
                 </div>
 
                 <div class="okr-time-web">
-                    <n-avatar round :size="24"
-                        :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" />
+                    <n-avatar round :size="24" :src="(item.user_avatar || '').replace(':///', globalStore.baseUrl + '/')" />
                     <div class="flex items-center text-12">
                         <div v-if="item.score > -1" class="flex items-center cursor-pointer mr-6">
                             <img class="mr-4" :src="utils.apiUrl(fenSvg)" />
@@ -67,9 +61,8 @@
                         </div>
                         <i class="okrfont text-14 mr-6">&#xe671;</i>
                         <p class="text-12 mr-16">{{ item.kr_finish_count }}/{{ item.kr_count }}</p>
-                        <n-progress class="-mt-7 mr-[6px]" style="width: 14px; " type="circle" :show-indicator="false"
-                            :offset-degree="180" :stroke-width="15" color="var(--primary-color)" status="success"
-                            :percentage="item.progress" />
+                        <n-progress class="-mt-7 mr-[6px]" style="width: 14px; " type="circle" :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                            color="var(--primary-color)" status="success" :percentage="item.progress" />
                         {{ item.progress }}%
                     </div>
 
@@ -81,20 +74,17 @@
                             <span class="bg-[rgba(135,208,104,0.2);] scale-[0.8333]">KR{{ index + 1 }}</span>
                             <p class="max-w-[70%]">{{ childItem.title }}</p>
                             <div class="kr-list-schedule w-[60px] text-text-li">
-                                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle"
-                                    :show-indicator="false" :offset-degree="180" :stroke-width="15"
-                                    :color="colorStatus(childItem.progress_status)" status="success"
-                                    :percentage="childItem.progress" />
+                                <n-progress class="-mt-7 mr-[6px]" style="width: 15px; " type="circle" :show-indicator="false" :offset-degree="180" :stroke-width="15"
+                                    :color="colorStatus(childItem.progress_status)" status="success" :percentage="childItem.progress" />
                                 {{ childItem.progress }}%
                             </div>
                         </div>
                     </template>
-                    <div v-if="item.key_results && item.key_results.length > 3"
-                        class=" text-12 text-primary-color ml-[2px]">KR(+{{ item.key_results.length - 3 }})</div>
+                    <div v-if="item.key_results && item.key_results.length > 3" class=" text-12 text-primary-color ml-[2px]">KR(+{{ item.key_results.length - 3 }})</div>
                 </div>
                 <div class="align-target" v-if="item.align_count > 0">
                     <div class=" cursor-pointer" @click.stop="handleTarget(1, item)">{{ $t('对齐目标') }}({{ item.align_count
-                    }}）</div>
+                        }}）</div>
                 </div>
                 <div class="align-target" v-else>
                     <div class=" cursor-pointer" @click.stop="handleTarget(2, item)">
@@ -105,18 +95,16 @@
         </div>
     </div>
     <!-- 查看对齐OKR -->
-    <AlignTargetModal :value="alignTargetShow" :editItem="editItem" @close="() => { alignTargetShow = false }"
-        @upData="(id) => { emit('upData', id) }" @openSelectAlignment="(item) => { handleTarget(2, item) }"
-        @openDetail="handleOpenDetail"></AlignTargetModal>
+    <AlignTargetModal :value="alignTargetShow" :editItem="editItem" @close="() => { alignTargetShow = false }" @upData="(id) => { emit('upData', id) }"
+        @getList="() => { emit('getList') }" @openSelectAlignment="(item) => { handleTarget(2, item) }" @openDetail="handleOpenDetail"></AlignTargetModal>
 
     <!-- 选择对齐OKR -->
     <SelectAlignment :value="selectAlignmentShow" :okr="editItem" :ascription="ascription" :editData="alignObjective" @close="() => { selectAlignmentShow = false }"
         @submit="submitSelectAlignment"></SelectAlignment>
 
     <!-- OKR详情 -->
-    <OkrDetailsModal ref="RefOkrDetails" :id="editId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }"
-        @edit="handleEdit" @upData="(id) => { emit('upData', id) }" @getList="() => { emit('getList') }"
-        @openDetail="handleOpenDetail"></OkrDetailsModal>
+    <OkrDetailsModal ref="RefOkrDetails" :id="editId" :show="okrDetailsShow" @close="() => { okrDetailsShow = false }" @edit="handleEdit" @upData="(id) => { emit('upData', id) }"
+        @getList="() => { emit('getList') }" @openDetail="handleOpenDetail"></OkrDetailsModal>
 </template>
 <script setup lang="ts">
 import AlignTargetModal from '@/views/components/AlignTargetModal.vue';
@@ -371,4 +359,5 @@ onUnmounted(() => {
             width: 100% !important;
         }
     }
-}</style>
+}
+</style>

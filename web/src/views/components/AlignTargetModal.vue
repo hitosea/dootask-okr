@@ -5,7 +5,8 @@
                 <div class="headr-nav gap-[32px]">
                     <h3 :class="active == 0 ? 'active' : ''">
                         <span @click="handleActive(0)">{{ $t('对齐目标') }}</span>
-                        <i v-if="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid" class="okrfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
+                        <i v-if="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid"
+                            class="okrfont cursor-pointer text-[#A7ABB5] text-[18px]" @click="handleOpenSelect">&#xe779;</i>
                     </h3>
                     <h3 :class="active == 1 ? 'active' : ''">
                         <span @click="handleActive(1)">{{ $t('被对齐目标') }}</span>
@@ -15,7 +16,9 @@
             <template #header-extra>
                 <i class="okrfont text-16 cursor-pointer text-[#999]" @click="handleClose">&#xe6e5;</i>
             </template>
-            <AlignTarget :value="props.value" :active="active" :id="props.editItem.id" :userid="props.editItem.userid" :cancelShow="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid" @unalign="handleUnalign" @openDetail="openDetail"></AlignTarget>
+            <AlignTarget ref="alignTargetRef" :value="props.value" :active="active" :id="props.editItem.id" :userid="props.editItem.userid"
+                :cancelShow="props.editItem.canceled == '0' && props.editItem.completed == '0' && userInfo.userid == props.editItem.userid" @unalign="handleUnalign"
+                @getList="() => { emit('getList') }" @openDetail="openDetail"></AlignTarget>
         </n-card>
     </n-modal>
 </template>
@@ -26,6 +29,7 @@ import { UserStore } from '@/store/user'
 
 const userInfo = UserStore().info
 const active = ref(0)
+const alignTargetRef = ref(null)
 
 const props = defineProps({
     value: {
@@ -39,11 +43,17 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(['close', 'upData', 'openSelectAlignment', 'openDetail'])
+const emit = defineEmits(['close', 'upData', 'getList', 'openSelectAlignment', 'openDetail'])
 
 
 const handleOpenSelect = () => {
-    emit('openSelectAlignment', props.editItem)
+    let arr = [];
+    (alignTargetRef.value.dataList || []).map(item => {
+        arr.push(item.id)
+    })
+    let item = props.editItem;
+    item.align_objective = arr;
+    emit('openSelectAlignment',item)
     emit('close')
 }
 
@@ -65,6 +75,7 @@ const showDrawer = () => {
 const handleUnalign = (id) => {
     emit('upData', id)
 }
+
 // 打开详情
 const openDetail = (id, userid) => {
     emit('close')

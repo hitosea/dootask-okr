@@ -71,7 +71,7 @@ const infoTitle = ref('')
 const infoContent = ref('')
 const infoId = ref(0)
 
-const emit = defineEmits(['unalign', 'openDetail'])
+const emit = defineEmits(['unalign', 'openDetail','getList'])
 
 const props = defineProps({
     value: {
@@ -154,7 +154,7 @@ const handleSubmit = () => {
             message.success($t('修改成功'))
             handleCancel();
             getList();
-            emit('unalign', props.id)
+            emit('getList')
         })
         .catch(({ msg }) => {
             message.error(msg)
@@ -211,7 +211,9 @@ watch(() => props.active, (newValue, oldValue) => {
 
 
 defineExpose({
-    getList
+    getList,
+    getByList,
+    dataList,
 })
 
 </script>

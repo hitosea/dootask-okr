@@ -272,7 +272,7 @@ const getUser = (keyword) => {
 
 const resetGetList = () => {
     page.value = 1
-    getList('search')
+    getList('updata')
 }
 
 

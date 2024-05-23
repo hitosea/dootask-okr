@@ -65,7 +65,7 @@ const emit = defineEmits(['edit', 'add'])
 
 const resetGetList = () => {
     page.value = 1
-    getList('search')
+    getList('updata')
 }
 
 const getList = (type) => {

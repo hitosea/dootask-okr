@@ -941,6 +941,11 @@ const handleCancel = () => {
         message.success($t('修改成功'))
         emit('upData', detailData.value.id)
         getDetail('')
+        if(alignActive.value == 0){
+            AlignTargetRef.value.getList()
+        }else{
+            AlignTargetRef.value.getByList()
+        }
     })
         .catch(({ msg }) => {
             tipsContent.value = msg
