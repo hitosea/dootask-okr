@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="13" :mask-closable="false"
+    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="modalTransferIndex" :mask-closable="false"
         :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
@@ -23,7 +23,7 @@ const show = ref(false)
 const loadIng = ref(false)
 const canComment = ref(false)
 const AddMultipleMainRef = ref(null)
-
+const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
 const props = defineProps({
     data: {
         type: Object,
@@ -39,12 +39,8 @@ const props = defineProps({
     },
 })
 
-onMounted(()=>{
-    console.log(window.modalTransferIndex);
-    
-})
-
 const emit = defineEmits(['close'])
+
 
 const closeDrawer = () => {
     AddMultipleMainRef.value.closeDrawer()
