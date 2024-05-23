@@ -64,7 +64,7 @@ func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId, userid in
 	}
 	// 更新所有我对齐的kr的进度
 	for _, kr := range parentKrs {
-		s.SyncKrProgress(nil, kr.Id, userid)
+		s.SyncKrProgress(tx, kr.Id, userid)
 	}
 	//
 	return err
@@ -95,7 +95,7 @@ func (s *okrProgressService) SyncKrProgress(tx *gorm.DB, krId, userid int) (*mod
 		}
 		// 2.获取所有对齐我的o, 得出进度
 		var subsetOKrs []*model.Okr
-		err := core.DB.Table(okrTable+" AS okrs").
+		err := tx.Table(okrTable+" AS okrs").
 			Select("okrs.*").
 			Joins(fmt.Sprintf(`LEFT JOIN %s align ON okrs.id = align.okr_id`, alignTable)).
 			Where("align.align_okr_id = ?", kr.Id).
@@ -181,12 +181,11 @@ func (s *okrProgressService) UpdateProgressAndStatus(tx *gorm.DB, user *interfac
 		}
 
 		// 检查所在目标的 KR 是否全部完成
-		objWithKrs, err := OkrService.GetObjectiveByIdWithKeyResults(kr.ParentId)
-		if err != nil {
+		var objWithKrs *model.Okr
+		if err := tx.Preload("ParentOKr").Preload("KeyResults").Where("id = ?", kr.ParentId).First(&objWithKrs).Error; err != nil {
 			return err
 		}
 		krs := objWithKrs.KeyResults
-
 		allCompleted := 1
 		sumProgress := 0
 		for _, item := range krs {
