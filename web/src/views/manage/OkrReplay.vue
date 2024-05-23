@@ -16,7 +16,7 @@
                     <div class="text-text-li mr-8 whitespace-nowrap font-medium">
                         {{ $t('负责人') }}
                     </div>
-                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser"
+                    <n-select v-model:value="principalvalue" :options="principal" :on-search="getUser" :on-blur="handleOnblur"
                         :class="(userInfo == 'admin' || okrAdminOwner) ? '' : 'max-w-[225px] '"
                         class="flex-1 overflow-hidden" filterable :placeholder="$t('全部')" clearable>
                         <template #action>
@@ -387,6 +387,13 @@ const principalClick = (type) => {
             })
         }
         principallast_page.value = data.last_page
+    })
+}
+
+//失焦的时候
+const handleOnblur = () =>{
+    nextTick(()=>{
+        getUser('');
     })
 }
 
