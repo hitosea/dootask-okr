@@ -14,6 +14,7 @@ const i18n = createI18n({
     globalInjection: true,
     messages: {
         zh: { ...auto_zh },
+        cn: { ...auto_zh },
         en: { ...auto_en },
         fr: { ...auto_fr },
         id: { ...auto_id },

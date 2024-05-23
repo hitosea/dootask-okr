@@ -2236,7 +2236,7 @@ func (s *okrService) GetTopDepartmentOwner() ([]int, error) {
 
 // 取消/重启目标
 func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
-	kr, err := s.GetObjectiveById(okrId)
+	kr, err := s.GetObjectiveByIdWithKeyResults(okrId)
 	if err != nil {
 		return nil, e.New(constant.ErrOkrNoData)
 	}
@@ -2273,10 +2273,9 @@ func (s *okrService) CancelObjective(userid, okrId int) (*model.Okr, error) {
 	if err := s.InsertOkrLogTx(core.DB, kr.Id, userid, "update", "修改O目标状态", record); err != nil {
 		return nil, err
 	}
-
-	// 重新计算进度o
-	OkrProgressService.SyncAllParentProgress(nil, okrId, userid)
-
+	//
+	OkrProgressService.SyncAllParentProgress(nil, kr.Id, userid)
+	//
 	return kr, nil
 }
 
@@ -3127,7 +3126,9 @@ func (s *okrService) DeleteOkr(user *interfaces.UserInfoResp, okrId int) error {
 		return err
 	}
 	// 重新计算进度o
+	//
 	OkrProgressService.SyncAllParentProgress(nil, okrId, user.Userid)
+	//
 	return nil
 }
 

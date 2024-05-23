@@ -37,7 +37,7 @@ func (s *okrProgressService) SyncAllParentProgress(tx *gorm.DB, okrId, userid in
 	alignTable := core.DBTableName(&model.OkrAlign{})
 	okrTable := core.DBTableName(&model.Okr{})
 	var okr *model.Okr
-	if err := tx.Where("id = ?", okrId).First(&okr).Error; err != nil {
+	if err := tx.Unscoped().Where("id = ?", okrId).First(&okr).Error; err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return e.New(constant.ErrOkrNoData)
 		}
@@ -89,6 +89,9 @@ func (s *okrProgressService) SyncKrProgress(tx *gorm.DB, krId, userid int) (*mod
 		}
 		if kr.ParentId == 0 || kr.ParentOKr.AutoSync != 1 {
 			return e.New(constant.ErrInvalidParameter)
+		}
+		if kr.ParentOKr.Canceled == 1 || kr.ParentOKr.DeletedAt.Valid {
+			return nil
 		}
 		// 2.获取所有对齐我的o, 得出进度
 		var subsetOKrs []*model.Okr
