@@ -1132,6 +1132,79 @@
                 }
             }
         },
+        "/okr/export": {
+            "get": {
+                "description": "获取我的OKR列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "获取我的OKR列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "排除的id",
+                        "name": "exclude_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标（O）",
+                        "name": "objective",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前页，默认:1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页显示数量，默认:50，最大:100",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/interfaces.Pagination"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/interfaces.OkrResp"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/okr/follow": {
             "get": {
                 "description": "关注或取消关注目标",
@@ -2180,6 +2253,59 @@
                         "schema": {
                             "$ref": "#/definitions/interfaces.OkrUpdateReq"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/interfaces.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.Okr"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/okr/update/progress": {
+            "post": {
+                "description": "更新进度和进度状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Okr"
+                ],
+                "summary": "更新进度和进度状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "okr id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "进度 0-100",
+                        "name": "progress",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "进度状态 0-默认 1-正常 2-有风险 3-延期",
+                        "name": "status",
+                        "in": "formData"
                     }
                 ],
                 "responses": {

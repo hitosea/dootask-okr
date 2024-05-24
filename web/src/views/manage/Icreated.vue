@@ -84,10 +84,9 @@ const getList = (type) => {
         getMyList(data).then(({ data }) => {
             onscrolloading.value = false
             loadIng.value = false
-            if (serstatic  || type == 'updata') {
+            if (serstatic || type == 'updata') {
                 list.value = data.data || []
-            }
-            else {
+            } else {
                 (data.data || []).map(item => {
                     list.value.push(item)
                 })
@@ -111,17 +110,7 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            getOkrDetail({id}).then(({ data }) => {
-                list.value[index] = data
-                if (props.searchObject == '') {
-                    PersonalStatisticsRef.value?.getData()
-                }
-                list.value = utils.listSort(list.value)
-            })
-        }
-    })
+    getList('updata')
 }
 
 const onScroll = (e) => {

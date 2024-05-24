@@ -250,7 +250,7 @@ const getUser = (keyword) => {
     if (keyword == '') {
         principalpage.value = 1
     }
-    keyWord.value = keyword  
+    keyWord.value = keyword
     const sendata = {
         dept_only: false,
         page: principalpage.value,
@@ -404,15 +404,9 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            getOkrDetail({id}).then(({ data }) => {
-                list.value[index] = data
-                list.value = utils.listSort(list.value)
-            })
-        }
-    })
+    getList('updata')
 }
+
 //获取能否能搜索部门
 const handleGetUserInfo = () => {
     getUserInfo().then(({ data }) => {

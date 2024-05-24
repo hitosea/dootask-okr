@@ -778,3 +778,22 @@ func (api *BaseApi) OkrLeaveUpdate() {
 
 	helper.Success(api.Context, nil)
 }
+
+// @Tags Okr
+// @Summary 获取我的OKR列表
+// @Description 获取我的OKR列表
+// @Accept json
+// @Param request query interfaces.OkrListBaseReq true "request"
+// @Success 200 {object} interfaces.Response{data=interfaces.Pagination{data=[]interfaces.OkrResp}}
+// @Router /okr/export [get]
+func (api *BaseApi) OkrExport() {
+	// 360EntSecGroup-Skylar
+	var param = interfaces.OkrListBaseReq{}
+	verify.VerifyUtil.ShouldBindAll(api.Context, &param)
+	result, err := service.OkrService.GetMyList(api.Userinfo, param.Objective, param.Page, param.PageSize)
+	if err != nil {
+		helper.ErrorWith(api.Context, err.Error(), nil)
+		return
+	}
+	helper.Success(api.Context, result)
+}

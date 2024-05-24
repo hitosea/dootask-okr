@@ -82,14 +82,7 @@ const handleEdit = (data) => {
 
 //更新数据
 const upData = (id, type) => {
-    list.value.map((item, index) => {
-        if (item.id == id) {
-            getOkrDetail({id}).then(({ data }) => {
-                list.value[index] = data
-                list.value = utils.listSort(list.value)
-            })
-        }
-    })
+    getList('updata')
 }
 
 const onScroll = (e) => {
