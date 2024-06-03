@@ -70,7 +70,7 @@
             <div class="pagination mt-auto flex justify-center shrink-0 flex-0">
                 <div  class=" hidden md:flex">
                     <n-pagination
-                   
+
                     v-model:page="tablePage"
                     :default-page-size="tablePageSize"
                     :page-sizes="[10, 20, 30, 50, 100]"
@@ -148,7 +148,7 @@ const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION_
 
 const emit = defineEmits(['close'])
 
-const isAdmin = UserStore().isAdmin()
+const isAdmin = UserStore().auth().isAdmin
 const okrAdminOwner = ref(false)
 const message = useMessage()
 
@@ -291,7 +291,7 @@ const getPrincipalList = (type:any) => {
                 value: item.userid,
             }
         }) || []
-        
+
         principalLastPage.value = data.last_page
     })
 }
@@ -322,7 +322,7 @@ const getAssignList = (type:any) => {
                 value: item.userid,
             }
         }) || []
-        
+
         assignLastPage.value = data.last_page
     })
 }

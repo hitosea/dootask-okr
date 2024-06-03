@@ -113,8 +113,8 @@ import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
 
 const { proxy } = getCurrentInstance();
-const isAdmin = UserStore().isAdmin()
-const isDepartmentOwner = UserStore().isDepartmentOwner()
+const isAdmin = UserStore().auth().isAdmin
+const isDepartmentOwner = UserStore().auth().isDepartmentOwner
 const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
 const router = useRouter()
 const isSingle = proxy.$globalStore.isSingle()

@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import { defineStore } from 'pinia';
 import { UserState } from './interface';
 import { getUserInfo } from "../api/modules/user";
@@ -14,22 +15,29 @@ export const UserStore = defineStore({
             avatar: "",
             created_at: "",
             updated_at: "",
-            identity:[],
-            userid:0,
-            department_owner:null,
-            department:null,
-            okr_admin_owner:null,
+            identity: [],
+            userid: 0,
+            department_owner: null,
+            department: null,
+            okr_admin_owner: null,
         },
+        isAdmin: '',
+        isOkrAdminOwner: '',
+        isDepartmentOwner: ''
     }),
     actions: {
-        isAdmin() {
-            return this.info?.identity?.indexOf('admin') !== -1
-        },
-        isOkrAdminOwner(){
-            return this.info?.okr_admin_owner
-        },
-        isDepartmentOwner() {
-            return this.info?.department_owner
+        auth() {
+            return {
+                isAdmin: computed(() => {
+                    return this.info?.identity?.indexOf('admin') !== -1
+                }),
+                isOkrAdminOwner: computed(() => {
+                    return this.info?.okr_admin_owner
+                }),
+                isDepartmentOwner: computed(() => {
+                    return this.info?.department_owner
+                })
+            }
         },
         refresh() {
             return new Promise((resolve, reject) => {
@@ -40,9 +48,9 @@ export const UserStore = defineStore({
                     this.info = data
                     resolve(data)
                 })
-                .catch(err => {
-                    reject(err)
-                })
+                    .catch(err => {
+                        reject(err)
+                    })
             })
         },
         setUserInfo(info: any = null) {
