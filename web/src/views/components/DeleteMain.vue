@@ -244,7 +244,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     onClick:  _ => handleAssign(rowData)
                 },
                 { default: () => $t('分配') }
-            ), isAdmin ? h(
+            ), isAdmin.value ? h(
                 'span',{
                     style:{
                         height:'auto',

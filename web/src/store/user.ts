@@ -48,9 +48,9 @@ export const UserStore = defineStore({
                     this.info = data
                     resolve(data)
                 })
-                    .catch(err => {
-                        reject(err)
-                    })
+                .catch(err => {
+                    reject(err)
+                })
             })
         },
         setUserInfo(info: any = null) {

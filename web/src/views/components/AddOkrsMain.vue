@@ -640,7 +640,7 @@ onBeforeUnmount(() => {
 onMounted(() => {
     nextTick(() => {
         //判断初始化归属
-        if (!departmentOwner) {
+        if (!departmentOwner.value) {
             formValue.value.ascription = 2
         }
         showUserSelect.value = window.Vues?.components?.UserSelect ? 1 : 0
