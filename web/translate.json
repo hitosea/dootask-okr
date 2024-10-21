@@ -10,9 +10,12 @@
         "ID",
         "JA",
         "KO",
-        "zh-Hant"
+        "zh-Hant",
+        "DE",
+        "RU"
     ],
-    "channel": "google",
+    "channel": "hitosea",
+    "channelUrl": "http://103.63.139.229:8088/api/translate?type=dootask",
     "appKey": "",
     "secretKey": "",
     "excludes": [

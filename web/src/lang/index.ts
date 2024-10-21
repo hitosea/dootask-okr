@@ -5,6 +5,8 @@ import auto_fr from "./auto/fr.json"
 import auto_id from "./auto/id.json"
 import auto_ja from "./auto/ja.json"
 import auto_ko from "./auto/ko.json"
+import auto_ru from "./auto/ru.json"
+import auto_de from "./auto/de.json"
 import auto_zhHant from "./auto/zh-hant.json"
 
 const i18n = createI18n({
@@ -19,6 +21,8 @@ const i18n = createI18n({
         id: { ...auto_id },
         ja: { ...auto_ja },
         ko: { ...auto_ko },
+        de: { ...auto_de },
+        ru: { ...auto_ru },
         "zh-CHT": { ...auto_zhHant },
     },
     warnHtmlMessage: false,
