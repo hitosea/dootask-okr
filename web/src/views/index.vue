@@ -1,7 +1,7 @@
 <template >
     <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
-            <div class="flex items-center">
+            <div class="okr-left flex items-center">
                 <div class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
@@ -342,12 +342,21 @@ const handleSettingShow = () => {
             @apply block md:hidden mr-16 text-20 z-[2];
         }
 
-        h2 {
-            @apply text-title-color text-28 font-semibold;
-        }
+        .okr-left {
+            flex: 1;
+            width: 0;
 
-        .title-active {
-            @apply hidden md:block;
+            h2 {
+                @apply text-title-color text-28 font-semibold;
+
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .title-active {
+                @apply hidden md:block;
+            }
         }
 
         .okr-right {
