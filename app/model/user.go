@@ -72,6 +72,14 @@ func (m *UserBasic) AfterFind(tx *gorm.DB) error {
 }
 
 // 用户昵称
+func (m *UserBasic) GetNickname() string {
+	if m.Nickname == "" {
+		return common.CardFormat(m.Email)
+	}
+	return m.Nickname
+}
+
+// 用户昵称
 func (m *User) GetNickname() string {
 	if m.Nickname == "" {
 		return common.CardFormat(m.Email)

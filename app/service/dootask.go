@@ -216,7 +216,7 @@ func (s dootaskService) DialogOkrPush(okr *model.Okr, token string, mold int, us
 	var userNickname string
 	var title string
 	if okr.User != nil {
-		userNickname = fmt.Sprintf("<span class=\"mention okr\">%v</span>", okr.User.Nickname)
+		userNickname = fmt.Sprintf("<span class=\"mention okr\">%v</span>", okr.User.GetNickname())
 	} else {
 		userNickname = "<span class=\"mention okr\">Unknown User</span>"
 	}
