@@ -11,13 +11,13 @@ import I18n from "@/lang/index"
 
 export const routes = [
     {
-        name: "List",
+        name: "list",
         path: "/:catchAll(.*)/list",
         meta: { title: 'OKR ' + I18n.global.t('管理')},
         component: Index
     },
     {
-        name: "Analysis",
+        name: "analysis",
         path: "/:catchAll(.*)/analysis",
         meta: { title: 'OKR ' + I18n.global.t('结果分析')},
         component: Analysis

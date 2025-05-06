@@ -246,7 +246,7 @@ const handleAdd = () => {
                 return
             }
             else{
-                addShow.value = proxy.$openChildPage('/addOkr')
+                addShow.value = proxy.$openChildPage('addOkr')
             }
     })
     .catch()
@@ -313,26 +313,26 @@ const openNewWin = () => {
 
 // 已归档
 const handleArchiveShow = () => {
-    archiveShow.value = proxy.$openChildPage('/archive')
+    archiveShow.value = proxy.$openChildPage('archive')
 }
 
 // 已离职删除人员
 const handleDeleteShow = () => {
-    deleteShow.value = proxy.$openChildPage('/deletePersonnel')
+    deleteShow.value = proxy.$openChildPage('deletePersonnel')
 }
 
 // 设置
 const handleSettingShow = () => {
-    settingShow.value = proxy.$openChildPage('/setting')
+    settingShow.value = proxy.$openChildPage('setting')
 }
 </script>
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20 md:px-24;
 
     .okr-title {
-        @apply h-42 flex justify-between items-center relative mb-14;
+        @apply h-40 flex justify-between items-center relative mb-14;
 
         .icon-return {
             @apply block md:hidden mr-16 text-20 z-[2];

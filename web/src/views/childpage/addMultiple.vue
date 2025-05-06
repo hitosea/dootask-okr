@@ -39,7 +39,7 @@ const handleReturn = () => {
 </script>
 <style lang="less" scoped>
 .nav-top {
-    @apply flex items-center justify-between fixed top-0 left-0 right-0 px-10;
+    @apply flex items-center justify-between absolute top-0 left-0 right-0 px-10;
 
     .icon-return {
         @apply text-26 text-text-tips;

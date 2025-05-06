@@ -7,10 +7,10 @@ declare module '@vue/runtime-core' {
 
 const initGlobal = (app:any, route:any, globalStore:any) => {
     // 打开子页面
-    app.config.globalProperties.$openChildPage = (path: string, query:any = {}) => {
+    app.config.globalProperties.$openChildPage = (name: string, query:any = {}) => {
         if (window.innerWidth < 768 && globalStore.isPortrait()) {
             route.push({
-                path: globalStore.baseRoute + path,
+                name,
                 query: query,
             })
             return false;

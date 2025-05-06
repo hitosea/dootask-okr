@@ -10,16 +10,12 @@ export const GlobalStore = defineStore({
     id: "GlobalState",
     state: (): GlobalState => ({
         baseUrl: "",
-        baseRoute: "",
         language: "zh",
         themeName: "",
         isElectron: false,
         timer: {},
         //
-        okrDetail: {
-            show: false,
-            id: 0,
-        },
+        okrDetailId: 0,
         addMultipleShow: false,
         addMultipleChange: false,
         addMultipleData: null,
@@ -34,17 +30,11 @@ export const GlobalStore = defineStore({
                 this.themeName = useOsTheme().value
             }
         },
-        openOkrDetails(id) {
-            this.okrDetail = { show: false, id: id }
-            this.okrDetail = { show: true, id: id }
+        openOkrDetails(id: any) {
+            this.okrDetailId = id
         },
-        setBaseUrl(url) {
+        setBaseUrl(url: string) {
             this.baseUrl = url
-        },
-        setBaseRoute(route) {
-            if (route) {
-                this.baseRoute = "/" + route
-            }
         },
         setThemeName(name: string) {
             this.themeName = name

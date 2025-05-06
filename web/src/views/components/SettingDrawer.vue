@@ -1,6 +1,6 @@
 <template >
     <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="13" class="okr" style="--n-body-padding:16px 20px 26px 26px;max-width: 500px;width: 90%;"
+        :z-index="modalZIndex" class="okr" style="--n-body-padding:16px 20px 26px 26px;max-width: 500px;width: 90%;"
         :trap-focus="false">
         <n-drawer-content :title="$t('设置')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[26px] right-[26px] overflow-hidden">
@@ -21,7 +21,9 @@
 </template>
 <script setup lang="ts">
 import SettingMain from './SettingMain.vue';
+import { nextModalIndex } from "@/utils/app"
 
+const modalZIndex = nextModalIndex()
 const loadIng = ref(false)
 const show = ref(false)
 const emit = defineEmits(['close', 'upData'])

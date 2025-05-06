@@ -456,10 +456,10 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-okr-analysis {
-    @apply p-20 h-full w-full bg-page-bg box-border;
+    @apply p-20 md:px-24 h-full w-full bg-page-bg box-border;
 
     .page-title {
-        @apply flex pb-16 md:pb-24 text-title-color font-medium justify-between;
+        @apply h-40 flex mb-16 md:mb-24 text-title-color font-medium justify-between;
 
         .open-new-win .okrfont{
             font-size: 24px;
@@ -549,7 +549,7 @@ nextTick(() => {
 }
 
 .nav-top {
-    @apply flex md:hidden items-center justify-between fixed top-0 left-0 right-0 px-16;
+    @apply flex md:hidden items-center justify-between absolute top-0 left-0 right-0 px-16;
 
     .icon-return {
         @apply text-20 text-text-tips;

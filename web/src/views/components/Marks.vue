@@ -45,7 +45,7 @@
                             {{ props.inputShow || changeShow || selfShow? $t('取消') : $t('关闭') }}
                         </n-button>
                         <n-button class="flex-1 md:flex-initial" :loading="loadIng"
-                            v-if="props.canOwnerUpdateScore && !selfShow && !props.inputShow && !changeShow && props.superiorUser == userInfo.userid && props.userid == userInfo.userid" 
+                            v-if="props.canOwnerUpdateScore && !selfShow && !props.inputShow && !changeShow && props.superiorUser == userInfo.userid && props.userid == userInfo.userid"
                             strong secondary @click="handleChange">
                             {{ $t('修改') }}
                         </n-button>
@@ -126,7 +126,7 @@ const markOptions = ref([
         value: 2,
     },
     {
-        label: $t('3 目标达成效果不佳 '),
+        label: $t('3 目标达成效果不佳'),
         value: 3,
     },
     {

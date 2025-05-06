@@ -698,7 +698,7 @@ const handleGetReplayList = () => {
 
 //编辑
 const handleEdit = () => {
-    if (!proxy.$openChildPage('/addOkr')) {
+    if (!proxy.$openChildPage('addOkr')) {
         globalStore.$patch((state) => {
             state.okrEditData = detailData.value
             state.okrEdit = true
@@ -1061,7 +1061,7 @@ const handleAddMultiple = () => {
         return
     }
     if (detailData.value.score < 0) return message.error( 'KR ' + $t('评分未完成'))
-    if (!proxy.$openChildPage('/addMultiple')) {
+    if (!proxy.$openChildPage('addMultiple')) {
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.multipleId = 0
@@ -1069,7 +1069,6 @@ const handleAddMultiple = () => {
         })
     }
     else {
-        closeModal()
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.addMultipleShow = true
@@ -1080,9 +1079,9 @@ const handleAddMultiple = () => {
 
 //查看复盘
 const handleCheckMultiple = (id) => {
-    if (!proxy.$openChildPage('/addMultiple')) {
+    if (!proxy.$openChildPage('addMultiple')) {
         router.push({
-            path: globalStore.baseRoute + '/addMultiple',
+            name: 'addMultiple',
         })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
@@ -1091,7 +1090,6 @@ const handleCheckMultiple = (id) => {
         })
     }
     else {
-        closeModal()
         globalStore.$patch((state) => {
             state.multipleId = id
             state.addMultipleShow = true

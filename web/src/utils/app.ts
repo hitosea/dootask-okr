@@ -22,14 +22,32 @@ export const nextModalIndex = (): number => {
 
 /**
  * 关闭微前端应用
+ * @param destroy - 可选参数，布尔值，表示是否销毁应用。默认为false。
  */
-export const handleCloseApp = (): void => {
+export const handleCloseApp = (destroy = false): void => {
     const appData = window.microApp?.getData()
     if (!appData) return
 
     if (typeof appData.handleClose === "function") {
-        appData.handleClose()
+        appData.handleClose(destroy)
     }
+}
+
+/**
+ * 添加数据监听器
+ * @param callback - 回调函数，当数据发生变化时调用
+ * @param autoTrigger - 在初次绑定监听函数时如果有缓存数据，是否需要主动触发一次
+ */
+export const addDataListener = (callback: Function, autoTrigger = false): void => {
+    window.microApp?.addDataListener(callback, autoTrigger)
+}
+
+/**
+ * 移除数据监听器
+ * @param callback - 回调函数，之前添加的监听器
+ */
+export const removeDataListener = (callback: Function): void => {
+    window.microApp?.removeDataListener(callback)
 }
 
 /**

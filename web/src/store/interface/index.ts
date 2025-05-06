@@ -2,16 +2,15 @@ import { User } from "@/api/interface/user";
 
 export interface GlobalState {
     baseUrl: string
-    baseRoute: string
     language: string
     themeName: string
     isElectron: boolean
     timer: object
-    okrDetail: any
     addMultipleShow: any
     multipleId: number
     addMultipleData: any
     addMultipleChange: any
+    okrDetailId: any
     okrEditData: any
     okrEdit: boolean
     doubleSkip: any,

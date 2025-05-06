@@ -343,14 +343,14 @@ const pStatus = (p) => {
 // 打开复盘
 const openMultiple = (id) => {
     if (window.innerWidth < 768) {
-        okrDetailsShow.value = proxy.$openChildPage('/multipleDetails', { id: id })
+        okrDetailsShow.value = proxy.$openChildPage('multipleDetails', { id: id })
     }
 }
 
 //查看okr详情
 const openOkrDetail = (id) => {
     if (window.innerWidth < 768) return
-    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: id })
+    okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: id })
     if (okrDetailsShow.value) {
         detailId.value = id
     }

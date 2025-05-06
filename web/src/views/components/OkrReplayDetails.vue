@@ -316,7 +316,7 @@ const handleAddMultiple = () => {
     data.key_results = props.okrReplayList.key_results
 
 
-    if (!proxy.$openChildPage('/addMultiple')) {
+    if (!proxy.$openChildPage('addMultiple')) {
         globalStore.$patch((state) => {
             state.addMultipleData = data
             state.multipleId = 0

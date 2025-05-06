@@ -1,12 +1,22 @@
 <template >
-    <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="13" class="okr" style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
+    <n-drawer
+        v-model:show="show"
+        :on-after-enter="showDrawer"
+        :on-after-leave="closeDrawer"
+        :mask-closable="false"
+        :z-index="modalZIndex"
+        class="okr"
+        style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
         :trap-focus="false">
         <n-drawer-content :title="(props.edit ? $t('编辑') : $t('添加')) + ' Objective'" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[34px] right-[20px] overflow-hidden">
                 <div class=" flex-auto overflow-hidden">
-                    <AddOkrsMain ref="AddOkrsRef" :edit="props.edit" :editData="props.editData"
-                        @close="(e, id) => { emit('close', e, id) }" @loadIng="(e) => { loadIng = e }"></AddOkrsMain>
+                    <AddOkrsMain
+                        ref="AddOkrsRef"
+                        :edit="props.edit"
+                        :editData="props.editData"
+                        @close="(e, id) => { emit('close', e, id) }"
+                        @loadIng="(e) => { loadIng = e }"/>
                 </div>
                 <div class="button-box flex-initial">
                     <n-button :loading="loadIng" type="primary" @click="handleSubmit">
@@ -19,10 +29,12 @@
 </template>
 <script setup lang="ts">
 import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
+import { nextModalIndex } from "@/utils/app"
 
 const loadIng = ref(false)
 const show = ref(false)
 const AddOkrsRef = ref(null)
+const modalZIndex = nextModalIndex()
 
 const emit = defineEmits(['close', 'upData'])
 

@@ -231,7 +231,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     class:' text-primary-color cursor-pointer',
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails',{ id: rowData.id })
+                        okrDetailsShow.value = proxy.$openChildPage('okrDetails',{ id: rowData.id })
                     }
                 },
                 { default: () => $t('查看') }

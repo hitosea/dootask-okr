@@ -1,6 +1,6 @@
 <template >
     <n-modal v-model:show="props.show" transform-origin="center" :mask-closable="false"
-        @after-leave="closeDrawer" @after-enter="showDrawer" :z-index="103" :trap-focus="false">
+        @after-leave="closeDrawer" @after-enter="showDrawer" :z-index="modalZIndex" :trap-focus="false">
         <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
             @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="(e)=>{  emit('getList',e) }" @upData="(id)=>{ emit('upData',id) }"
@@ -11,10 +11,12 @@
 </template>
 <script setup lang="ts">
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
+import { nextModalIndex } from "@/utils/app"
 
 const emit = defineEmits(['close', 'edit', 'upData','getList','openDetail'])
 
 const OkrDetailsMainRef = ref(null)
+const modalZIndex = nextModalIndex()
 
 const props = defineProps({
     show: {

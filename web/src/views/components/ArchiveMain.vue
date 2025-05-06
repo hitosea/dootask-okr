@@ -140,7 +140,7 @@ const columns = ref<DataTableColumn[]>([
                     class: "text-primary-color cursor-pointer",
                     onClick: () => {
                         okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: rowData.id })
+                        okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: rowData.id })
                     }
                 }, $t('查看'))
             )
@@ -252,7 +252,7 @@ const handleDelete = () => {
 //点击对齐目标名字再次打开
 const handleOpenDetail = (id)=>{
     okrDetailsId.value = id
-    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', { id: id })
+    okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: id })
 }
 
 const onSearch = () => {

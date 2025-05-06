@@ -181,7 +181,7 @@ const pStatus = (p) => {
 
 //打开详情
 const handleOpenDetail = (id, userid) => {
-    okrDetailsShow.value = proxy.$openChildPage('/okrDetails', {
+    okrDetailsShow.value = proxy.$openChildPage('okrDetails', {
         id: id,
         userid: userid,
     })
