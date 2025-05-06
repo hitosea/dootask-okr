@@ -1,10 +1,9 @@
 import { GlobalStore } from "@/store"
 import { UserStore } from "@/store/user"
 import { addDataListener, getAppData, removeDataListener } from "@/utils/app"
-import { onBeforeUnmount } from "vue"
 
 // 与基座进行数据交互
-export const handleMicroData = () => {
+export const initAppData = () => {
     const appData = getAppData()
     if (!appData) {
         return
@@ -28,8 +27,8 @@ export const handleMicroData = () => {
     }
     addDataListener(dataListener, true)
 
-    // 组件卸载前清理微应用数据监听器
-    onBeforeUnmount(() => {
+    // 返回清理函数，以便可以手动调用
+    return () => {
         removeDataListener(dataListener)
-    })
+    }
 }

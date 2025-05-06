@@ -4,7 +4,7 @@
         :on-after-enter="showDrawer"
         :on-after-leave="closeDrawer"
         :mask-closable="false"
-        :z-index="modalZIndex"
+        :z-index="nextModalIndex()"
         class="okr"
         style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
         :trap-focus="false">
@@ -34,7 +34,6 @@ import { nextModalIndex } from "@/utils/app"
 const loadIng = ref(false)
 const show = ref(false)
 const AddOkrsRef = ref(null)
-const modalZIndex = nextModalIndex()
 
 const emit = defineEmits(['close', 'upData'])
 

@@ -1,5 +1,5 @@
 <template >
-    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="modalZIndex" :mask-closable="false"
+    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="nextModalIndex()" :mask-closable="false"
         :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
@@ -20,8 +20,6 @@ import { nextModalIndex } from "@/utils/app"
 const show = ref(false)
 const loadIng = ref(false)
 const AddMultipleMainRef = ref(null)
-const modalZIndex = nextModalIndex()
-
 
 const props = defineProps({
     data: {

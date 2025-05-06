@@ -67,14 +67,17 @@ export const GlobalStore = defineStore({
         },
         multipleSetup() {
             return {
-                addMultipleShow: computed(() => {
-                    return this.addMultipleShow
+                addMultipleShow: computed({
+                    get: () => this.addMultipleShow,
+                    set: (value) => this.addMultipleShow = value
                 }),
-                multipleId: computed(() => {
-                    return this.multipleId
+                multipleId: computed({
+                    get: () => this.multipleId,
+                    set: (value) => this.multipleId = value
                 }),
-                addMultipleData: computed(() => {
-                    return this.addMultipleData
+                addMultipleData: computed({
+                    get: () => this.addMultipleData,
+                    set: (value) => this.addMultipleData = value
                 }),
             }
         },

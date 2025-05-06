@@ -1,7 +1,7 @@
 <template>
     <div ref="pageOkrDetailRef" :class="isSingle ? ['max-h-[100%]'] : ['md:max-h-[640px] md:min-h-[640px]']" class="flex flex-col h-full md:h-auto md:flex-row">
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive' : ''">
-            <div class="hidden md:flex min-h-[40px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
+            <div class="hidden md:flex min-h-[44px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
                     <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
                         <template #trigger>
@@ -221,7 +221,7 @@
         </div>
 
         <div class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[1px] border-[#F2F3F5] ">
-            <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[36px] bg-white" :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
+            <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[44px] bg-white" :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{$t('对齐') }}
@@ -1231,7 +1231,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    getAppData('openChildWindow')?.openChildWindow(param);
+    getAppData('openChildWindow')?.(param);
 }
 
 

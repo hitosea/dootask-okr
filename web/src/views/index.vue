@@ -2,7 +2,7 @@
     <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
             <div class="okr-left flex items-center">
-                <div v-if="isPortrait" class="okr-nav-back" @click="handleCloseApp"><i class="okrfont">&#xe676;</i></div>
+                <div v-if="isPortrait" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
@@ -27,14 +27,14 @@
                     </n-spin>
                 </n-button>
                 <n-button class="more-button" type="tertiary" @click="moreButtonPopoverShow = true" circle>
-                    <n-popover class="okr-more-button-popover"
-                    :show="moreButtonPopoverShow"
-                    @clickoutside="moreButtonPopoverShow = false"
-                    placement="bottom"
-                    :z-index="modalZIndex"
-                    trigger="click"
-                    raw
-                    :show-arrow="true">
+                    <n-popover
+                        class="okr-more-button-popover"
+                        :show="moreButtonPopoverShow"
+                        @clickoutside="moreButtonPopoverShow = false"
+                        placement="bottom"
+                        trigger="click"
+                        raw
+                        :show-arrow="true">
                         <template #trigger>
                             <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-more font-bold"></i>
                             <i v-else class="okrfont">&#xe6f2;</i>
@@ -111,7 +111,7 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
-import { isMicroApp, getAppData, nextModalIndex, handleCloseApp } from "@/utils/app"
+import { isMicroApp, getAppData, handleCloseApp } from "@/utils/app"
 
 const { proxy } = getCurrentInstance();
 const isAdmin = UserStore().auth().isAdmin
@@ -145,10 +145,11 @@ const showModal = ref(false)
 const tipsContent = ref('')
 const btnLoading = ref(0)
 
-const modalZIndex = nextModalIndex()
-
 let editData = {}
 
+const handleReturn = () => {
+    handleCloseApp()
+}
 
 watch(route,(newValue)=>{
     nextTick(()=>{
@@ -308,7 +309,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    getAppData('openChildWindow')?.openChildWindow(param);
+    getAppData('openChildWindow')?.(param);
 }
 
 // 已归档

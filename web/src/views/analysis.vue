@@ -3,7 +3,7 @@
         <div class="h-full flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
-                    <div v-if="isPortrait" class="okr-nav-back" @click="handleCloseApp"><i class="okrfont">&#xe676;</i></div>
+                    <div v-if="isPortrait" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
@@ -217,6 +217,10 @@ const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
 const isSingle = proxy.$globalStore.isSingle()
 const isPortrait = proxy.$globalStore.isPortrait()
+
+const handleReturn = () => {
+    handleCloseApp()
+}
 
 // 总数据
 const analyzeDatas = ref({
@@ -436,7 +440,7 @@ const openNewWin = () => {
         }
     }
     //
-    getAppData('openChildWindow')?.openChildWindow(param)
+    getAppData('openChildWindow')?.(param)
 }
 
 

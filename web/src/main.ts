@@ -7,7 +7,6 @@ import createDemoRouter from "./routes"
 import initGlobal from "./global"
 import "./assets/styles/index.less"
 import directives from "@/directives/index"
-import { handleMicroData } from "./microapp"
 
 const app = createApp(App)
 const route = createDemoRouter(routes)
@@ -21,12 +20,12 @@ const globalStore = GlobalStore()
 globalStore.init().then(() => {
     // 全局方法
     initGlobal(app, route, globalStore)
+
     // 翻译
     window.$t = I18n.global.t
+
     // 初始化
     route.isReady().then(() => {
         app.mount("#vite-app")
-        // 与基座进行数据交互
-        handleMicroData()
     })
 })

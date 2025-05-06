@@ -1,6 +1,6 @@
 <template >
     <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="modalZIndex" class="okr" style="--n-body-padding:16px 20px 24px 24px;max-width: 998px;width: 90%;"
+        :z-index="nextModalIndex()" class="okr" style="--n-body-padding:16px 20px 24px 24px;max-width: 998px;width: 90%;"
         :trap-focus="false">
         <n-drawer-content :title="$t('离职/删除人员') + ' OKR'" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[24px] right-[20px] overflow-hidden">
@@ -15,7 +15,6 @@
 import DeleteMain from './DeleteMain.vue';
 import { nextModalIndex } from "@/utils/app"
 
-const modalZIndex = nextModalIndex()
 const show = ref(false)
 const emit = defineEmits(['close', 'upData'])
 

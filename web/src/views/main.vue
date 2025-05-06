@@ -25,6 +25,7 @@ import { watch } from "vue"
 import OkrDetailsModal from "@/views/components/OkrDetailsModal.vue"
 import AddOkrsDrawer from "@/views/components/AddOkrsDrawer.vue"
 import { GlobalStore } from "@/store"
+import { handleCloseApp } from "@/utils/app"
 
 const detailsShow = ref(false)
 const globalStore = GlobalStore()
@@ -40,6 +41,9 @@ watch(
     () => globalStore.okrDetailId,
     (id) => {
         detailsShow.value = !!id
+        if (!detailsShow.value) {
+            setTimeout(() => handleCloseApp(), 301)
+        }
     },
 )
 
