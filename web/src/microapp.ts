@@ -1,6 +1,7 @@
 import { GlobalStore } from "@/store"
 import { UserStore } from "@/store/user"
-import { addDataListener, getAppData } from "@/utils/app"
+import { addDataListener, getAppData, removeDataListener } from "@/utils/app"
+import { onBeforeUnmount } from "vue"
 
 // 与基座进行数据交互
 export const handleMicroData = () => {
@@ -19,10 +20,16 @@ export const handleMicroData = () => {
     globalStore.setLanguage(initialData.languages.languageName)
     userStore.setUserInfo(initialData.userInfo)
 
-    // 打开窗口
-    addDataListener(({initialData}) => {
+    // 打开窗口监听器
+    const dataListener = ({initialData}) => {
         if (initialData.type == "details") {
             globalStore.openOkrDetails(initialData.id || 0)
         }
-    }, true)
+    }
+    addDataListener(dataListener, true)
+
+    // 组件卸载前清理微应用数据监听器
+    onBeforeUnmount(() => {
+        removeDataListener(dataListener)
+    })
 }

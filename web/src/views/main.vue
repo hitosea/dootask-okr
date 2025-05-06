@@ -25,10 +25,7 @@ import { watch } from "vue"
 import OkrDetailsModal from "@/views/components/OkrDetailsModal.vue"
 import AddOkrsDrawer from "@/views/components/AddOkrsDrawer.vue"
 import { GlobalStore } from "@/store"
-import { useRouter } from 'vue-router'
-import { handleCloseApp } from "@/utils/app"
 
-const router = useRouter()
 const detailsShow = ref(false)
 const globalStore = GlobalStore()
 
@@ -42,19 +39,7 @@ const editData = ref({})
 watch(
     () => globalStore.okrDetailId,
     (id) => {
-        if (!id) {
-            detailsShow.value = false
-            handleCloseApp()
-            return
-        }
-        if (window.innerWidth < 768) {
-            router.push({
-                name: 'okrDetails',
-                query: { id },
-            })
-        } else {
-            detailsShow.value = true
-        }
+        detailsShow.value = !!id
     },
 )
 

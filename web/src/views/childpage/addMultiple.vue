@@ -1,6 +1,6 @@
 <template >
     <div class="relative flex flex-col h-full" :style="{'z-index':modalZIndex}">
-        <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
+        <div class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ multipleId == 0 ? $t('添加复盘') :$t('复盘详情') }}</h2>
             <i v-if="multipleId == 0" @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-20">&#xe684;</i>

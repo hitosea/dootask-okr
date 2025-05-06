@@ -1,15 +1,21 @@
-import Index from '../views/index.vue'
-import Analysis from '../views/analysis.vue'
-import addOkr from '../views/childpage/addOkr.vue'
-import okrDetails from '../views/childpage/okrDetails.vue'
-import addMultiple from '../views/childpage/addMultiple.vue'
-import dimission from '../views/childpage/dimission.vue'
-import archive from '../views/childpage/archive.vue'
-import setting from '../views/childpage/setting.vue'
-import multipleDetails from '../views/childpage/multipleDetails.vue'
-import I18n from "@/lang/index"
+import Main from '@/views/main.vue'
+import Index from '@/views/index.vue'
+import Analysis from '@/views/analysis.vue'
+import addOkr from '@/views/childpage/addOkr.vue'
+import okrDetails from '@/views/childpage/okrDetails.vue'
+import addMultiple from '@/views/childpage/addMultiple.vue'
+import dimission from '@/views/childpage/dimission.vue'
+import archive from '@/views/childpage/archive.vue'
+import setting from '@/views/childpage/setting.vue'
+import multipleDetails from '@/views/childpage/multipleDetails.vue'
+import I18n from '@/lang/index'
 
 export const routes = [
+    {
+        name: 'main',
+        path: '/:catchAll(.*)',
+        component: Main
+    },
     {
         name: "list",
         path: "/:catchAll(.*)/list",

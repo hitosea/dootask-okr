@@ -1,5 +1,5 @@
 <template >
-    <div class="delete-box nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalZIndex + 1 }">
+    <div class="delete-box nav-top h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalZIndex + 1 }">
         <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
         <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('已归档') }} OKR</h2>
     </div>

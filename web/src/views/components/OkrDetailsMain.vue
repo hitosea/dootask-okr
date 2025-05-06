@@ -377,7 +377,6 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import userAvatar from './userAvatar.vue';
 
 import { GlobalStore } from '@/store';
-import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
@@ -386,7 +385,6 @@ import { getAppData, isMicroApp, nextModalIndex } from "@/utils/app"
 const { proxy } = getCurrentInstance();
 
 const userInfo = UserStore().info
-const router = useRouter()
 const globalStore = GlobalStore()
 const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
@@ -1080,9 +1078,6 @@ const handleAddMultiple = () => {
 //查看复盘
 const handleCheckMultiple = (id) => {
     if (!proxy.$openChildPage('addMultiple')) {
-        router.push({
-            name: 'addMultiple',
-        })
         globalStore.$patch((state) => {
             state.addMultipleData = detailData.value
             state.multipleId = id
@@ -1272,6 +1267,11 @@ watch(() => props.show, (newValue) => {
     }
 }, { immediate: true })
 
+watch(() => props.id, (newValue) => {
+    if (newValue) {
+        getDetail('')
+    }
+})
 
 watch(() => detailData.value.dialog_id, (newValue) => {
     if (newValue) {
