@@ -174,6 +174,7 @@ import { getUserInfo } from '@/api/modules/user'
 import utils from '@/utils/utils'
 import { UserStore } from '@/store/user'
 import OkrLoading from '../components/OkrLoading.vue'
+import { getAppData, isMicroApp } from "@/utils/app"
 
 const datePickerApps = ref([])
 const active = ref(false)
@@ -198,7 +199,7 @@ const keyWord = ref('')
 
 const emit = defineEmits(['edit'])
 
-const showDatePickers = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const showDatePickers = computed(() => isMicroApp() ? 1 : 0)
 
 const departments = ref([
     { label: $t('全部'), value: null },
@@ -243,7 +244,7 @@ const getUser = (keyword) => {
     if (keyword == '') {
         principalpage.value = 1
     }
-    keyWord.value = keyword  
+    keyWord.value = keyword
     const sendata = {
         dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
         page: principalpage.value,
@@ -429,14 +430,15 @@ const onScroll = (e) => {
 // 加载时间组件
 const loadDatePickers = () => {
     nextTick(() => {
-        if (!window.Vues || !showDatePickers) return false;
+        if (!isMicroApp()) return false;
         unmountDatePickerApps()
         document.querySelectorAll('datepickers').forEach(e => {
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const app = new instance.Vue({
                 el: document.querySelector('DatePickers'),
-                store: window.Vues.store,
+                store: instance.store,
                 render: (h: any) => {
-                    return h(window.Vues?.components?.DatePicker, {
+                    return h(instance.components?.DatePicker, {
                         class: "okr-app-date-pickers",
                         props: {
                             editable: false,
@@ -445,7 +447,7 @@ const loadDatePickers = () => {
                             type: "daterange",
                             placement: "bottom-end",
                             confirm: true,
-                            options: {shortcuts: window.$A ? window.$A.timeOptionShortcuts() : []}
+                            options: {shortcuts: getAppData('instance.options.shortcuts')}
                         },
                         on: {
                             "on-change": (e: any) => {

@@ -23,8 +23,8 @@
                 </div>
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
-                    <i v-else class="okrfont">&#xe6f8;</i>
+                        <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-search"></i>
+                        <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
                 </n-button>
@@ -32,7 +32,7 @@
             <div class="delete-box-search-btn-row">
                 <n-button class="search-button" :loading="tableLoadIng > 0" type="primary" size="small" @click="getList('search')">
                     <template #icon>
-                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                        <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
                     </template>
                     {{ $t('搜索') }}
@@ -143,8 +143,9 @@ import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
 import { getUserInfo } from '@/api/modules/user';
+import { isMicroApp } from "@/utils/app"
 const { proxy } = getCurrentInstance();
-const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 
 const emit = defineEmits(['close'])
 
@@ -443,36 +444,13 @@ onMounted(() => {
         @apply pt-16;
     }
 }
-
-body.window-portrait {
-    .delete-box {
-        .delete-box-search{
-            @apply block;
-            >div{
-                @apply block;
-            }
-            .delete-box-search-title{
-                width: 60px;
-            }
-            .delete-box-search-input{
-                @apply mb-16;
-            }
-            .delete-box-search-btn-row{
-                @apply flex mt-16 justify-between;
-                .search-button{
-                    @apply flex flex;
-                }
-            }
-            .search-button{
-                @apply hidden;
-            }
-        }
-
-    }
-}
 </style>
 <style>
-.delete-box .n-checkbox .n-checkbox-box{
-    border-radius: 4px !important;
+.delete-box {
+    .n-checkbox {
+        .n-checkbox-box{
+            border-radius: 4px !important;
+        }
+    }
 }
 </style>

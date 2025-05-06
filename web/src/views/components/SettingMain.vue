@@ -35,11 +35,12 @@
 <script setup lang="ts">
 import { useMessage } from "@/utils/messageAll"
 import { okrSetting } from '@/api/modules/system'
+import { getAppData, isMicroApp } from "@/utils/app"
 
 const message = useMessage()
 const emit = defineEmits(['close', 'loadIng','submit'])
 
-const showUserSelect = ref(window.Vues?.components?.UserSelect ? 1 : 0)
+const showUserSelect = ref(getAppData('instance.components.UserSelect') ? 1 : 0)
 const userSelectApps = ref([]);
 const loadIng = ref(false);
 const formModel = ref({
@@ -53,13 +54,14 @@ const formModel = ref({
 const loadUserSelects = () => {
     unmountUserSelectsApps()
     nextTick(() => {
-        if (!window.Vues) return false;
+        if (!isMicroApp()) return false;
         document.querySelectorAll('userselects').forEach(e => {
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const app = new instance.Vue({
                 el: e,
-                store: window.Vues.store,
+                store: instance.store,
                 render: (h: any) => {
-                    return h(window.Vues?.components?.UserSelect, {
+                    return h(instance.components?.UserSelect, {
                         class: "okr-user-selects",
                         props: {
                             value: formModel.value.score_department_user ? [formModel.value.score_department_user] : [],
@@ -178,7 +180,7 @@ onBeforeUnmount(() => {
 //
 onMounted(() => {
     nextTick(()=>{
-        showUserSelect.value = window.Vues?.components?.UserSelect ? 1 : 0
+        showUserSelect.value = getAppData('instance.components.UserSelect') ? 1 : 0
         handleSubmit('get')
         loadUserSelects()
     })

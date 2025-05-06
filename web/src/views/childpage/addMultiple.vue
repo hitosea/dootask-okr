@@ -1,5 +1,5 @@
 <template >
-    <div class="relative flex flex-col h-full" :style="{'z-index':modalTransferIndex}">
+    <div class="relative flex flex-col h-full" :style="{'z-index':modalZIndex}">
         <div class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ multipleId == 0 ? $t('添加复盘') :$t('复盘详情') }}</h2>
@@ -16,12 +16,13 @@
 import AddMultipleMain from '@/views/components/AddMultipleMain.vue';
 import { useRouter } from 'vue-router';
 import { GlobalStore } from '@/store';
+import { nextModalIndex } from "@/utils/app"
 
 const router = useRouter()
 const loadIng = ref(false)
 
 const AddMultipleMainRef = ref(null)
-const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
+const modalZIndex = nextModalIndex()
 const globalStore = GlobalStore()
 const {  multipleId,addMultipleData } = globalStore.multipleSetup()
 

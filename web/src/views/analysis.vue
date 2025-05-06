@@ -3,11 +3,11 @@
         <div class="h-full flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
-                    <div class="okr-nav-back text-[#636468]" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
+                    <div v-if="isPortrait" class="okr-nav-back" @click="handleCloseApp"><i class="okrfont">&#xe676;</i></div>
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
-                <n-tooltip v-if="proxy.$globalStore.electron && !isSingle" trigger="hover">
+                <n-tooltip v-if="proxy.$globalStore.isElectron && !isSingle" trigger="hover">
                     <template #trigger>
                         <div class="open-new-win" type="tertiary" @click="openNewWin">
                             <i class="okrfont open">&#xe776;</i>
@@ -206,6 +206,7 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
+import { getAppData, handleCloseApp } from "@/utils/app"
 
 const { proxy } = getCurrentInstance();
 const pageTitle = 'OKR ' + $t('结果分析')
@@ -215,6 +216,7 @@ const tabsValue = ref<any>(null)
 const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
 const isSingle = proxy.$globalStore.isSingle()
+const isPortrait = proxy.$globalStore.isPortrait()
 
 // 总数据
 const analyzeDatas = ref({
@@ -382,11 +384,6 @@ const loadScoreRate = () => {
     });
 }
 
-//返回
-const handleReturn = () => {
-    proxy.$routerBack()
-}
-
 // 获取数据
 const getData = () => {
     loadIng.value = true;
@@ -439,7 +436,7 @@ const openNewWin = () => {
         }
     }
     //
-    proxy.$globalStore.openChildWindow ? proxy.$globalStore.openChildWindow(param) : proxy.$globalStore.electron.sendMessage('windowRouter', param);
+    getAppData('openChildWindow')?.openChildWindow(param)
 }
 
 
@@ -459,10 +456,10 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-okr-analysis {
-    @apply px-16 py-20  md:p-20 h-full w-full bg-page-bg box-border;
+    @apply p-20 h-full w-full bg-page-bg box-border;
 
     .page-title {
-        @apply flex pb-16 md:pb-24 text-title-color font-medium pt-12 justify-between;
+        @apply flex pb-16 md:pb-24 text-title-color font-medium justify-between;
 
         .open-new-win .okrfont{
             font-size: 24px;
@@ -558,13 +555,4 @@ nextTick(() => {
         @apply text-20 text-text-tips;
     }
 }
-
-//
-body.window-portrait {
-    .page-okr-analysis {
-        .page-title {
-            @apply pt-0;
-            margin: 4px 0 0 -4px;
-        }
-    }
-}</style>
+</style>

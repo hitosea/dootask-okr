@@ -38,20 +38,12 @@ watch(
 onMounted(() => {
     loadingBarApiRef.value = loadingBar
     loadingBar.finish()
-    window.addEventListener('scroll', windowScrollListener);
     window.addEventListener('keydown', handleKeydown);
 })
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', windowScrollListener);
     window.removeEventListener('keydown', handleKeydown);
 })
-
-const windowScrollListener = () => {
-    globalStore.$patch((state) => {
-        state.windowScrollY = window.scrollY
-    })
-}
 
 const handleKeydown = (event) => {
     if (event.key === 'Escape' || ((event.metaKey || event.ctrlKey) && event.key === "w") ) {

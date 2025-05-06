@@ -2,7 +2,6 @@ declare module '@vue/runtime-core' {
     export interface ComponentCustomProperties {
         $openChildPage: any
         $globalStore: any
-        $routerBack: any
     }
 }
 
@@ -21,10 +20,6 @@ const initGlobal = (app:any, route:any, globalStore:any) => {
     }
     // 全局状态
     app.config.globalProperties.$globalStore = globalStore
-    //
-    app.config.globalProperties.$goRouter = route.push
-    //
-    app.config.globalProperties.$routerBack = route.back
 }
 
 export default initGlobal

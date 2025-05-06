@@ -2,7 +2,7 @@
     <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
             <div class="okr-left flex items-center">
-                <div class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
+                <div v-if="isPortrait" class="okr-nav-back" @click="handleCloseApp"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
@@ -17,12 +17,12 @@
                         class="border-none"
                         clearable
                         :placeholder="$t('请输入目标 (O)')"/>
-                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
                 </n-button>
                 <n-button class="add-button" type="tertiary" @click="handleAdd" circle>
                     <n-spin size="small" :show="btnLoading>0">
-                        <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-md-add"></i>
+                        <i v-if="inMicroApp" class="ivu-icon ivu-icon-md-add"></i>
                         <i v-else class="okrfont">&#xe6f2;</i>
                     </n-spin>
                 </n-button>
@@ -31,16 +31,16 @@
                     :show="moreButtonPopoverShow"
                     @clickoutside="moreButtonPopoverShow = false"
                     placement="bottom"
-                    :z-index="modalTransferIndex()"
+                    :z-index="modalZIndex"
                     trigger="click"
                     raw
                     :show-arrow="true">
                         <template #trigger>
-                            <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-more font-bold"></i>
+                            <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-more font-bold"></i>
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="proxy.$globalStore.electron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="proxy.$globalStore.isElectron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
                             <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -111,13 +111,15 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
+import { isMicroApp, getAppData, nextModalIndex, handleCloseApp } from "@/utils/app"
 
 const { proxy } = getCurrentInstance();
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
-const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 const router = useRouter()
 const isSingle = proxy.$globalStore.isSingle()
+const isPortrait = proxy.$globalStore.isPortrait()
 const pageTitle = ref("管理")
 const loadIng = ref(false)
 const route = useRoute()
@@ -142,6 +144,8 @@ const tabsName = ref('created')
 const showModal = ref(false)
 const tipsContent = ref('')
 const btnLoading = ref(0)
+
+const modalZIndex = nextModalIndex()
 
 let editData = {}
 
@@ -288,14 +292,6 @@ const handleClose = (e, id) => {
     addShow.value = false
 }
 
-const handleReturn = () => {
-    router.go(-1)
-}
-
-const modalTransferIndex = () => {
-    return window.modalTransferIndex = window.modalTransferIndex + 1
-}
-
 // 新窗口打开
 const openNewWin = () => {
     const param = {
@@ -312,7 +308,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    proxy.$globalStore.openChildWindow ? proxy.$globalStore.openChildWindow(param) : proxy.$globalStore.electron.sendMessage('windowRouter', param);
+    getAppData('openChildWindow')?.openChildWindow(param);
 }
 
 // 已归档
@@ -333,10 +329,10 @@ const handleSettingShow = () => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg  px-16 py-20 md:px-20;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20;
 
     .okr-title {
-        @apply h-42 flex justify-between items-center relative mt-12 mb-14;
+        @apply h-42 flex justify-between items-center relative mb-14;
 
         .icon-return {
             @apply block md:hidden mr-16 text-20 z-[2];
@@ -424,15 +420,6 @@ const handleSettingShow = () => {
                     }
                 }
             }
-        }
-    }
-}
-
-//
-body.window-portrait {
-    .page-okr {
-        .okr-title {
-            margin: 4px 0 14px -4px;
         }
     }
 }

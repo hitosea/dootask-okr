@@ -3,7 +3,7 @@
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive' : ''">
             <div class="hidden md:flex min-h-[40px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalTransferIndex()" raw :show-arrow="true">
+                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover">
                                 <div v-if="detailData.completed == '0' && detailData.canceled == '0'" class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer" :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
@@ -19,8 +19,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
-        $t('新窗口打开') }}</p>
+                            <p v-if="globalStore.isElectron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -41,7 +40,7 @@
                         <p class=" text-title-color text-12">{{ detailData.score }}{{ $t('分') }}
                         </p>
                     </div>
-                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showMorePopover" trigger="manual" @clickoutside="handleClosePopover(2)" :z-index="modalTransferIndex()" raw :show-arrow="true">
+                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showMorePopover" trigger="manual" @clickoutside="handleClosePopover(2)" :z-index="modalZIndex" raw :show-arrow="true">
 
                         <template #trigger>
                             <i @click="showMorePopover = !showMorePopover" class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
@@ -52,8 +51,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.electron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{
-        $t('新窗口打开') }}</p>
+                            <p v-if="globalStore.isElectron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -379,18 +377,18 @@ import WarningPopup from '@/views/components/WarningPopup.vue';
 import userAvatar from './userAvatar.vue';
 
 import { GlobalStore } from '@/store';
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
+import { getAppData, isMicroApp, nextModalIndex } from "@/utils/app"
 
 const { proxy } = getCurrentInstance();
 
 const userInfo = UserStore().info
 const router = useRouter()
-const route = useRoute()
 const globalStore = GlobalStore()
-const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') && route.name == 'okrDetails' ? 1 : 0)
+const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
@@ -421,8 +419,8 @@ const replayListPage = ref(1)
 const replayListLastPage = ref(99999)
 const replayList = ref([])
 
-const showDialogWrapper = computed(() => window.Vues?.components?.DialogWrapper ? 1 : 0)
-const showUserSelect = computed(() => window.Vues?.components?.UserSelect ? 1 : 0)
+const showDialogWrapper = computed(() => getAppData('instance.components.DialogWrapper') ? 1 : 0)
+const showUserSelect = computed(() => getAppData('instance.components.UserSelect') ? 1 : 0)
 
 const selectAlignmentShow = ref(false)
 const AlignTargetRef = ref(null)
@@ -448,6 +446,8 @@ const canSuperiorUpdateScore = ref(false)
 
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
+
+const modalZIndex = nextModalIndex()
 
 const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList', 'openDetail', 'getDetail'])
 
@@ -558,10 +558,6 @@ const handleNav = (index) => {
         })
 
     }
-}
-
-const modalTransferIndex = () => {
-    return window.modalTransferIndex = window.modalTransferIndex + 1
 }
 
 // 日志下一页
@@ -1037,16 +1033,17 @@ const openDetail = (id, userid) => {
 const loadDialogWrappers = () => {
     dialogWrappersApp.value && (dialogWrappersApp.value.$children[0].allMsgs = [])
     nextTick(() => {
-        if (!window.Vues) return false;
+        if (!isMicroApp()) return false;
         if (dialogWrappersApp.value) {
             dialogWrappersApp.value.$el.replaceWith(document.createElement("DialogWrappers"));
             dialogWrappersApp.value.$destroy()
         }
-        dialogWrappersApp.value = new window.Vues.Vue({
+        const instance = getAppData('instance')
+        dialogWrappersApp.value = new instance.Vue({
             el: document.querySelector('DialogWrappers'),
-            store: window.Vues.store,
+            store: instance.store,
             render: (h: any) => {
-                return h(window.Vues?.components?.DialogWrapper, {
+                return h(instance.components?.DialogWrapper, {
                     props: {
                         dialogId: detailData.value.dialog_id
                     }
@@ -1106,15 +1103,16 @@ const handleCheckMultiple = (id) => {
 // 加载选择用户组件
 const loadUserSelects = () => {
     nextTick(() => {
-        if (!window.Vues) return false;
+        if (!isMicroApp()) return false;
         document.querySelectorAll('userselects').forEach(e => {
-            let index = e.getAttribute('formkey')
-            let item = detailData.value.key_results[e.getAttribute('formkey')];
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const index = e.getAttribute('formkey')
+            const item = detailData.value.key_results[e.getAttribute('formkey')];
+            const app = new instance.Vue({
                 el: e,
-                store: window.Vues.store,
+                store: instance.store,
                 render: (h: any) => {
-                    return h(window.Vues?.components?.UserSelect, {
+                    return h(instance.components?.UserSelect, {
                         class: "okr-user-selects",
                         formkey: index,
                         props: {
@@ -1240,7 +1238,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    globalStore.openChildWindow ? globalStore.openChildWindow(param) : globalStore.electron.sendMessage('windowRouter', param);
+    getAppData('openChildWindow')?.openChildWindow(param);
 }
 
 

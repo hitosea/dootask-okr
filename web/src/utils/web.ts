@@ -1,8 +1,8 @@
 import utils from "./utils"
+import { getAppData } from "@/utils/app"
 /**
  * 页面专用
  */
-window.systemInfo = window.systemInfo || {}
 const webTs = {
     /**
      * 接口地址
@@ -10,13 +10,6 @@ const webTs = {
      * @returns {string|string|*}
      */
     apiUrl(str) {
-        if (str == "privacy") {
-            const apiHome = utils.getDomain(window.systemInfo.apiUrl)
-            if (apiHome == "" || apiHome == "public") {
-                return "https://www.dootask.com/privacy.html"
-            }
-            str = "../privacy.html"
-        }
         if (
             str.substring(0, 2) === "//" ||
             str.substring(0, 7) === "http://" ||
@@ -26,8 +19,9 @@ const webTs = {
         ) {
             return str
         }
-        if (typeof window.systemInfo.apiUrl === "string") {
-            str = window.systemInfo.apiUrl + str
+        const systemUrl = getAppData('initialData.systemInfo.apiUrl')
+        if (typeof systemUrl === "string") {
+            str = systemUrl + str
         } else {
             str = window.location.origin + "/api/" + str
         }
@@ -233,8 +227,9 @@ const webTs = {
             str.substring(0, 1) === "/") {
             return str;
         }
-        if (typeof window.systemInfo.origin === "string") {
-            str = window.systemInfo.origin + str;
+        const systemOrigin = getAppData('initialData.systemInfo.origin')
+        if (typeof systemOrigin === "string") {
+            str = systemOrigin + str;
         } else {
             str = window.location.origin + "/" + str;
         }

@@ -180,6 +180,7 @@ import { UserStore } from '@/store/user'
 import { getUserList } from '@/api/modules/created'
 import { getUserInfo } from '@/api/modules/user'
 import utils from "@/utils/utils"
+import { isMicroApp, getAppData } from "@/utils/app"
 
 const { proxy } = getCurrentInstance();
 const datePickerApps = ref([])
@@ -207,7 +208,7 @@ const principalpage = ref(1)
 
 const userInfo = UserStore().info.identity[0]
 const okrAdminOwner = ref(false)
-const showDatePickers = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const showDatePickers = computed(() => isMicroApp() ? 1 : 0)
 
 const daterange = ref<[number, number]>([0, 0])
 
@@ -452,14 +453,15 @@ const handleReset = () => {
 // 加载时间组件
 const loadDatePickers = () => {
     nextTick(() => {
-        if (!window.Vues || !showDatePickers) return false;
+        if (!isMicroApp()) return false;
         unmountDatePickerApps()
         document.querySelectorAll('datepickers').forEach(e => {
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const app = new instance.Vue({
                 el: document.querySelector('DatePickers'),
-                store: window.Vues.store,
+                store: instance.store,
                 render: (h: any) => {
-                    return h(window.Vues?.components?.DatePicker, {
+                    return h(instance.components?.DatePicker, {
                         class: "okr-app-date-pickers",
                         props: {
                             editable: false,
@@ -468,7 +470,7 @@ const loadDatePickers = () => {
                             type: "daterange",
                             placement: "bottom-end",
                             confirm: true,
-                            options: { shortcuts: window.$A ? window.$A.timeOptionShortcuts() : [] }
+                            options: {shortcuts: getAppData('instance.options.shortcuts')}
                         },
                         on: {
                             "on-change": (e: any) => {

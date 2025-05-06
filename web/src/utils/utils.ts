@@ -1,6 +1,7 @@
 import localforage from "localforage"
 import webTs from "./web"
 import { GlobalStore } from "@/store"
+import { getAppData } from "@/utils/app"
 
 localforage.config({ name: 'DooTask', storeName: 'common' })
 
@@ -8,7 +9,7 @@ const utils = {
 
     /**
      * 简单判断IPv4地址
-     * @param value
+     * @param url
      */
     apiUrl(url: string) {
         return GlobalStore().baseUrl + url
@@ -24,7 +25,7 @@ const utils = {
 
     /**
      * 列表排序
-     * @param value
+     * @param list
      */
      listSort(list: any) {
         let arr = list.map((h:object)=>JSON.stringify(h)).map((h:string)=>JSON.parse(h)).sort((a,b)=>{
@@ -640,10 +641,10 @@ const utils = {
         return _s;
     },
     /**
-         * 字节转换
-         * @param bytes
-         * @returns {string}
-         */
+     * 字节转换
+     * @param bytes
+     * @returns {string}
+     */
     bytesToSize(bytes) {
         if (bytes === 0) return '0 B';
         let k = 1024;
@@ -656,10 +657,10 @@ const utils = {
     },
 
     /**
-         * 动态加载js文件
-         * @param url
-         * @returns {Promise<unknown>}
-         */
+     * 动态加载js文件
+     * @param url
+     * @returns {Promise<unknown>}
+     */
     loadScript(url) {
         return new Promise(async (resolve, reject) => {
             url = webTs.originUrl(url)
@@ -701,7 +702,7 @@ const utils = {
                 }
             }
             if (utils.rightExists(url, '.js')) {
-                script.src = url + "?hash=" + window.systemInfo.version
+                script.src = url + "?hash=" + getAppData('initialData.systemInfo.version')
             } else {
                 script.src = url
             }
@@ -769,7 +770,7 @@ const utils = {
             }
             script.rel = 'stylesheet'
             if (utils.rightExists(url, '.css')) {
-                script.href = url + "?hash=" + window.systemInfo.version
+                script.href = url + "?hash=" + getAppData('initialData.systemInfo.version')
             } else {
                 script.href = url
             }
@@ -814,63 +815,6 @@ const utils = {
         return localforage.getItem(key)
     },
 
-    async IDBString(key, def = "") {
-        const value = await utils.IDBValue(key)
-        return typeof value === "string" || typeof value === "number" ? value : def;
-    },
-
-    async IDBInt(key, def = 0) {
-        const value = await utils.IDBValue(key)
-        return typeof value === "number" ? value : def;
-    },
-
-    async IDBBoolean(key, def = false) {
-        const value = await utils.IDBValue(key)
-        return typeof value === "boolean" ? value : def;
-    },
-
-    async IDBArray(key, def = []) {
-        const value = await utils.IDBValue(key)
-        return utils.isArray(value) ? value : def;
-    },
-
-    async IDBJson(key, def = {}) {
-        const value = await utils.IDBValue(key)
-        return utils.isJson(value) ? value : def;
-    },
-
-    /**
-             * 刷新当前地址
-             * @returns {string}
-             */
-    reloadUrl() {
-        if (window.isEEUiApp && utils.isAndroid()) {
-            let url = window.location.href;
-            let key = '_='
-            let reg = new RegExp(key + '\\d+');
-            let timestamp = utils.Time();
-            if (url.indexOf(key) > -1) {
-                url = url.replace(reg, key + timestamp);
-            } else {
-                if (url.indexOf('\?') > -1) {
-                    let urlArr = url.split('\?');
-                    if (urlArr[1]) {
-                        url = urlArr[0] + '?' + key + timestamp + '&' + urlArr[1];
-                    } else {
-                        url = urlArr[0] + '?' + key + timestamp;
-                    }
-                } else {
-                    if (url.indexOf('#') > -1) {
-                        url = url.split('#')[0] + '?' + key + timestamp + location.hash;
-                    } else {
-                        url = url + '?' + key + timestamp;
-                    }
-                }
-            }
-        } else {
-            window.location.reload();
-        }
-    },
     /**
      * 是否安卓
      * @returns {boolean|string}
@@ -879,7 +823,6 @@ const utils = {
         let ua = typeof window !== 'undefined' && window.navigator.userAgent.toLowerCase();
         return ua && ua.indexOf('android') > 0;
     },
-
 
     /**
      * 等比缩放尺寸
@@ -1051,7 +994,7 @@ const utils = {
                 closeBtnClasss.forEach(c=>{
                     if(containers[i].querySelector(c)){
                         is = true;
-                        iss && containers[i].querySelector(c).click();
+                        iss && containers[i].querySelector(c) && (containers[i].querySelector(c) as HTMLElement).click();
                     }
                 });
                 break;

@@ -1,9 +1,9 @@
 <template >
-    <div ref="pageOkrDetailRef" :class="isSingle ? ['bg-white'] : ['bg-[#FAFAFA]']" class="page-okr-details  min-h-full flex relative" :style="{ 'z-index': modalTransferIndex }">
+    <div ref="pageOkrDetailRef" :class="isSingle ? ['bg-white'] : ['bg-[#FAFAFA]']" class="page-okr-details  min-h-full flex relative" :style="{ 'z-index': modalZIndex }">
         <div v-if="!isSingle" class="nav-top  h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
-            <n-popover placement="bottom-end" :show="showPopover" :z-index="modalTransferIndex" @clickoutside="showPopover = false">
+            <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
                 <template #trigger>
                     <i @click="showPopover = !showPopover" class="okrfont text-22 mr-4 z-[2]">&#xe6e9;</i>
                 </template>
@@ -26,11 +26,12 @@
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UserStore } from '@/store/user'
+import { getAppData, nextModalIndex } from "@/utils/app"
 
 const userInfo = UserStore().info
 const route = useRoute()
 const router = useRouter()
-const isSingle = computed(() => document.querySelector('.electron-single-micro-apps') && route.name == 'okrDetails' ? 1 : 0  )
+const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0  )
 
 const id = ref(null)
 const userid = ref(null)
@@ -41,7 +42,7 @@ const OkrDetailsMainRef = ref(null)
 const is_follow = ref(false)
 const showPopover = ref(false)
 const cancel = ref(0)
-const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
+const modalZIndex = nextModalIndex()
 
 if (route.query.id != undefined || route.query.data != undefined) {
     id.value = Number(route.query.id || route.query.data)

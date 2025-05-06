@@ -7,7 +7,7 @@
             </div>
             <n-button :loading="loadIng" type="primary" size="small" @click="onSearch">
                 <template #icon>
-                    <i v-if="APP_BASE_APPLICATION" class="ivu-icon ivu-icon-ios-search"></i>
+                    <i v-if="inMicroApp" class="ivu-icon ivu-icon-ios-search"></i>
                     <i v-else class="okrfont">&#xe6f8;</i>
                 </template>
                 {{ $t('搜索') }}
@@ -54,9 +54,10 @@ import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
 import { useMessage } from "@/utils/messageAll"
+import { isMicroApp } from "@/utils/app"
 
 const message = useMessage()
-const APP_BASE_APPLICATION = computed(() => window.__MICRO_APP_BASE_APPLICATION__ ? 1 : 0)
+const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)

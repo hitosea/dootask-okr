@@ -1,51 +1,26 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-import { ref } from "vue";
-import { UserStore } from "@/store/user"
+import { createRouter, createWebHistory } from "vue-router"
+import { ref } from "vue"
+import Empty from "../views/empty.vue"
+import Main from "../views/main.vue"
+import { getAppData } from "@/utils/app"
 import { GlobalStore } from "@/store"
-import Empty from '../views/empty.vue'
-import Main from '../views/main.vue'
 
 export const loadingBarApiRef = ref(null)
 
-export default function createDemoRouter(routes) {
-
-    const isDetails = window.eventCenterForAppNameVite?.appName == 'okr-details' ? true : false
-    const isElectron = !!(window && window.process && window.process?.type);
-    const isEEUiApp = window && window.navigator && /eeui/i.test(window.navigator.userAgent);
-
+export default function createDemoRouter(routes: any) {
     routes.push({
         name: '/:catchAll(.*)',
         path: '/:catchAll(.*)',
-        component: isDetails ? Main : Empty
+        component: getAppData('initialData.empty') === true ? Empty : Main
     })
 
     const router = createRouter({
-        history: isElectron || isEEUiApp ? createWebHashHistory() :  createWebHistory(),
+        history: createWebHistory(),
         routes
     })
 
-    router.beforeEach(function (to, from, next) {
-        if(to.query.token){
-            UserStore().setToken(to.query.token)
-        }
-        if (!from || to.path !== from.path) {
-            // if (loadingBarApiRef.value) {
-            //     loadingBarApiRef.value.start()
-            // }
-        }
-        next()
-    })
-
     router.afterEach(function (to, from) {
-        if(to?.meta?.title && window.eventCenterForAppNameVite?.appName == "micro-app"){
-            document.title = to.meta.title
-        }
         GlobalStore().setBaseRoute(to.params?.catchAll || '')
-        if (!from || to.path !== from.path) {
-            // if (loadingBarApiRef.value) {
-            //     loadingBarApiRef.value.finish()
-            // }
-        }
     })
 
     return router

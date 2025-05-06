@@ -7,9 +7,7 @@ import createDemoRouter from "./routes"
 import initGlobal from "./global"
 import "./assets/styles/index.less"
 import directives from "@/directives/index"
-import { handleMicroData,fixBugForVueRouter4 } from "./microapp"
-
-window.isEEUiApp = window && window.navigator && /eeui/i.test(window.navigator.userAgent)
+import { handleMicroData } from "./microapp"
 
 const app = createApp(App)
 const route = createDemoRouter(routes)
@@ -29,19 +27,6 @@ globalStore.init().then(() => {
     route.isReady().then(() => {
         app.mount("#vite-app")
         // 与基座进行数据交互
-        handleMicroData(route)
-        // 用于解决主应用和子应用都是vue-router4时相互冲突，导致点击浏览器返回按钮，路由错误的问题。
-        fixBugForVueRouter4(route)
+        handleMicroData()
     })
-})
-
-// 监听卸载操作
-const appNameVite = window.eventCenterForAppNameVite;
-window.addEventListener('apps-unmount', function () {
-    app.unmount()
-    appNameVite?.clearDataListener()
-})
-window.addEventListener('unmount', function () {
-    app.unmount()
-    appNameVite?.clearDataListener()
 })

@@ -183,6 +183,7 @@ import { useMessage } from "@/utils/messageAll"
 import utils from "@/utils/utils";
 import { UserStore } from '@/store/user'
 import { AlertCircleOutline } from '@vicons/ionicons5'
+import { getAppData, isMicroApp } from "@/utils/app"
 
 const emit = defineEmits(['close', 'loadIng', 'submit'])
 
@@ -196,8 +197,8 @@ const formRefs = ref()
 const selectAlignmentShow = ref(false)
 const userSelectApps = ref([]);
 const datePickerApps = ref([])
-const showUserSelect = ref(window.Vues?.components?.UserSelect ? 1 : 0)
-const showDatePickers = ref(window.Vues?.components?.DatePicker ? 1 : 0)
+const showUserSelect = ref(getAppData('instance.components.UserSelect') ? 1 : 0)
+const showDatePickers = ref(getAppData('instance.components.DatePicker') ? 1 : 0)
 
 const props = defineProps({
     edit: {
@@ -413,14 +414,15 @@ const handleSubmit = () => {
 // 加载选择用户组件
 const loadUserSelects = () => {
     nextTick(() => {
-        if (!window.Vues) return false;
+        if (!isMicroApp()) return false;
         document.querySelectorAll('userselects').forEach(e => {
-            let item = formKRValue.value[e.getAttribute('formkey')];
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const item = formKRValue.value[e.getAttribute('formkey')];
+            const app = new instance.Vue({
                 el: e,
-                store: window.Vues.store,
+                store: instance.store,
                 render: (h: any) => {
-                    return h(window.Vues?.components?.UserSelect, {
+                    return h(instance.components?.UserSelect, {
                         class: "okr-user-selects",
                         formkey: e.getAttribute('formkey'),
                         props: {
@@ -519,20 +521,21 @@ const onParticipantClick = (e) => {
 // 加载时间组件
 const loadDatePickers = () => {
     nextTick(() => {
-        if (!window.Vues || !showDatePickers) return false;
+        if (!isMicroApp()) return false;
         document.querySelectorAll('datepickers').forEach(e => {
-            let type = e.getAttribute('type');
-            let item = formKRValue.value[e.getAttribute('formkey')];
-            let app = new window.Vues.Vue({
+            const instance = getAppData('instance')
+            const type = e.getAttribute('type');
+            const item = formKRValue.value[e.getAttribute('formkey')];
+            const app = new instance.Vue({
                 el: document.querySelector('DatePickers'),
-                store: window.Vues.store,
+                store: instance.store,
                 data() {
                     return {
                         value: ((type == 'cycle' ? formValue.value.time : item.time) || []).map((h: any, key: number) => utils.TimeHandle(h, key))
                     }
                 },
                 render: function (h: any) {
-                    return h(window.Vues?.components?.DatePicker, {
+                    return h(instance.components?.DatePicker, {
                         class: "okr-app-date-pickers",
                         type: type,
                         formkey: e.getAttribute('formkey'),
@@ -545,7 +548,7 @@ const loadDatePickers = () => {
                             placement: "top-end",
                             confirm: true,
                             transfer: true,
-                            options: { shortcuts: window.$A ? window.$A.timeOptionShortcuts() : [] }
+                            options: {shortcuts: getAppData('instance.options.shortcuts')}
                         },
                         on: {
                             "on-change": (value: any) => {
@@ -643,8 +646,10 @@ onMounted(() => {
         if (!departmentOwner.value) {
             formValue.value.ascription = 2
         }
-        showUserSelect.value = window.Vues?.components?.UserSelect ? 1 : 0
-        showDatePickers.value = window.Vues?.components?.UserSelect ? 1 : 0
+
+        showUserSelect.value = getAppData('instance.components.UserSelect') ? 1 : 0
+        showDatePickers.value = getAppData('instance.components.DatePicker') ? 1 : 0
+
         loadUserSelects()
         loadDatePickers()
     })

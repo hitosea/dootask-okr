@@ -1,9 +1,9 @@
 <template >
-    <div class="delete-box nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalTransferIndex + 1 }">
+    <div class="delete-box nav-top  h-[52px] bg-[#FAFAFA] z-[5]" :style="{ 'z-index': modalZIndex + 1 }">
         <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
         <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">{{ $t('复盘详情')}}</h2>
     </div>
-    <div class="relative pt-[76px] pb-16 pl-16 pr-16 h-full" :style="{ 'z-index': modalTransferIndex }">
+    <div class="relative pt-[76px] pb-16 pl-16 pr-16 h-full" :style="{ 'z-index': modalZIndex }">
         <div class="flex flex-col">
             <div class="flex justify-between ">
                 <h3 class=" text-text-li text-14 font-normal">{{ $t('目标（O）') }}</h3>
@@ -35,13 +35,14 @@
 import { getReplayList } from '@/api/modules/replay'
 import {useRoute, useRouter } from 'vue-router';
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
+import { nextModalIndex } from "@/utils/app"
 
 const route = useRoute()
 const router = useRouter()
 const id = ref(0)
 const dataDetail = ref<any>("")
 
-const modalTransferIndex = window.modalTransferIndex = window.modalTransferIndex + 1
+const modalZIndex = nextModalIndex()
 
 if (route.query.id != undefined) {
     id.value = Number(route.query.id)
