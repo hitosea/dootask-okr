@@ -914,10 +914,10 @@ const utils = {
         }, false);
     },
     /**
-         * =============================================================================
-         * *****************************   sessionStorage   ****************************
-         * =============================================================================
-         */
+     * =============================================================================
+     * *****************************   sessionStorage   ****************************
+     * =============================================================================
+     */
 
     setSessionStorage(key?: any, value?: any) {
         return utils.__operationSessionStorage(key, value);
@@ -946,7 +946,7 @@ const utils = {
             keyName = '__state:' + key + '__';
         }
         if (typeof value === 'undefined') {
-            return utils.__loadFromlSession(key, '', keyName);
+            return utils.__loadFromSession(key, '', keyName);
         } else {
             utils.__savaToSession(key, value, keyName);
         }
@@ -967,7 +967,7 @@ const utils = {
         }
     },
 
-    __loadFromlSession(key?: any, def?: any, keyName?: any) {
+    __loadFromSession(key?: any, def?: any, keyName?: any) {
         try {
             if (typeof keyName === 'undefined') keyName = '__seller__';
             let seller = window.sessionStorage.getItem(keyName);
@@ -984,25 +984,39 @@ const utils = {
         }
     },
 
-    // 关闭最后的窗口
-    closeLastModel(iss=true) {
-        let is = false;
-        let closeBtnClasss = ['.n-close','.n-drawer-header__close .n-base-icon','.n-card-header__extra .n-icon'];
-        let containers = [...document.querySelectorAll('.n-modal-container,.n-drawer-container')].reverse()
-        for(let i = 0; i < containers.length; i++) {
-            if (containers[i].querySelector('.n-modal-mask') || containers[i].querySelector('.n-drawer-mask')) {
-                closeBtnClasss.forEach(c=>{
-                    if(containers[i].querySelector(c)){
-                        is = true;
-                        iss && containers[i].querySelector(c) && (containers[i].querySelector(c) as HTMLElement).click();
+    /**
+     * =============================================================================
+     * *********************************   Extras   ********************************
+     * =============================================================================
+     */
+
+    /**
+     * 阻止关闭
+     * @returns {boolean} - 返回true表示阻止关闭，false表示允许关闭
+     */
+    beforeClose(): boolean {
+        const closeClass = [".n-close", ".n-drawer-header__close .n-base-icon", ".n-card-header__extra .n-icon"]
+        const containers = [...document.querySelectorAll(".n-modal-container, .n-drawer-container")].reverse()
+        for (let i = 0; i < containers.length; i++) {
+            const container = containers[i]
+            if (container.querySelector(".n-modal-mask, .n-drawer-mask")) {
+                const closeBtn = container.querySelector(closeClass.join(", ")) as HTMLElement
+                if (closeBtn) {
+                    // 模拟点击关闭按钮
+                    closeBtn.click()
+                } else {
+                    // 如果没有关闭按钮，添加抖动效果
+                    const body = container.querySelector(".n-modal, .n-drawer")
+                    if (body && !body.className.includes('leave-active')) {
+                        body.classList.add("common-shake")
+                        setTimeout(() => body.classList.remove("common-shake"), 500)
                     }
-                });
-                break;
+                }
+                return true
             }
         }
-        return is;
+        return false
     },
-
 }
 
 export default utils

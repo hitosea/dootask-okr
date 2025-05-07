@@ -15,7 +15,6 @@
 <script lang="ts" setup>
 import { onMounted } from "vue"
 import { GlobalStore } from "@/store"
-import utils from "@/utils/utils"
 import AddMultipleDrawer from "@/views/components/AddMultipleDrawer.vue"
 import { getAppData } from "@/utils/app"
 import { initAppData } from "@/microapp"
@@ -34,23 +33,12 @@ const handleCloseMultiple = () => {
     })
 }
 
-// 监听按键事件
-const handleKeydown = (event: any) => {
-    if (event.key === "Escape" || ((event.metaKey || event.ctrlKey) && event.key === "w")) {
-        if (utils.closeLastModel()) {
-            event.preventDefault() // 阻止默认的浏览器行为
-        }
-    }
-}
-
 onMounted(() => {
     cleanupAppData.value = initAppData()
-    window.addEventListener("keydown", handleKeydown)
 })
 
 onUnmounted(() => {
     if (cleanupAppData.value) cleanupAppData.value()
-    window.removeEventListener("keydown", handleKeydown)
 })
 </script>
 <style lang="less" scoped>

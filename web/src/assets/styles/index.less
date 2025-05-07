@@ -97,3 +97,15 @@ input[type="submit"]::-moz-focus-inner,
 input[type="button"]::-moz-focus-inner {
     border: 0;
 }
+
+/* 抖动动画 */
+.common-shake {
+    animation: animation-common-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+}
+
+@keyframes animation-common-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
