@@ -204,7 +204,7 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { getAppData, backApp } from "dootask-tools"
+import { getAppData, popoutWindow, backApp } from "dootask-tools"
 
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
@@ -423,22 +423,14 @@ const getData = () => {
 
 // 新窗口打开
 const openNewWin = () => {
-    const param = {
-        name: `okr`,
-        path: `/single/apps/okr/analysis`,
-        force: false,
-        config: {
-            title: pageTitle,
-            titleFixed: true,
-            parent: null,
-            width: Math.min(window.screen.availWidth, pageOkrAnalysisRef.value.clientWidth + 72),
-            height: Math.min(window.screen.availHeight, pageOkrAnalysisRef.value.clientHeight + 36),
-            minWidth: 600,
-            minHeight: 450,
-        }
-    }
-    //
-    getAppData('methods.openWindow')?.(param)
+    popoutWindow({
+        title: pageTitle,
+        titleFixed: true,
+        width: Math.min(window.screen.availWidth, pageOkrAnalysisRef.value.clientWidth + 72),
+        height: Math.min(window.screen.availHeight, pageOkrAnalysisRef.value.clientHeight + 36),
+        minWidth: 600,
+        minHeight: 450,
+    })
 }
 
 

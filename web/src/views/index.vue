@@ -40,7 +40,7 @@
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="isMainElectron" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isMainElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
                             <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -111,7 +111,7 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
-import { isMicroApp, getAppData, backApp } from "dootask-tools"
+import { isMicroApp, getAppData, popoutWindow, backApp } from "dootask-tools"
 
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
@@ -293,21 +293,15 @@ const handleClose = (e, id) => {
 
 // 新窗口打开
 const openNewWin = () => {
-    const param = {
-        name: `okr`,
-        path: `/single/apps/okr/list?tab=${tabsName.value}`,
-        force: false,
-        config: {
-            title: 'OKR ' + $t(pageTitle.value),
-            titleFixed: true,
-            parent: null,
-            width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),
-            height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 36),
-            minWidth: 600,
-            minHeight: 450,
-        }
-    }
-    getAppData('methods.openWindow')?.(param);
+    popoutWindow({
+        title: 'OKR ' + $t(pageTitle.value),
+        titleFixed: true,
+        width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),
+        height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 36),
+        minWidth: 600,
+        minHeight: 450,
+    });
+    moreButtonPopoverShow.value = false
 }
 
 // 已归档

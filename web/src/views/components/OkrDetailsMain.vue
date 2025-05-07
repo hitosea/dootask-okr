@@ -38,7 +38,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="isMainElectron" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -70,7 +70,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="isMainElectron" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -244,7 +244,7 @@
                     <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                     </li>
                 </ul>
-                <i v-if="!isSubElectron" class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
+                <i class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
@@ -389,11 +389,11 @@ import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
-import {getAppData, backApp, isMicroApp, nextZIndex} from "dootask-tools"
+import {getAppData, getBaseUrl, popoutWindow, backApp, isMicroApp, nextZIndex} from "dootask-tools"
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
-const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
+const isElectron = computed(() => getAppData('props.isElectron') ? 1 : 0)
 const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
 const navActive = ref(0)
@@ -1206,21 +1206,16 @@ const colorStatus = (color) => {
 
 // 新窗口打开
 const openNewWin = () => {
-    const param = {
-        name: `okr-detail-${props.id}`,
-        path: `/single/apps/okr/okrDetails?id=${props.id}`,
-        force: false,
-        config: {
-            title: $t('OKR明细'),
-            titleFixed: true,
-            parent: null,
-            width: Math.min(window.screen.availWidth, pageOkrDetailRef.value.clientWidth + 72),
-            height: Math.min(window.screen.availHeight, pageOkrDetailRef.value.clientHeight + 72),
-            minWidth: 600,
-            minHeight: 450,
-        }
-    }
-    getAppData('methods.openWindow')?.(param);
+    popoutWindow({
+        url: `${getBaseUrl()}apps/okr/okrDetails?id=${props.id}`,
+        title: $t('OKR明细'),
+        titleFixed: true,
+        width: Math.min(window.screen.availWidth, pageOkrDetailRef.value.clientWidth + 72),
+        height: Math.min(window.screen.availHeight, pageOkrDetailRef.value.clientHeight + 72),
+        minWidth: 600,
+        minHeight: 450,
+    });
+    showPopover.value = false
 }
 
 
