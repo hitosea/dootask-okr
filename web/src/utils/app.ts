@@ -14,8 +14,8 @@ export const nextModalIndex = (): number => {
     const appData = window.microApp?.getData()
     if (!appData) return 1000
 
-    if (typeof appData.nextModalIndex === "function") {
-        return appData.nextModalIndex()
+    if (typeof appData.methods.nextZIndex === "function") {
+        return appData.methods.nextZIndex()
     }
     return 1000
 }
@@ -28,8 +28,8 @@ export const handleCloseApp = (destroy = false): void => {
     const appData = window.microApp?.getData()
     if (!appData) return
 
-    if (typeof appData.handleClose === "function") {
-        appData.handleClose(destroy)
+    if (typeof appData.methods.close === "function") {
+        appData.methods.close(destroy)
     }
 }
 
@@ -41,8 +41,8 @@ export const handleBackApp = (): void => {
     const appData = window.microApp?.getData()
     if (!appData) return
 
-    if (typeof appData.handleBack === "function") {
-        appData.handleBack()
+    if (typeof appData.methods.back === "function") {
+        appData.methods.back()
     }
 }
 

@@ -8,25 +8,25 @@ export const initAppData = () => {
     if (!appData) {
         return
     }
-    const {initialData} = appData
+    const {props} = appData
     const globalStore = GlobalStore()
     const userStore = UserStore()
 
     // 初始化
-    globalStore.setBaseUrl(initialData.baseUrl)
-    globalStore.setThemeName(initialData.themeName == "auto" ? "light" : initialData.themeName)
-    globalStore.setLanguage(initialData.languages.languageName)
-    userStore.setUserInfo(initialData.userInfo)
+    globalStore.setBaseUrl(props.baseUrl)
+    globalStore.setThemeName(props.themeName == "auto" ? "light" : props.themeName)
+    globalStore.setLanguage(props.languageName)
+    userStore.setUserInfo(props.userInfo)
 
     // 窗口监听器
-    const dataListener = ({type, initialData}) => {
+    const dataListener = ({type, props}) => {
         switch (type) {
             case "beforeClose":
                 return utils.beforeClose();
 
             default:
-                if (initialData.type == "details") {
-                    globalStore.openOkrDetails(initialData.id || 0)
+                if (props.type == "details") {
+                    globalStore.openOkrDetails(props.id || 0)
                 }
                 break
         }

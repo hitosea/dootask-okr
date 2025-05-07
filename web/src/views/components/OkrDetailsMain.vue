@@ -393,8 +393,8 @@ import {getAppData, handleBackApp, isMicroApp, nextModalIndex} from "@/utils/app
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
-const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
-const isSubElectron = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
+const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
+const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
@@ -1220,7 +1220,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    getAppData('openChildWindow')?.(param);
+    getAppData('methods.openWindow')?.(param);
 }
 
 

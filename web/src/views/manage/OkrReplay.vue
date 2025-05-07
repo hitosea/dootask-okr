@@ -457,7 +457,7 @@ const loadDatePickers = () => {
                             type: "daterange",
                             placement: "bottom-end",
                             confirm: true,
-                            options: {shortcuts: getAppData('instance.options.shortcuts')}
+                            options: {shortcuts: getAppData('methods.extraCallA')?.('timeOptionShortcuts')}
                         },
                         on: {
                             "on-change": (e: any) => {

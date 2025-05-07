@@ -31,7 +31,7 @@ import { getAppData, nextModalIndex } from "@/utils/app"
 const userInfo = UserStore().info
 const route = useRoute()
 const router = useRouter()
-const isSubElectron = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0  )
+const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0  )
 
 const id = ref(null)
 const userid = ref(null)

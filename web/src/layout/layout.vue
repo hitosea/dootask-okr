@@ -19,7 +19,7 @@ import AddMultipleDrawer from "@/views/components/AddMultipleDrawer.vue"
 import { getAppData } from "@/utils/app"
 import { initAppData } from "@/microapp"
 
-const show = ref(getAppData("initialData.type") !== "details")
+const show = ref(getAppData('props.type') !== "details")
 const globalStore = GlobalStore()
 const cleanupAppData = ref(null)
 const { addMultipleShow, multipleId, addMultipleData } = globalStore.multipleSetup()

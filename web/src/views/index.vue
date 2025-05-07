@@ -117,7 +117,7 @@ const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 const router = useRouter()
-const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
+const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
 const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 const pageTitle = ref("管理")
 const loadIng = ref(false)
@@ -307,7 +307,7 @@ const openNewWin = () => {
             minHeight: 450,
         }
     }
-    getAppData('openChildWindow')?.(param);
+    getAppData('methods.openWindow')?.(param);
 }
 
 // 已归档

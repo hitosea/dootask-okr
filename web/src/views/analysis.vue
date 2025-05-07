@@ -213,7 +213,7 @@ const tabsValue = ref<any>(null)
 const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
 
-const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
+const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
 const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 
 const handleReturn = () => {
@@ -438,7 +438,7 @@ const openNewWin = () => {
         }
     }
     //
-    getAppData('openChildWindow')?.(param)
+    getAppData('methods.openWindow')?.(param)
 }
 
 

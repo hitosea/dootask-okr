@@ -702,7 +702,7 @@ const utils = {
                 }
             }
             if (utils.rightExists(url, '.js')) {
-                script.src = url + "?hash=" + getAppData('initialData.systemInfo.version')
+                script.src = url + "?hash=" + getAppData('props.systemInfo.version')
             } else {
                 script.src = url
             }
@@ -770,7 +770,7 @@ const utils = {
             }
             script.rel = 'stylesheet'
             if (utils.rightExists(url, '.css')) {
-                script.href = url + "?hash=" + getAppData('initialData.systemInfo.version')
+                script.href = url + "?hash=" + getAppData('props.systemInfo.version')
             } else {
                 script.href = url
             }

@@ -19,7 +19,7 @@ const webTs = {
         ) {
             return str
         }
-        const systemUrl = getAppData('initialData.systemInfo.apiUrl')
+        const systemUrl = getAppData('props.systemInfo.apiUrl')
         if (typeof systemUrl === "string") {
             str = systemUrl + str
         } else {
@@ -227,7 +227,7 @@ const webTs = {
             str.substring(0, 1) === "/") {
             return str;
         }
-        const systemOrigin = getAppData('initialData.systemInfo.origin')
+        const systemOrigin = getAppData('props.systemInfo.origin')
         if (typeof systemOrigin === "string") {
             str = systemOrigin + str;
         } else {
