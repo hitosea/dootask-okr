@@ -5,9 +5,14 @@
         <i @click="handleSubmit" class="okrfont text-primary-color mr-4 z-[3] text-22">&#xe684;</i>
     </div>
     <div class="relative pt-[76px] pb-32 pl-16 pr-2 bg-[#fff]" :style="{ 'z-index': modalZIndex }">
-        <AddOkrsMain ref="AddOkrsRef" :edit="okrEdit" :editData="okrEditData" :labelPlacement="'top'" :labelAlign="'left'"
-            @submit="handleReturn" @loadIng="(e) => { loadIng = e }">
-        </AddOkrsMain>
+        <AddOkrsMain
+            ref="AddOkrsRef"
+            :edit="okrEdit"
+            :editData="okrEditData"
+            :labelPlacement="'top'"
+            :labelAlign="'left'"
+            @submit="handleReturn"
+            @loadIng="(e) => { loadIng = e }"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -34,7 +39,7 @@ const handleReturn = () => {
         state.okrEditData = null
         state.okrEdit = false
     })
-      router.go(-1)
+    router.go(-1)
 }
 
 nextTick(() => {

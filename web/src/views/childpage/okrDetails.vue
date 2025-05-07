@@ -1,6 +1,6 @@
 <template >
-    <div ref="pageOkrDetailRef" :class="isSingle ? ['bg-white'] : ['bg-[#FAFAFA]']" class="page-okr-details  min-h-full flex relative" :style="{ 'z-index': modalZIndex }">
-        <div v-if="!isSingle" class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
+    <div ref="pageOkrDetailRef" :class="isSubElectron ? ['bg-white'] : ['bg-[#FAFAFA]']" class="page-okr-details  min-h-full flex relative" :style="{ 'z-index': modalZIndex }">
+        <div v-if="!isSubElectron" class="nav-top h-[52px] bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont icon-return z-[2]">&#xe676;</i>
             <h2 class=" absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
             <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
@@ -16,7 +16,7 @@
                 </div>
             </n-popover>
         </div>
-        <div v-if="detailsShow" :class="isSingle ? ['py-16','pl-24','h-[100vh]'] : ['pt-[52px]', 'pb-16', 'min-h-full']" class="flex-1 overflow-hidden">
+        <div v-if="detailsShow" :class="isSubElectron ? ['py-16','pl-24','h-[100vh]'] : ['pt-[52px]', 'pb-16', 'min-h-full']" class="flex-1 overflow-hidden">
             <OkrDetailsMain ref="OkrDetailsMainRef" :show="true" :id="id" @isFollow="(e) => { is_follow = e }"
                 @canceled="(e) => { cancel = e }" @openDetail="openDetail" @getDetail="getDetail"></OkrDetailsMain>
         </div>
@@ -31,7 +31,7 @@ import { getAppData, nextModalIndex } from "@/utils/app"
 const userInfo = UserStore().info
 const route = useRoute()
 const router = useRouter()
-const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0  )
+const isSubElectron = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0  )
 
 const id = ref(null)
 const userid = ref(null)

@@ -40,7 +40,7 @@
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="proxy.$globalStore.isElectron && !isSingle" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isMainElectron" @click="[openNewWin(), moreButtonPopoverShow=false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
                             <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -113,13 +113,12 @@ import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
 import { isMicroApp, getAppData, handleCloseApp } from "@/utils/app"
 
-const { proxy } = getCurrentInstance();
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 const router = useRouter()
-const isSingle = proxy.$globalStore.isSingle()
-const isPortrait = proxy.$globalStore.isPortrait()
+const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
+const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 const pageTitle = ref("管理")
 const loadIng = ref(false)
 const route = useRoute()

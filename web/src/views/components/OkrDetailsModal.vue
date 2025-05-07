@@ -1,11 +1,27 @@
 <template >
-    <n-modal v-model:show="props.show" transform-origin="center" :mask-closable="false"
-        @after-leave="closeDrawer" @after-enter="showDrawer" :z-index="nextModalIndex()" :trap-focus="false">
-        <n-card class="w-[90%] max-w-[1200px]" :bordered="false" size="huge" role="dialog" aria-modal="true">
-            <OkrDetailsMain ref="OkrDetailsMainRef" :show="props.show" :id="props.id"
-            @close="()=>{ emit('close') }" @edit="(e)=>{ emit('edit',e) }" @getList="(e)=>{  emit('getList',e) }" @upData="(id)=>{ emit('upData',id) }"
-            @openDetail="(id,userid)=>{ emit('openDetail',id,userid)}"
-            ></OkrDetailsMain>
+    <n-modal
+        v-model:show="props.show"
+        transform-origin="center"
+        :mask-closable="false"
+        @after-leave="closeDrawer"
+        @after-enter="showDrawer"
+        :z-index="nextModalIndex()"
+        :trap-focus="false">
+        <n-card
+            class="w-[90%] max-w-[1200px]"
+            :bordered="false"
+            size="huge"
+            role="dialog"
+            aria-modal="true">
+            <OkrDetailsMain
+                ref="OkrDetailsMainRef"
+                :show="props.show"
+                :id="props.id"
+                @close="()=>{ emit('close') }"
+                @edit="(e)=>{ emit('edit',e) }"
+                @getList="(e)=>{ emit('getList', e) }"
+                @upData="(e)=>{ emit('upData', e) }"
+                @openDetail="(id, userid)=>{ emit('openDetail', id, userid)}"/>
         </n-card>
     </n-modal>
 </template>

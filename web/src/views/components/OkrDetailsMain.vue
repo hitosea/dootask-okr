@@ -1,5 +1,7 @@
 <template>
-    <div ref="pageOkrDetailRef" :class="isSingle ? ['max-h-[100%]'] : ['md:max-h-[640px] md:min-h-[640px]']" class="flex flex-col h-full md:h-auto md:flex-row">
+    <div
+        ref="pageOkrDetailRef"
+        class="md:max-h-[640px] md:min-h-[640px] flex flex-col h-full md:h-auto md:flex-row">
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive' : ''">
             <div class="hidden md:flex min-h-[44px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
@@ -19,7 +21,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.isElectron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isMainElectron" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -51,7 +53,7 @@
                             </p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="globalStore.isElectron && !isSingle" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isMainElectron" @click="[openNewWin(), showPopover = false]"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -71,9 +73,7 @@
                             <p class="flex items-center w-[115px]">
                                 <i v-if="detailData.ascription == '2'" class="okrfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
                                 <i v-else class="okrfont icon-item text-[#BBBBBB]">&#xe682;</i>
-
-                                <span class="text-[#BBBBBB] text-[14px]"> {{ detailData.ascription == "2" ?
-        $t('负责人') : $t('部门') }}</span>
+                                <span class="text-[#BBBBBB] text-[14px]"> {{ detailData.ascription == "2" ? $t('负责人') : $t('部门') }}</span>
                             </p>
                             <p class="flex-1 text-text-li text-14">
                                 {{ detailData.alias && detailData.alias.join(',') }}
@@ -89,12 +89,10 @@
                             <p class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
                                 <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{utils.GoDate(detailData.end_at || 0) }}</span>
                                 <div v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
-                                    <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at)
-                                        }}</n-tag>
+                                    <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
                                     <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
                                 </div>
                             </p>
-
                         </div>
 
                         <div class="flex items-center">
@@ -104,7 +102,6 @@
                             </p>
                             <span class="span h-[16px]" :class="pStatus(detailData.priority)">{{ detailData.priority}}</span>
                         </div>
-
 
                         <div class="flex md:hidden items-center" v-if="detailData.score > -1">
                             <p class="flex items-center w-[115px]">
@@ -136,22 +133,19 @@
                                         <n-avatar v-if="!showUserSelect" round :size="20" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     </div>
                                     <div v-if="item.participant.split(',').length > 4" class="w-[20px] h-[20px] rounded-full bg-primary-color flex items-center justify-center text-white text-12 ">
-                                        <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{
-        item.participant.split(',').length - 4 }}</span>
+                                        <span class="scale-[0.8333] origin-center whitespace-nowrap">+{{item.participant.split(',').length - 4 }}</span>
                                     </div>
 
                                     <template v-if="!isOverdue(item) || detailData.completed == '1' || detailData.canceled == '1' || detailData.completed == '0' || detailData.canceled == '0'">
                                         <i class="okrfont mr-4 text-12 ml-24 text-[#A7ABB5]">&#xe6e8;</i>
                                         <p class="flex-1 text-text-li text-12 min-w-[140px] opacity-50 shrink-0 leading-[18px]">
-                                            {{
-        utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
+                                            {{utils.GoDate(item.start_at || 0) }} ~{{ utils.GoDate(item.end_at || 0) }}
                                         </p>
                                     </template>
 
                                     <template v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
                                         <i class="okrfont mr-4 text-12 ml-24" :class="isOverdue(item) ? 'text-[#ED4014]' : ''">&#xe6e8;</i>
-                                        <p class="whitespace-nowrap" :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{
-        expiresFormat(item.end_at) }}</p>
+                                        <p class="whitespace-nowrap" :class="isOverdue(item) ? 'text-[#ED4014] text-12' : ''">{{expiresFormat(item.end_at) }}</p>
                                     </template>
                                 </div>
                                 <div class="flex items-center  shrink-0 min-w-[200px]">
@@ -233,7 +227,7 @@
                     <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
                     </li>
                 </ul>
-                <i v-if="!isSingle" class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
+                <i v-if="!isSubElectron" class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
@@ -260,14 +254,12 @@
                                         </div>
                                         <div class="flex items-center" v-if="!expiresFormat(item.end_at) || detailData.completed == '1' || detailData.canceled == '1'">
                                             <i class="okrfont text-12 mr-4 text-[#A7ABB5]">&#xe6e8;</i>
-                                            <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at
-        || 0) }}
+                                            <p class="flex-1 text-text-tips text-12  shrink-0">{{ utils.GoDate(item.end_at|| 0) }}
                                             </p>
                                         </div>
                                         <div class="flex items-center" v-if="expiresFormat(item.end_at) && detailData.completed == '0' && detailData.canceled == '0'">
                                             <i class="okrfont text-12 mr-4 text-[#ED4014]">&#xe6e8;</i>
-                                            <p class="flex-1 text-[#ED4014] text-12  shrink-0">{{ expiresFormat(item.end_at)
-                                                }}
+                                            <p class="flex-1 text-[#ED4014] text-12  shrink-0">{{ expiresFormat(item.end_at) }}
                                             </p>
                                         </div>
                                     </div>
@@ -384,7 +376,8 @@ import { getAppData, isMicroApp, nextModalIndex } from "@/utils/app"
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
-const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
+const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
+const isSubElectron = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()

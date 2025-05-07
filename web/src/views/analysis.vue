@@ -7,7 +7,7 @@
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
-                <n-tooltip v-if="proxy.$globalStore.isElectron && !isSingle" trigger="hover">
+                <n-tooltip v-if="isMainElectron" trigger="hover">
                     <template #trigger>
                         <div class="open-new-win" type="tertiary" @click="openNewWin">
                             <i class="okrfont open">&#xe776;</i>
@@ -55,8 +55,7 @@
                                                 {{ item.department_name }}</p>
                                             <n-progress type="line" color="#8BCF70"
                                                 :percentage="calculatingProgress(item.complete, item.total)">
-                                                <span class="text-[#8BCF70] w-[50px] block text-right">{{
-                                                    calculatingProgress(item.complete, item.total) }}%</span>
+                                                <span class="text-[#8BCF70] w-[50px] block text-right">{{calculatingProgress(item.complete, item.total) }}%</span>
                                             </n-progress>
                                         </div>
                                     </div>
@@ -150,8 +149,7 @@
                                             <span>
                                                 <p class="dot"></p>
                                                 <span class="legend-name">{{ $t('未完成') }}: </span>
-                                                <span class="font-medium">{{ analyzeDatas.scoreRate.total -
-                                                    analyzeDatas.scoreRate.complete }}</span>
+                                                <span class="font-medium">{{ analyzeDatas.scoreRate.total - analyzeDatas.scoreRate.complete }}</span>
                                             </span>
                                             <span>
                                                 <p class="dot bc"></p>
@@ -208,15 +206,15 @@ import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
 import { getAppData, handleCloseApp } from "@/utils/app"
 
-const { proxy } = getCurrentInstance();
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
 const loadIng = ref(false)
 const tabsValue = ref<any>(null)
 const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
-const isSingle = proxy.$globalStore.isSingle()
-const isPortrait = proxy.$globalStore.isPortrait()
+
+const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ? 1 : 0)
+const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 
 const handleReturn = () => {
     handleCloseApp()

@@ -14,7 +14,6 @@ export const initAppData = () => {
 
     // 初始化
     globalStore.setBaseUrl(initialData.baseUrl)
-    globalStore.setIsElectron(initialData.isElectron)
     globalStore.setThemeName(initialData.themeName == "auto" ? "light" : initialData.themeName)
     globalStore.setLanguage(initialData.languages.languageName)
     userStore.setUserInfo(initialData.userInfo)

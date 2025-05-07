@@ -4,7 +4,6 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
 import { ConfigProviderProps, createDiscreteApi, darkTheme, useOsTheme } from "naive-ui"
 import { GlobalState } from "./interface"
 import { I18nGlobal } from "@/lang"
-import { getAppData } from "@/utils/app"
 
 export const GlobalStore = defineStore({
     id: "GlobalState",
@@ -12,7 +11,6 @@ export const GlobalStore = defineStore({
         baseUrl: "",
         language: "zh",
         themeName: "",
-        isElectron: false,
         timer: {},
         //
         okrDetailId: 0,
@@ -41,9 +39,6 @@ export const GlobalStore = defineStore({
         },
         setLanguage(language: any) {
             I18nGlobal.locale.value = this.language = language
-        },
-        setIsElectron(isElectron: boolean) {
-            this.isElectron = isElectron
         },
         appSetup() {
             return {
@@ -99,12 +94,6 @@ export const GlobalStore = defineStore({
                 }
                 this.timer[key] = setTimeout(resolve, ms)
             })
-        },
-        isSingle() {
-            return getAppData('initialData.isSubElectron') ? 1 : 0
-        },
-        isPortrait() {
-            return getAppData('instance.store.state.windowPortrait') ? 1 : 0
         },
     },
 })

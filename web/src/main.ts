@@ -4,7 +4,6 @@ import pinia, { GlobalStore } from "./store"
 import { routes } from "./routes/routes"
 import I18n from "./lang/index"
 import createDemoRouter from "./routes"
-import initGlobal from "./global"
 import "./assets/styles/index.less"
 import directives from "@/directives/index"
 
@@ -18,9 +17,6 @@ app.use(directives)
 // 加载
 const globalStore = GlobalStore()
 globalStore.init().then(() => {
-    // 全局方法
-    initGlobal(app, globalStore)
-
     // 翻译
     window.$t = I18n.global.t
 

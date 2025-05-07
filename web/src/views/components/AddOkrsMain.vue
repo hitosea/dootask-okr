@@ -1,9 +1,15 @@
 <template >
     <n-scrollbar>
         <div class="add-main-box pr-14">
-
-            <n-form ref="formRef" :model="formValue" :rules="rules" size="medium" :label-align="props.labelAlign"
-                :label-placement="props.labelPlacement" label-width="auto" require-mark-placement="left">
+            <n-form
+                ref="formRef"
+                :model="formValue"
+                :rules="rules"
+                size="medium"
+                :label-align="props.labelAlign"
+                :label-placement="props.labelPlacement"
+                label-width="auto"
+                require-mark-placement="left">
 
                 <n-form-item class="w-full" :label="$t('目标（O）')" path="title">
                     <n-input v-model:value="formValue.title" :maxlength="255" :placeholder="$t('请输入目标')" />
@@ -51,25 +57,19 @@
                     <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]">
                         <DatePickers type="cycle" />
                     </div>
-                    <n-date-picker v-else class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss"
-                        type="daterange" clearable size="medium" />
+                    <n-date-picker v-else class="w-full" v-model:value="formValue.time" value-format="yyyy.MM.dd HH:mm:ss" type="daterange" clearable size="medium" />
                 </n-form-item>
 
                 <n-form-item :label="$t('可见范围')">
-                    <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')"
-                        :options="generalOptions" />
+                    <n-select v-model:value="formValue.visible_range" :placeholder="$t('请选择可见范围')" :options="generalOptions" />
                 </n-form-item>
 
                 <n-form-item :label="$t('对齐目标')">
                     <div @click="handleGoal"
                         class="w-full h-[32px] bg-[#fff] border-[1px] border-[#e8e8e8] border-solid rounded cursor-pointer pl-12 pr-8 flex items-center">
-                        <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'"
-                            class=" text-14">{{ formValue.align_objective?.length > 0
-                                ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
+                        <p :class="formValue.align_objective?.length > 0 ? 'text-text-li' : 'text-[rgba(194,194,194,1)]'" class=" text-14">{{ formValue.align_objective?.length > 0 ? `${$t('已选')}${formValue.align_objective.length}${$t('项')}` : $t('请选择对齐目标') }}</p>
                         <i class="okrfont text-[rgba(194,194,194,1)] ml-auto">&#xe72b;</i>
                     </div>
-
-
                 </n-form-item>
 
                 <n-form-item :label="$t('关联项目')">
@@ -82,21 +82,16 @@
                         {{ $t('关键KR') }}
                         <n-popover class="popover-tips" trigger="hover" placement="right-start" :width="220">
                             <template #trigger>
-                                <n-icon class=" cursor-pointer text-text-tips ml-4" size="18"
-                                    :component="AlertCircleOutline" />
+                                <n-icon class=" cursor-pointer text-text-tips ml-4" size="18" :component="AlertCircleOutline" />
                             </template>
                             <div class="">
                                 <p class="text-14 text-[#FFBD23] font-medium">{{ $t('KR1：动词+你要追踪的内容+从到Y/或者具体值') }}</p>
                                 <p class="text-14 text-[#FFBD23] mt-8 font-medium">{{ $t('KR2：动词+什么时间节点+达成什么关键成果') }}</p>
                                 <p class="text-12 text-title-color mt-12">{{ $t('示例') }}</p>
                                 <p class="text-12 text-text-li">{{ $t('将客户续约率从70%提高到90%') }}</p>
-
-                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4"
-                                        src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4"
-                                        src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
-                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4"
-                                        src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
+                                <p class="text-12 text-text-li mt-8 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('至少包含1个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon1.png" />{{ $t('不建议超过5个关键KR') }}</p>
+                                <p class="text-12 text-text-li mt-4 flex items-center"><img class="mr-4" src="@/assets/images/icon/addIcon2.png" />{{ $t('关键成功定量可衡量') }}</p>
                             </div>
                         </n-popover>
                     </h3>
@@ -110,8 +105,7 @@
                     <div
                         class="flex items-center justify-between px-[12px] py-[8px] bg-[#FAFAFA] border-0 border-b-[1px] border-solid border-[#F2F2F2]">
                         <h3 class="text-14 text-text-li font-medium">KR{{ index + 1 }}</h3>
-                        <div v-if="item.score == -1" class="flex items-center cursor-pointer"
-                            @click="handleRemoveKr(index)">
+                        <div v-if="item.score == -1" class="flex items-center cursor-pointer" @click="handleRemoveKr(index)">
                             <i class="okrfont text-14 text-text-tips">&#xe787;</i>
                         </div>
                     </div>
@@ -129,8 +123,7 @@
                                     <div v-if="showDatePickers" class="okr-date-picker-waps w-[100%]">
                                         <DatePickers type="time" :formkey="index" />
                                     </div>
-                                    <n-date-picker v-else class="w-full" v-model:value="item.time" type="daterange"
-                                        clearable size="medium" />
+                                    <n-date-picker v-else class="w-full" v-model:value="item.time" type="daterange" clearable size="medium" />
                                 </n-form-item-gi>
 
                                 <!-- pc -->
@@ -139,8 +132,7 @@
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
-                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
-                                    </UserList>
+                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant"></UserList>
                                 </n-form-item-gi>
 
                                 <!-- app -->
@@ -149,17 +141,14 @@
                                         @click="onParticipantClick">
                                         <UserSelects :formkey="index" />
                                     </div>
-                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant">
-                                    </UserList>
+                                    <UserList :edit="props.edit" v-if="!showUserSelect" v-model:value="item.participant"></UserList>
                                 </n-form-item-gi>
 
                                 <n-form-item-gi class="hidden md:block" :span="2" :label="$t('信心')">
-                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0"
-                                        v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
                                 </n-form-item-gi>
                                 <n-form-item-gi class="block md:hidden" :span="4" :label="$t('信心')">
-                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0"
-                                        v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
+                                    <n-input-number class="w-full" :max="100" :min="0" :precision="0" v-model:value="item.confidence" placeholder="0-100" :show-button="false" />
                                 </n-form-item-gi>
                             </n-grid>
                         </n-form>
@@ -169,8 +158,11 @@
 
         </div>
     </n-scrollbar>
-    <SelectAlignment :value="selectAlignmentShow" :editData="formValue.align_objective"
-        @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
+    <SelectAlignment
+        :value="selectAlignmentShow"
+        :editData="formValue.align_objective"
+        @close="() => { selectAlignmentShow = false }"
+        @submit="submitSelectAlignment"/>
 </template>
 <script setup lang="ts">
 import { watch, ref } from 'vue';

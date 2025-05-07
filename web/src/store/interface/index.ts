@@ -4,7 +4,6 @@ export interface GlobalState {
     baseUrl: string
     language: string
     themeName: string
-    isElectron: boolean
     timer: object
     addMultipleShow: any
     multipleId: number
