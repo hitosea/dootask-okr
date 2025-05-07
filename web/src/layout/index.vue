@@ -1,6 +1,9 @@
 <template>
     <!-- :theme="theme" -->
-    <n-config-provider :locale="locale" :date-locale="dateLocale" :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides">
+    <n-config-provider
+        :locale="locale"
+        :date-locale="dateLocale"
+        :theme-overrides="theme === null ? lightThemeOverrides : darkThemeOverrides">
         <n-loading-bar-provider>
             <n-message-provider>
                 <n-notification-provider>
@@ -12,7 +15,6 @@
             </n-message-provider>
         </n-loading-bar-provider>
     </n-config-provider>
-
 </template>
 
 <script lang="ts" setup>
@@ -24,17 +26,18 @@ import { computed } from "vue"
 import { NLocale } from "naive-ui/es/locales/common/enUS"
 import { NDateLocale } from "naive-ui/es/locales"
 import themeOverrides from "../utils/naive.config"
+
 const lightThemeOverrides = themeOverrides.lightThemeOverrides
 const darkThemeOverrides = themeOverrides.darkThemeOverrides
 const resultCode = result.code()
 const globalStore = GlobalStore()
 const { themeName, theme } = globalStore.appSetup()
 
-nextTick(()=>{
+nextTick(() => {
     // 添加字体
-    if(!document.getElementById('okr-okrfont-style')){
-        const styleTag = document.createElement('style');
-        styleTag.setAttribute('id', 'okr-okrfont-style');
+    if (!document.getElementById("okr-okrfont-style")) {
+        const styleTag = document.createElement("style")
+        styleTag.setAttribute("id", "okr-okrfont-style")
         styleTag.textContent = `
             @font-face {
                 font-family: 'okrfont';  /* Project id 2583385 */
@@ -48,8 +51,8 @@ nextTick(()=>{
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
             }
-        `;
-        document.head.appendChild(styleTag);
+        `
+        document.head.appendChild(styleTag)
     }
 })
 
@@ -63,10 +66,12 @@ const dateLocale = computed((): NDateLocale => {
     return dateZhCN
 })
 
-watch(themeName,(newVal,oldVal)=>{
-    document.querySelector("body").classList.remove('okr-theme-'+oldVal)
-    document.querySelector("body").classList.add('okr-theme-'+newVal)
-},{immediate:true})
-
+watch(
+    themeName,
+    (newVal, oldVal) => {
+        document.querySelector("body").classList.remove("okr-theme-" + oldVal)
+        document.querySelector("body").classList.add("okr-theme-" + newVal)
+    },
+    { immediate: true },
+)
 </script>
-
