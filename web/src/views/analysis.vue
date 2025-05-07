@@ -204,7 +204,7 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { getAppData, handleCloseApp } from "@/utils/app"
+import { getAppData, handleBackApp } from "@/utils/app"
 
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
@@ -217,7 +217,7 @@ const isMainElectron = computed(() => getAppData('initialData.isMainElectron') ?
 const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 
 const handleReturn = () => {
-    handleCloseApp()
+    handleBackApp()
 }
 
 // 总数据

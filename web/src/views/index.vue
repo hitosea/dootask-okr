@@ -111,7 +111,7 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
-import { isMicroApp, getAppData, handleCloseApp } from "@/utils/app"
+import { isMicroApp, getAppData, handleBackApp } from "@/utils/app"
 
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
@@ -147,7 +147,7 @@ const btnLoading = ref(0)
 let editData = {}
 
 const handleReturn = () => {
-    handleCloseApp()
+    handleBackApp()
 }
 
 watch(route,(newValue)=>{
