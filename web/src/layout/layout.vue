@@ -16,7 +16,7 @@
 import { onMounted } from "vue"
 import { GlobalStore } from "@/store"
 import AddMultipleDrawer from "@/views/components/AddMultipleDrawer.vue"
-import { getAppData } from "@/utils/app"
+import { getAppData } from "dootask-tools"
 import { initAppData } from "@/microapp"
 
 const show = ref(getAppData('props.type') !== "details")

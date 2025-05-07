@@ -19,13 +19,13 @@
 import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
 import { useRouter } from 'vue-router';
 import { GlobalStore } from '@/store';
-import { nextModalIndex } from "@/utils/app"
+import { nextZIndex } from "dootask-tools"
 
 const router = useRouter()
 const loadIng = ref(false)
 
 const AddOkrsRef = ref(null)
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 const globalStore = GlobalStore()
 const { okrEditData, okrEdit } = globalStore.okrSetup()
 

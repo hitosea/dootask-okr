@@ -35,14 +35,14 @@
 import { getReplayList } from '@/api/modules/replay'
 import {useRoute, useRouter } from 'vue-router';
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
-import { nextModalIndex } from "@/utils/app"
+import { nextZIndex } from "dootask-tools"
 
 const route = useRoute()
 const router = useRouter()
 const id = ref(0)
 const dataDetail = ref<any>("")
 
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 
 if (route.query.id != undefined) {
     id.value = Number(route.query.id)

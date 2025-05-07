@@ -175,7 +175,7 @@ import { useMessage } from "@/utils/messageAll"
 import utils from "@/utils/utils";
 import { UserStore } from '@/store/user'
 import { AlertCircleOutline } from '@vicons/ionicons5'
-import { getAppData, isMicroApp } from "@/utils/app"
+import { getAppData, isMicroApp } from "dootask-tools"
 
 const emit = defineEmits(['close', 'loadIng', 'submit'])
 

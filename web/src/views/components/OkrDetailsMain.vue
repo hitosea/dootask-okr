@@ -389,7 +389,7 @@ import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
-import {getAppData, handleBackApp, isMicroApp, nextModalIndex} from "@/utils/app"
+import {getAppData, backApp, isMicroApp, nextZIndex} from "dootask-tools"
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
@@ -453,7 +453,7 @@ const canSuperiorUpdateScore = ref(false)
 const nowInterval = ref<any>(null)
 const nowTime = ref(0)
 
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 
 const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'getList', 'openDetail', 'getDetail'])
 
@@ -469,7 +469,7 @@ const props = defineProps({
 })
 
 const handleReturn = () => {
-    handleBackApp()
+    backApp()
 }
 
 // 明细

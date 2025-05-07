@@ -204,7 +204,7 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { getAppData, handleBackApp } from "@/utils/app"
+import { getAppData, backApp } from "dootask-tools"
 
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
@@ -217,7 +217,7 @@ const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0
 const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 
 const handleReturn = () => {
-    handleBackApp()
+    backApp()
 }
 
 // 总数据

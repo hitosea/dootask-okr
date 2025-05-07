@@ -10,11 +10,11 @@
 <script lang="ts" setup>
 import ArchiveMain from '@/views/components/ArchiveMain.vue';
 import { useRouter } from 'vue-router';
-import { nextModalIndex } from "@/utils/app"
+import { nextZIndex } from "dootask-tools"
 
 
 const router = useRouter()
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 
 
 const handleReturn = () => {

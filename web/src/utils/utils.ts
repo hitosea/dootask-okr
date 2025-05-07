@@ -1,7 +1,7 @@
 import localforage from "localforage"
 import webTs from "./web"
 import { GlobalStore } from "@/store"
-import { getAppData } from "@/utils/app"
+import { getAppData } from "dootask-tools"
 
 localforage.config({ name: 'DooTask', storeName: 'common' })
 

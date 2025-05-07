@@ -1,6 +1,6 @@
 import { GlobalStore } from "@/store"
 import { UserStore } from "@/store/user"
-import { addDataListener, getAppData, removeDataListener } from "@/utils/app"
+import { addDataListener, getAppData, removeDataListener, interceptBack } from "dootask-tools"
 import utils from "@/utils/utils";
 
 export const initAppData = () => {
@@ -19,22 +19,21 @@ export const initAppData = () => {
     userStore.setUserInfo(props.userInfo)
 
     // 窗口监听器
-    const dataListener = ({type, props}) => {
-        switch (type) {
-            case "beforeClose":
-                return utils.beforeClose();
-
-            default:
-                if (props.type == "details") {
-                    globalStore.openOkrDetails(props.id || 0)
-                }
-                break
+    const dataListener = ({props}) => {
+        if (props.type == "details") {
+            globalStore.openOkrDetails(props.id || 0)
         }
     }
     addDataListener(dataListener, true)
 
+    // 拦截返回事件
+    const unsubscribe = interceptBack(() => {
+        return utils.beforeClose();
+    })
+
     // 返回清理函数，以便可以手动调用
     return () => {
         removeDataListener(dataListener)
+        unsubscribe()
     }
 }

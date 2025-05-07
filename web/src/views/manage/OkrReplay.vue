@@ -178,7 +178,7 @@ import { UserStore } from '@/store/user'
 import { getUserList } from '@/api/modules/created'
 import { getUserInfo } from '@/api/modules/user'
 import utils from "@/utils/utils"
-import { isMicroApp, getAppData } from "@/utils/app"
+import { isMicroApp, getAppData } from "dootask-tools"
 
 const datePickerApps = ref([])
 const globalStore = GlobalStore()

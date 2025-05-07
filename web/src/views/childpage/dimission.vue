@@ -10,10 +10,10 @@
 <script lang="ts" setup>
 import DeleteMain from '@/views/components/DeleteMain.vue';
 import { useRouter } from 'vue-router';
-import { nextModalIndex } from "@/utils/app"
+import { nextZIndex } from "dootask-tools"
 
 const router = useRouter()
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 
 const handleReturn = () => {
     router.go(-1)

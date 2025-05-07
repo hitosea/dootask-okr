@@ -54,7 +54,7 @@ import OkrDetailsModal from '@/views/components/OkrDetailsModal.vue';
 import { getOkrArchive, okrArchiveRestore, okrDelete } from '@/api/modules/okrList'
 import utils from '@/utils/utils';
 import { useMessage } from "@/utils/messageAll"
-import { isMicroApp } from "@/utils/app"
+import { isMicroApp } from "dootask-tools"
 
 const message = useMessage()
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)

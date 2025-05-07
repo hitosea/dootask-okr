@@ -16,13 +16,13 @@
 import AddMultipleMain from '@/views/components/AddMultipleMain.vue';
 import { useRouter } from 'vue-router';
 import { GlobalStore } from '@/store';
-import { nextModalIndex } from "@/utils/app"
+import { nextZIndex } from "dootask-tools"
 
 const router = useRouter()
 const loadIng = ref(false)
 
 const AddMultipleMainRef = ref(null)
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 const globalStore = GlobalStore()
 const {  multipleId,addMultipleData } = globalStore.multipleSetup()
 

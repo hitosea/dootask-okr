@@ -26,7 +26,7 @@
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UserStore } from '@/store/user'
-import { getAppData, nextModalIndex } from "@/utils/app"
+import { getAppData, nextZIndex } from "dootask-tools"
 
 const userInfo = UserStore().info
 const route = useRoute()
@@ -42,7 +42,7 @@ const OkrDetailsMainRef = ref(null)
 const is_follow = ref(false)
 const showPopover = ref(false)
 const cancel = ref(0)
-const modalZIndex = nextModalIndex()
+const modalZIndex = nextZIndex()
 
 if (route.query.id != undefined || route.query.data != undefined) {
     id.value = Number(route.query.id || route.query.data)
