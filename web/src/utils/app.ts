@@ -34,6 +34,19 @@ export const handleCloseApp = (destroy = false): void => {
 }
 
 /**
+ * 逐步返回上一个页面
+ * @description 类此似于浏览器的后退按钮，返回到最后一个页面时会关闭应用。
+ */
+export const handleBackApp = (): void => {
+    const appData = window.microApp?.getData()
+    if (!appData) return
+
+    if (typeof appData.handleBack === "function") {
+        appData.handleBack()
+    }
+}
+
+/**
  * 添加数据监听器
  * @param callback - 回调函数，当数据发生变化时调用
  * @param autoTrigger - 在初次绑定监听函数时如果有缓存数据，是否需要主动触发一次

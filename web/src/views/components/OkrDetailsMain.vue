@@ -1,11 +1,28 @@
 <template>
-    <div
-        ref="pageOkrDetailRef"
-        class="md:max-h-[640px] md:min-h-[640px] flex flex-col h-full md:h-auto md:flex-row">
+    <div ref="pageOkrDetailRef" class="md:max-h-[640px] md:min-h-[640px] flex flex-col h-full md:h-auto md:flex-row max-md:fixed max-md:inset-0 max-md:pb-16 max-md:overflow-auto">
+
+        <div class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky top-0 h-[52px] px-12 bg-[#FAFAFA] z-[5]">
+            <i v-if="isSubElectron"></i>
+            <i v-else @click="handleReturn" class="okrfont text-26 text-text-tips z-[2]">&#xe676;</i>
+            <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
+            <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
+                <template #trigger>
+                    <i @click="showPopover = !showPopover" class="okrfont text-22 mr-4 z-[2]">&#xe6e9;</i>
+                </template>
+                <div class="flex flex-col">
+                    <p class="py-8" @click="handleEdit" v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"> {{ $t('编辑') }}</p>
+                    <p class="py-8" @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
+                    <p class="py-8" @click="handleCancel" v-if="detailData.completed == '0'"> {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}</p>
+                    <p class="py-8" @click="handleWarningShow(2)" > {{  detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
+                    <p class="py-8" @click="handleWarningShow(1)" > {{ $t('删除') }}</p>
+                </div>
+            </n-popover>
+        </div>
+
         <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive' : ''">
-            <div class="hidden md:flex min-h-[44px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
+            <div class="flex max-md:hidden min-h-[44px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
-                    <n-popover class="okr-more-button-popover" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
+                    <n-popover class="okr-more-button-popover hidden md:flex" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover">
                                 <div v-if="detailData.completed == '0' && detailData.canceled == '0'" class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer" :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
@@ -372,7 +389,7 @@ import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
-import { getAppData, isMicroApp, nextModalIndex } from "@/utils/app"
+import {getAppData, handleBackApp, isMicroApp, nextModalIndex} from "@/utils/app"
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
@@ -450,6 +467,10 @@ const props = defineProps({
         default: 0,
     },
 })
+
+const handleReturn = () => {
+    handleBackApp()
+}
 
 // 明细
 const getDetail = (type) => {
@@ -1341,5 +1362,8 @@ defineExpose({
 
 :deep(.dialog-wrapper .dialog-footer) {
     padding-right: 0;
+    @media not all and (min-width: 768px) {
+        padding-right: 10px;
+    }
 }
 </style>

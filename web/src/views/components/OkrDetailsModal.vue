@@ -8,7 +8,7 @@
         :z-index="nextModalIndex()"
         :trap-focus="false">
         <n-card
-            class="w-[90%] max-w-[1200px]"
+            class="w-[90%] max-w-[1200px] max-md:fixed max-md:inset-0 max-md:w-full max-md:h-full max-md:rounded-none max-md:overflow-hidden"
             :bordered="false"
             size="huge"
             role="dialog"
@@ -86,7 +86,6 @@ defineExpose({
 .span-3 {
     @apply bg-[#72A1F7];
 }
-
 
 .li-nav {
     @apply list-none cursor-pointer text-text-li opacity-50 text-14;
