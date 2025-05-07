@@ -70,9 +70,7 @@
         </div>
         <n-scrollbar :on-scroll="onScroll">
             <div v-if="items.length != 0" class="replay flex-[1_1_auto] ">
-                <div v-for="(item, index) in items" :key="index"
-                    :class="{ 'replay-item': true, 'replay-item-active': item.isActive }"
-                    @click="openMultiple(item.okr_id)">
+                <div v-for="(item, index) in items" :key="index" :class="{ 'replay-item': true, 'replay-item-active': item.isActive }">
                     <div class="replay-item-head">
                         <div>
                             <span class="replay-item-okr-level py-[0.5px]" :class="pStatus(item.okr_priority)">{{
@@ -182,7 +180,6 @@ import { getUserInfo } from '@/api/modules/user'
 import utils from "@/utils/utils"
 import { isMicroApp, getAppData } from "@/utils/app"
 
-const { proxy } = getCurrentInstance();
 const datePickerApps = ref([])
 const globalStore = GlobalStore()
 const items = ref([])
@@ -340,20 +337,10 @@ const pStatus = (p) => {
     return p == "P0" ? "span-1" : p == "P1" ? "span-2" : "span-3"
 }
 
-// 打开复盘
-const openMultiple = (id) => {
-    if (window.innerWidth < 768) {
-        okrDetailsShow.value = proxy.$openChildPage('multipleDetails', { id: id })
-    }
-}
-
 //查看okr详情
 const openOkrDetail = (id) => {
-    if (window.innerWidth < 768) return
-    okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: id })
-    if (okrDetailsShow.value) {
-        detailId.value = id
-    }
+    okrDetailsShow.value = true
+    detailId.value = id
 }
 
 //重新获取
@@ -373,7 +360,7 @@ const principalClick = (type) => {
         principalpage.value++
     }
     const sendata = {
-        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
+        dept_only: (!(userInfo == 'admin' || okrAdminOwner.value)),
         page: principalpage.value,
         page_size: 20,
         keyword: keyWord.value,
@@ -398,7 +385,7 @@ const getUser = (keyword) => {
     }
     keyWord.value = keyword
     const sendata = {
-        dept_only: (userInfo == 'admin' || okrAdminOwner.value) ? false : true,
+        dept_only: (!(userInfo == 'admin' || okrAdminOwner.value)),
         page: principalpage.value,
         page_size: 20,
         keyword: keyword,

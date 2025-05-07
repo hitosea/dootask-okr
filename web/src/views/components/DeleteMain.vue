@@ -144,7 +144,6 @@ import  WarningPopup from './WarningPopup.vue';
 import { ResultDialog } from "@/api"
 import { getUserInfo } from '@/api/modules/user';
 import { isMicroApp } from "@/utils/app"
-const { proxy } = getCurrentInstance();
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 
 const emit = defineEmits(['close'])
@@ -231,7 +230,7 @@ const tableColumns = ref<DataTableColumn[]>([
                     class:' text-primary-color cursor-pointer',
                     onClick: _ => {
                         okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = proxy.$openChildPage('okrDetails',{ id: rowData.id })
+                        okrDetailsShow.value = true
                     }
                 },
                 { default: () => $t('查看') }

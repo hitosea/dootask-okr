@@ -240,22 +240,21 @@ const handleEdit = (data) => {
 //添加OKR
 const handleAdd = () => {
     btnLoading.value = 1
-    getUserInfo().then(({ data }) => {
-            if (data.identity[0] != 'admin' && data.department && data.department.length == 0) {
-                tipsContent.value = $t('您当前未加入任何部门，不能发起！')
+    getUserInfo()
+        .then(({ data }) => {
+            if (data.identity[0] != "admin" && data.department && data.department.length == 0) {
+                tipsContent.value = $t("您当前未加入任何部门，不能发起！")
                 showModal.value = true
-                return
+            } else {
+                addShow.value = true
             }
-            else{
-                addShow.value = proxy.$openChildPage('addOkr')
-            }
-    })
-    .catch()
-    .finally(()=>{
-        setTimeout(()=>{
-            btnLoading.value = 0
-        },300)
-    })
+        })
+        .catch()
+        .finally(() => {
+            setTimeout(() => {
+                btnLoading.value = 0
+            }, 300)
+        })
 }
 
 const handleClose = (e, id) => {
@@ -314,17 +313,17 @@ const openNewWin = () => {
 
 // 已归档
 const handleArchiveShow = () => {
-    archiveShow.value = proxy.$openChildPage('archive')
+    archiveShow.value = true
 }
 
 // 已离职删除人员
 const handleDeleteShow = () => {
-    deleteShow.value = proxy.$openChildPage('deletePersonnel')
+    deleteShow.value = true
 }
 
 // 设置
 const handleSettingShow = () => {
-    settingShow.value = proxy.$openChildPage('setting')
+    settingShow.value = true
 }
 </script>
 

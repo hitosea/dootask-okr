@@ -58,7 +58,6 @@ import { isMicroApp } from "@/utils/app"
 
 const message = useMessage()
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
-const { proxy } = getCurrentInstance();
 
 const loadIng = ref(false)
 const objective = ref('')
@@ -139,8 +138,8 @@ const columns = ref<DataTableColumn[]>([
                 h('span', {
                     class: "text-primary-color cursor-pointer",
                     onClick: () => {
-                        okrDetailsId.value = rowData.id
-                        okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: rowData.id })
+                        okrDetailsId.value = Number(rowData.id)
+                        okrDetailsShow.value = true
                     }
                 }, $t('查看'))
             )
@@ -150,7 +149,7 @@ const columns = ref<DataTableColumn[]>([
                     onClick: () => {
                         OTitle.value = $t('还原')
                         OContent.value = $t('确定要还原') + `【${rowData.title}】？`
-                        OId.value = rowData.id
+                        OId.value = Number(rowData.id)
                         OType.value = 1
                         showModal.value = true
                     }
@@ -252,7 +251,7 @@ const handleDelete = () => {
 //点击对齐目标名字再次打开
 const handleOpenDetail = (id)=>{
     okrDetailsId.value = id
-    okrDetailsShow.value = proxy.$openChildPage('okrDetails', { id: id })
+    okrDetailsShow.value = true
 }
 
 const onSearch = () => {

@@ -19,7 +19,7 @@ app.use(directives)
 const globalStore = GlobalStore()
 globalStore.init().then(() => {
     // 全局方法
-    initGlobal(app, route, globalStore)
+    initGlobal(app, globalStore)
 
     // 翻译
     window.$t = I18n.global.t

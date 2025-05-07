@@ -132,8 +132,6 @@ import { UserStore } from '@/store/user'
 import { GlobalStore } from '@/store'
 import fenSvg from '@/assets/images/icon/fen.svg';
 
-const { proxy } = getCurrentInstance();
-
 const globalStore = GlobalStore()
 const userInfo = UserStore().info
 const alignTargetShow = ref(false)
@@ -181,13 +179,8 @@ const pStatus = (p) => {
 
 //打开详情
 const handleOpenDetail = (id, userid) => {
-    okrDetailsShow.value = proxy.$openChildPage('okrDetails', {
-        id: id,
-        userid: userid,
-    })
-    if (okrDetailsShow.value) {
-        eidtId.value = id
-    }
+    eidtId.value = id
+    okrDetailsShow.value = true
 }
 
 

@@ -62,10 +62,8 @@ import { GlobalStore } from '@/store';
 
 import TipsModal from '@/views/components/TipsModal.vue';
 
-const { proxy } = getCurrentInstance();
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
-
 
 const tableData = ref([])
 const active = ref(-1)
@@ -315,20 +313,10 @@ const handleAddMultiple = () => {
     data.progress = props.okrReplayList.okr_progress
     data.key_results = props.okrReplayList.key_results
 
-
-    if (!proxy.$openChildPage('addMultiple')) {
-        globalStore.$patch((state) => {
-            state.addMultipleData = data
-            state.multipleId = 0
-            state.doubleSkip = true
-        })
-    }
-    else {
-        globalStore.$patch((state) => {
-            state.addMultipleData = data
-            state.addMultipleShow = true
-        })
-    }
+    globalStore.$patch((state) => {
+        state.addMultipleData = data
+        state.addMultipleShow = true
+    })
 }
 </script>
 

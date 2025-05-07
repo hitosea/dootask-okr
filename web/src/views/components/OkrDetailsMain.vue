@@ -382,8 +382,6 @@ import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
 import { getAppData, isMicroApp, nextModalIndex } from "@/utils/app"
 
-const { proxy } = getCurrentInstance();
-
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
 const isSingle = computed(() => getAppData('initialData.isSubElectron') ? 1 : 0)
@@ -696,14 +694,7 @@ const handleGetReplayList = () => {
 
 //编辑
 const handleEdit = () => {
-    if (!proxy.$openChildPage('addOkr')) {
-        globalStore.$patch((state) => {
-            state.okrEditData = detailData.value
-            state.okrEdit = true
-        })
-    } else {
-        emit('edit', utils.cloneJSON(detailData.value))
-    }
+    emit('edit', utils.cloneJSON(detailData.value))
 }
 
 const closeModal = () => {
@@ -1058,38 +1049,22 @@ const handleAddMultiple = () => {
         showModal.value = true
         return
     }
-    if (detailData.value.score < 0) return message.error( 'KR ' + $t('评分未完成'))
-    if (!proxy.$openChildPage('addMultiple')) {
-        globalStore.$patch((state) => {
-            state.addMultipleData = detailData.value
-            state.multipleId = 0
-            state.doubleSkip = true
-        })
+    if (detailData.value.score < 0) {
+        return message.error( 'KR ' + $t('评分未完成'))
     }
-    else {
-        globalStore.$patch((state) => {
-            state.addMultipleData = detailData.value
-            state.addMultipleShow = true
-        })
-    }
+    globalStore.$patch((state) => {
+        state.addMultipleData = detailData.value
+        state.addMultipleShow = true
+    })
 }
 
 
 //查看复盘
 const handleCheckMultiple = (id) => {
-    if (!proxy.$openChildPage('addMultiple')) {
-        globalStore.$patch((state) => {
-            state.addMultipleData = detailData.value
-            state.multipleId = id
-            state.doubleSkip = true
-        })
-    }
-    else {
-        globalStore.$patch((state) => {
-            state.multipleId = id
-            state.addMultipleShow = true
-        })
-    }
+    globalStore.$patch((state) => {
+        state.multipleId = id
+        state.addMultipleShow = true
+    })
 }
 
 
