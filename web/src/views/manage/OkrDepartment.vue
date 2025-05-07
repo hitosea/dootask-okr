@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col h-full">
-        <div class="flex justify-between flex-col 2xl:flex-row 2xl:items-center md:mb-16 md:mt-24">
-            <div class="flex-[2] hidden md:flex items-center mb-16 2xl:mb-0">
+        <div class="flex justify-between flex-row flex-wrap gap-x-12 gap-y-3 mb-16 mt-24">
+            <div class="flex-1 flex items-center min-w-[600px] max-w-[800px]">
                 <div class="flex-1 flex items-center overflow-hidden" v-if="(userInfo == 'admin' || okrAdminOwner)">
                     <div  class="mb-2 mr-8 text-text-li whitespace-nowrap font-medium">
                         {{ $t('部门') }}
@@ -45,8 +45,8 @@
                     {{ $t('搜索') }}
                 </n-button>
             </div>
-            <div class="flex-1 flex items-center mt-16 mb-12 md:mb-0 md:mt-0 justify-between md:justify-start 2xl:justify-end 2xl:mb-0 ">
-                <div class="hidden md:block mr-12 whitespace-nowrap 2xl:ml-24 text-text-li font-medium">
+            <div class="flex items-center">
+                <div class="hidden md:block mr-12 whitespace-nowrap text-text-li font-medium">
                     {{ $t('类型') }}
                 </div>
                 <div class="hidden md:flex">
