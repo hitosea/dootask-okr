@@ -3,7 +3,7 @@
         <div class="h-full flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
-                    <div v-if="isPortrait" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
+                    <div v-if="isPortrait && !isSubElectron" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
@@ -214,6 +214,7 @@ const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
 
 const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
+const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0  )
 const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 
 const handleReturn = () => {
@@ -426,8 +427,8 @@ const openNewWin = () => {
     popoutWindow({
         title: pageTitle,
         titleFixed: true,
-        width: Math.min(window.screen.availWidth, pageOkrAnalysisRef.value.clientWidth + 72),
-        height: Math.min(window.screen.availHeight, pageOkrAnalysisRef.value.clientHeight + 36),
+        width: Math.min(window.screen.availWidth, 1440),
+        height: Math.min(window.screen.availHeight, 900),
         minWidth: 600,
         minHeight: 450,
     })

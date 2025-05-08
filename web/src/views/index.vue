@@ -2,7 +2,7 @@
     <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
             <div class="okr-left flex items-center">
-                <div v-if="isPortrait" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
+                <div v-if="isPortrait && !isSubElectron" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
@@ -113,12 +113,14 @@ import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
 import { isMicroApp, getAppData, popoutWindow, backApp } from "@dootask/tools"
 
+const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
+const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0  )
+const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
+
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
 const router = useRouter()
-const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
-const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
 const pageTitle = ref("管理")
 const loadIng = ref(false)
 const route = useRoute()
@@ -296,8 +298,8 @@ const openNewWin = () => {
     popoutWindow({
         title: 'OKR ' + $t(pageTitle.value),
         titleFixed: true,
-        width: Math.min(window.screen.availWidth, pageOkrRef.value.clientWidth + 72),
-        height: Math.min(window.screen.availHeight, pageOkrRef.value.clientHeight + 36),
+        width: Math.min(window.screen.availWidth, 1440),
+        height: Math.min(window.screen.availHeight, 900),
         minWidth: 600,
         minHeight: 450,
     });

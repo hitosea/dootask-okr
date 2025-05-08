@@ -1,9 +1,10 @@
 <template>
-    <div ref="pageOkrDetailRef" class="md:max-h-[640px] md:min-h-[640px] flex flex-col h-full md:h-auto md:flex-row max-md:fixed max-md:inset-0 max-md:pb-16 max-md:overflow-auto">
+    <div
+        class="md:min-h-[640px] flex flex-col h-full md:flex-row max-md:fixed max-md:inset-0 max-md:pb-16 max-md:overflow-auto"
+        :class="single ? [] : ['md:max-h-[640px]', 'md:h-auto']">
 
-        <div class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky top-0 h-[52px] px-12 bg-[#FAFAFA] z-[5]">
-            <i v-if="isSubElectron"></i>
-            <i v-else @click="handleReturn" class="okrfont text-26 text-text-tips z-[2]">&#xe676;</i>
+        <div v-if="!single" class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky top-0 h-[52px] px-12 bg-[#FAFAFA] z-[5]">
+            <i @click="handleReturn" class="okrfont text-26 text-text-tips z-[2]">&#xe676;</i>
             <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
             <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
                 <template #trigger>
@@ -25,20 +26,17 @@
                     <n-popover class="okr-more-button-popover hidden md:flex" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
                         <template #trigger>
                             <div @click="showPopover = !showPopover">
-                                <div v-if="detailData.completed == '0' && detailData.canceled == '0'" class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer" :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
-                                </div>
+                                <div v-if="detailData.completed == '0' && detailData.canceled == '0'" class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer" :class="detailData.completed == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'"></div>
                                 <div v-if="detailData.completed == '1' || detailData.canceled == '1'" class="flex items-center justify-center w-[16px] h-[16px] overflow-hidden rounded-full border-[1px] border-solid cursor-pointer" :class="detailData.completed == '0' && detailData.canceled == '0' ? 'border-[#A8ACB6]' : 'border-primary-color bg-primary-color'">
                                     <n-icon v-if="detailData.completed == '1' || detailData.canceled == '1'" :class="detailData.completed == '0' && detailData.canceled == '0' ? 'text-[#A8ACB6]' : ' text-white'" size="14" :component="CheckmarkSharp" />
                                 </div>
                             </div>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
-                                {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
-                            </p>
+                            <p v-if="detailData.completed == '0'" @click="handleCancel">{{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}</p>
                             <p @click="handleFollowOkr"> {{ $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="isElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isElectron && !single" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -46,31 +44,24 @@
                     <n-tag v-if="detailData.canceled == '1'" type="success">{{ $t('已取消') }} </n-tag>
                     <n-tag v-if="detailData.completed == '1'" type="success">{{ $t('已完成') }}</n-tag>
                     <n-tag v-if="detailData.status == '1'">{{ $t('已归档') }}</n-tag>
-                    <p class="flex items-center text-text-li opacity-50 text-14">
-                        {{ detailData.type == "1" ? $t('承诺型') : $t('挑战性') }} /
-                        {{ detailData.ascription == "2" ? $t('个人') : $t('部门') }}
-                    </p>
+                    <p class="flex items-center text-text-li opacity-50 text-14">{{ detailData.type == "1" ? $t('承诺型') : $t('挑战性') }} / {{ detailData.ascription == "2" ? $t('个人') : $t('部门') }}</p>
                 </div>
                 <div class="flex items-center gap-6">
                     <i v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" class="okrfont icon-title text-[#A7ACB6]" @click="handleEdit">&#xe779;</i>
 
                     <div v-if="detailData.score > -1" class="flex items-center cursor-pointer">
                         <img class="mr-8" :src="utils.apiUrl(fenSvg)" />
-                        <p class=" text-title-color text-12">{{ detailData.score }}{{ $t('分') }}
-                        </p>
+                        <p class=" text-title-color text-12">{{ detailData.score }}{{ $t('分') }}</p>
                     </div>
                     <n-popover class="okr-more-button-popover" placement="bottom" :show="showMorePopover" trigger="manual" @clickoutside="handleClosePopover(2)" :z-index="modalZIndex" raw :show-arrow="true">
-
                         <template #trigger>
                             <i @click="showMorePopover = !showMorePopover" class="ivu-icon ivu-icon-ios-more cursor-pointer text-[#A7ACB6] text-[25px]"></i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="detailData.completed == '0'" @click="handleCancel">
-                                {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}
-                            </p>
+                            <p v-if="detailData.completed == '0'" @click="handleCancel">{{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}</p>
                             <p @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
                             <p @click="handleWarningShow(2)"> {{ detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                            <p v-if="isElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
+                            <p v-if="isElectron && !single" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="handleWarningShow(1)"> {{ $t('删除') }}</p>
                         </div>
                     </n-popover>
@@ -92,9 +83,7 @@
                                 <i v-else class="okrfont icon-item text-[#BBBBBB]">&#xe682;</i>
                                 <span class="text-[#BBBBBB] text-[14px]"> {{ detailData.ascription == "2" ? $t('负责人') : $t('部门') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14">
-                                {{ detailData.alias && detailData.alias.join(',') }}
-                            </p>
+                            <p class="flex-1 text-text-li text-14">{{ detailData.alias && detailData.alias.join(',') }}</p>
                         </div>
 
 
@@ -103,13 +92,13 @@
                                 <i class="okrfont icon-item text-[#BBBBBB] -mt-2">&#xe6e8;</i>
                                 <span class="text-[#BBBBBB] text-[14px]">{{ $t('起止时间') }}</span>
                             </p>
-                            <p class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
-                                <span v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{utils.GoDate(detailData.end_at || 0) }}</span>
+                            <div class="flex-1 text-text-li text-14 flex  md:items-center flex-col md:flex-row">
+                                <div v-if="detailData.start_at">{{ utils.GoDate(detailData.start_at || 0) }} ~ {{utils.GoDate(detailData.end_at || 0) }}</div>
                                 <div v-if="detailData.completed == '0' && detailData.canceled == '0' && detailData.end_at">
-                                    <n-tag class="md:ml-4 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
-                                    <n-tag class="ml-4" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
+                                    <n-tag class="md:ml-6 mt-4 md:mt-0" v-if="within24Hours(detailData.end_at)" type="info"><i class="okrfont text-14 mr-4">&#xe71d;</i>{{ expiresFormat(detailData.end_at) }}</n-tag>
+                                    <n-tag class="ml-6" v-if="isOverdue(detailData)" type="error">{{ $t('超期未完成') }}</n-tag>
                                 </div>
-                            </p>
+                            </div>
                         </div>
 
                         <div class="flex items-center">
@@ -143,8 +132,7 @@
                                 <div class="flex items-center mr-24">
                                     <div class="flex items-start gap-2 max-w-[104px] h-[26px] overflow-hidden">
                                         <div v-if="showUserSelect && detailData.completed == '0' && detailData.canceled == '0' || item.participant != ''" class="relative">
-                                            <div v-if="userInfo.userid != detailData.userid || detailData.canceled == '1' || detailData.completed == '1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]">
-                                            </div>
+                                            <div v-if="userInfo.userid != detailData.userid || detailData.canceled == '1' || detailData.completed == '1' || item.score > -1 || item.superior_score > -1" class="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed z-[2]"></div>
                                             <UserSelects class="relative z-[1]" :formkey="index" />
                                         </div>
                                         <n-avatar v-if="!showUserSelect" round :size="20" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
@@ -180,7 +168,6 @@
                                     </div>
 
                                     <n-tooltip trigger="hover" v-if="item.kr_score == '0'" :disabled="item.score == -1">
-
                                         <template #trigger>
                                             <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1" @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                                 <i class="okrfont mr-6 text-16 text-[#A7ABB5]">&#xe67d;</i>
@@ -194,7 +181,6 @@
                                         </div>
                                     </n-tooltip>
                                     <n-tooltip trigger="hover" v-else>
-
                                         <template #trigger>
                                             <div class="flex items-center cursor-pointer min-w-[55px] justify-start flex-1" @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                                 <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
@@ -209,7 +195,6 @@
                                             </div>
                                         </div>
                                     </n-tooltip>
-
                                 </div>
                             </div>
                         </div>
@@ -223,8 +208,15 @@
                     </h4>
 
                     <div class="pb-[28px] w-full overflow-hidden hidden md:block">
-                        <AlignTarget ref="AlignTargetRef" :value="props.show" :id="props.id" :progressShow="true" :userid="detailData.userid" :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid" @unalign="handleUnalign" @openDetail="openDetail">
-                        </AlignTarget>
+                        <AlignTarget
+                            ref="AlignTargetRef"
+                            :value="props.show"
+                            :id="props.id"
+                            :progressShow="true"
+                            :userid="detailData.userid"
+                            :cancelShow="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"
+                            @unalign="handleUnalign"
+                            @openDetail="openDetail"/>
                     </div>
 
                 </div>
@@ -235,16 +227,12 @@
             <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[44px] bg-white" :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
-                    <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{$t('对齐') }}
-                    </li>
-                    <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}
-                    </li>
-                    <li class="li-nav" :class="navActive == 1 ? 'active' : ''" @click="handleNav(1)">{{ $t('动态') }}
-                    </li>
-                    <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}
-                    </li>
+                    <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{$t('对齐') }}</li>
+                    <li class="li-nav" :class="navActive == 0 ? 'active' : ''" @click="handleNav(0)">{{ $t('评论') }}</li>
+                    <li class="li-nav" :class="navActive == 1 ? 'active' : ''" @click="handleNav(1)">{{ $t('动态') }}</li>
+                    <li class="li-nav" :class="navActive == 2 ? 'active' : ''" @click="handleNav(2)">{{ $t('复盘') }}</li>
                 </ul>
-                <i class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
+                <i v-if="!single" class="okrfont text-16 cursor-pointer text-[#999] hidden md:block n-close" @click="closeModal">&#xe6e5;</i>
             </div>
             <div class="flex-auto relative">
                 <div class="md:absolute md:top-[24px] md:bottom-0 md:left-0 md:right-0">
@@ -299,8 +287,7 @@
                                         </div>
                                         <div v-else class="flex flex-1 items-center justify-center cursor-pointer" @click="handleMark(item.id, item.score, item.superior_score, item.progress, item.can_owner_update_score, item.can_superior_update_score)">
                                             <img class="mr-6 -mt-2" :src="utils.apiUrl(fenSvg)" />
-                                            <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}
-                                            </p>
+                                            <p class="text-text-li opacity-50 text-12">{{ item.kr_score }}{{ $t('分') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -349,26 +336,59 @@
             </div>
         </div>
     </div>
+
     <!-- 对齐目标 -->
-    <SelectAlignment :value="selectAlignmentShow" :editData="detailData.align_objective" @close="() => { selectAlignmentShow = false }" @submit="submitSelectAlignment"></SelectAlignment>
+    <SelectAlignment
+        :value="selectAlignmentShow"
+        :editData="detailData.align_objective"
+        @close="() => { selectAlignmentShow = false }"
+        @submit="submitSelectAlignment"/>
 
     <!-- 更新进度   -->
-    <DegreeOfCompletion v-model:show="degreeOfCompletionShow" :id="degreeOfCompletionId" :progress="degreeOfCompletionProgress" :progress_status="degreeOfCompletionProgressStatus" @close="handleCloseDedree">
-    </DegreeOfCompletion>
+    <DegreeOfCompletion
+        v-model:show="degreeOfCompletionShow"
+        :id="degreeOfCompletionId"
+        :progress="degreeOfCompletionProgress"
+        :progress_status="degreeOfCompletionProgressStatus"
+        @close="handleCloseDedree"/>
 
     <!-- 更新信心 -->
-    <Confidences :id="confidencesId" :confidence="confidence" v-model:show="confidenceShow" @close="handleCloseConfidenes">
-    </Confidences>
+    <Confidences
+        :id="confidencesId"
+        :confidence="confidence"
+        v-model:show="confidenceShow"
+        @close="handleCloseConfidenes"/>
 
     <!-- 更新评分 -->
-    <MarkVue v-model:show="markShow" :id="markId" :score="score" :superior_score="superiorScore" :inputShow="inputShow" :canOwnerUpdateScore="canOwnerUpdateScore" :canSuperiorUpdateScore="canSuperiorUpdateScore" :userid="detailData.userid" :superiorUser="superiorUser" @close="handleCloseMarks">
-    </MarkVue>
+    <MarkVue
+        v-model:show="markShow"
+        :id="markId"
+        :score="score"
+        :superior_score="superiorScore"
+        :inputShow="inputShow"
+        :canOwnerUpdateScore="canOwnerUpdateScore"
+        :canSuperiorUpdateScore="canSuperiorUpdateScore"
+        :userid="detailData.userid"
+        :superiorUser="superiorUser"
+        @close="handleCloseMarks"/>
 
     <!-- 强提示 -->
-    <TipsModal :show="showModal" :color="tipsColor" :icon="tipsIcon" :tipsClose="tipsClose" :content="tipsContent" @close="handleTipsClose" @reset="handleTipsreset"></TipsModal>
+    <TipsModal
+        :show="showModal"
+        :color="tipsColor"
+        :icon="tipsIcon"
+        :tipsClose="tipsClose"
+        :content="tipsContent"
+        @close="handleTipsClose"
+        @reset="handleTipsreset"/>
 
     <!-- 提示窗 -->
-    <WarningPopup v-model:show="WarningShow" :title="OTitle" :content="OContent" @submit="handleSubmit" @close="WarningShow = false"></WarningPopup>
+    <WarningPopup
+        v-model:show="WarningShow"
+        :title="OTitle"
+        :content="OContent"
+        @submit="handleSubmit"
+        @close="WarningShow = false"/>
 </template>
 
 <script setup lang="ts">
@@ -391,10 +411,12 @@ import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
 import {getAppData, getBaseUrl, popoutWindow, backApp, isMicroApp, nextZIndex} from "@dootask/tools"
 
+const isElectron = computed(() => getAppData('props.isElectron') ? 1 : 0)
+const showDialogWrapper = computed(() => getAppData('instance.components.DialogWrapper') ? 1 : 0)
+const showUserSelect = computed(() => getAppData('instance.components.UserSelect') ? 1 : 0)
+
 const userInfo = UserStore().info
 const globalStore = GlobalStore()
-const isElectron = computed(() => getAppData('props.isElectron') ? 1 : 0)
-const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0)
 const userSelectApps = ref([]);
 const navActive = ref(0)
 const dialogWrappersApp = ref()
@@ -410,7 +432,6 @@ const tipsColor = ref('text-[rgb(237,64,20)]')
 const tipsIcon = ref(1)
 const tipsClose = ref(0)
 const scrollbarRef = ref(null)
-const pageOkrDetailRef = ref(null)
 
 const WarningShow = ref(false);
 const OTitle = ref('');
@@ -425,8 +446,6 @@ const replayListPage = ref(1)
 const replayListLastPage = ref(99999)
 const replayList = ref([])
 
-const showDialogWrapper = computed(() => getAppData('instance.components.DialogWrapper') ? 1 : 0)
-const showUserSelect = computed(() => getAppData('instance.components.UserSelect') ? 1 : 0)
 
 const selectAlignmentShow = ref(false)
 const AlignTargetRef = ref(null)
@@ -459,6 +478,10 @@ const emit = defineEmits(['close', 'edit', 'upData', 'isFollow', 'canceled', 'ge
 
 const props = defineProps({
     show: {
+        type: Boolean,
+        default: false,
+    },
+    single: {
         type: Boolean,
         default: false,
     },
@@ -1210,8 +1233,8 @@ const openNewWin = () => {
         url: `${getBaseUrl()}apps/okr/okrDetails?id=${props.id}`,
         title: $t('OKR明细'),
         titleFixed: true,
-        width: Math.min(window.screen.availWidth, pageOkrDetailRef.value.clientWidth + 72),
-        height: Math.min(window.screen.availHeight, pageOkrDetailRef.value.clientHeight + 72),
+        width: Math.min(window.screen.availWidth, 1024),
+        height: Math.min(window.screen.availHeight, 768),
         minWidth: 600,
         minHeight: 450,
     });
@@ -1355,10 +1378,23 @@ defineExpose({
     }
 }
 
-:deep(.dialog-wrapper .dialog-footer) {
-    padding-right: 0;
-    @media not all and (min-width: 768px) {
-        padding-right: 10px;
+:deep(.dialog-wrapper) {
+    @media (min-width: 768px) {
+        @apply bg-white;
+
+        .dialog-scroller {
+            @apply px-32 bg-transparent;
+        }
+
+        .dialog-footer {
+            @apply pl-24 pr-0 mb-16 bg-transparent;
+
+            .chat-input-box {
+                .chat-input-wrapper {
+                @apply bg-[#F4F5F7];
+                }
+            }
+        }
     }
 }
 </style>
