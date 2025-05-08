@@ -15,7 +15,7 @@
 </template>
 <script setup lang="ts">
 import AddMultipleMain from './AddMultipleMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const show = ref(false)
 const loadIng = ref(false)

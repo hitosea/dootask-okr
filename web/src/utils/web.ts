@@ -1,5 +1,5 @@
 import utils from "./utils"
-import { getAppData } from "dootask-tools"
+import { getAppData } from "@dootask/tools"
 /**
  * 页面专用
  */

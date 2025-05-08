@@ -13,7 +13,7 @@
 </template>
 <script setup lang="ts">
 import ArchiveMain from './ArchiveMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 
 const show = ref(false)

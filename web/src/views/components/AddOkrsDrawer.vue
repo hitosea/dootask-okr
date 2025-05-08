@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const loadIng = ref(false)
 const show = ref(false)

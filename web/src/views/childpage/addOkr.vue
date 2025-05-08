@@ -19,7 +19,7 @@
 import AddOkrsMain from '@/views/components/AddOkrsMain.vue';
 import { useRouter } from 'vue-router';
 import { GlobalStore } from '@/store';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const router = useRouter()
 const loadIng = ref(false)

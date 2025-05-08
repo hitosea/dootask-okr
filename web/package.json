@@ -13,8 +13,8 @@
         "translate": "node node_modules/hi-translate/server.js"
     },
     "dependencies": {
+        "@dootask/tools": "^0.1.0",
         "@micro-zoe/micro-app": "^1.0.0-rc.24",
-        "dootask-tools": "^0.1.3",
         "echarts": "^5.4.3",
         "hi-translate": "^0.0.4",
         "highlight.js": "^11.8.0",

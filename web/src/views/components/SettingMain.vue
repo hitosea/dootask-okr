@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { useMessage } from "@/utils/messageAll"
 import { okrSetting } from '@/api/modules/system'
-import { getAppData, isMicroApp } from "dootask-tools"
+import { getAppData, isMicroApp } from "@dootask/tools"
 
 const message = useMessage()
 const emit = defineEmits(['close', 'loadIng','submit'])

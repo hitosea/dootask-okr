@@ -389,7 +389,7 @@ import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
-import {getAppData, getBaseUrl, popoutWindow, backApp, isMicroApp, nextZIndex} from "dootask-tools"
+import {getAppData, getBaseUrl, popoutWindow, backApp, isMicroApp, nextZIndex} from "@dootask/tools"
 
 const userInfo = UserStore().info
 const globalStore = GlobalStore()

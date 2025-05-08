@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import SettingMain from '@/views/components/SettingMain.vue';
 import { useRouter } from 'vue-router';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const router = useRouter()
 const modalZIndex = nextZIndex()

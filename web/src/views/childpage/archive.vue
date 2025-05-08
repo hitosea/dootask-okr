@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import ArchiveMain from '@/views/components/ArchiveMain.vue';
 import { useRouter } from 'vue-router';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 
 const router = useRouter()

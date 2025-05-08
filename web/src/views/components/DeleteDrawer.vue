@@ -13,7 +13,7 @@
 </template>
 <script setup lang="ts">
 import DeleteMain from './DeleteMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const show = ref(false)
 const emit = defineEmits(['close', 'upData'])

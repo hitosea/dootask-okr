@@ -111,7 +111,7 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
-import { isMicroApp, getAppData, popoutWindow, backApp } from "dootask-tools"
+import { isMicroApp, getAppData, popoutWindow, backApp } from "@dootask/tools"
 
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner

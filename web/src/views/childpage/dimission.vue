@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import DeleteMain from '@/views/components/DeleteMain.vue';
 import { useRouter } from 'vue-router';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const router = useRouter()
 const modalZIndex = nextZIndex()

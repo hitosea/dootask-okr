@@ -25,7 +25,7 @@ import { watch } from "vue"
 import OkrDetailsModal from "@/views/components/OkrDetailsModal.vue"
 import AddOkrsDrawer from "@/views/components/AddOkrsDrawer.vue"
 import { GlobalStore } from "@/store"
-import { closeApp } from "dootask-tools"
+import { closeApp } from "@dootask/tools"
 
 const detailsShow = ref(false)
 const globalStore = GlobalStore()

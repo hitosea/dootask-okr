@@ -174,7 +174,7 @@ import { getUserInfo } from '@/api/modules/user'
 import utils from '@/utils/utils'
 import { UserStore } from '@/store/user'
 import OkrLoading from '../components/OkrLoading.vue'
-import { getAppData, isMicroApp } from "dootask-tools"
+import { getAppData, isMicroApp } from "@dootask/tools"
 
 const datePickerApps = ref([])
 const active = ref(false)

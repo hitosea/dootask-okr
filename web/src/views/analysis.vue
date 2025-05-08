@@ -204,7 +204,7 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { getAppData, popoutWindow, backApp } from "dootask-tools"
+import { getAppData, popoutWindow, backApp } from "@dootask/tools"
 
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)

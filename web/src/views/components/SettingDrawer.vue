@@ -21,7 +21,7 @@
 </template>
 <script setup lang="ts">
 import SettingMain from './SettingMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const loadIng = ref(false)
 const show = ref(false)

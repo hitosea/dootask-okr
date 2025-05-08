@@ -35,7 +35,7 @@
 import { getReplayList } from '@/api/modules/replay'
 import {useRoute, useRouter } from 'vue-router';
 import OkrReplayDetail from "@/views/components/OkrReplayDetails.vue"
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const route = useRoute()
 const router = useRouter()

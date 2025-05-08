@@ -27,7 +27,7 @@
 </template>
 <script setup lang="ts">
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
-import { nextZIndex } from "dootask-tools"
+import { nextZIndex } from "@dootask/tools"
 
 const emit = defineEmits(['close', 'edit', 'upData','getList','openDetail'])
 

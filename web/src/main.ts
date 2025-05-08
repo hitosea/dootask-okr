@@ -1,5 +1,4 @@
 import { createApp } from "vue"
-import "dootask-tools"
 import App from "./layout/index.vue"
 import pinia, { GlobalStore } from "./store"
 import { routes } from "./routes/routes"

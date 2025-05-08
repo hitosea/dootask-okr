@@ -26,7 +26,7 @@
 import OkrDetailsMain from '@/views/components/OkrDetailsMain.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UserStore } from '@/store/user'
-import { getAppData, nextZIndex } from "dootask-tools"
+import { getAppData, nextZIndex } from "@dootask/tools"
 
 const userInfo = UserStore().info
 const route = useRoute()

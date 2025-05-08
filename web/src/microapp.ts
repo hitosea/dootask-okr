@@ -1,6 +1,6 @@
 import { GlobalStore } from "@/store"
 import { UserStore } from "@/store/user"
-import { addDataListener, getAppData, removeDataListener, interceptBack } from "dootask-tools"
+import { addDataListener, getAppData, removeDataListener, interceptBack } from "@dootask/tools"
 import utils from "@/utils/utils";
 
 export const initAppData = () => {
