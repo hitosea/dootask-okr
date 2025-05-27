@@ -326,6 +326,16 @@ const handleSettingShow = () => {
 .page-okr {
     @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20 md:px-24;
 
+    &:before {
+        content: "";
+        height: var(--status-bar-height, 0);
+    }
+
+    &:after {
+        content: "";
+        height: var(--navigation-bar-height, 0);
+    }
+
     .okr-title {
         @apply h-40 flex justify-between items-center relative mb-14;
 

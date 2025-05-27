@@ -1,6 +1,6 @@
 <template>
     <div class="page-okr-analysis" ref="pageOkrAnalysisRef">
-        <div class="h-full flex flex-col">
+        <div class="flex-1 h-0 flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
                     <div v-if="isPortrait && !isSubElectron" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
@@ -451,7 +451,17 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-okr-analysis {
-    @apply p-20 md:px-24 h-full w-full bg-page-bg box-border;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20 md:px-24;
+
+    &:before {
+        content: "";
+        height: var(--status-bar-height, 0);
+    }
+
+    &:after {
+        content: "";
+        height: var(--navigation-bar-height, 0);
+    }
 
     .page-title {
         @apply h-40 flex mb-16 md:mb-24 text-title-color font-medium justify-between;
