@@ -17,12 +17,7 @@ func SetGlobalContext(c *gin.Context) *gin.Context {
 
 // 获取当前请求源域名
 func GetRequestOrigin() string {
-	referer := GlobalContext.GetHeader("Referer")
-	if referer == "" {
-		// 如果Referer为空，使用当前请求的域名
-		return GetCurrentRequestDomain()
-	}
-	return GetHost(referer)
+	return GetCurrentRequestDomain()
 }
 
 // 获取当前请求的完整域名（考虑各种代理情况）
