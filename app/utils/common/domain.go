@@ -17,7 +17,16 @@ func SetGlobalContext(c *gin.Context) *gin.Context {
 
 // 获取当前请求源域名
 func GetRequestOrigin() string {
-	return GetHost(GlobalContext.GetHeader("Referer"))
+	referer := GlobalContext.GetHeader("Referer")
+	if referer == "" {
+		// 如果Referer为空，使用当前请求的域名
+		scheme := "http"
+		if GlobalContext.Request.TLS != nil || GlobalContext.GetHeader("X-Forwarded-Proto") == "https" {
+			scheme = "https"
+		}
+		return fmt.Sprintf("%s://%s", scheme, GlobalContext.Request.Host)
+	}
+	return GetHost(referer)
 }
 
 // GetHost 返回指定URL的域名

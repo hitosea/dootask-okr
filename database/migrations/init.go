@@ -49,7 +49,7 @@ var AddTableOkrReplayHistory = &gormigrate.Migration{
 
 // 添加日志表 AddTableOkrLog
 var AddTableOkrLog = &gormigrate.Migration{
-	ID: "2023071005-add-table-okr-log",
+	ID: "2023071015-add-table-okr-log",
 	Migrate: func(tx *gorm.DB) error {
 		return tx.AutoMigrate(&model.OkrLog{})
 	},

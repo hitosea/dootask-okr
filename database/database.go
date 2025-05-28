@@ -38,6 +38,38 @@ func Init() error {
 
 	one := db.Migrator().HasTable(&model.Okr{})
 
+	// 清理可能存在的冲突迁移记录
+	migrationTableName := config.CONF.System.Prefix + "okr_migrations"
+	if db.Migrator().HasTable(migrationTableName) {
+		// 获取数据库中所有的迁移记录
+		var existingMigrations []string
+		db.Raw("SELECT id FROM " + migrationTableName).Scan(&existingMigrations)
+
+		// 定义当前代码中存在的迁移ID
+		validMigrations := map[string]bool{
+			"2023071001-add-table-okr":                        true,
+			"2023071002-add-table-okr-follow":                 true,
+			"2023071003-add-table-okr-key-align":              true,
+			"2023071004-add-table-okr-replay":                 true,
+			"2023071005-add-table-okr-replay-history":         true,
+			"2023071015-add-table-okr-log":                    true,
+			"2023071006-add-table-okr-replay-history-comment": true,
+			"2023071007-add-table-okr-score":                  true,
+			"2023071008-add-table-okr-log-record":             true,
+			"2023081408-add-table-okr-replay-problem":         true,
+			"2023120709-add-table-okr-setting":                true,
+			"2023120710-add-table-okr-push-log":               true,
+			"2023120811-add-table-okr-11version":              true,
+		}
+
+		// 删除不存在于代码中的迁移记录
+		for _, migrationID := range existingMigrations {
+			if !validMigrations[migrationID] {
+				db.Exec("DELETE FROM "+migrationTableName+" WHERE id = ?", migrationID)
+			}
+		}
+	}
+
 	m := gormigrate.New(db, options, []*gormigrate.Migration{
 		migrations.AddTableOkr,
 		migrations.AddTableOkrFollow,
