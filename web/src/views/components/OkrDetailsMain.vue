@@ -3,9 +3,9 @@
         class="md:min-h-[640px] flex flex-col h-full md:flex-row max-md:fixed max-md:inset-0 max-md:pb-16 max-md:overflow-auto"
         :class="single ? [] : ['md:max-h-[640px]', 'md:h-auto']">
 
-        <div class="bg-[#FAFAFA]" style="height:var(--status-bar-height,0)"></div>
+        <div class="shrink-0 sticky top-0 bg-[#FAFAFA] z-[5] h-[var(--status-bar-height,0)]"></div>
 
-        <div v-if="!single" class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky top-0 h-[52px] px-12 bg-[#FAFAFA] z-[5]">
+        <div v-if="!single" class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky top-[var(--status-bar-height,0)] h-[52px] px-12 bg-[#FAFAFA] z-[5]">
             <i @click="handleReturn" class="okrfont text-26 text-text-tips z-[2]">&#xe676;</i>
             <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
             <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
