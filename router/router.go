@@ -18,11 +18,16 @@ import (
 func Init(c *gin.Context) {
 	common.SetGlobalContext(c)
 	//
-    c.Header("Access-Control-Allow-Origin", "*")
+    origin := c.GetHeader("Origin")
+    if origin != "" {
+        c.Header("Access-Control-Allow-Origin", origin)
+        c.Header("Access-Control-Allow-Credentials", "true")
+    } else {
+        c.Header("Access-Control-Allow-Origin", "*")
+    }
 	c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Token, Language, Accept-Language, X-Forwarded-Proto, X-Forwarded-Host, Accept, Cache-Control, X-Requested-With, X-Xsrf-Token")
     c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	c.Header("Access-Control-Allow-Credentials", "true")
 	//
     if c.Request.Method == "OPTIONS" {
         c.AbortWithStatus(204)
