@@ -1,6 +1,11 @@
 <template >
-    <n-drawer v-model:show="show" :on-after-enter="showDrawer" :on-after-leave="closeDrawer" :mask-closable="false"
-        :z-index="nextZIndex()" class="okr" style="--n-body-padding:16px 20px 26px 26px;max-width: 500px;width: 90%;"
+    <n-drawer 
+        v-model:show="show" 
+        :on-after-enter="showDrawer" 
+        :on-after-leave="closeDrawer" 
+        :z-index="nextZIndex()"
+        class="okr" 
+        style="--n-body-padding:16px 20px 26px 26px;max-width: 500px;width: 90%;"
         :trap-focus="false">
         <n-drawer-content :title="$t('设置')" closable>
             <div class="flex flex-col absolute top-[16px] bottom-[24px] left-[26px] right-[26px] overflow-hidden">
@@ -53,19 +58,5 @@ const handleReset = () => {
 <style lang="less" scoped>
 :deep(.n-drawer-body-content-wrapper) {
     @apply relative;
-}
-
-:deep(.n-drawer-header__close) {
-    @apply absolute -left-36;
-    &:focus {
-        @apply bg-none;
-    }
-    i {
-        @apply text-[#fff];
-    }
-}
-
-:deep(.n-base-close:not(.n-base-close--disabled):focus::before) {
-    @apply bg-transparent;
 }
 </style>

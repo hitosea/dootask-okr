@@ -3,26 +3,12 @@
         class="md:min-h-[640px] flex flex-col h-full md:flex-row max-md:fixed max-md:inset-0 max-md:pb-16 max-md:overflow-auto"
         :class="single ? [] : ['md:max-h-[640px]', 'md:h-auto']">
 
-        <div class="shrink-0 sticky top-0 bg-[#FAFAFA] z-[5]" style="height: var(--status-bar-height,0)"></div>
 
-        <div v-if="!single" class="hidden max-md:flex flex-shrink-0 items-center justify-between sticky h-[52px] px-12 bg-[#FAFAFA] z-[5]" style="top: var(--status-bar-height,0)">
-            <i @click="handleReturn" class="okrfont text-26 text-text-tips z-[2]">&#xe676;</i>
-            <h2 class="absolute left-0 right-0 text-center text-title-color text-17 font-medium">OKR {{ $t('详情') }}</h2>
-            <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
-                <template #trigger>
-                    <i @click="showPopover = !showPopover" class="okrfont text-22 mr-4 z-[2]">&#xe6e9;</i>
-                </template>
-                <div class="flex flex-col">
-                    <p class="py-8" @click="handleEdit" v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"> {{ $t('编辑') }}</p>
-                    <p class="py-8" @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
-                    <p class="py-8" @click="handleCancel" v-if="detailData.completed == '0'"> {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}</p>
-                    <p class="py-8" @click="handleWarningShow(2)" > {{  detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
-                    <p class="py-8" @click="handleWarningShow(1)" > {{ $t('删除') }}</p>
-                </div>
-            </n-popover>
-        </div>
+        <img v-if="detailData.completed == '1'" class="absolute right-[64px] top-[100px] block md:hidden z-[10] pointer-events-none" src="@/assets/images/icon/complete.png" />
 
-        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0" :class="navActive == 0 ? 'navActive' : ''">
+        <div class="shrink-0 sticky top-0 bg-white z-[5]" style="height: var(--status-bar-height,0)"></div>
+
+        <div class="md:flex-1 flex flex-col relative md:overflow-hidden bg-white px-16 pt-16 md:pt-0 md:px-0">
             <div class="flex max-md:hidden min-h-[44px] items-center justify-between pb-[15px] border-solid border-0 border-b-[1px] border-[#F2F3F5] relative md:mr-24">
                 <div class="flex items-center gap-4">
                     <n-popover class="okr-more-button-popover hidden md:flex" placement="bottom" :show="showPopover" trigger="manual" @clickoutside="handleClosePopover(1)" :z-index="modalZIndex" raw :show-arrow="true">
@@ -74,11 +60,22 @@
 
             <n-scrollbar ref="scrollbarRef" class="left-scrollbar">
                 <div class="md:mr-24">
-                    <h3 id="detailTop" class="relative text-text-li md:mt-[24px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
+                    <h3 id="detailTop" class="relative text-text-li mt-[24px] max-md:mt-[8px] max-md:mr-[104px] break-all text-18 md:text-24 leading-[1.4] font-medium md:min-h-[40px]">
                         {{ detailData.title }}
-                        <img v-if="detailData.completed == '1'" class="absolute right-24 top-0 block md:hidden z-[10]" src="@/assets/images/icon/complete.png" />
+                        <n-popover placement="bottom-end" :show="showPopover" :z-index="modalZIndex" @clickoutside="showPopover = false">
+                            <template #trigger>
+                                <i @click="showPopover = !showPopover" class="okrfont text-18 ml-8 z-[2] md:hidden">&#xe779;</i>
+                            </template>
+                            <div class="flex flex-col">
+                                <p class="py-8" @click="handleEdit" v-if="detailData.canceled == '0' && detailData.completed == '0' && userInfo.userid == detailData.userid"> {{ $t('编辑') }}</p>
+                                <p class="py-8" @click="handleFollowOkr"> {{ detailData.is_follow ? $t('取消关注') : $t('关注目标') }}</p>
+                                <p class="py-8" @click="handleCancel" v-if="detailData.completed == '0'"> {{ detailData.canceled == '0' ? $t('取消目标') : $t('重启目标') }}</p>
+                                <p class="py-8" @click="handleWarningShow(2)" > {{  detailData.status == '1' ? $t('还原归档') : $t('归档') }}</p>
+                                <p class="py-8" @click="handleWarningShow(1)" > {{ $t('删除') }}</p>
+                            </div>
+                        </n-popover>
                     </h3>
-                    <div class="mt-16 md:mt-24 flex flex-col gap-4">
+                    <div class="mt-16 md:mt-24 flex flex-col gap-4" :class="navActive == 0 ? 'navActive' : ''">
                         <div class="flex items-center">
                             <p class="flex items-center w-[115px]">
                                 <i v-if="detailData.ascription == '2'" class="okrfont icon-item text-[#BBBBBB]">&#xe6e4;</i>
@@ -226,7 +223,7 @@
         </div>
 
         <div class="md:min-w-[35.8%] relative flex flex-col flex-1 md:flex-initial border-solid border-0 md:border-l-[1px] border-[#F2F3F5] ">
-            <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[44px] bg-white" :class="navActive == 0 ? 'pt-14 md:pt-0' : 'pt-[32px] md:pt-0'">
+            <div class="flex items-center justify-between border-solid border-0 border-b-[1px] border-[#F2F3F5] pb-[11px] md:pb-[15px] md:ml-24 min-h-[44px] bg-white" :class="navActive == 0 ? 'pt-[26px] md:pt-0' : 'pt-[32px] md:pt-0'">
                 <ul class="flex w-full items-center gap-8 justify-between md:justify-start px-16 md:px-0">
                     <li class="block md:hidden li-nav" :class="navActive == 3 ? 'active' : ''" @click="handleNav(3)">KR</li>
                     <li class="block md:hidden li-nav" :class="navActive == 4 ? 'active' : ''" @click="handleNav(4)">{{$t('对齐') }}</li>
@@ -414,7 +411,7 @@ import { GlobalStore } from '@/store';
 import { UserStore } from '@/store/user'
 import webTs from '@/utils/web';
 import fenSvg from '@/assets/images/icon/fen.svg';
-import {getAppData, getBaseUrl, popoutWindow, backApp, isMicroApp, nextZIndex} from "@dootask/tools"
+import {getAppData, getBaseUrl, popoutWindow, isMicroApp, nextZIndex} from "@dootask/tools"
 
 const isElectron = computed(() => getAppData('props.isElectron') ? 1 : 0)
 const showDialogWrapper = computed(() => getAppData('instance.components.DialogWrapper') ? 1 : 0)
@@ -495,10 +492,6 @@ const props = defineProps({
         default: 0,
     },
 })
-
-const handleReturn = () => {
-    backApp()
-}
 
 // 明细
 const getDetail = (type) => {

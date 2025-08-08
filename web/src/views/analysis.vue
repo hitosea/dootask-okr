@@ -3,18 +3,9 @@
         <div class="flex-1 h-0 flex flex-col">
             <div class="page-title">
                 <div class="flex items-center">
-                    <div v-if="isPortrait && !isSubElectron" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                     <h2>{{ pageTitle }}</h2>
                     <div class="okr-app-refresh" v-if="!loadIng" @click="getData"><i class="okrfont">&#xe6ae;</i></div>
                 </div>
-                <n-tooltip v-if="isMainElectron" trigger="hover">
-                    <template #trigger>
-                        <div class="open-new-win" type="tertiary" @click="openNewWin">
-                            <i class="okrfont open">&#xe776;</i>
-                        </div>
-                    </template>
-                    <p class="max-w-[300px]"> {{ $t('新窗口打开') }}</p>
-               </n-tooltip>
             </div>
             <n-tabs v-if="(departments.length) > 1" class="ml-[2px] mt-[-10px]" type="line" animated :value="tabsValue" :on-update:value="(e)=>{ tabsValue = e }">
                 <n-tab-pane v-for="item in departments" :name="item.id" :tab="item.id == 0 ? $t(item.name) : item.name"></n-tab-pane>
@@ -204,7 +195,6 @@ import * as echarts from 'echarts';
 import * as http from "@/api/modules/analysis";
 import utils from '@/utils/utils';
 import tipsSvgfrom from '@/assets/images/icon/tips.svg';
-import { getAppData, popoutWindow, backApp } from "@dootask/tools"
 
 const pageTitle = 'OKR ' + $t('结果分析')
 const deptLoadIng = ref(false)
@@ -212,14 +202,6 @@ const loadIng = ref(false)
 const tabsValue = ref<any>(null)
 const departments = ref<any>([])
 const pageOkrAnalysisRef = ref(null)
-
-const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
-const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0  )
-const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
-
-const handleReturn = () => {
-    backApp()
-}
 
 // 总数据
 const analyzeDatas = ref({
@@ -247,6 +229,7 @@ const analyzeDatas = ref({
 const getDepartment = () => {
     deptLoadIng.value = true;
     http.getAnalyzeDepartment().then(res=>{
+        // @ts-ignore
         departments.value = res.data?.sort((a, b) => a.id - b.id);
         tabsValue.value = departments.value[0].id;
     }).finally(()=> {
@@ -422,19 +405,6 @@ const getData = () => {
     }, 300)
 }
 
-// 新窗口打开
-const openNewWin = () => {
-    popoutWindow({
-        title: pageTitle,
-        titleFixed: true,
-        width: Math.min(window.screen.availWidth, 1440),
-        height: Math.min(window.screen.availHeight, 900),
-        minWidth: 600,
-        minHeight: 450,
-    })
-}
-
-
 //
 watch(tabsValue, (value) => {
     loadComplete()
@@ -451,7 +421,7 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .page-okr-analysis {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20 md:px-24;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-16;
 
     &:before {
         content: "";

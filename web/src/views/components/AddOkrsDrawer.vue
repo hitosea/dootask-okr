@@ -3,7 +3,6 @@
         v-model:show="show"
         :on-after-enter="showDrawer"
         :on-after-leave="closeDrawer"
-        :mask-closable="false"
         :z-index="nextZIndex()"
         class="okr"
         style="--n-body-padding:16px 20px 24px 34px;max-width: 600px;width: 90%;"
@@ -75,22 +74,6 @@ const showDrawer = () => {
 
 .button-box {
     @apply flex gap-2 mt-24 flex-initial;
-}
-
-:deep(.n-drawer-header__close) {
-    @apply absolute -left-36;
-
-    &:focus {
-        @apply bg-none;
-    }
-
-    i {
-        @apply text-[#fff];
-    }
-}
-
-:deep(.n-base-close:not(.n-base-close--disabled):focus::before) {
-    @apply bg-transparent;
 }
 
 .span {

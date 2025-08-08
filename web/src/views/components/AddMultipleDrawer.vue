@@ -1,6 +1,13 @@
 <template >
-    <n-drawer v-model:show="show" style="max-width: 948px;width: 90%;" :on-after-leave="closeDrawer" @after-enter="showDrawer" :z-index="nextZIndex()" :mask-closable="false"
-        :trap-focus="false" :on-update-show="()=>{emit('close') }" class="okr">
+    <n-drawer 
+        v-model:show="show" 
+        style="max-width: 948px;width: 90%;" 
+        :on-after-leave="closeDrawer"
+         @after-enter="showDrawer" 
+        :z-index="nextZIndex()"
+        :trap-focus="false" 
+        :on-update-show="()=>{emit('close') }" 
+        class="okr">
         <n-drawer-content :title="$t('复盘')" closable>
             <div class="flex flex-col h-full">
                 <AddMultipleMain ref="AddMultipleMainRef" :data="props.data" :multipleId="props.multipleId" @close="()=>{ emit('close') }" @loadIng="(e)=>{ loadIng = e }"></AddMultipleMain>
@@ -54,18 +61,5 @@ const handleSubmit = () => {
 
 :deep(.n-scrollbar-content) {
     @apply h-full;
-}
-:deep(.n-drawer-header__close) {
-    @apply absolute -left-36 ;
-    &:focus{
-        @apply bg-none;
-    }
-    i {
-        @apply text-[#fff];
-    }
-}
-
-:deep(.n-base-close:not(.n-base-close--disabled):focus::before) {
-        @apply bg-transparent;
 }
 </style>

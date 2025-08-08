@@ -2,7 +2,6 @@
     <div class="page-okr" ref="pageOkrRef">
         <div class="okr-title">
             <div class="okr-left flex items-center">
-                <div v-if="isPortrait && !isSubElectron" class="okr-nav-back" @click="handleReturn"><i class="okrfont">&#xe676;</i></div>
                 <h2 :class="searchShow ? 'title-active' : ''">OKR {{ $t(pageTitle) }}</h2>
                 <div :class="searchShow ? 'title-active' : ''" class="okr-app-refresh" v-if="!loadIng" @click="reLoadList"><i class="okrfont">&#xe6ae;</i></div>
             </div>
@@ -40,7 +39,6 @@
                             <i v-else class="okrfont">&#xe6f2;</i>
                         </template>
                         <div class="flex flex-col">
-                            <p v-if="isMainElectron" @click="openNewWin"> {{ $t('新窗口打开') }}</p>
                             <p @click="[handleArchiveShow(), moreButtonPopoverShow=false]"> {{ $t('已归档') }} OKR</p>
                             <p v-if="isAdmin || isDepartmentOwner" @click="[handleDeleteShow(), moreButtonPopoverShow=false]"> {{ $t('离职/删除人员') }} OKR</p>
                             <p v-if="isAdmin" @click="[handleSettingShow(), moreButtonPopoverShow=false]"> {{ $t('设置') }}</p>
@@ -56,7 +54,7 @@
                         <Icreated ref="ICreatedRef" :searchObject="searchObject" :btnLoading="btnLoading > 0" @edit="handleEdit" @add="handleAdd"/>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane :tab="$t('我参与的')" name="katılım">
+                <n-tab-pane :tab="$t('我参与的')" name="engage">
                     <div class="okr-scrollbar">
                         <OkrParticipant ref="OkrParticipantRef" :searchObject="searchObject" @edit="handleEdit"/>
                     </div>
@@ -111,15 +109,12 @@ import { useRouter, useRoute } from 'vue-router'
 import TipsModal from '@/views/components/TipsModal.vue';
 import { getUserInfo } from '@/api/modules/user'
 import { UserStore } from '@/store/user'
-import { isMicroApp, getAppData, popoutWindow, backApp } from "@dootask/tools"
-
-const isMainElectron = computed(() => getAppData('props.isMainElectron') ? 1 : 0)
-const isSubElectron = computed(() => getAppData('props.isSubElectron') ? 1 : 0  )
-const isPortrait = computed(() => getAppData('instance.store.state.windowPortrait') ? 1 : 0)
+import { isMicroApp } from "@dootask/tools"
 
 const isAdmin = UserStore().auth().isAdmin
 const isDepartmentOwner = UserStore().auth().isDepartmentOwner
 const inMicroApp = computed(() => isMicroApp() ? 1 : 0)
+
 const router = useRouter()
 const pageTitle = ref("管理")
 const loadIng = ref(false)
@@ -147,10 +142,6 @@ const tipsContent = ref('')
 const btnLoading = ref(0)
 
 let editData = {}
-
-const handleReturn = () => {
-    backApp()
-}
 
 watch(route,(newValue)=>{
     nextTick(()=>{
@@ -184,7 +175,7 @@ const inputName = computed(()=>{
     if(tabsName.value == 'created'){
         return $t('我创建的')
     }
-    if(tabsName.value == 'katılım'){
+    if(tabsName.value == 'engage'){
         return $t('我参与的')
     }
     if(tabsName.value == 'dept'){
@@ -214,7 +205,7 @@ const reLoadList = () => {
    if (tabsName.value == 'created' ) {
         ICreatedRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'katılım') {
+    if (tabsName.value == 'engage') {
         OkrParticipantRef.value.resetGetList('search')
     }
     if (tabsName.value == 'dept') {
@@ -264,7 +255,7 @@ const handleClose = (e, id) => {
     if (tabsName.value == 'created' && e == 1) {
         ICreatedRef.value.resetGetList('search')
     }
-    if (tabsName.value == 'katılım' && e == 1) {
+    if (tabsName.value == 'engage' && e == 1) {
         OkrParticipantRef.value.resetGetList('search')
     }
     if (tabsName.value == 'dept' && e == 1) {
@@ -278,7 +269,7 @@ const handleClose = (e, id) => {
     if (tabsName.value == 'created' && e == 2) {
         ICreatedRef.value.upData(id)
     }
-    if (tabsName.value == 'katılım' && e == 2) {
+    if (tabsName.value == 'engage' && e == 2) {
         OkrParticipantRef.value.upData(id)
     }
     if (tabsName.value == 'dept' && e == 2) {
@@ -291,19 +282,6 @@ const handleClose = (e, id) => {
     edit.value = false
     editData = {}
     addShow.value = false
-}
-
-// 新窗口打开
-const openNewWin = () => {
-    popoutWindow({
-        title: 'OKR ' + $t(pageTitle.value),
-        titleFixed: true,
-        width: Math.min(window.screen.availWidth, 1440),
-        height: Math.min(window.screen.availHeight, 900),
-        minWidth: 600,
-        minHeight: 450,
-    });
-    moreButtonPopoverShow.value = false
 }
 
 // 已归档
@@ -324,7 +302,7 @@ const handleSettingShow = () => {
 
 <style lang="less" scoped>
 .page-okr {
-    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-20 md:px-24;
+    @apply absolute top-0 bottom-0 left-0 right-0 flex flex-col bg-page-bg p-16;
 
     &:before {
         content: "";
@@ -338,6 +316,7 @@ const handleSettingShow = () => {
 
     .okr-title {
         @apply h-40 flex justify-between items-center relative mb-14;
+        margin-right: 104px;
 
         .icon-return {
             @apply block md:hidden mr-16 text-20 z-[2];
@@ -361,7 +340,7 @@ const handleSettingShow = () => {
         }
 
         .okr-right {
-            @apply flex items-center gap-4 ;
+            @apply flex items-center gap-4 max-md:gap-2;
 
             .add-button,
             .more-button,

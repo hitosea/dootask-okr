@@ -98,8 +98,11 @@
             </div>
         </div>
 
-        <n-drawer v-model:show="active" default-height="442px" placement="bottom" resizable>
-
+        <n-drawer 
+            v-model:show="active" 
+            default-height="442px" 
+            placement="bottom" 
+            resizable>
             <n-drawer-content class="screen-d">
                 <template #header>
                     <div class="flex w-full items-center justify-between text-text-li text-16 md:text-18">

@@ -29,8 +29,12 @@
 
 
 /* drawer样式调整  */
+.n-drawer-header__close {
+    display: none;
+}
 .okr.n-drawer--right-placement {
-    border-radius: 18px 0 0 18px;
+    @apply m-0 rounded-l-2xl md:m-8 md:rounded-2xl;
+    padding: calc(var(--status-bar-height, 0px) + 8px) 0 calc(var(--navigation-bar-height, 0px) + 8px);
 }
 
 .okr.n-drawer--right-placement .n-drawer-header {
